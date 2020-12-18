@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>单元测试 | Wang&#39;Note</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="单元测试 | Wang&#39;Note">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="note">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wang&#39;Note">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="Wang&#39;Note">
+<meta property="og:description" content="note">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:modified_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:author" content="WangPengLiang">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content=" WangPengLiang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Wang'Note" type="application/atom+xml">
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>WangPengLiang</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/wangpengliang815" target="_blank">
+            
+                <i class="iconfont icon-github"></i>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="全部笔记">全部笔记<small>(34)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Autofac">Autofac<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="AzureDevops">AzureDevops<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Bpmn">Bpmn<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Centos">Centos<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CSharp">CSharp<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Domain Driven Design">Domain Driven Design<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="EntityFramework">EntityFramework<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Linq">Linq<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RabbitMQ">RabbitMQ<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SonarQube">SonarQube<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Testing">Testing<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="34">
+<input type="hidden" id="yelog_site_word_count" value="63.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">全部笔记</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/17/csharp/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异步编程">异步编程</span>
+            <span class="post-date" title="2020-12-17 16:24:11">2020/12/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/14/csharp/Reflect/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="反射">反射</span>
+            <span class="post-date" title="2020-12-14 14:31:12">2020/12/14</span>
+        </a>
+        
+        <a  class="全部笔记 Bpmn "
+           href="/2020/12/09/bpmn/bpmn/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Bpmn">Bpmn</span>
+            <span class="post-date" title="2020-12-09 15:02:54">2020/12/09</span>
+        </a>
+        
+        <a  class="全部笔记 Domain Driven Design "
+           href="/2020/12/08/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8/Domain%20Driven%20Design/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Domain Driven Design(DDD)">Domain Driven Design(DDD)</span>
+            <span class="post-date" title="2020-12-08 17:41:45">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Linq "
+           href="/2020/12/08/linq/Linq/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Linq">Linq</span>
+            <span class="post-date" title="2020-12-08 17:40:59">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 EntityFramework "
+           href="/2020/12/08/entityFramework/EF%20Codefirst/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="EF Codefirst">EF Codefirst</span>
+            <span class="post-date" title="2020-12-08 17:39:35">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Autofac "
+           href="/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Autofac依赖注入">Autofac依赖注入</span>
+            <span class="post-date" title="2020-12-08 17:38:39">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/Exception/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异常处理">异常处理</span>
+            <span class="post-date" title="2020-12-08 17:38:09">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="并行和异步编程">并行和异步编程</span>
+            <span class="post-date" title="2020-12-08 17:36:21">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线程同步机制">线程同步机制</span>
+            <span class="post-date" title="2020-12-08 17:33:02">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="多线程">多线程</span>
+            <span class="post-date" title="2020-12-08 17:12:32">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Centos常用命令">Centos常用命令</span>
+            <span class="post-date" title="2020-12-07 17:17:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/VMware%E5%AE%89%E8%A3%85Centos/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="VMware安装Centos">VMware安装Centos</span>
+            <span class="post-date" title="2020-12-07 17:14:12">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/12/07/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="集成测试">集成测试</span>
+            <span class="post-date" title="2020-12-07 17:06:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见问题">RabbitMQ常见问题</span>
+            <span class="post-date" title="2020-11-21 22:30:22">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常用命令">RabbitMQ常用命令</span>
+            <span class="post-date" title="2020-11-21 20:57:58">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95(Selenium)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="自动化UI测试(Selenium)">自动化UI测试(Selenium)</span>
+            <span class="post-date" title="2020-11-18 00:12:10">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95(k6)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="压力测试(k6)">压力测试(k6)</span>
+            <span class="post-date" title="2020-11-18 00:09:46">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="单元测试">单元测试</span>
+            <span class="post-date" title="2020-11-18 00:06:54">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见策略">RabbitMQ常见策略</span>
+            <span class="post-date" title="2020-11-17 23:52:14">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Channel常见方法">Channel常见方法</span>
+            <span class="post-date" title="2020-11-17 23:51:03">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%90%AD%E5%BB%BARabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="搭建RabbitMQ高可用集群">搭建RabbitMQ高可用集群</span>
+            <span class="post-date" title="2020-11-17 23:50:07">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="两种消费模式和QOS的实现">两种消费模式和QOS的实现</span>
+            <span class="post-date" title="2020-11-17 23:48:02">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="消息确认及持久化">消息确认及持久化</span>
+            <span class="post-date" title="2020-11-17 23:45:38">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E5%9B%9B%E7%A7%8DExchange%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="四种Exchange介绍及代码示例">四种Exchange介绍及代码示例</span>
+            <span class="post-date" title="2020-11-17 23:42:31">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ的概念及安装">RabbitMQ的概念及安装</span>
+            <span class="post-date" title="2020-11-17 23:38:09">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops常用功能">Azure Devops常用功能</span>
+            <span class="post-date" title="2020-11-17 23:20:19">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%AE%89%E8%A3%85(Version-2020)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops安装(Version-2020)">Azure Devops安装(Version-2020)</span>
+            <span class="post-date" title="2020-11-17 23:15:59">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E9%9B%86%E6%88%90AzureDevops/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube集成AzureDevops">SonarQube集成AzureDevops</span>
+            <span class="post-date" title="2020-11-17 23:08:55">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube代码检查">SonarQube代码检查</span>
+            <span class="post-date" title="2020-11-17 22:54:45">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube安装配置">SonarQube安装配置</span>
+            <span class="post-date" title="2020-11-17 22:00:21">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/BasicCollection/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基础合集">基础合集</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Genericity/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="泛型">泛型</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Delegate&Event/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="委托和事件">委托和事件</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-测试相关/单元测试" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">单元测试</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="Testing">Testing</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-12-08 17:45:19'>2020-11-18 00:06</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:1.8k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#常见测试类型"><span class="toc-text">常见测试类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试"><span class="toc-text">单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用依赖倒置（DIP）原则编写代码"><span class="toc-text">使用依赖倒置（DIP）原则编写代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单元测试的好处"><span class="toc-text">单元测试的好处</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优质单元测试的特征"><span class="toc-text">优质单元测试的特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码覆盖率"><span class="toc-text">代码覆盖率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dotnet-core中的单元测试框架"><span class="toc-text">dotnet core中的单元测试框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dotnet-test"><span class="toc-text">dotnet test</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MSBuild"><span class="toc-text">MSBuild</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#VSTest"><span class="toc-text">VSTest</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reportgenerator"><span class="toc-text">Reportgenerator</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#MSBuild-2"><span class="toc-text">MSBuild</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#VSTest-2"><span class="toc-text">VSTest</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#合并渲染"><span class="toc-text">合并渲染</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试可重复性"><span class="toc-text">测试可重复性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mock"><span class="toc-text">Mock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="常见测试类型">常见测试类型</h2>
+<ul>
+<li>单元测试</li>
+<li>集成测试</li>
+<li>Web测试</li>
+<li>负载测试</li>
+<li>其他</li>
+</ul>
+<h2 id="单元测试">单元测试</h2>
+<blockquote>
+<p>软件应用程序有多种类型的测试。 其中包括集成测试、Web 测试、负载测试和其他测试。 “单元测试”用于对软件中的最小可测试单元进行检查和验证。 单元测试仅应测试开发人员控件内的代码。 它们不应测试基础结构问题。 基础结构问题包括数据库、文件系统和网络资源。</p>
+</blockquote>
+<p>编写单元测试时，尽量不要引入基础结构依赖项。这些依赖项会降低测试速度，使测试更加脆弱，应将其保留供集成测试使用。 可以通过遵循<code>Explicit Dependencies Principle</code>（显式依赖项原则）和使用<code>Dependency Injection</code>（依赖项注入）避免应用程序中的这些依赖项。还可以将单元测试保留在单独的项目中，与集成测试相分隔。 这可确保单元测试项目没有引用或依赖于基础结构包</p>
+<h3 id="使用依赖倒置（DIP）原则编写代码">使用依赖倒置（DIP）原则编写代码</h3>
+<p>很多情况下,一个类或者是方法它会依赖一些外部组件，如其他开发写的代码、第三方类库、数据库、网络等，当被测试的代码与这些组件紧耦合时，这段代码将可能是不可测的，如一个方法中依赖一个数据库组件去访问数据库，那么在执行这个方法时，必然要与数据库交互，如果没有数据库，那么该方法就无法运行。所以单元测试不仅是对代码逻辑进行检查，同时还对整个代码结构有所限制，面向对象编程时应当遵循“依赖倒置”原则，模块应该依赖抽象，抽象不应该依赖实现。并且所依赖的抽象，应该显示的通过构造或者方法参数进行暴露，让组件的使用者对组件的依赖一目了然,在单元测试时为了屏蔽这些抽象依赖，不同测试框架中提供了<code>stub</code>、<code>mock</code>、<code>fake</code>等方式对抽象进行模拟，以便于代码能够正常执行</p>
+<h3 id="单元测试的好处">单元测试的好处</h3>
+<ul>
+<li>比执行功能测试节省时间</li>
+<li>防止回归：新功能上线时可通过单元测试来确保之前存在的功能正常运行不会破坏现有功能</li>
+<li>减少耦合代码：当代码紧密耦合时，可能很难进行单元测试，如果不为代码编写单元测试，耦合可能就不太明显了</li>
+</ul>
+<h3 id="优质单元测试的特征">优质单元测试的特征</h3>
+<ul>
+<li>快速： 对成熟项目进行数千次单元测试，这很常见。 应花非常少的时间来运行单元测试</li>
+<li>独立： 单元测试是独立的，可以单独运行，并且不依赖文件系统或数据库等任何外部因素</li>
+<li>可重复： 运行单元测试的结果应该保持一致，也就是说，如果在运行期间不更改任何内容，总是返回相同的结果</li>
+<li>自检查： 测试应该能够在没有任何人工交互的情况下，自动检测测试是否通过</li>
+</ul>
+<h3 id="代码覆盖率">代码覆盖率</h3>
+<p>高代码覆盖率百分比通常与较高的代码质量相关联。 但该度量值本身无法确定代码的质量。 设置过高的代码覆盖率百分比目标可能会适得其反。</p>
+<p><strong>高代码覆盖率百分比不代表代码质量就高， 它仅仅表示单元测试所涵盖的代码量</strong></p>
+<p>代码覆盖率工具有两种类型：</p>
+<ul>
+<li>数据收集器： 数据收集器监视测试执行并收集有关测试运行的信息。 它们以各种输出格式（例如 XML 和 JSON）报告收集的信息</li>
+<li>报表生成器： 使用从测试运行收集的数据生成报表，通常为带样式的 HTML</li>
+</ul>
+<p>若要通过<code>Coverlet</code>获得代码覆盖率，现有单元测试项目必须具有相应的包依赖项，或者依赖于 .net 全局工具和对应的<code>coverlet.console NuGet</code>包。</p>
+<p>代码覆盖率是单元测试运行的代码量（行、分支或方法）的度量值，企业版的VS自带了代码覆盖率分析工具<br>
+详情参考：<br>
+<a href="https://docs.microsoft.com/en-us/visualstudio/test/using-code-coverage-to-determine-how-much-code-is-being-tested" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/visualstudio/test/using-code-coverage-to-determine-how-much-code-is-being-tested</a><br>
+<a href="https://github.com/Microsoft/vstest-docs/blob/master/docs/analyze.md#coverage" target="_blank" rel="noopener">https://github.com/Microsoft/vstest-docs/blob/master/docs/analyze.md#coverage</a></p>
+<p>.netcore下使用（暂不支持.NetFramework）<code>coverlet(数据收集器)</code>=&gt;<code>ReportGenerator(报表生成器)</code>=&gt;代码覆盖率报告</p>
+<h3 id="dotnet-core中的单元测试框架">dotnet core中的单元测试框架</h3>
+<p>dotnet core中常用的单元测试的框架有<code>MSTest</code>、<code>NUnit</code>和<code>xUnit.net</code>，使用方法都非常相似，都是通过特性标记的方式声明测试方法，然后在方法中使用断言<code>Assertions</code>来判别方法执行结果是否达到预期</p>
+<p><a href="https://docs.microsoft.com/zh-cn/dotnet/core/testing/?pivots=mstest" target="_blank" rel="noopener">.net平台下单元测试各框架介绍</a></p>
+<p><a href="http://https://xunit.github.io/docs/comparisons" target="_blank" rel="noopener">框架特性及断言比较参考</a></p>
+<h3 id="dotnet-test">dotnet test</h3>
+<p><img src="/images/2020-11-18-00-08-59.png" alt=""></p>
+<h4 id="MSBuild">MSBuild</h4>
+<p>使用<code>MSBuild</code>方式运行测试并生成指定名称的测试结果文件，输出到指定目录</p>
+<pre><code>dotnet test TestApplication.UnitTests.csproj  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/
+</code></pre>
+<p><img src="/images/2020-11-18-00-09-09.png" alt=""><br>
+这里有个问题：对使用依赖注入的项目这里获取的覆盖率为0，详情：<br>
+<a href="https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/KnownIssues.md" target="_blank" rel="noopener">https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/KnownIssues.md</a><br>
+<a href="https://github.com/coverlet-coverage/coverlet/issues/922" target="_blank" rel="noopener">https://github.com/coverlet-coverage/coverlet/issues/922</a></p>
+<h4 id="VSTest">VSTest</h4>
+<p>使用coverlet命令生成覆盖率Xml</p>
+<pre><code>dotnet test TestApplication.UnitTests.csproj --collect:&quot;XPlat Code Coverage&quot;
+</code></pre>
+<h4 id="Reportgenerator">Reportgenerator</h4>
+<p>使用reportgenerator命令覆盖率xml文件渲染成Html，因为<code>Msbuild</code>和<code>VsTest</code>方式生成的目录结果有所不同所以渲染命令也有所不同</p>
+<h5 id="MSBuild-2">MSBuild</h5>
+<pre><code>reportgenerator &quot;-reports:./TestResults/*.xml;&quot;&quot;--targetdir:D:\RunTime\TestReport&quot;  -reporttypes:Html
+</code></pre>
+<h5 id="VSTest-2">VSTest</h5>
+<pre><code>reportgenerator &quot;-reports:./TestResults/*/*.xml&quot; &quot;--targetdir:D:\RunTime\TestReport&quot;  -reporttypes:Html
+</code></pre>
+<h5 id="合并渲染">合并渲染</h5>
+<p>找到<code>xml</code>文件路径，<code>-reports</code>命令中以<code>;</code>分割即可</p>
+<pre><code>reportgenerator &quot;-reports:TestApplication.UnitTests/TestResults/*.xml;TestApplication.IntegrationTests/TestResults/*.xml;&quot; &quot;--targetdir:D:\RunTime\TestReport&quot;  -reporttypes:Html
+</code></pre>
+<p><strong>注意当前的工作目录</strong></p>
+<p>参考：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/cgzl/p/9326127.html" target="_blank" rel="noopener">https://www.cnblogs.com/cgzl/p/9326127.html</a></li>
+<li><a href="https://github.com/coverlet-coverage/coverlet" target="_blank" rel="noopener">https://github.com/coverlet-coverage/coverlet</a></li>
+<li><a href="https://github.com/danielpalme/ReportGenerator" target="_blank" rel="noopener">https://github.com/danielpalme/ReportGenerator</a></li>
+</ul>
+<h3 id="测试可重复性">测试可重复性</h3>
+<ul>
+<li>使用COM+自动事务(TestFixture)</li>
+<li>使用数据清理来保证测试用例的独立和可重复性<code>TestInitialize/TestCleanup</code></li>
+</ul>
+<h3 id="Mock">Mock</h3>
+<p>面向对象编程应该显式依赖抽象，单元测试时应屏蔽依赖的影响(无论是依赖还未实现，或者实现的依赖会阻碍代码执行)，为了满足这一需求出现了Mock、Fake等方式，其原理就是创建一个&quot;假&quot;的&quot;空&quot;的依赖，并用其替代真实依赖，以确保代码能够运行</p>
+<pre><code>public class OrgPublisherServiceTests : TestBase
+{
+    private readonly Mock&lt;ILogRecorder&lt;OrgPublisherService&gt;&gt; _logger;
+
+    public OrgPublisherServiceTests()
+    {
+        _logger = new Mock&lt;ILogRecorder&lt;OrgPublisherService&gt;&gt;();
+    }
+}
+</code></pre>
+<p><a href="http://https://docs.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-best-practices" target="_blank" rel="noopener">单元测试最佳实践</a></p>
+<p><a href="https://github.com/dotnet/aspnetcore/wiki/Engineering-guidelines#unit-tests-and-functional-tests" target="_blank" rel="noopener">单元测试规范</a></p>
+<h3 id="注意">注意</h3>
+<p>单元测试仅能保证软件的最小可执行单元是正确的，真正的软件是由这些最小可执行单元组成的一个整体，单元的正确性无法保证整体的正确性</p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2020 Yelog
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("greens");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 722px;
+    }
+    .nav.fullscreen {
+        margin-left: -722px;
+    }
+    .nav-left {
+        width: 300px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #c1bfc1;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+    #post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>

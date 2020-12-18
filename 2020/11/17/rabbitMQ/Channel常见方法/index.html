@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Channel常见方法 | Wang&#39;Note</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="Channel常见方法 | Wang&#39;Note">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="note">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wang&#39;Note">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="Wang&#39;Note">
+<meta property="og:description" content="note">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:modified_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:author" content="WangPengLiang">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content=" WangPengLiang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Wang'Note" type="application/atom+xml">
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>WangPengLiang</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/wangpengliang815" target="_blank">
+            
+                <i class="iconfont icon-github"></i>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="全部笔记">全部笔记<small>(34)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Autofac">Autofac<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="AzureDevops">AzureDevops<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Bpmn">Bpmn<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Centos">Centos<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CSharp">CSharp<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Domain Driven Design">Domain Driven Design<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="EntityFramework">EntityFramework<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Linq">Linq<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RabbitMQ">RabbitMQ<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SonarQube">SonarQube<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Testing">Testing<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="34">
+<input type="hidden" id="yelog_site_word_count" value="63.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">全部笔记</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/17/csharp/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异步编程">异步编程</span>
+            <span class="post-date" title="2020-12-17 16:24:11">2020/12/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/14/csharp/Reflect/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="反射">反射</span>
+            <span class="post-date" title="2020-12-14 14:31:12">2020/12/14</span>
+        </a>
+        
+        <a  class="全部笔记 Bpmn "
+           href="/2020/12/09/bpmn/bpmn/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Bpmn">Bpmn</span>
+            <span class="post-date" title="2020-12-09 15:02:54">2020/12/09</span>
+        </a>
+        
+        <a  class="全部笔记 Domain Driven Design "
+           href="/2020/12/08/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8/Domain%20Driven%20Design/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Domain Driven Design(DDD)">Domain Driven Design(DDD)</span>
+            <span class="post-date" title="2020-12-08 17:41:45">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Linq "
+           href="/2020/12/08/linq/Linq/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Linq">Linq</span>
+            <span class="post-date" title="2020-12-08 17:40:59">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 EntityFramework "
+           href="/2020/12/08/entityFramework/EF%20Codefirst/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="EF Codefirst">EF Codefirst</span>
+            <span class="post-date" title="2020-12-08 17:39:35">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Autofac "
+           href="/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Autofac依赖注入">Autofac依赖注入</span>
+            <span class="post-date" title="2020-12-08 17:38:39">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/Exception/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异常处理">异常处理</span>
+            <span class="post-date" title="2020-12-08 17:38:09">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="并行和异步编程">并行和异步编程</span>
+            <span class="post-date" title="2020-12-08 17:36:21">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线程同步机制">线程同步机制</span>
+            <span class="post-date" title="2020-12-08 17:33:02">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="多线程">多线程</span>
+            <span class="post-date" title="2020-12-08 17:12:32">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Centos常用命令">Centos常用命令</span>
+            <span class="post-date" title="2020-12-07 17:17:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/VMware%E5%AE%89%E8%A3%85Centos/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="VMware安装Centos">VMware安装Centos</span>
+            <span class="post-date" title="2020-12-07 17:14:12">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/12/07/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="集成测试">集成测试</span>
+            <span class="post-date" title="2020-12-07 17:06:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见问题">RabbitMQ常见问题</span>
+            <span class="post-date" title="2020-11-21 22:30:22">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常用命令">RabbitMQ常用命令</span>
+            <span class="post-date" title="2020-11-21 20:57:58">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95(Selenium)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="自动化UI测试(Selenium)">自动化UI测试(Selenium)</span>
+            <span class="post-date" title="2020-11-18 00:12:10">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95(k6)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="压力测试(k6)">压力测试(k6)</span>
+            <span class="post-date" title="2020-11-18 00:09:46">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="单元测试">单元测试</span>
+            <span class="post-date" title="2020-11-18 00:06:54">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见策略">RabbitMQ常见策略</span>
+            <span class="post-date" title="2020-11-17 23:52:14">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Channel常见方法">Channel常见方法</span>
+            <span class="post-date" title="2020-11-17 23:51:03">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%90%AD%E5%BB%BARabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="搭建RabbitMQ高可用集群">搭建RabbitMQ高可用集群</span>
+            <span class="post-date" title="2020-11-17 23:50:07">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="两种消费模式和QOS的实现">两种消费模式和QOS的实现</span>
+            <span class="post-date" title="2020-11-17 23:48:02">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="消息确认及持久化">消息确认及持久化</span>
+            <span class="post-date" title="2020-11-17 23:45:38">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E5%9B%9B%E7%A7%8DExchange%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="四种Exchange介绍及代码示例">四种Exchange介绍及代码示例</span>
+            <span class="post-date" title="2020-11-17 23:42:31">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ的概念及安装">RabbitMQ的概念及安装</span>
+            <span class="post-date" title="2020-11-17 23:38:09">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops常用功能">Azure Devops常用功能</span>
+            <span class="post-date" title="2020-11-17 23:20:19">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%AE%89%E8%A3%85(Version-2020)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops安装(Version-2020)">Azure Devops安装(Version-2020)</span>
+            <span class="post-date" title="2020-11-17 23:15:59">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E9%9B%86%E6%88%90AzureDevops/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube集成AzureDevops">SonarQube集成AzureDevops</span>
+            <span class="post-date" title="2020-11-17 23:08:55">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube代码检查">SonarQube代码检查</span>
+            <span class="post-date" title="2020-11-17 22:54:45">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube安装配置">SonarQube安装配置</span>
+            <span class="post-date" title="2020-11-17 22:00:21">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/BasicCollection/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基础合集">基础合集</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Genericity/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="泛型">泛型</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Delegate&Event/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="委托和事件">委托和事件</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-rabbitMQ/Channel常见方法" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">Channel常见方法</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="RabbitMQ">RabbitMQ</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-11-22 14:50:27'>2020-11-17 23:51</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:2.4k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-exchangeDeclare"><span class="toc-text">channel.exchangeDeclare()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chanel-basicQos"><span class="toc-text">chanel.basicQos()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-basicPublish"><span class="toc-text">channel.basicPublish()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-basicAck"><span class="toc-text">channel.basicAck()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-basicNack-delivery-getEnvelope-getDeliveryTag-false-true"><span class="toc-text">channel.basicNack(delivery.getEnvelope().getDeliveryTag(), false, true)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-basicReject-delivery-getEnvelope-getDeliveryTag-false"><span class="toc-text">channel.basicReject(delivery.getEnvelope().getDeliveryTag(), false)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-basicConsume-queueName-true-consumer"><span class="toc-text">channel.basicConsume(queueName, true, consumer)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chanel-exchangeBind"><span class="toc-text">chanel.exchangeBind()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#channel-queueDeclare-queueName-false-false-false-null"><span class="toc-text">channel.queueDeclare(queueName, false, false, false, null)</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="channel-exchangeDeclare">channel.exchangeDeclare()</h2>
+<ul>
+<li>type：有direct、fanout、topic三种</li>
+<li>durable：true、false true：服务器重启会保留下来Exchange。警告：仅设置此选项，不代表消息持久化。即不保证重启后消息还在。原文：true if we are declaring a durable exchange (the exchange will survive a server restart)</li>
+<li>autoDelete:true、false.true:当已经没有消费者时，服务器是否可以删除该Exchange。原文1：true if the server should delete the exchange when it is no longer in use。</li>
+</ul>
+<pre><code class="language-cs"> /**
+     * Declare an exchange.
+     * @see com.rabbitmq.client.AMQP.Exchange.Declare
+     * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk
+     * @param exchange the name of the exchange
+     * @param type the exchange type
+     * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart)
+     * @param autoDelete true if the server should delete the exchange when it is no longer in use
+     * @param arguments other properties (construction arguments) for the exchange
+     * @return a declaration-confirm method to indicate the exchange was successfully declared
+     * @throws java.io.IOException if an error is encountered
+     */
+    Exchange.DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete,
+                                       Map&lt;String, Object&gt; arguments) throws IOException;
+</code></pre>
+<h2 id="chanel-basicQos">chanel.basicQos()</h2>
+<ul>
+<li>prefetchSize：0</li>
+<li>prefetchCount：会告诉RabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则该consumer将block掉，直到有消息ack</li>
+<li>global：true\false 是否将上面设置应用于channel，简单点说，就是上面限制是channel级别的还是consumer级别<br>
+备注：据说prefetchSize 和global这两项，rabbitmq没有实现，暂且不研究</li>
+</ul>
+<pre><code class="language-cs">    /**
+     * Request specific &quot;quality of service&quot; settings.
+     *
+     * These settings impose limits on the amount of data the server
+     * will deliver to consumers before requiring acknowledgements.
+     * Thus they provide a means of consumer-initiated flow control.
+     * @see com.rabbitmq.client.AMQP.Basic.Qos
+     * @param prefetchSize maximum amount of content (measured in
+     * octets) that the server will deliver, 0 if unlimited
+     * @param prefetchCount maximum number of messages that the server
+     * will deliver, 0 if unlimited
+     * @param global true if the settings should be applied to the
+     * entire channel rather than each consumer
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicQos(int prefetchSize, int prefetchCount, boolean global) throws IOException;
+</code></pre>
+<h2 id="channel-basicPublish">channel.basicPublish()</h2>
+<ul>
+<li>routingKey：路由键，#匹配0个或多个单词，*匹配一个单词，在topic exchange做消息转发用</li>
+<li>mandatory：true：如果exchange根据自身类型和消息routeKey无法找到一个符合条件的queue，那么会调用basic.return方法将消息返还给生产者。false：出现上述情形broker会直接将消息扔掉</li>
+<li>immediate：true：如果exchange在将消息route到queue(s)时发现对应的queue上没有消费者，那么这条消息不会放入队列中。当与消息routeKey关联的所有queue(一个或多个)都没有消费者时，该消息会通过basic.return方法返还给生产者。</li>
+<li>BasicProperties ：需要注意的是BasicProperties.deliveryMode，0:不持久化 1：持久化 这里指的是消息的持久化，配合channel(durable=true),queue(durable)可以实现，即使服务器宕机，消息仍然保留</li>
+</ul>
+<blockquote>
+<p>简单来说：mandatory标志告诉服务器至少将该消息route到一个队列中，否则将消息返还给生产者；immediate标志告诉服务器如果该消息关联的queue上有消费者，则马上将消息投递给它，如果所有queue都没有消费者，直接把消息返还给生产者，不用将消息入队列等待消费者了</p>
+</blockquote>
+<pre><code class="language-cs">  /**
+     * Publish a message.
+     *
+     * Publishing to a non-existent exchange will result in a channel-level
+     * protocol exception, which closes the channel.
+     *
+     * Invocations of &lt;code&gt;Channel#basicPublish&lt;/code&gt; will eventually block if a
+     * &lt;a href=&quot;http://www.rabbitmq.com/alarms.html&quot;&gt;resource-driven alarm&lt;/a&gt; is in effect.
+     *
+     * @see com.rabbitmq.client.AMQP.Basic.Publish
+     * @see &lt;a href=&quot;http://www.rabbitmq.com/alarms.html&quot;&gt;Resource-driven alarms&lt;/a&gt;.
+     * @param exchange the exchange to publish the message to
+     * @param routingKey the routing key
+     * @param mandatory true if the 'mandatory' flag is to be set
+     * @param immediate true if the 'immediate' flag is to be
+     * set. Note that the RabbitMQ server does not support this flag.
+     * @param props other properties for the message - routing headers etc
+     * @param body the message body
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body)
+            throws IOException;
+</code></pre>
+<h2 id="channel-basicAck">channel.basicAck()</h2>
+<ul>
+<li>deliveryTag:该消息的index</li>
+<li>multiple：是否批量.true:将一次性ack所有小于deliveryTag的消息。</li>
+</ul>
+<pre><code class="language-cs">    /**
+     * Acknowledge one or several received
+     * messages. Supply the deliveryTag from the {@link com.rabbitmq.client.AMQP.Basic.GetOk}
+     * or {@link com.rabbitmq.client.AMQP.Basic.Deliver} method
+     * containing the received message being acknowledged.
+     * @see com.rabbitmq.client.AMQP.Basic.Ack
+     * @param deliveryTag the tag from the received {@link com.rabbitmq.client.AMQP.Basic.GetOk} or {@link com.rabbitmq.client.AMQP.Basic.Deliver}
+     * @param multiple true to acknowledge all messages up to and
+     * including the supplied delivery tag; false to acknowledge just
+     * the supplied delivery tag.
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicAck(long deliveryTag, boolean multiple) throws IOException;
+</code></pre>
+<h2 id="channel-basicNack-delivery-getEnvelope-getDeliveryTag-false-true">channel.basicNack(delivery.getEnvelope().getDeliveryTag(), false, true)</h2>
+<ul>
+<li>deliveryTag:该消息的index</li>
+<li>multiple：是否批量.true:将一次性拒绝所有小于deliveryTag的消息。</li>
+<li>requeue：被拒绝的是否重新入队列</li>
+</ul>
+<pre><code class="language-cs">    /**
+     * Reject one or several received messages.
+     *
+     * Supply the &lt;code&gt;deliveryTag&lt;/code&gt; from the {@link com.rabbitmq.client.AMQP.Basic.GetOk}
+     * or {@link com.rabbitmq.client.AMQP.Basic.GetOk} method containing the message to be rejected.
+     * @see com.rabbitmq.client.AMQP.Basic.Nack
+     * @param deliveryTag the tag from the received {@link com.rabbitmq.client.AMQP.Basic.GetOk} or {@link com.rabbitmq.client.AMQP.Basic.Deliver}
+     * @param multiple true to reject all messages up to and including
+     * the supplied delivery tag; false to reject just the supplied
+     * delivery tag.
+     * @param requeue true if the rejected message(s) should be requeued rather
+     * than discarded/dead-lettered
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicNack(long deliveryTag, boolean multiple, boolean requeue)
+            throws IOException;
+</code></pre>
+<h2 id="channel-basicReject-delivery-getEnvelope-getDeliveryTag-false">channel.basicReject(delivery.getEnvelope().getDeliveryTag(), false)</h2>
+<ul>
+<li>deliveryTag:该消息的index</li>
+<li>requeue：被拒绝的是否重新入队列</li>
+</ul>
+<blockquote>
+<p>channel.basicNack 与 channel.basicReject 的区别在于basicNack可以拒绝多条消息，而basicReject一次只能拒绝一条消息</p>
+</blockquote>
+<pre><code class="language-cs"> /**
+     * Reject a message. Supply the deliveryTag from the {@link com.rabbitmq.client.AMQP.Basic.GetOk}
+     * or {@link com.rabbitmq.client.AMQP.Basic.Deliver} method
+     * containing the received message being rejected.
+     * @see com.rabbitmq.client.AMQP.Basic.Reject
+     * @param deliveryTag the tag from the received {@link com.rabbitmq.client.AMQP.Basic.GetOk} or {@link com.rabbitmq.client.AMQP.Basic.Deliver}
+     * @param requeue true if the rejected message should be requeued rather than discarded/dead-lettered
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicReject(long deliveryTag, boolean requeue) throws IOException;
+</code></pre>
+<h2 id="channel-basicConsume-queueName-true-consumer">channel.basicConsume(queueName, true, consumer)</h2>
+<ul>
+<li>autoAck：是否自动ack，如果不自动ack，需要使用channel.ack、channel.nack、channel.basicReject 进行消息应答</li>
+</ul>
+<pre><code class="language-cs">    /**
+     * Start a non-nolocal, non-exclusive consumer, with
+     * a server-generated consumerTag.
+     * @param queue the name of the queue
+     * @param autoAck true if the server should consider messages
+     * acknowledged once delivered; false if the server should expect
+     * explicit acknowledgements
+     * @param callback an interface to the consumer object
+     * @return the consumerTag generated by the server
+     * @throws java.io.IOException if an error is encountered
+     * @see com.rabbitmq.client.AMQP.Basic.Consume
+     * @see com.rabbitmq.client.AMQP.Basic.ConsumeOk
+     * @see #basicConsume(String, boolean, String, boolean, boolean, Map, Consumer)
+     */
+    String basicConsume(String queue, boolean autoAck, Consumer callback) throws IOException;
+</code></pre>
+<h2 id="chanel-exchangeBind">chanel.exchangeBind()</h2>
+<p>channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);<br>
+用于通过绑定bindingKey将queue到Exchange，之后便可以进行消息接收</p>
+<pre><code class="language-cs">    /**
+     * Bind an exchange to an exchange, with no extra arguments.
+     * @see com.rabbitmq.client.AMQP.Exchange.Bind
+     * @see com.rabbitmq.client.AMQP.Exchange.BindOk
+     * @param destination the name of the exchange to which messages flow across the binding
+     * @param source the name of the exchange from which messages flow across the binding
+     * @param routingKey the routine key to use for the binding
+     * @return a binding-confirm method if the binding was successfully created
+     * @throws java.io.IOException if an error is encountered
+     */
+    Exchange.BindOk exchangeBind(String destination, String source, String routingKey) throws IOException;
+</code></pre>
+<h2 id="channel-queueDeclare-queueName-false-false-false-null">channel.queueDeclare(queueName, false, false, false, null)</h2>
+<ul>
+<li>durable：true、false true：在服务器重启时，能够存活</li>
+<li>exclusive ：是否为当前连接的专用队列，在连接断开后，会自动删除该队列，生产环境中应该很少用到吧。</li>
+<li>autodelete：当没有任何消费者使用时，自动删除该队列(this means that the queue will be deleted when there are no more processes consuming messages from it.)</li>
+</ul>
+<pre><code class="language-cs"> /**
+     * Declare a queue
+     * @see com.rabbitmq.client.AMQP.Queue.Declare
+     * @see com.rabbitmq.client.AMQP.Queue.DeclareOk
+     * @param queue the name of the queue
+     * @param durable true if we are declaring a durable queue (the queue will survive a server restart)
+     * @param exclusive true if we are declaring an exclusive queue (restricted to this connection)
+     * @param autoDelete true if we are declaring an autodelete queue (server will delete it when no longer in use)
+     * @param arguments other properties (construction arguments) for the queue
+     * @return a declaration-confirm method to indicate the queue was successfully declared
+     * @throws java.io.IOException if an error is encountered
+     */
+    Queue.DeclareOk queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,
+                                 Map&lt;String, Object&gt; arguments) throws IOException;
+</code></pre>
+<p>arguments中可以设置的常用属性</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>作用</th>
+<th>示例</th>
+<th>示例描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Message TTL</td>
+<td>设置队列中消息的有效时间</td>
+<td>{ “x-message-ttl”,1000*8}</td>
+<td>设置队列中的所有消息的有效期为8s</td>
+</tr>
+<tr>
+<td>Auto expire</td>
+<td>一定的时间内队列没有被使用，则自动删除队列</td>
+<td>{“x-expires”,1000*60}</td>
+<td>如果60s没有队列被访问，则删除队列</td>
+</tr>
+<tr>
+<td>Max length</td>
+<td>队列能保存消息的最大条数</td>
+<td>{“x-max-length”,100 }</td>
+<td>设置队列最多保存100条消息</td>
+</tr>
+<tr>
+<td>Max length bytes</td>
+<td>队列中ready类型消息的总字节数</td>
+<td>{“x-max-length-bytes”,1000 }</td>
+<td>设置队列中ready类型消息总共不能超过1000字节</td>
+</tr>
+<tr>
+<td>Overflow behaviour</td>
+<td>当队列消息满了时，再接收消息时的处理方法。有两种处理方案：默认为&quot;drop-head&quot;模式，表示从队列头部丢弃消息；&quot;reject-publish&quot;表示不接收后续的消息</td>
+<td>{“x-overflow”,“reject-publish” }</td>
+<td>设置当队列消息满了时,丢弃传来后续消息</td>
+</tr>
+<tr>
+<td>Dead letter exchange</td>
+<td>用于存储被丢弃的消息的交换机名。Overflow behaviour 的两种处理方案中丢弃的消息都会发送到这个交换机</td>
+<td>{“x-dead-letter-exchange”,“beiyongExchange” }</td>
+<td>设置丢弃的消息发送到名字位beiyongExchange的交换机</td>
+</tr>
+<tr>
+<td>Dead letter routing key</td>
+<td>被丢弃的消息发送到Dead letter exchange时的使用的routing Key</td>
+<td>{“x-dead-letter-routing-key”,“deadKey” }</td>
+<td>设置丢弃的消息发送到beiyongExchange交换机时的RoutingKey值是&quot;deadKey&quot;</td>
+</tr>
+<tr>
+<td>Maximum priority</td>
+<td>设置队列中消息优先级的最大等级，在publish消息时可以设置单条消息的优先级等级</td>
+<td>{“x-max-priority”,10 }</td>
+<td>设置中消息优先级的最大等级为10</td>
+</tr>
+<tr>
+<td>Lazy mode</td>
+<td>设置队列的模式，如果设置为Lazy表示队列中消息尽可能存放在磁盘中，以减少内存占用；不设置时消息都存放在队列中，用以尽可能快的处理消息</td>
+<td>{“x-queue-mode”,“lazy”}</td>
+<td>3.6以后版本可用，设置队列中消息尽可能存放在磁盘中，以减少内存占用。在消息拥堵时和消息持久化配置使用可以减少内存占用</td>
+</tr>
+</tbody>
+</table>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2020 Yelog
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("greens");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 722px;
+    }
+    .nav.fullscreen {
+        margin-left: -722px;
+    }
+    .nav-left {
+        width: 300px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #c1bfc1;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+    #post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>

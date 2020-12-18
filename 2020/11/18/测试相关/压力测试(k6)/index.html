@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>压力测试(k6) | Wang&#39;Note</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="压力测试(k6) | Wang&#39;Note">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="note">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wang&#39;Note">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="Wang&#39;Note">
+<meta property="og:description" content="note">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:modified_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:author" content="WangPengLiang">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content=" WangPengLiang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Wang'Note" type="application/atom+xml">
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>WangPengLiang</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/wangpengliang815" target="_blank">
+            
+                <i class="iconfont icon-github"></i>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="全部笔记">全部笔记<small>(34)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Autofac">Autofac<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="AzureDevops">AzureDevops<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Bpmn">Bpmn<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Centos">Centos<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CSharp">CSharp<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Domain Driven Design">Domain Driven Design<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="EntityFramework">EntityFramework<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Linq">Linq<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RabbitMQ">RabbitMQ<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SonarQube">SonarQube<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Testing">Testing<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="34">
+<input type="hidden" id="yelog_site_word_count" value="63.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">全部笔记</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/17/csharp/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异步编程">异步编程</span>
+            <span class="post-date" title="2020-12-17 16:24:11">2020/12/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/14/csharp/Reflect/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="反射">反射</span>
+            <span class="post-date" title="2020-12-14 14:31:12">2020/12/14</span>
+        </a>
+        
+        <a  class="全部笔记 Bpmn "
+           href="/2020/12/09/bpmn/bpmn/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Bpmn">Bpmn</span>
+            <span class="post-date" title="2020-12-09 15:02:54">2020/12/09</span>
+        </a>
+        
+        <a  class="全部笔记 Domain Driven Design "
+           href="/2020/12/08/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8/Domain%20Driven%20Design/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Domain Driven Design(DDD)">Domain Driven Design(DDD)</span>
+            <span class="post-date" title="2020-12-08 17:41:45">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Linq "
+           href="/2020/12/08/linq/Linq/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Linq">Linq</span>
+            <span class="post-date" title="2020-12-08 17:40:59">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 EntityFramework "
+           href="/2020/12/08/entityFramework/EF%20Codefirst/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="EF Codefirst">EF Codefirst</span>
+            <span class="post-date" title="2020-12-08 17:39:35">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Autofac "
+           href="/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Autofac依赖注入">Autofac依赖注入</span>
+            <span class="post-date" title="2020-12-08 17:38:39">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/Exception/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异常处理">异常处理</span>
+            <span class="post-date" title="2020-12-08 17:38:09">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="并行和异步编程">并行和异步编程</span>
+            <span class="post-date" title="2020-12-08 17:36:21">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线程同步机制">线程同步机制</span>
+            <span class="post-date" title="2020-12-08 17:33:02">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="多线程">多线程</span>
+            <span class="post-date" title="2020-12-08 17:12:32">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Centos常用命令">Centos常用命令</span>
+            <span class="post-date" title="2020-12-07 17:17:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/VMware%E5%AE%89%E8%A3%85Centos/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="VMware安装Centos">VMware安装Centos</span>
+            <span class="post-date" title="2020-12-07 17:14:12">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/12/07/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="集成测试">集成测试</span>
+            <span class="post-date" title="2020-12-07 17:06:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见问题">RabbitMQ常见问题</span>
+            <span class="post-date" title="2020-11-21 22:30:22">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常用命令">RabbitMQ常用命令</span>
+            <span class="post-date" title="2020-11-21 20:57:58">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95(Selenium)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="自动化UI测试(Selenium)">自动化UI测试(Selenium)</span>
+            <span class="post-date" title="2020-11-18 00:12:10">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95(k6)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="压力测试(k6)">压力测试(k6)</span>
+            <span class="post-date" title="2020-11-18 00:09:46">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="单元测试">单元测试</span>
+            <span class="post-date" title="2020-11-18 00:06:54">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见策略">RabbitMQ常见策略</span>
+            <span class="post-date" title="2020-11-17 23:52:14">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Channel常见方法">Channel常见方法</span>
+            <span class="post-date" title="2020-11-17 23:51:03">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%90%AD%E5%BB%BARabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="搭建RabbitMQ高可用集群">搭建RabbitMQ高可用集群</span>
+            <span class="post-date" title="2020-11-17 23:50:07">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="两种消费模式和QOS的实现">两种消费模式和QOS的实现</span>
+            <span class="post-date" title="2020-11-17 23:48:02">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="消息确认及持久化">消息确认及持久化</span>
+            <span class="post-date" title="2020-11-17 23:45:38">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E5%9B%9B%E7%A7%8DExchange%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="四种Exchange介绍及代码示例">四种Exchange介绍及代码示例</span>
+            <span class="post-date" title="2020-11-17 23:42:31">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ的概念及安装">RabbitMQ的概念及安装</span>
+            <span class="post-date" title="2020-11-17 23:38:09">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops常用功能">Azure Devops常用功能</span>
+            <span class="post-date" title="2020-11-17 23:20:19">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%AE%89%E8%A3%85(Version-2020)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops安装(Version-2020)">Azure Devops安装(Version-2020)</span>
+            <span class="post-date" title="2020-11-17 23:15:59">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E9%9B%86%E6%88%90AzureDevops/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube集成AzureDevops">SonarQube集成AzureDevops</span>
+            <span class="post-date" title="2020-11-17 23:08:55">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube代码检查">SonarQube代码检查</span>
+            <span class="post-date" title="2020-11-17 22:54:45">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube安装配置">SonarQube安装配置</span>
+            <span class="post-date" title="2020-11-17 22:00:21">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/BasicCollection/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基础合集">基础合集</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Genericity/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="泛型">泛型</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Delegate&Event/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="委托和事件">委托和事件</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-测试相关/压力测试(k6)" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">压力测试(k6)</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="Testing">Testing</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-12-08 17:45:17'>2020-11-18 00:09</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:1k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text">K6单接口压测</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#先决条件"><span class="toc-text">先决条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#入门"><span class="toc-text">入门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多Vu和指定时长"><span class="toc-text">多Vu和指定时长</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用配置选项"><span class="toc-text">使用配置选项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试过程中设置阶段使VU级别上升和下降"><span class="toc-text">测试过程中设置阶段使VU级别上升和下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#断言"><span class="toc-text">断言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试结果"><span class="toc-text">测试结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试结果输出第三方平台"><span class="toc-text">测试结果输出第三方平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试结果输出Json"><span class="toc-text">测试结果输出Json</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用–out-o选项使k6输出JSON格式的详细统计信息"><span class="toc-text">使用–out&#x2F;-o选项使k6输出JSON格式的详细统计信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用tags给请求打标签分组"><span class="toc-text">使用tags给请求打标签分组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#K6内置指标"><span class="toc-text">K6内置指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP内置指标"><span class="toc-text">HTTP内置指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阈值"><span class="toc-text">阈值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析结果可视化"><span class="toc-text">分析结果可视化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#influxdb"><span class="toc-text">influxdb</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grafana"><span class="toc-text">Grafana</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>k6是GitHub上提供的开源负载测试工具。使用Go编写，并运行用JavaScript编写的测试脚本</p>
+<a id="more"></a>
+<h1>K6单接口压测</h1>
+<h2 id="先决条件">先决条件</h2>
+<ul>
+<li>安装K6 <a href="https://k6.io/docs/getting-started/installation" target="_blank" rel="noopener">https://k6.io/docs/getting-started/installation</a></li>
+<li>环境变量配置、cd到压测脚本目录</li>
+</ul>
+<h2 id="概念">概念</h2>
+<ul>
+<li>vu：虚拟用户</li>
+<li>duration:持续时长</li>
+</ul>
+<h2 id="入门">入门</h2>
+<pre><code class="language-cs">import http from 'k6/http';
+import { sleep } from 'k6';
+
+export default function() {
+  http.get('http://localhost:5000/api/values');
+}
+</code></pre>
+<p><code>k6 run ValuesApiK6.js</code></p>
+<h2 id="多Vu和指定时长">多Vu和指定时长</h2>
+<p><code>k6 run --vus 10 --duration 10s ValuesApiK6.js</code></p>
+<h2 id="使用配置选项">使用配置选项</h2>
+<pre><code>import http from &quot;k6/http&quot;;
+import { sleep,check } from &quot;k6&quot;;
+
+export let options = {
+  vus: 10,
+  duration: '10s',
+};
+
+// 脚本至少必须包含一个default函数,这定义了VU的入口点，类似于许多其他语言中的main()函数
+export default function() {
+  let res = http.get(&quot;http://localhost:5000/api/values&quot;);
+  check(res, { 'status was 200': r =&gt; r.status == 200 });
+  sleep(1);
+}
+</code></pre>
+<h2 id="测试过程中设置阶段使VU级别上升和下降">测试过程中设置阶段使VU级别上升和下降</h2>
+<pre><code>import http from &quot;k6/http&quot;;
+import { sleep, check } from &quot;k6&quot;;
+
+export let options = {
+  // 阶段负载
+  stages: [
+    { duration: &quot;3s&quot;, target: 2 },
+    { duration: &quot;5s&quot;, target: 3 },
+    { duration: &quot;6s&quot;, target: 10 },
+  ],
+};
+
+// 脚本至少必须包含一个default函数,这定义了VU的入口点，类似于许多其他语言中的main()函数
+export default function () {
+  let res = http.get(&quot;http://localhost:5000/api/values&quot;);
+  check(res, { &quot;status was 200&quot;: (r) =&gt; r.status == 200 });
+  sleep(1);
+}
+</code></pre>
+<p>可能出现的异常：<code>using multiple execution config shortcuts (</code>duration<code>and</code>stages<code>) simultaneously is not allowed</code>  不允许同时使用多个执行配置快捷方式(“duration”和“stages”)</p>
+<h2 id="断言">断言</h2>
+<p>需要<code>import { sleep, check } from &quot;k6&quot;;</code> 引入check模块</p>
+<p><code>check(res, { &quot;status was 200&quot;: (r) =&gt; r.status == 200 });</code></p>
+<h2 id="测试结果">测试结果</h2>
+<pre><code> execution: local-
+     script: ValuesApiK6.js
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 44s max duration (incl. graceful stop):
+           * default: Up to 10 looping VUs for 14s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+I
+running (16.0s), 00/10 VUs, 38 complete and 0 interrupted iterations
+default ✓ [======================================] 00/10 VUs  14s9
+
+
+    ✓ status was 200 
+ 
+    checks.....................: 100.00% ✓ 38   ✗ 0
+    data_received..............: 176 MB  11 MB/s
+    data_sent..................: 3.3 kB  208 B/s
+    http_req_blocked...........: avg=79.1µs   min=0s       med=0s       max=2ms     p(90)=0s      p(95)=149.71µs
+    http_req_connecting........: avg=52.85µs  min=0s       med=0s       max=1.01ms  p(90)=0s      p(95)=149.71µs
+    http_req_duration..........: avg=682.14ms min=332.4ms  med=516.59ms max=1.66s   p(90)=1.22s   p(95)=1.44s
+    http_req_receiving.........: avg=10.39ms  min=3.98ms   med=8.97ms   max=37.89ms p(90)=16.85ms p(95)=23.37ms
+    http_req_sending...........: avg=0s       min=0s       med=0s       max=0s      p(90)=0s      p(95)=0s
+    http_req_tls_handshaking...: avg=0s       min=0s       med=0s       max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=671.75ms min=323.42ms med=508.61ms max=1.65s   p(90)=1.21s   p(95)=1.43s
+    http_reqs..................: 38      2.374567/s
+    iteration_duration.........: avg=1.68s    min=1.33s    med=1.51s    max=2.66s   p(90)=2.22s   p(95)=2.44s
+    iterations.................: 38      2.374567/s
+    vus........................: 0       min=0  max=9
+    vus_max....................: 10      min=10 max=10
+</code></pre>
+<p>测试细节</p>
+<ul>
+<li>execution: local k6执行模式（本地或云）</li>
+<li>output: -测试结果的输出。默认值为stdout</li>
+<li>script: script.js 显示正在执行的脚本的名称</li>
+<li>duration: 测试运行时间</li>
+<li>iterations: -VU 迭代的总数</li>
+<li>vus: 100 测试将开始运行的VU的初始数量</li>
+<li>max: 100 测试将扩展的VU的最大数量</li>
+</ul>
+<p>测试指标分析<br>
+参考：<a href="https://k6.io/docs/using-k6/metrics" target="_blank" rel="noopener">https://k6.io/docs/using-k6/metrics</a></p>
+<h2 id="测试结果输出第三方平台">测试结果输出第三方平台</h2>
+<p>参考：<a href="https://k6.io/docs/getting-started/results-output#output-plugins" target="_blank" rel="noopener">https://k6.io/docs/getting-started/results-output#output-plugins</a></p>
+<h2 id="测试结果输出Json">测试结果输出Json</h2>
+<p><code>k6 run --summary-export=export.json test.js</code></p>
+<h2 id="使用–out-o选项使k6输出JSON格式的详细统计信息">使用–out/-o选项使k6输出JSON格式的详细统计信息</h2>
+<p><code>k6 run --out json=my_test_result.json test.js</code></p>
+<h2 id="使用tags给请求打标签分组">使用tags给请求打标签分组</h2>
+<p>参考：<a href="https://k6.io/docs/using-k6/http-requests#url-grouping" target="_blank" rel="noopener">https://k6.io/docs/using-k6/http-requests#url-grouping</a></p>
+<h2 id="K6内置指标">K6内置指标</h2>
+<p>参考：<a href="https://k6.io/docs/using-k6/metrics#custom-metrics" target="_blank" rel="noopener">https://k6.io/docs/using-k6/metrics#custom-metrics</a></p>
+<h2 id="HTTP内置指标">HTTP内置指标</h2>
+<p>参考：<a href="https://k6.io/docs/using-k6/metrics#metric-types" target="_blank" rel="noopener">https://k6.io/docs/using-k6/metrics#metric-types</a></p>
+<h2 id="阈值">阈值</h2>
+<p>阈值是通过/失败标准，用于指定被测系统的性能期望</p>
+<p>预期示例（阈值）：</p>
+<p>系统产生的错误不超过1％<br>
+95％的请求的响应时间应小于200ms<br>
+99％的请求的响应时间应低于400毫秒<br>
+特定端点必须始终在300毫秒内响应<br>
+阈值分析性能指标并确定最终测试结果（通过/失败）。阈值对于负载测试自动化至关重要</p>
+<p>参考：<a href="https://k6.io/docs/using-k6/thresholds" target="_blank" rel="noopener">https://k6.io/docs/using-k6/thresholds</a></p>
+<h2 id="分析结果可视化">分析结果可视化</h2>
+<h3 id="influxdb">influxdb</h3>
+<p>安装目录下运行启动<code>influxdb</code></p>
+<p>启动客户端输入命令开始操作<br>
+<code>influx</code></p>
+<p><code>k6 run --out influxdb=http://localhost:8080/test ValuesApiK6.js</code></p>
+<h2 id="Grafana">Grafana</h2>
+<p><img src="/images/2020-11-18-00-11-44.png" alt=""></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2020 Yelog
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("greens");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 722px;
+    }
+    .nav.fullscreen {
+        margin-left: -722px;
+    }
+    .nav-left {
+        width: 300px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #c1bfc1;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+    #post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>

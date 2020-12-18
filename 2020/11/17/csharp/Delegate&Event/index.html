@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>委托和事件 | Wang&#39;Note</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="委托和事件 | Wang&#39;Note">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="note">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wang&#39;Note">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="Wang&#39;Note">
+<meta property="og:description" content="note">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:modified_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:author" content="WangPengLiang">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content=" WangPengLiang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Wang'Note" type="application/atom+xml">
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>WangPengLiang</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/wangpengliang815" target="_blank">
+            
+                <i class="iconfont icon-github"></i>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="全部笔记">全部笔记<small>(34)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Autofac">Autofac<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="AzureDevops">AzureDevops<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Bpmn">Bpmn<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Centos">Centos<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CSharp">CSharp<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Domain Driven Design">Domain Driven Design<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="EntityFramework">EntityFramework<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Linq">Linq<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RabbitMQ">RabbitMQ<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SonarQube">SonarQube<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Testing">Testing<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="34">
+<input type="hidden" id="yelog_site_word_count" value="63.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">全部笔记</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/17/csharp/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异步编程">异步编程</span>
+            <span class="post-date" title="2020-12-17 16:24:11">2020/12/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/14/csharp/Reflect/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="反射">反射</span>
+            <span class="post-date" title="2020-12-14 14:31:12">2020/12/14</span>
+        </a>
+        
+        <a  class="全部笔记 Bpmn "
+           href="/2020/12/09/bpmn/bpmn/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Bpmn">Bpmn</span>
+            <span class="post-date" title="2020-12-09 15:02:54">2020/12/09</span>
+        </a>
+        
+        <a  class="全部笔记 Domain Driven Design "
+           href="/2020/12/08/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8/Domain%20Driven%20Design/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Domain Driven Design(DDD)">Domain Driven Design(DDD)</span>
+            <span class="post-date" title="2020-12-08 17:41:45">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Linq "
+           href="/2020/12/08/linq/Linq/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Linq">Linq</span>
+            <span class="post-date" title="2020-12-08 17:40:59">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 EntityFramework "
+           href="/2020/12/08/entityFramework/EF%20Codefirst/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="EF Codefirst">EF Codefirst</span>
+            <span class="post-date" title="2020-12-08 17:39:35">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Autofac "
+           href="/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Autofac依赖注入">Autofac依赖注入</span>
+            <span class="post-date" title="2020-12-08 17:38:39">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/Exception/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异常处理">异常处理</span>
+            <span class="post-date" title="2020-12-08 17:38:09">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="并行和异步编程">并行和异步编程</span>
+            <span class="post-date" title="2020-12-08 17:36:21">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线程同步机制">线程同步机制</span>
+            <span class="post-date" title="2020-12-08 17:33:02">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="多线程">多线程</span>
+            <span class="post-date" title="2020-12-08 17:12:32">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Centos常用命令">Centos常用命令</span>
+            <span class="post-date" title="2020-12-07 17:17:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/VMware%E5%AE%89%E8%A3%85Centos/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="VMware安装Centos">VMware安装Centos</span>
+            <span class="post-date" title="2020-12-07 17:14:12">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/12/07/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="集成测试">集成测试</span>
+            <span class="post-date" title="2020-12-07 17:06:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见问题">RabbitMQ常见问题</span>
+            <span class="post-date" title="2020-11-21 22:30:22">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常用命令">RabbitMQ常用命令</span>
+            <span class="post-date" title="2020-11-21 20:57:58">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95(Selenium)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="自动化UI测试(Selenium)">自动化UI测试(Selenium)</span>
+            <span class="post-date" title="2020-11-18 00:12:10">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95(k6)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="压力测试(k6)">压力测试(k6)</span>
+            <span class="post-date" title="2020-11-18 00:09:46">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="单元测试">单元测试</span>
+            <span class="post-date" title="2020-11-18 00:06:54">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见策略">RabbitMQ常见策略</span>
+            <span class="post-date" title="2020-11-17 23:52:14">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Channel常见方法">Channel常见方法</span>
+            <span class="post-date" title="2020-11-17 23:51:03">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%90%AD%E5%BB%BARabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="搭建RabbitMQ高可用集群">搭建RabbitMQ高可用集群</span>
+            <span class="post-date" title="2020-11-17 23:50:07">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="两种消费模式和QOS的实现">两种消费模式和QOS的实现</span>
+            <span class="post-date" title="2020-11-17 23:48:02">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="消息确认及持久化">消息确认及持久化</span>
+            <span class="post-date" title="2020-11-17 23:45:38">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E5%9B%9B%E7%A7%8DExchange%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="四种Exchange介绍及代码示例">四种Exchange介绍及代码示例</span>
+            <span class="post-date" title="2020-11-17 23:42:31">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ的概念及安装">RabbitMQ的概念及安装</span>
+            <span class="post-date" title="2020-11-17 23:38:09">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops常用功能">Azure Devops常用功能</span>
+            <span class="post-date" title="2020-11-17 23:20:19">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%AE%89%E8%A3%85(Version-2020)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops安装(Version-2020)">Azure Devops安装(Version-2020)</span>
+            <span class="post-date" title="2020-11-17 23:15:59">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E9%9B%86%E6%88%90AzureDevops/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube集成AzureDevops">SonarQube集成AzureDevops</span>
+            <span class="post-date" title="2020-11-17 23:08:55">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube代码检查">SonarQube代码检查</span>
+            <span class="post-date" title="2020-11-17 22:54:45">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube安装配置">SonarQube安装配置</span>
+            <span class="post-date" title="2020-11-17 22:00:21">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/BasicCollection/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基础合集">基础合集</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Genericity/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="泛型">泛型</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Delegate&Event/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="委托和事件">委托和事件</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-csharp/Delegate&amp;Event" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">委托和事件</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="CSharp">CSharp</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-12-14 11:17:21'>2020-11-17 16:58</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:3.5k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么需要委托？"><span class="toc-text">为什么需要委托？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#委托使用步骤"><span class="toc-text">委托使用步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#匿名方法"><span class="toc-text">匿名方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lambda表达式"><span class="toc-text">Lambda表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lambda表达式简写"><span class="toc-text">Lambda表达式简写</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#泛型委托"><span class="toc-text">泛型委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Action"><span class="toc-text">Action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Func"><span class="toc-text">Func</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#表达式树"><span class="toc-text">表达式树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Invoke"><span class="toc-text">Invoke</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#委托数组"><span class="toc-text">委托数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多播委托"><span class="toc-text">多播委托</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#和"><span class="toc-text">+&#x3D; 和 -&#x3D;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多播委托异常处理"><span class="toc-text">多播委托异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GetInvocationList"><span class="toc-text">GetInvocationList</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#闭包的陷阱"><span class="toc-text">闭包的陷阱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事件"><span class="toc-text">事件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-01"><span class="toc-text">Example_01</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-02"><span class="toc-text">Example_02</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-03"><span class="toc-text">Example_03</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得可以将方法当作另一个方法的参数来进行传递，不管什么函数只要返回值类型和参数能匹配委托所指定的，那么这个函数就能存储为一个委托变量的引用</strong></p>
+<a id="more"></a>
+<h2 id="为什么需要委托？">为什么需要委托？</h2>
+<ul>
+<li>委托可以将方法（即逻辑）作为参数</li>
+<li>逻辑解耦，保持稳定</li>
+<li>代码复用，保证项目规范</li>
+</ul>
+<h2 id="委托使用步骤">委托使用步骤</h2>
+<ul>
+<li>使用<code>delegate</code>关键字定义委托</li>
+<li>声明委托对应的方法</li>
+<li>实例化委托将方法作为参数传入</li>
+</ul>
+<pre><code>    class DelegateTest
+    {
+        //step01：使用delegate关键字定义委托
+        public delegate int Sum(int x, int y);
+
+        static void Main(string[] args)
+        {
+            // step03：实例化委托将方法作为参数传入
+            Sum sum = new Sum(new DelegateTest().Add);
+            int result = sum.Invoke(1, 2);
+            Console.WriteLine(result);
+            Console.ReadKey();
+        }
+        // step02：声明委托对应的方法
+        public int Add(int x, int y)
+        {
+            return x + y;
+        }
+    }
+</code></pre>
+<p>step01：使用delegate关键字定义委托</p>
+<p>step02：声明委托对应的方法</p>
+<p>step03：实例化委托将方法作为参数传入</p>
+<p>至此,一个委托就完成了</p>
+<h2 id="匿名方法">匿名方法</h2>
+<blockquote>
+<p>上面说到完成一个委托要分三步走，缺一步都不行,如果要跨大步，步子大了容易扯着蛋.但是微软不怕扯着蛋,非要把三步做成两步来走！所以微软就用匿名方法来简化上边的三个步骤</p>
+</blockquote>
+<pre><code>//step01：首先用delegate定义一个委托 
+public delegate int Sum(int x, int y);
+
+static void Main(string[] args)
+{
+    //step02：使用匿名方法的写法把一个方法赋值给委托
+    Sum sum = delegate (int x, int y) { return x + y; };
+    int result = sum.Invoke(1, 2);
+    Console.WriteLine(result);
+    Console.ReadKey();
+}
+</code></pre>
+<p>step01：使用delegate关键字定义委托</p>
+<p>step02：使用匿名方法的写法把一个方法赋值给委托,其实这种写法就是匿名方法</p>
+<p>这时会发现这里省略了定义方法这一步,将三步简化成了两步</p>
+<h2 id="Lambda表达式">Lambda表达式</h2>
+<blockquote>
+<p>原本很简单的程序,加上几个delegate关键字,一下就搞的深奥了,但是微软对C#的设计理念是简单易用。微软对匿名方法的方式依旧不太满意，就想方设法的来简化 <code>delegate(int x, int y) { return x + y; }</code> 这个匿名方法，Lambda就出现了</p>
+</blockquote>
+<p>lambda运算符&quot;=&gt;&quot;左边列出了需要的参数,右边定义了赋予lambda变量的方法实现代码</p>
+<pre><code>//step01：首先用delegate定义一个委托 
+public delegate int Sum(int x, int y);
+
+static void Main(string[] args)
+{
+    //方法一：
+    Sum sum1 = (int x, int y) =&gt; { return x + y; };
+    int result1 = sum1(1, 2);
+
+    //方法二：
+    Sum sum2 = (x, y) =&gt; { return x + y; };
+    int result2 = sum2(1, 2);
+
+    //方法三：
+    Sum sum3 = (x, y) =&gt; x + y;
+    int result3 = sum3(1, 2);
+}
+</code></pre>
+<p>方法一：简单的把delegate去掉，在 <code>()</code> 与 <code>{}</code> 之间加上 <code>=&gt;</code></p>
+<p>方法二：在方法一的基础上把参数类型都干掉了</p>
+<p>方法三：要干就干彻底些，把 <code>{}</code>以及 <code>return</code> 关键字都去掉了</p>
+<p>这几种方法随便怎么写都行,不过就是害苦了初学者,一会儿看到这种写法,一会儿看到那种写法，把人搞的神魂颠倒</p>
+<h2 id="Lambda表达式简写">Lambda表达式简写</h2>
+<blockquote>
+<p>如果lambda表达式只有一句.方法块内就可以省略花括号和return语句,这时编译器会添加一条隐式的return语句</p>
+</blockquote>
+<pre><code>Func&lt;double, double&gt; func = param =&gt; param * param;
+</code></pre>
+<p>等价于</p>
+<pre><code>Func&lt;double, double&gt; func = param =&gt;
+{
+    return param * 2;
+};
+</code></pre>
+<h2 id="泛型委托">泛型委托</h2>
+<blockquote>
+<p>随着.net版本的不断升级,微软又来玩新花样了,不管是匿名方法还是Lambda表达式,完成一个委托的应用,都逃不过两个步骤,一步是定义一个委托,另一步是用一个方法来实例化一个委托.微软干脆把这两步都合成一步来走了。用Func来简化一个委托的定义</p>
+</blockquote>
+<pre><code>static void Main(string[] args)
+{
+    //方法一：
+    Func&lt;int, int, int&gt; add1 = (int x, int y) =&gt; { return x + y; };
+    int result1 = add1(1, 2);
+
+    //方法二：
+    Func&lt;int, int, int&gt; add2 = (x, y) =&gt; { return x + y; };
+    int result2 = add2(1, 2);
+
+    //方法三：
+    Func&lt;int, int, int&gt; add3 = (x, y) =&gt; x + y;
+    int result3 = add3(1, 2);
+}
+</code></pre>
+<p>至此一个委托的应用就可用 <code>Func&lt;int, int, int&gt; cAdD3 = (x, y) =&gt; x + y;</code> 一句话来完成了,其中的 <code>Func</code> 就是所谓的泛型委托</p>
+<p>微软提供了 <code>Action&lt;T&gt;</code>和 <code>Func&lt;T&gt;</code>两种泛型委托,用于简化方法定义</p>
+<h3 id="Action">Action</h3>
+<blockquote>
+<p>表示引用一个void返回类型的方法,可以传递最多16种不同的参数类型,没有泛型参数的Action类可调用没有参数的方法</p>
+</blockquote>
+<pre><code>    // Action：无参数
+    Action action1 = () =&gt; { Console.WriteLine(&quot;啦啦啦啦&quot;); };
+    action1();
+    // Action：一个参数
+    Action&lt;string&gt; action2 = p =&gt; { Console.WriteLine(&quot;啦啦啦啦,name:{0}&quot;, p); };
+    action2(&quot;wang&quot;);
+    // Action：多个参数
+    Action&lt;string, int&gt; action3 = (name, age) =&gt; { Console.WriteLine(&quot;啦啦啦啦,    name:{0},age:{1}&quot;, name, age); };
+    action3(&quot;wang&quot;, 25);
+
+</code></pre>
+<h3 id="Func">Func</h3>
+<blockquote>
+<p>Func<T>允许调用带返回类型的方法,可以传递16种不同类型的参数和一个返回类型,Func<out TResult>委托类型可以调用带返回类且无参数的方法</p>
+</blockquote>
+<p>总结</p>
+<ul>
+<li><code>Action&lt;T&gt;</code> 用于没有返回值的方法（参数根据自己情况进行传递）</li>
+<li><code>Func&lt;T&gt;</code> 用于有返回值的方法（参数根据自己情况传递）</li>
+</ul>
+<p>记住无返回就用 <code>Action&lt;T&gt;</code>，有返回就用 <code>Func&lt;T&gt;</code></p>
+<h2 id="表达式树">表达式树</h2>
+<blockquote>
+<p>表达式树其实与委托已经没什么关系了,如果非要扯上关系,表达式树是存放委托的容器.如果非要说的更专业一些，表达式树是存取Lambda表达式的一种数据结构。要用Lambda表达式的时候,直接从表达式中获取出来 <code>Compile()</code> 就可以直接用了</p>
+</blockquote>
+<pre><code>static void Main(string[] args)
+{
+    Expression&lt;Func&lt;int, int, int&gt;&gt; exp = (x, y) =&gt; x + y;
+    Func&lt;int, int, int&gt; fun = exp.Compile();
+    int result = fun(1, 2);
+}
+
+</code></pre>
+<h2 id="Invoke">Invoke</h2>
+<pre><code> Sum sum = delegate (int x, int y) { return x + y; };
+ int result = sum.Invoke(1, 2);
+ //等价于
+ int result = sum(1, 2);
+</code></pre>
+<h2 id="委托数组">委托数组</h2>
+<blockquote>
+<p>定义Math类提供两个静态方法接收一个double类型的参数,用于计算倍数和阶乘</p>
+</blockquote>
+<pre><code>class Math
+    {
+        public static double MultipleTwo(double value)
+        {
+            return value * 2;
+        }
+        public static double Square(double value)
+        {
+            return value * value;
+        }
+    }
+</code></pre>
+<p>添加MathOperation操作方法,传递委托和double类型参数</p>
+<pre><code>class Program
+{
+    public delegate double MyDelegate(double value);
+    static void Main(string[] args)
+    {
+        //定义委托数组
+        MyDelegate[] myDelegates = {
+            Math.MultipleTwo,
+            Math.Square
+        };
+        //使用委托数组
+        for (int i = 0; i &lt; myDelegates.Length; i++)
+        {
+            MathOperation(myDelegates[i], 3.7);
+            MathOperation(myDelegates[i], 3.0);
+        }
+        Console.ReadKey();
+    }
+    public static void MathOperation(MyDelegate myDelegate, double value)
+    {
+        var result = myDelegate(value);
+        Console.WriteLine(&quot;Delegate is {0},value is {1}&quot;, myDelegate,result);
+    }
+}
+</code></pre>
+<h2 id="多播委托">多播委托</h2>
+<blockquote>
+<p>之前的每个委托都只包含一个方法调用,调用委托的次数与调用方法的次数相同,如果要调用多个方法,就需要多次显式调用这个委托,但是委托中也可以包含多个方法,称为多播委托,多播委托可以按顺序调用多个方法,为此委托的签名必须返回void,否则就只能得到委托最后调用的最后一个方法的结果</p>
+</blockquote>
+<pre><code>Func&lt;double, double&gt; func = Math.MultipleTwo;
+func += Math.Square;
+var result = func(3.0);
+Console.WriteLine(result);
+
+MyDelegate myDelegate = Math.MultipleTwo;
+myDelegate += Math.Square;
+var result2 = myDelegate(3.0);
+Console.WriteLine(result2);
+Console.ReadKey(); 
+</code></pre>
+<p>只返回了3.0阶乘的值</p>
+<p>这里需要再回头仔细了解一下看这种说法到底是否正确:即多播委托返回值必须为void</p>
+<h3 id="和">+= 和 -=</h3>
+<blockquote>
+<p>多播委托使用+=和-=,在委托中增加或删除方法调用</p>
+</blockquote>
+<pre><code class="language-cs">static void Main(string[] args)
+{
+    Action action = Print.First;
+    action += Print.Second;
+    action();
+
+    Action action2 = Print.First;
+    action2 += Print.Second;
+    action2 -= Print.First;
+    action2();
+    Console.ReadKey();
+}
+class Print
+{
+    public static void First()
+    {
+        Console.WriteLine(&quot;FirstMethod&quot;);
+    }
+    public static void Second()
+    {
+        Console.WriteLine(&quot;SecondMethod&quot;);
+    }
+}
+</code></pre>
+<p>如果要使用多播委托,就要知道对同一个委托调用方法链的顺序并未正式定义,因为要避免编写依赖于特定顺序调用方法的代码</p>
+<h3 id="多播委托异常处理">多播委托异常处理</h3>
+<blockquote>
+<p>使用多播委托,意味着多播委托里包含一个逐个调用的委托集合,如果集合其中一个方法抛出异常.整个迭代就会停止</p>
+</blockquote>
+<pre><code class="language-cs">class Program
+    {
+        public delegate double MyDelegate(out double value);
+
+        static void Main(string[] args)
+        {
+            Action action = Print.First;
+            action += Print.Second;
+            action();
+            Console.ReadKey();
+        }
+    }
+    class Print
+    {
+        public static void First()
+        {
+            Console.WriteLine(&quot;FirstMethod&quot;);
+            throw new Exception(&quot;Error&quot;);
+        }
+        public static void Second()
+        {
+            Console.WriteLine(&quot;SecondMethod&quot;);          
+        }
+    }
+</code></pre>
+<p>委托只调用了第一个方法,因为第一个方法抛出了异常,委托的迭代停止,不再调用 <code>Second()</code>方法</p>
+<h3 id="GetInvocationList">GetInvocationList</h3>
+<blockquote>
+<p>使用 <code>Delegate的GetInvocationList()</code> 方法自己迭代方法列表</p>
+</blockquote>
+<pre><code class="language-cs">            Action action = Print.First;
+            action += Print.Second;
+
+            Delegate[] delegates = action.GetInvocationList();
+            foreach (Action item in delegates)
+            {
+                try
+                {
+                    item();
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.Message);
+                }
+            }
+            Console.ReadKey();
+</code></pre>
+<p>修改后,程序在捕获异常后,会迭代下一个方法</p>
+<h2 id="闭包的陷阱">闭包的陷阱</h2>
+<blockquote>
+<p><a href="https://www.cnblogs.com/aehyok/p/3730417.html" target="_blank" rel="noopener">https://www.cnblogs.com/aehyok/p/3730417.html</a></p>
+</blockquote>
+<p>源码：</p>
+<pre><code class="language-cs">List&lt;Action&gt; list = new List&lt;Action&gt;();
+for (int i = 0; i &lt; 5; i++)
+{
+    Action t = () =&gt; Console.WriteLine(i.ToString());
+    list.Add(t);
+}
+foreach (Action t in list)
+{
+    t();
+}
+</code></pre>
+<p>IL反编译</p>
+<pre><code class="language-cs">List&lt;Action&gt; list = new List&lt;Action&gt;();
+TempClass tempClass = new TempClass();
+for (tempClass.i = 0; tempClass.i &lt; 5; tempClass.i++)
+{
+    Action t = tempClass.TempFunc;
+    list.Add(t);
+}
+foreach (Action t in list)
+{
+    t();
+}
+</code></pre>
+<pre><code class="language-cs"> public class TempClass
+ {
+     public int i;
+     public void TempFunc()
+     {
+         Console.WriteLine(i.ToString());
+     }
+ }
+</code></pre>
+<blockquote>
+<p>所谓的闭包对象，指的是上面这种情形中的TempClass对象，如果匿名方法（Lambda表达式）引用了某个局部变量，编译器就会自动将该引用提升到该闭包对象中，即将for循环中的变量i修改成了引用闭包对象的公共变量i。这样一来，即使代码执行后离开了原局部变量i的作用域(如for循环)，包含该闭包对象的作用域也还存在</p>
+</blockquote>
+<p><img src="/images/2020-11-17-21-27-16.png" alt=""></p>
+<p>修改一下源代码</p>
+<pre><code class="language-cs">List&lt;Action&gt; list = new List&lt;Action&gt;();
+for (int i = 0; i &lt; 5; i++)
+{
+    int temp = i;
+    Action t = () =&gt; Console.WriteLine(temp.ToString());
+    list.Add(t);
+}
+foreach (Action t in list)
+{
+    t();
+}
+</code></pre>
+<p><img src="/images/2020-11-17-21-28-16.png" alt=""></p>
+<h2 id="事件">事件</h2>
+<p><strong>事件是一种引用类型</strong>，实际上也是一种特殊的委托。<strong>事件基于委托，是提供了发布/订阅机制的委托，事件是将委托封装，并对外公布了订阅和取消订阅的接口</strong></p>
+<h3 id="Example-01">Example_01</h3>
+<blockquote>
+<p>不使用委托和事件的代码，耦合度高</p>
+</blockquote>
+<pre><code class="language-CS">public class Player
+{
+    public void Die()
+    {
+        GameConfiguration configuration = new GameConfiguration();
+        configuration.OnPlayerDeath();
+        UI ui = new UI();
+        ui.OnPlayerDeath();
+    }
+}
+
+public class UI
+{
+    public void OnPlayerDeath()
+    {
+        Console.Write(&quot;GameOver&quot;);
+    }
+}
+
+public class GameConfiguration
+{
+    public int DeathNumber { get; set; }
+
+    public void OnPlayerDeath()
+    {
+        DeathNumber++;
+        Console.WriteLine(DeathNumber);
+    }
+}
+</code></pre>
+<pre><code class="language-cs">[TestMethod]
+public void Example_01()
+{
+    Player player = new Player();
+    player.Die();
+    Assert.IsTrue(true);
+}
+</code></pre>
+<h3 id="Example-02">Example_02</h3>
+<blockquote>
+<p>使用委托和事件解耦代码</p>
+</blockquote>
+<pre><code class="language-cs">/// &lt;summary&gt;
+/// 热水器
+/// &lt;/summary&gt;
+public class Heater
+{
+    /// &lt;summary&gt;
+    /// 温度字段
+    /// &lt;/summary&gt;
+    private int temperature;
+
+    /// &lt;summary&gt;
+    /// 事件委托
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;param&quot;&gt;&lt;/param&gt;
+    public delegate void BoilHandler(int param);
+
+    /// &lt;summary&gt;
+    /// 将委托封装，并对外公布订阅和取消订阅的接口
+    /// &lt;/summary&gt;
+    public event BoilHandler BoilEvent;
+
+    public void BoilWater()
+    {
+        for (int i = 0; i &lt;= 100; i++)
+        {
+            temperature = i;
+            if (temperature &gt; 95)
+            {
+                // 调用所有注册对象的方法
+                BoilEvent?.Invoke(temperature);
+            }
+        }
+    }
+}
+
+/// &lt;summary&gt;
+/// 警报器
+/// &lt;/summary&gt;
+public class Alarm
+{
+    public void Alert(int param)
+    {
+        Console.WriteLine(&quot;Alarm：dddddddd，水已经 {0} 度了：&quot;, param);
+    }
+}
+
+/// &lt;summary&gt;
+/// 显示器
+/// &lt;/summary&gt;
+public static class Display
+{
+    public static void ShowMsg(int param)
+    {
+        Console.WriteLine(&quot;Display：水已烧开，当前温度：{0}度。&quot;, param);
+    }
+}
+</code></pre>
+<pre><code class="language-cs"> [TestMethod]
+ public void Example_02()
+ {
+     Heater heater = new Heater();
+     Alarm alarm = new Alarm();
+     // 注册方法
+     heater.BoilEvent += alarm.Alert;
+     //heater.BoilEvent += (new Alarm()).MakeAlert; // 匿名对象注册方法
+     // 注册静态方法
+     heater.BoilEvent += Display.ShowMsg;
+     // 烧水，会自动调用注册过对象的方法
+     heater.BoilWater();
+     Assert.IsTrue(true);
+ }
+</code></pre>
+<h3 id="Example-03">Example_03</h3>
+<ul>
+<li>委托类型的名称都应该以<code>EventHandler</code>结束</li>
+<li>委托的原型定义：有一个<code>void</code>返回值，并接受两个输入参数：一个<code>Object</code>类型，一个<code>EventArgs</code>类型(或继承自<code>EventArgs</code>)</li>
+<li>事件的命名为 委托去掉 <code>EventHandler</code>之后剩余的部分。</li>
+<li>继承自<code>EventArgs</code>的类型应该以<code>EventArgs</code>结尾</li>
+</ul>
+<p>委托声明原型中的Object类型的参数代表了Subject，也就是监视对象，在本例中是 Heater(热水器)。回调函数(比如Alarm的Alert)可以通过它访问触发事件的对象(Heater),EventArgs 对象包含了Observer所感兴趣的数据，在本例中是temperature</p>
+<pre><code class="language-cs">public class Heater
+{
+    /// &lt;summary&gt;
+    /// 温度
+    /// &lt;/summary&gt;
+    private int temperature;
+
+    /// &lt;summary&gt;
+    /// 添加型号作为演示
+    /// &lt;/summary&gt;
+    public string type = &quot;01&quot;;
+
+    /// &lt;summary&gt;
+    /// 添加产地作为演示
+    /// &lt;/summary&gt;
+    public string area = &quot;China&quot;;
+
+    public delegate void BoiledEventHandler(object sender, BoiledEventArgs e);
+
+    public event BoiledEventHandler Boiled;
+
+    /// &lt;summary&gt;
+    /// 定义 BoiledEventArgs类，传递给 Observer 所感兴趣的信息
+    /// &lt;/summary&gt;
+    public class BoiledEventArgs : EventArgs
+    {
+        public readonly int temperature;
+
+        public BoiledEventArgs(int temperature)
+        {
+            this.temperature = temperature;
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 提供继承自Heater的类重写，以便继承类拒绝其他对象对它的监视
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;e&quot;&gt;&lt;/param&gt;
+    protected virtual void OnBoiled(BoiledEventArgs e)
+    {
+        // 如果有对象注册
+        Boiled?.Invoke(this, e);  // 调用所有注册对象的方法
+    }
+
+    public void BoilWater()
+    {
+        for (int i = 0; i &lt;= 100; i++)
+        {
+            temperature = i;
+            if (temperature &gt; 95)
+            {
+                // 建立BoiledEventArgs 对象。
+                BoiledEventArgs e = new BoiledEventArgs(temperature);
+                OnBoiled(e); // 调用 OnBolied 方法
+            }
+        }
+    }
+}
+
+// 警报器
+public class Alarm
+{
+    public void MakeAlert(object sender, Heater.BoiledEventArgs e)
+    {
+        Heater heater = (Heater)sender;
+        Console.WriteLine(&quot;Alarm：{0} - {1}: &quot;, heater.area, heater.type);
+        Console.WriteLine(&quot;Alarm: 嘀嘀嘀，水已经 {0} 度了：&quot;, e.temperature);
+        Console.WriteLine();
+    }
+}
+
+// 显示器
+public static class Display
+{
+    public static void ShowMsg(object sender, Heater.BoiledEventArgs e)
+    {
+        //静态方法
+        Heater heater = (Heater)sender;
+        Console.WriteLine(&quot;Display：{0} - {1}: &quot;, heater.area, heater.type);
+        Console.WriteLine(&quot;Display：水快烧开了，当前温度：{0}度。&quot;, e.temperature);
+        Console.WriteLine();
+    }
+}
+</code></pre>
+<pre><code class="language-cs">[TestMethod]
+public void Example_03()
+{
+    Heater heater = new Heater();
+    Alarm alarm = new Alarm();
+    heater.Boiled += alarm.MakeAlert;   //注册方法
+    //heater.Boiled += (new Alarm()).MakeAlert;      //给匿名对象注册方法
+    //heater.Boiled += new Heater.BoiledEventHandler(alarm.MakeAlert);    //也可以这么注册
+    heater.Boiled += Display.ShowMsg;       //注册静态方法
+    heater.BoilWater();   //烧水，会自动调用注册过对象的方法
+    Assert.IsTrue(true);
+}
+</code></pre>
+<p><a href="http://www.cnblogs.com/jujusharp/archive/2011/08/04/2127999.html" target="_blank" rel="noopener">http://www.cnblogs.com/jujusharp/archive/2011/08/04/2127999.html</a></p>
+<p><a href="https://www.cnblogs.com/HQFZ/p/4903400.html" target="_blank" rel="noopener">https://www.cnblogs.com/HQFZ/p/4903400.html</a></p>
+<p><a href="https://www.cnblogs.com/wangjiming/p/8300103.html" target="_blank" rel="noopener">https://www.cnblogs.com/wangjiming/p/8300103.html</a></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2020 Yelog
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("greens");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 722px;
+    }
+    .nav.fullscreen {
+        margin-left: -722px;
+    }
+    .nav-left {
+        width: 300px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #c1bfc1;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+    #post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>

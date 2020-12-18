@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>VMware安装Centos | Wang&#39;Note</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="VMware安装Centos | Wang&#39;Note">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="note">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wang&#39;Note">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="Wang&#39;Note">
+<meta property="og:description" content="note">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:modified_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:author" content="WangPengLiang">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content=" WangPengLiang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Wang'Note" type="application/atom+xml">
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>WangPengLiang</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/wangpengliang815" target="_blank">
+            
+                <i class="iconfont icon-github"></i>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="全部笔记">全部笔记<small>(34)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Autofac">Autofac<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="AzureDevops">AzureDevops<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Bpmn">Bpmn<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Centos">Centos<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CSharp">CSharp<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Domain Driven Design">Domain Driven Design<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="EntityFramework">EntityFramework<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Linq">Linq<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RabbitMQ">RabbitMQ<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SonarQube">SonarQube<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Testing">Testing<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="34">
+<input type="hidden" id="yelog_site_word_count" value="63.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">全部笔记</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/17/csharp/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异步编程">异步编程</span>
+            <span class="post-date" title="2020-12-17 16:24:11">2020/12/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/14/csharp/Reflect/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="反射">反射</span>
+            <span class="post-date" title="2020-12-14 14:31:12">2020/12/14</span>
+        </a>
+        
+        <a  class="全部笔记 Bpmn "
+           href="/2020/12/09/bpmn/bpmn/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Bpmn">Bpmn</span>
+            <span class="post-date" title="2020-12-09 15:02:54">2020/12/09</span>
+        </a>
+        
+        <a  class="全部笔记 Domain Driven Design "
+           href="/2020/12/08/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8/Domain%20Driven%20Design/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Domain Driven Design(DDD)">Domain Driven Design(DDD)</span>
+            <span class="post-date" title="2020-12-08 17:41:45">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Linq "
+           href="/2020/12/08/linq/Linq/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Linq">Linq</span>
+            <span class="post-date" title="2020-12-08 17:40:59">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 EntityFramework "
+           href="/2020/12/08/entityFramework/EF%20Codefirst/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="EF Codefirst">EF Codefirst</span>
+            <span class="post-date" title="2020-12-08 17:39:35">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Autofac "
+           href="/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Autofac依赖注入">Autofac依赖注入</span>
+            <span class="post-date" title="2020-12-08 17:38:39">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/Exception/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异常处理">异常处理</span>
+            <span class="post-date" title="2020-12-08 17:38:09">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="并行和异步编程">并行和异步编程</span>
+            <span class="post-date" title="2020-12-08 17:36:21">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线程同步机制">线程同步机制</span>
+            <span class="post-date" title="2020-12-08 17:33:02">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="多线程">多线程</span>
+            <span class="post-date" title="2020-12-08 17:12:32">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Centos常用命令">Centos常用命令</span>
+            <span class="post-date" title="2020-12-07 17:17:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/VMware%E5%AE%89%E8%A3%85Centos/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="VMware安装Centos">VMware安装Centos</span>
+            <span class="post-date" title="2020-12-07 17:14:12">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/12/07/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="集成测试">集成测试</span>
+            <span class="post-date" title="2020-12-07 17:06:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见问题">RabbitMQ常见问题</span>
+            <span class="post-date" title="2020-11-21 22:30:22">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常用命令">RabbitMQ常用命令</span>
+            <span class="post-date" title="2020-11-21 20:57:58">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95(Selenium)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="自动化UI测试(Selenium)">自动化UI测试(Selenium)</span>
+            <span class="post-date" title="2020-11-18 00:12:10">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95(k6)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="压力测试(k6)">压力测试(k6)</span>
+            <span class="post-date" title="2020-11-18 00:09:46">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="单元测试">单元测试</span>
+            <span class="post-date" title="2020-11-18 00:06:54">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见策略">RabbitMQ常见策略</span>
+            <span class="post-date" title="2020-11-17 23:52:14">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Channel常见方法">Channel常见方法</span>
+            <span class="post-date" title="2020-11-17 23:51:03">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%90%AD%E5%BB%BARabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="搭建RabbitMQ高可用集群">搭建RabbitMQ高可用集群</span>
+            <span class="post-date" title="2020-11-17 23:50:07">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="两种消费模式和QOS的实现">两种消费模式和QOS的实现</span>
+            <span class="post-date" title="2020-11-17 23:48:02">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="消息确认及持久化">消息确认及持久化</span>
+            <span class="post-date" title="2020-11-17 23:45:38">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E5%9B%9B%E7%A7%8DExchange%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="四种Exchange介绍及代码示例">四种Exchange介绍及代码示例</span>
+            <span class="post-date" title="2020-11-17 23:42:31">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ的概念及安装">RabbitMQ的概念及安装</span>
+            <span class="post-date" title="2020-11-17 23:38:09">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops常用功能">Azure Devops常用功能</span>
+            <span class="post-date" title="2020-11-17 23:20:19">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%AE%89%E8%A3%85(Version-2020)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops安装(Version-2020)">Azure Devops安装(Version-2020)</span>
+            <span class="post-date" title="2020-11-17 23:15:59">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E9%9B%86%E6%88%90AzureDevops/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube集成AzureDevops">SonarQube集成AzureDevops</span>
+            <span class="post-date" title="2020-11-17 23:08:55">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube代码检查">SonarQube代码检查</span>
+            <span class="post-date" title="2020-11-17 22:54:45">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube安装配置">SonarQube安装配置</span>
+            <span class="post-date" title="2020-11-17 22:00:21">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/BasicCollection/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基础合集">基础合集</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Genericity/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="泛型">泛型</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Delegate&Event/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="委托和事件">委托和事件</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-centos/VMware安装Centos" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">VMware安装Centos</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="Centos">Centos</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-12-07 17:14:12'>2020-12-07 17:14</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:382</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备"><span class="toc-text">准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟机准备"><span class="toc-text">虚拟机准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装Centos"><span class="toc-text">安装Centos</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="准备">准备</h2>
+<p>软件：<code>VMware</code><br>
+镜像：<code>CentOS7</code></p>
+<h2 id="虚拟机准备">虚拟机准备</h2>
+<p>1.打开VMware选择新建虚拟机<br>
+<img src="/images/2020-11-22-15-40-35.png" alt=""></p>
+<p>2.典型安装与自定义安装</p>
+<p>典型安装：VMware会将主流的配置应用在虚拟机的操作系统上，对于新手来很友好<br>
+自定义安装：自定义安装可以针对性的把一些资源加强，把不需要的资源移除。避免资源浪费</p>
+<p>这里选择典型安装<br>
+<img src="/images/2020-11-22-15-42-05.png" alt=""></p>
+<p>3.选择稍后安装操作系统<br>
+<img src="/images/2020-11-22-15-43-14.png" alt=""></p>
+<p>4.选择操作系统为<code>Linux</code><br>
+<img src="/images/2020-11-22-15-44-09.png" alt=""></p>
+<p>5.输入虚机名称和存储位置<br>
+<img src="/images/2020-11-22-15-45-48.png" alt=""></p>
+<p>6.设置虚机磁盘大小<br>
+<img src="/images/2020-11-22-15-46-27.png" alt=""></p>
+<p>7.自定义硬件<br>
+<img src="/images/2020-11-22-15-46-57.png" alt=""></p>
+<p><img src="/images/2020-11-22-15-49-01.png" alt=""><br>
+根据自己电脑实际情况分配<br>
+内存：2G<br>
+处理器：处理器数量：2 内核数量：2<br>
+网络适配器：NAT模式<br>
+移除：打印机和声卡</p>
+<h2 id="安装Centos">安装Centos</h2>
+<p>1.在创建好的虚机上右键设置<br>
+<img src="/images/2020-11-22-15-51-20.png" alt=""></p>
+<p>2.开启虚拟机<br>
+<img src="/images/2020-11-22-15-52-41.png" alt=""></p>
+<p>3.安装操作系统<br>
+开启虚拟机后会出现以下界面:</p>
+<p>Install CentOS 7 安装CentOS 7<br>
+Test this media &amp; install CentOS 7 测试安装文件并安装CentOS 7<br>
+Troubleshooting 修复故障<br>
+选择第一项，安装直接CentOS 7，回车，进入下面的界面<br>
+<img src="/images/2020-11-22-15-53-16.png" alt=""></p>
+<p>选择安装过程中使用的语言<br>
+<img src="/images/2020-11-22-15-55-05.png" alt=""></p>
+<p>安装位置及分区设置：这里分区使用自动配置<br>
+<img src="/images/2020-11-22-15-56-37.png" alt=""></p>
+<p>软件选择：最小安装<br>
+<img src="/images/2020-11-22-15-57-43.png" alt=""></p>
+<p>网络和主机名：设置主机名称开启网络连接<br>
+<img src="/images/2020-11-22-15-58-54.png" alt=""></p>
+<p>开始安装<br>
+<img src="/images/2020-11-22-16-00-36.png" alt=""></p>
+<p>设置Root密码并创建新的用户admin<br>
+<img src="/images/2020-11-22-16-01-35.png" alt=""></p>
+<p>等待安装完成重启系统即可</p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2020 Yelog
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("greens");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 722px;
+    }
+    .nav.fullscreen {
+        margin-left: -722px;
+    }
+    .nav-left {
+        width: 300px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #c1bfc1;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+    #post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>

@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>异步编程 | Wang&#39;Note</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="异步编程 | Wang&#39;Note">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="note">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wang&#39;Note">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="Wang&#39;Note">
+<meta property="og:description" content="note">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:modified_time" content="2020-11-17T08:36:36.012Z">
+<meta property="article:author" content="WangPengLiang">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content=" WangPengLiang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0" ></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.1.0" ></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="Wang'Note" type="application/atom+xml">
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="">
+  <input class="theme_blog_path" value="">
+  <input id="theme_shortcut" value="true" />
+  <input id="theme_highlight_on" value="true" />
+  <input id="theme_code_copy" value="true" />
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>WangPengLiang</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="github" href="https://github.com/wangpengliang815" target="_blank">
+            
+                <i class="iconfont icon-github"></i>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="全部笔记">全部笔记<small>(34)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Autofac">Autofac<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="AzureDevops">AzureDevops<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Bpmn">Bpmn<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Centos">Centos<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CSharp">CSharp<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Domain Driven Design">Domain Driven Design<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="EntityFramework">EntityFramework<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Linq">Linq<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RabbitMQ">RabbitMQ<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SonarQube">SonarQube<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Testing">Testing<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="34">
+<input type="hidden" id="yelog_site_word_count" value="63.7k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">全部笔记</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/17/csharp/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异步编程">异步编程</span>
+            <span class="post-date" title="2020-12-17 16:24:11">2020/12/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/14/csharp/Reflect/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="反射">反射</span>
+            <span class="post-date" title="2020-12-14 14:31:12">2020/12/14</span>
+        </a>
+        
+        <a  class="全部笔记 Bpmn "
+           href="/2020/12/09/bpmn/bpmn/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Bpmn">Bpmn</span>
+            <span class="post-date" title="2020-12-09 15:02:54">2020/12/09</span>
+        </a>
+        
+        <a  class="全部笔记 Domain Driven Design "
+           href="/2020/12/08/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8/Domain%20Driven%20Design/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Domain Driven Design(DDD)">Domain Driven Design(DDD)</span>
+            <span class="post-date" title="2020-12-08 17:41:45">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Linq "
+           href="/2020/12/08/linq/Linq/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Linq">Linq</span>
+            <span class="post-date" title="2020-12-08 17:40:59">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 EntityFramework "
+           href="/2020/12/08/entityFramework/EF%20Codefirst/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="EF Codefirst">EF Codefirst</span>
+            <span class="post-date" title="2020-12-08 17:39:35">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Autofac "
+           href="/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Autofac依赖注入">Autofac依赖注入</span>
+            <span class="post-date" title="2020-12-08 17:38:39">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/Exception/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="异常处理">异常处理</span>
+            <span class="post-date" title="2020-12-08 17:38:09">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="并行和异步编程">并行和异步编程</span>
+            <span class="post-date" title="2020-12-08 17:36:21">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线程同步机制">线程同步机制</span>
+            <span class="post-date" title="2020-12-08 17:33:02">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/12/08/csharp/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="多线程">多线程</span>
+            <span class="post-date" title="2020-12-08 17:12:32">2020/12/08</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Centos常用命令">Centos常用命令</span>
+            <span class="post-date" title="2020-12-07 17:17:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Centos "
+           href="/2020/12/07/centos/VMware%E5%AE%89%E8%A3%85Centos/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="VMware安装Centos">VMware安装Centos</span>
+            <span class="post-date" title="2020-12-07 17:14:12">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/12/07/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="集成测试">集成测试</span>
+            <span class="post-date" title="2020-12-07 17:06:47">2020/12/07</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见问题">RabbitMQ常见问题</span>
+            <span class="post-date" title="2020-11-21 22:30:22">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/21/rabbitMQ/RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常用命令">RabbitMQ常用命令</span>
+            <span class="post-date" title="2020-11-21 20:57:58">2020/11/21</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95(Selenium)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="自动化UI测试(Selenium)">自动化UI测试(Selenium)</span>
+            <span class="post-date" title="2020-11-18 00:12:10">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95(k6)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="压力测试(k6)">压力测试(k6)</span>
+            <span class="post-date" title="2020-11-18 00:09:46">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 Testing "
+           href="/2020/11/18/%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="单元测试">单元测试</span>
+            <span class="post-date" title="2020-11-18 00:06:54">2020/11/18</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ常见策略">RabbitMQ常见策略</span>
+            <span class="post-date" title="2020-11-17 23:52:14">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Channel常见方法">Channel常见方法</span>
+            <span class="post-date" title="2020-11-17 23:51:03">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%90%AD%E5%BB%BARabbitMQ%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="搭建RabbitMQ高可用集群">搭建RabbitMQ高可用集群</span>
+            <span class="post-date" title="2020-11-17 23:50:07">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="两种消费模式和QOS的实现">两种消费模式和QOS的实现</span>
+            <span class="post-date" title="2020-11-17 23:48:02">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="消息确认及持久化">消息确认及持久化</span>
+            <span class="post-date" title="2020-11-17 23:45:38">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/%E5%9B%9B%E7%A7%8DExchange%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="四种Exchange介绍及代码示例">四种Exchange介绍及代码示例</span>
+            <span class="post-date" title="2020-11-17 23:42:31">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 RabbitMQ "
+           href="/2020/11/17/rabbitMQ/RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="RabbitMQ的概念及安装">RabbitMQ的概念及安装</span>
+            <span class="post-date" title="2020-11-17 23:38:09">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops常用功能">Azure Devops常用功能</span>
+            <span class="post-date" title="2020-11-17 23:20:19">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 AzureDevops "
+           href="/2020/11/17/azureDevOps/Azure%20Devops%E5%AE%89%E8%A3%85(Version-2020)/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Azure Devops安装(Version-2020)">Azure Devops安装(Version-2020)</span>
+            <span class="post-date" title="2020-11-17 23:15:59">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E9%9B%86%E6%88%90AzureDevops/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube集成AzureDevops">SonarQube集成AzureDevops</span>
+            <span class="post-date" title="2020-11-17 23:08:55">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube代码检查">SonarQube代码检查</span>
+            <span class="post-date" title="2020-11-17 22:54:45">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 SonarQube "
+           href="/2020/11/17/sonarqube/SonarQube%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="SonarQube安装配置">SonarQube安装配置</span>
+            <span class="post-date" title="2020-11-17 22:00:21">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/BasicCollection/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基础合集">基础合集</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Genericity/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="泛型">泛型</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <a  class="全部笔记 CSharp "
+           href="/2020/11/17/csharp/Delegate&Event/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="委托和事件">委托和事件</span>
+            <span class="post-date" title="2020-11-17 16:58:17">2020/11/17</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-csharp/异步编程" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">异步编程</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="CSharp">CSharp</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-12-18 17:22:14'>2020-12-17 16:24</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:3.1k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text">概要</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text">相关概念理解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#同步与异步"><span class="toc-text">同步与异步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阻塞与非阻塞"><span class="toc-text">阻塞与非阻塞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模型图例"><span class="toc-text">模型图例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单线程同步模型"><span class="toc-text">单线程同步模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多线程模型"><span class="toc-text">多线程模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步模型"><span class="toc-text">异步模型</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text">基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建任务"><span class="toc-text">创建任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#new-TaskFactory"><span class="toc-text">new TaskFactory()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-Factory"><span class="toc-text">Task.Factory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#new-Task"><span class="toc-text">new Task()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-Run"><span class="toc-text">Task.Run</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步任务"><span class="toc-text">同步任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用单独线程的任务"><span class="toc-text">使用单独线程的任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Task生命周期"><span class="toc-text">Task生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Task任务控制"><span class="toc-text">Task任务控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Task返回类型"><span class="toc-text">Task返回类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#void"><span class="toc-text">void</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task"><span class="toc-text">Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Task-T"><span class="toc-text">Task&lt;T&gt;</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#连续任务"><span class="toc-text">连续任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌套Task"><span class="toc-text">嵌套Task</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Task取消"><span class="toc-text">Task取消</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多个-Task"><span class="toc-text">多个 Task</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Task-WaitAll-方法传递一个-Task-数组-并对其中多个-Task-的异常进行捕获处理"><span class="toc-text">使用Task.WaitAll()方法传递一个 Task 数组,并对其中多个 Task 的异常进行捕获处理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text">参考</span></a></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1>概要</h1>
+<p>对于多线程，经常使用的是<code>Thread</code>。在了解<code>Task</code>之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在<code>.net 4.0</code>之后被一种称为<code>基于“任务的编程模型”</code>所冲击，这就是<code>Task</code>,<code>Task</code>会比<code>Thread</code>具有更小的性能开销,<code>Task</code>是架构在<code>Thread</code>之上的就是说<code>Task</code>最终还是会抛给线程去做,并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。<code>Task</code>类的表示单个操作不返回一个值，通常以异步方式执行,<code>Task</code> 对象是<code>&quot;基于任务的异步模式&quot;</code>首次引入<code>.NET Framework 4</code> 中。因为由执行工作 <code>Task</code>对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用<code>Status</code>属性，以及 <code>IsCanceled</code>,<code>IsCompleted</code>, 和 <code>IsFaulted</code>属性，以确定任务的状态</p>
+<h1>相关概念理解</h1>
+<ul>
+<li>同步（Synchronous）</li>
+<li>异步 (Asynchronous)</li>
+<li>阻塞 (Blocking)</li>
+<li>非阻塞(Nonblocking)</li>
+</ul>
+<p>同步/异步指的是在客户端<br>
+同步意味着：客户端提出了一个请求以后，在回应之前只能等待<br>
+异步意味着：客户端提出一个请求以后，还可以继续提其他请求</p>
+<p>阻塞/非阻塞指的是服务器端<br>
+阻塞意味着：服务器接受一个请求后，在返回结果以前不能接受其他请求<br>
+非阻塞意味着：服务器接受一个请求后，尽管没有返回结果，还是可以继续接受其他请求</p>
+<h2 id="同步与异步">同步与异步</h2>
+<blockquote>
+<p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)</p>
+</blockquote>
+<p>所谓同步，就是在发出一个<em>调用</em>时，在没有得到结果之前，该<em>调用</em>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果</p>
+<p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在**调用*发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)</p>
+<p>Example</p>
+<p>同步通信机制<br>
+你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，”我查一下&quot;，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）</p>
+<p>异步通信机制<br>
+书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&quot;回电&quot;这种方式来回调</p>
+<h2 id="阻塞与非阻塞">阻塞与非阻塞</h2>
+<blockquote>
+<p>阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态</p>
+</blockquote>
+<p>阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回</p>
+<p>非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程</p>
+<p>Example<br>
+你打电话问书店老板有没有《分布式系统》这本书，你如果是阻塞式调用，你会一直把自己“挂起”，直到得到这本书有没有的结果，如果是非阻塞式调用，你不管老板有没有告诉你，你自己先一边去玩了， 当然你也要偶尔过几分钟check一下老板有没有返回结果，在这里阻塞与非阻塞与是否同步异步无关。跟老板通过什么方式回答你结果无关</p>
+<h2 id="模型图例">模型图例</h2>
+<h3 id="单线程同步模型">单线程同步模型</h3>
+<p><img src="/images/2020-12-18-10-47-48.png" alt=""></p>
+<h3 id="多线程模型">多线程模型</h3>
+<p><img src="/images/2020-12-18-10-50-46.png" alt=""></p>
+<h3 id="异步模型">异步模型</h3>
+<p><img src="/images/2020-12-18-11-03-10.png" alt=""></p>
+<h1>基础</h1>
+<h2 id="创建任务">创建任务</h2>
+<h3 id="new-TaskFactory">new TaskFactory()</h3>
+<blockquote>
+<p>使用实例化的TaskFactory类</p>
+</blockquote>
+<pre><code class="language-cs"> var t1 = new TaskFactory()
+     .StartNew(() =&gt; Console.WriteLine(&quot;new TaskFactory().StartNew&quot;));
+</code></pre>
+<h3 id="Task-Factory">Task.Factory</h3>
+<blockquote>
+<p>使用Task静态属性Factory</p>
+</blockquote>
+<pre><code class="language-cs">var t2 = Task.Factory
+                .StartNew(() =&gt; Console.WriteLine(&quot;Task.Factory&quot;));
+</code></pre>
+<h3 id="new-Task">new Task()</h3>
+<blockquote>
+<p>使用<code>Task</code>的构造函数, 实例化<code>Task</code>对象时,任务不会立即执行,而是指定<code>Created</code>状态,通过<code>Task.Start()</code>方法启动</p>
+</blockquote>
+<pre><code class="language-cs">var t3 = new Task(() =&gt; Console.WriteLine(&quot;Task Constructor&quot;));
+            t3.Start();
+</code></pre>
+<h3 id="Task-Run">Task.Run</h3>
+<p>.Net4.5 新增功能使用<code>Task</code>类的<code>Run</code>方法</p>
+<pre><code class="language-cs">var t4 = Task.Run(() =&gt; Console.WriteLine(&quot;Task.Run&quot;));
+</code></pre>
+<p>注意:使用<code>Task.Run/Task.Factory.StartNew/new TaskFactory().StartNew()</code>方法运行的任务会立即开始工作,无需显式地调用这些任务的<code>Start</code>方法</p>
+<h2 id="同步任务">同步任务</h2>
+<blockquote>
+<p>任务不一定要使用线程池中的线程,也可以使用其他线程,任务也可以同步进行,以相同的线程作为主调线程</p>
+</blockquote>
+<pre><code class="language-cs">static void Main(string[] args)
+        {
+            var t1 = new Task(() =&gt; TaskMethod(&quot;t1&quot;));
+            t1.Start();
+            Console.WriteLine(&quot;主线程调用结束&quot;);
+            Console.ReadKey();
+        }
+
+        public static void TaskMethod(string taskName)
+        {
+            Console.WriteLine(&quot;Task {0} 运行在线程id为{1}的线程上。是否是线程池中线程？:{2}&quot;,
+taskName, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoolThread);
+        }
+</code></pre>
+<pre><code class="language-cs">var t1 = new Task(() =&gt; TaskMethod(&quot;t1&quot;));
+    t1.RunSynchronously();
+    Console.WriteLine(&quot;主线程调用结束&quot;);
+    Console.ReadKey();
+</code></pre>
+<h2 id="使用单独线程的任务">使用单独线程的任务</h2>
+<blockquote>
+<p>如果任务的代码应该长时间运行,应该使用<code>TaskCreationOptions.LongRuning</code>告诉任务调度器创建一个新线程,而不是使用线程池中的线程,此时,线程可以不受线程池管理</p>
+</blockquote>
+<pre><code class="language-cs"> var t1 = new Task(TaskMethod, TaskCreationOptions.LongRunning);
+     t1.Start();
+</code></pre>
+<h2 id="Task生命周期"><code>Task</code>生命周期</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">状态</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Created</td>
+<td style="text-align:left">该任务已初始化，但尚未被计划</td>
+</tr>
+<tr>
+<td style="text-align:left">WaitingForActivation</td>
+<td style="text-align:left">该任务正在等待 .NET Framework 基础结构在内部将其激活并进行计划</td>
+</tr>
+<tr>
+<td style="text-align:left">WaitingToRun</td>
+<td style="text-align:left">该任务已被计划执行，但尚未开始执行</td>
+</tr>
+<tr>
+<td style="text-align:left">Running</td>
+<td style="text-align:left">该任务正在运行，但尚未完成</td>
+</tr>
+<tr>
+<td style="text-align:left">WaitingForChildrenToComplete</td>
+<td style="text-align:left">该任务已完成执行，正在隐式等待附加的子任务完成</td>
+</tr>
+<tr>
+<td style="text-align:left">RanToCompletion</td>
+<td style="text-align:left">已成功完成执行的任务</td>
+</tr>
+<tr>
+<td style="text-align:left">Canceled</td>
+<td style="text-align:left">该任务已通过对其自身的 CancellationToken 引发 OperationCanceledException 对取消进行了确认，此时该标记处于已发送信号状态；或者在该任务开始执行之前，已向该任务的 CancellationToken 发出了信号</td>
+</tr>
+<tr>
+<td style="text-align:left">Faulted</td>
+<td style="text-align:left">由于未处理异常的原因而完成的任务</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Task任务控制"><code>Task</code>任务控制</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方法</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Task.Wait</td>
+<td style="text-align:left">task1.Wait();就是等待任务执行完成，task 的状态变为 Completed</td>
+</tr>
+<tr>
+<td style="text-align:left">Task.WaitAll</td>
+<td style="text-align:left">待所有的任务都执行完成</td>
+</tr>
+<tr>
+<td style="text-align:left">Task.WaitAny</td>
+<td style="text-align:left">等待任何一个任务完成就继续向下执行</td>
+</tr>
+<tr>
+<td style="text-align:left">Task.ContinueWith</td>
+<td style="text-align:left">第一个 Task 完成后自动启动下一个 Task，实现 Task 的延续 CancellationTokenSource</td>
+</tr>
+<tr>
+<td style="text-align:left">CancellationTokenSource</td>
+<td style="text-align:left">通过 cancellation 的 tokens 来取消一个 Task</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Task返回类型">Task返回类型</h2>
+<h3 id="void">void</h3>
+<blockquote>
+<p>不关心结果，返回 void 类型</p>
+</blockquote>
+<pre><code class="language-CS">[TestMethod]
+public void Task_Result_Void()
+{
+    Console.WriteLine($&quot;不关心结果,返回Void,--Start,线程Id:{Thread.CurrentThread.ManagedThreadId}&quot;);
+    Print();
+    Console.WriteLine($&quot;不关心结果,返回Void,--End,线程Id:{Thread.CurrentThread.ManagedThreadId}&quot;);
+    Assert.IsTrue(true);
+
+
+    static async void Print()
+    {
+        await Task.Run(() =&gt;
+       {
+           Console.WriteLine($&quot;Hello, 线程Id:{ Thread.CurrentThread.ManagedThreadId}&quot;);
+       });
+    }
+}
+</code></pre>
+<h3 id="Task">Task</h3>
+<blockquote>
+<p>关心是否完成，返回 Task 类型</p>
+</blockquote>
+<pre><code class="language-cs">public void Task_Result_Task()
+{
+    Console.WriteLine($&quot;看电视中...,线程Id:{Thread.CurrentThread.ManagedThreadId}&quot;);
+    Console.WriteLine(&quot;突然停电，看下是不是跳闸了&quot;);
+    var task = OpenMainsSwitch();
+    Console.WriteLine($&quot;没电了先玩会儿手机吧，线程Id为：{Thread.CurrentThread.ManagedThreadId}&quot;);
+    Thread.Sleep(100);
+    // 等着电源开关被打开
+    task.Wait();
+    Console.WriteLine($&quot;又有电了,继续看电视...,线程Id:{Thread.CurrentThread.ManagedThreadId}&quot;);
+    Assert.IsTrue(true);
+
+
+    static async Task OpenMainsSwitch()
+    {
+        Console.WriteLine($&quot;准备打开电源开关，线程Id：{ Thread.CurrentThread.ManagedThreadId}&quot;);
+        await Task.Run(() =&gt;
+        {
+            Console.WriteLine($&quot;打开电源开关, 线程Id:{ Thread.CurrentThread.ManagedThreadId}&quot;);
+            Thread.Sleep(2000);
+        });
+        Console.WriteLine($&quot;电源开关打开了，线程Id：{ Thread.CurrentThread.ManagedThreadId}&quot;);
+    }
+}
+</code></pre>
+<h3 id="Task-T"><code>Task&lt;T&gt;</code></h3>
+<blockquote>
+<p>调用方法要从调用中获取一个<code>T</code>类型的值，异步方法的返回类型就必须是<code>Task&lt;T&gt;</code>。调用方法从<code>Task</code>的<code>Result</code>属性获取的就是<code>T</code>类型的值</p>
+</blockquote>
+<pre><code class="language-CS">public async Task Task_Result_TaskTAsync()
+{
+    string message = $&quot;Today is {DateTime.Today:D}\n&quot; + &quot;Today's hours of leisure: &quot; + $&quot;{await GetLeisureHoursAsync()}&quot;;
+    Console.WriteLine(message);
+    Assert.IsTrue(true);
+
+
+    static async Task&lt;int&gt; GetLeisureHoursAsync()
+    {
+        DayOfWeek today = await Task.FromResult(DateTime.Now.DayOfWeek);
+
+        int leisureHours =
+            today is DayOfWeek.Saturday || today is DayOfWeek.Sunday
+            ? 16 : 5;
+
+        return leisureHours;
+    }
+}
+</code></pre>
+<h2 id="连续任务">连续任务</h2>
+<blockquote>
+<p>在指定任务完成后调用另一个指定任务</p>
+</blockquote>
+<pre><code class="language-cs"> public void Task_ContinueWith_Example()
+ {
+     Task&lt;string&gt; t1 = new Task&lt;string&gt;(
+         () =&gt; TaskMethod1(&quot;t1&quot;));
+     Console.WriteLine(&quot;Task1-创建,状态为:{0}&quot;, t1.Status);
+     t1.Start();
+     Console.WriteLine(&quot;Task1-启动,状态为:{0}&quot;, t1.Status);
+     Console.WriteLine(t1.Result);
+     Console.WriteLine(&quot;Task1-完成,状态为:{0}&quot;, t1.Status);
+     Task t2 = t1.ContinueWith(TaskMethod2);
+     Console.WriteLine(&quot;Task2,状态为:{0}&quot;, t2.Status);
+
+     static string TaskMethod1(string taskName)
+     {
+         var result = string.Format($&quot;Task:{taskName} 运行在线程id:{ Thread.CurrentThread.ManagedThreadId}的线程上,&quot; +
+             $&quot;是否是线程池中线程？:{Thread.CurrentThread.IsThreadPoolThread}&quot;);
+         return result;
+     }
+
+     static void TaskMethod2(Task t)
+     {
+         Console.WriteLine($&quot;TaskID:{ t.Id} 运行在线程id:{Thread.CurrentThread.ManagedThreadId}的线程上。是否是线程池中线程？:{Thread.CurrentThread.IsThreadPoolThread}&quot;);
+
+     }
+     Assert.IsTrue(true);
+ }
+
+</code></pre>
+<p>使用<code>TaskContinuationOptions</code>枚举的值可以指定连续任务只有在起始任务成功或失败结束时启动</p>
+<pre><code class="language-cs">Task t2 = t1.ContinueWith(TaskMethod2, TaskContinuationOptions.NotOnCanceled);
+</code></pre>
+<h2 id="嵌套Task">嵌套Task</h2>
+<blockquote>
+<p>在<code>Task</code>内部创建<code>Task</code>,如果父任务在子任务之前结束,父任务状态就显示为<code>WaitingForChilderenToComplete</code>,所有的子任务也结束时,父任务的状态就改为<code>RanToCompletion</code>,如果使用<code>TaskContinuationOptions</code>枚举值创建子任务时会有不同结果,取消父任务也会取消子任务</p>
+</blockquote>
+<h2 id="Task取消">Task取消</h2>
+<pre><code class="language-cs">static void Main(string[] args)
+{
+    CancellationTokenSource cts = new CancellationTokenSource();
+    cts.CancelAfter(8000);
+    Task t1 = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 30; i++)
+        {
+            if (cts.Token.IsCancellationRequested)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+            }
+            else
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i);
+            }
+        }
+    }, cts.Token);
+    try
+    {
+        t1.Wait();
+    }
+    catch (AggregateException e)
+    {
+        foreach (var item in e.InnerExceptions)
+        {
+            Console.WriteLine(item);
+        }
+    }
+    Console.ReadKey();
+}
+</code></pre>
+<p><img src="/images/2019-04-24-18-45-02.png" alt=""><br>
+工作原理<br>
+程序运行主线程创建-&gt;创建<code>CancellationTokenSource</code>对象-&gt;设置<code>task</code>在指定毫秒数后取消(这里是 8000)-&gt;创建<code>task</code>并传入<code>CancellationTokenSource</code>对象生成的<code>token</code>,循环打印 1~30,取消标记为<code>true</code>则抛出异常中止任务,<code>false</code>则正常输出,在输出前等待 500 毫秒(避免 8000 毫秒还没到任务就已经执行完成)-&gt;使用<code>try/catch</code>包裹<code>t1.Wait()</code>等待任务执行完成语句,并捕获处理异常.这里任务在执行完 15 次的时候被取消.</p>
+<h2 id="多个-Task">多个 Task</h2>
+<pre><code class="language-cs">static void Main(string[] args)
+{
+    CancellationTokenSource cts = new CancellationTokenSource();
+    cts.CancelAfter(8000);
+    Task[] tasks = new Task[2];
+    tasks[0] = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 30; i++)
+        {
+            if (cts.Token.IsCancellationRequested)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+            }
+            else
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i);
+            }
+        }
+    }, cts.Token);
+    tasks[1] = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 50; i++)
+        {
+            if (cts.Token.IsCancellationRequested)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+            }
+            else
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t2,共执行50次,当前第{0}次&quot;, i);
+            }
+        }
+    }, cts.Token);
+    try
+    {
+        Task.WaitAll(tasks);
+    }
+    catch (AggregateException e)
+    {
+        foreach (var item in e.InnerExceptions)
+        {
+            Console.WriteLine(item);
+        }
+    }
+    Console.ReadKey();
+}
+</code></pre>
+<p><img src="/images/2019-04-24-18-45-24.png" alt=""></p>
+<h2 id="使用Task-WaitAll-方法传递一个-Task-数组-并对其中多个-Task-的异常进行捕获处理">使用<code>Task.WaitAll()</code>方法传递一个 Task 数组,并对其中多个 Task 的异常进行捕获处理</h2>
+<p><code>CancellationTokenSource.Token.Register()</code></p>
+<pre><code class="language-cs">static void Main(string[] args)
+{
+    CancellationTokenSource cts = new CancellationTokenSource();
+    var token = cts.Token;
+    cts.CancelAfter(8000);
+    token.Register(Callback);
+    Task t1 = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 30; i++)
+        {
+            if (token.IsCancellationRequested)
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            else
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i);
+            }
+        }
+    }, token);
+    try
+    {
+        t1.Wait();
+    }
+    catch (AggregateException e)
+    {
+        foreach (var item in e.InnerExceptions)
+        {
+            Console.WriteLine(item);
+        }
+    }
+    Console.ReadKey();
+}
+
+static void Callback()
+{
+    Console.WriteLine(&quot;Register登记的任务取消回调函数&quot;);
+}
+</code></pre>
+<p>可使用<code>Register</code>，向取消标记登记一个回调方法。应用程序调用<code>CancellationTokenSource</code> 对象的 <code>Cancel</code> 方法时，这个回调就会运行。但是不能保证这个方法在什么时候执行,可 能在任务执行完自己的取消处理之前或之后,也可能在那个过程之中。</p>
+<h1>参考</h1>
+<p><a href="https://www.cnblogs.com/qingfenglin/p/12058267.html" target="_blank" rel="noopener">https://www.cnblogs.com/qingfenglin/p/12058267.html</a><br>
+<a href="https://www.cnblogs.com/liqingwen/p/5844095.html" target="_blank" rel="noopener">https://www.cnblogs.com/liqingwen/p/5844095.html</a><br>
+<a href="https://www.cnblogs.com/zhaoshujie/p/11082753.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaoshujie/p/11082753.html</a><br>
+<a href="https://q.cnblogs.com/q/107005/" target="_blank" rel="noopener">https://q.cnblogs.com/q/107005/</a><br>
+<a href="https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/" target="_blank" rel="noopener">https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/</a><br>
+<a href="https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/" target="_blank" rel="noopener">https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/</a><br>
+<a href="https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html" target="_blank" rel="noopener">https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html</a><br>
+<a href="https://www.cnblogs.com/ittranslator/p/13703279.html" target="_blank" rel="noopener">https://www.cnblogs.com/ittranslator/p/13703279.html</a><br>
+<a href="https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/" target="_blank" rel="noopener">https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/</a><br>
+<a href="https://www.cnblogs.com/xiaoxiaotank/p/13206569.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoxiaotank/p/13206569.html</a><br>
+<a href="https://www.cnblogs.com/wcrBlog/p/11690460.html" target="_blank" rel="noopener">https://www.cnblogs.com/wcrBlog/p/11690460.html</a><br>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult</a><br>
+<a href="https://q.cnblogs.com/q/124633/" target="_blank" rel="noopener">https://q.cnblogs.com/q/124633/</a><br>
+<a href="https://www.cnblogs.com/dudu/p/9860959.html#!comments" target="_blank" rel="noopener">https://www.cnblogs.com/dudu/p/9860959.html#!comments</a><br>
+<a href="http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/" target="_blank" rel="noopener">http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/</a><br>
+<a href="https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html" target="_blank" rel="noopener">https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html</a></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
+    </div>
+</article>
+
+
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">
+    ©2016-2020 Yelog
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("greens");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 722px;
+    }
+    .nav.fullscreen {
+        margin-left: -722px;
+    }
+    .nav-left {
+        width: 300px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #c1bfc1;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+    #post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>
