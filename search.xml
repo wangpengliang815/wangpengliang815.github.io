@@ -5319,27 +5319,11 @@ firewall-cmd --list-all
       </categories>
   </entry>
   <entry>
-    <title>异常处理</title>
-    <url>/2020/12/08/csharp/Exception/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>CSharp</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Autofac依赖注入</title>
     <url>/2020/12/08/autofac/Autofac%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[]]></content>
       <categories>
         <category>Autofac</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>EF Codefirst</title>
-    <url>/2020/12/08/entityFramework/EF%20Codefirst/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>EntityFramework</category>
       </categories>
   </entry>
   <entry>
@@ -7619,7 +7603,7 @@ finally
       </categories>
   </entry>
   <entry>
-    <title>并行和异步编程</title>
+    <title>并行编程</title>
     <url>/2020/12/08/csharp/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<p>并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速,传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程</p>
 <h2 id="Parallel">Parallel</h2>
@@ -7970,7 +7954,7 @@ finally
 <p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)</p>
 </blockquote>
 <p>所谓同步，就是在发出一个<strong>调用</strong>时，在没有得到结果之前，该<strong>调用</strong>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果</p>
-<p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在**调用*发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)</p>
+<p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在<strong>调用</strong>发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)</p>
 <p>Example</p>
 <p>同步通信机制<br>
 你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，“我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）</p>
@@ -8536,6 +8520,186 @@ async Task DoAsync()
 ]]></content>
       <categories>
         <category>CSharp</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>EntityFramework介绍</title>
+    <url>/2020/12/08/entityFrameworkCore/EntityFramework%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<h2 id="简介">简介</h2>
+<p><code>EntityFramework</code><a href="http://xn--0iv.Net" target="_blank" rel="noopener">是.Net</a> 平台下<code>ORM</code>框架的一种,.Net 平台下其他的 ORM 框架除<code>EF</code>外还有<code>NHibernate</code>、<code>Dapper</code>、<code>SqlSugar</code>等。&gt; EF 是一种<code>ORM(Object-relational mapping)</code>框架，在编程时使用对象映射到底层的数据库结构。可以让应用程序开发者将关系型数据作为业务模型来使用，也消除了开发者为数据访问编写的绝大多数管道代码的需要(比如使用 <a href="http://ADO.NET" target="_blank" rel="noopener">ADO.NET</a>)。Entity Framework 提供了一个综合的、基于模型的系统，通过为所有的领域模型编写相似的数据访问代码，使得开发者创建数据访问层变得简单</p>
+<p><strong>EF优点</strong></p>
+<ul>
+<li>之前需要花费大量的时间来编写将数据保存到数据库的代码，EF 极大的减少了这段时间</li>
+<li>将重点放在业务上，而无需担心这些数据的存储</li>
+<li>减少代码量提高生产系效率，同时也使得程序更容易维护</li>
+<li>…</li>
+</ul>
+<h2 id="什么是ORM">什么是ORM</h2>
+<blockquote>
+<p><code>ORM（Object Relational Mapping）</code>中文名字：对象关系映射，它是面向对象思想的进一步的发扬光大，主要实现【程序对象】到【关系型数据库】的映射。在之前使用 <a href="http://ADO.NET" target="_blank" rel="noopener">ADO.NET</a> 开发的时候，数据库访问层（即 DAL），要写很多增加、删除、保存的方法，很是麻烦，如果引入 ORM 框架，它自带 CRUD 的 API（相当于 DAL 层已经给你写好了），可以自动生成 SQL 语句，所以作为开发者而言，只需要关注对象即可</p>
+</blockquote>
+<p>ORM 的含义</p>
+<ul>
+<li>O：<code>Domain Object</code> 领域模型</li>
+<li>R：<code>Relational DataBase</code>关系型数据库</li>
+<li>M : <code>Mapping</code> 映射关系</li>
+</ul>
+<p>ORM 的三大核心原则</p>
+<ul>
+<li>简单性：以最简单的模式建模数据</li>
+<li>传达性：数据库结构被任何人都能理解的语言文档化</li>
+<li>精确性：基于数据模型创建正确标准化的结构</li>
+</ul>
+<h2 id="三种开发方式">三种开发方式</h2>
+<h3 id="CodeFirst">CodeFirst</h3>
+<blockquote>
+<p>所有的领域模型都是以类的形式编写的。这些类会建立我们的 EDM，数据库模式会从这些类中创建。这种方法最适合于那些高度以领域为中心并且领域模型类创建优先的应用程序。这里需要的数据库只是为了这些领域模型的持久化机制</p>
+</blockquote>
+<ul>
+<li>数据库只是作为模型的持久化机制，即数据库中没有逻辑</li>
+<li>完全控制代码，即没有自动生成的模型和上下文代码</li>
+<li>数据库不会手动更改。模型类总是更改，然后数据库基于模型类的更改而更改</li>
+</ul>
+<h3 id="Database-First">Database First</h3>
+<blockquote>
+<p>这是一种用于已存在数据库模式的方法。使用这种方法，EDM 是从数据库模式中生成的，这种方法最适合于使用了已经存在的数据库的应用</p>
+</blockquote>
+<ul>
+<li>对遗留的数据库进行开发</li>
+<li>当其他团队的 DBA 完成了数据库设计时，一旦数据库完成，应用开发就要开始</li>
+<li>当要开发数据为中心的应用时，应用领域模型就是数据库本身，数据库会频繁修改来满足新的需求</li>
+</ul>
+<h3 id="Model-First">Model First</h3>
+<blockquote>
+<p>这种方法和 Code First 方法很相似，但是这种情况下我们使用了 EDM 视觉设计器来设计我们的模型。数据库模式和类将会通过这个概念模型生成。该模型将会给我们创建数据库的 SQL 语句，然后我们可以使用它来创建数据库并连接应用程序</p>
+</blockquote>
+<h2 id="安装-注意版本-本文使用-EF6-x">安装(注意版本,本文使用 EF6.x)</h2>
+<p>通过 nuget 引入<code>EntityFramework</code></p>
+<pre><code>NuGet：Install-Package EntityFramework
+</code></pre>
+<h2 id="开发方式选择">开发方式选择</h2>
+<p>之前说到EF支持三种开发方式，在开发时如何选择适合自己的方式</p>
+<ul>
+<li>如果已经有了域类,<code>Code-first</code>,通过类创建数据库</li>
+<li>如果已经有数据库,<code>Database-first</code>:根据现有的数据库生成对应实体类和 EDM 文件</li>
+<li>如果喜欢使用视觉设计图的方式设计数据库模型,<code>Model-first</code></li>
+</ul>
+<h2 id="功能汇总">功能汇总</h2>
+<ul>
+<li>跨平台   EF Core是一个跨平台的框架，可以在Windows，Linux和Mac上运行</li>
+<li>建模     EF可以创建具有不同数据类型get / set属性的EDM（Entity Data Model/实体数据模型）。它使用此模型查询或保存底层数据库的数据</li>
+<li>查询     EF允许我们使用LINQ从底层数据库中检索数据，同时也支持直接对数据库执行原始SQL查询</li>
+<li>更改跟踪 EF会跟踪需要提交到数据库的实体实例（属性值）发生的更改</li>
+<li>保存     EF调用SaveChanges()方法时，根据实体发生的更改，对数据库执行INSERT，UPDATE和DELETE命令。EF还提供了异步的SaveChangesAsync()方法</li>
+<li>并发     默认情况下，从数据是从数据库中提取开始，EF使用乐观并发来避免我们做的修改被其他用户覆盖</li>
+<li>事务     EF在查询或保存数据时自动执行事务管理。它还提供自定义事务管理的选项</li>
+<li>缓存     EF包括开箱即用的第一级缓存。因此，重复查询将从缓存中返回数据，而不是访问数据库</li>
+<li>配置     EF允许我们使用注释属性配置EF模型，也可以使用Fluent API来覆盖默认约定</li>
+<li>迁移     EF提供了一组迁移命令，我们可以在NuGet Package Manager控制台或命令行界面中执行这些命令来创建或管理底层数据库计划</li>
+</ul>
+<h2 id="上下文">上下文</h2>
+<h3 id="DbContext">DbContext</h3>
+<blockquote>
+<p>DbContext主要负责与数据交互，主要作用</p>
+</blockquote>
+<ol>
+<li><code>DbContext</code>包含所有的实体映射到数据库表的实体集<code>DbSet&lt;TEntity&gt;</code></li>
+<li><code>DbContext</code>将<code>LINQ-to-Entities</code>查询转换为<code>SQL查询</code>并将其发送到数据库</li>
+<li>更改跟踪: 它跟踪每个实体从数据库中查询出来后发生的修改变化</li>
+<li>持久化数据: 它也基于实体状态执行插入、更新和删除操作到数据库中</li>
+</ol>
+<p><img src="/images/2020-12-20-20-09-43.png" alt=""></p>
+<blockquote>
+<p>在EF工作过程中，对实体的操作会导致实体状态的变化，<code>Context</code>根据实体状态的变化生成和执行对应的SQL语句。简言之，对实体的操作给实体添加标签（如Added,Deleted,Modified），DbContext根据实体的标签生成（Insert,Delete,Update）Sql语句，然后EF通过Ado.Net执行Sql实现持久化</p>
+</blockquote>
+<h3 id="DbSet">DbSet</h3>
+<blockquote>
+<p><code>DbSet</code>表示上下文中给定类型的所有实体的集合或可从数据库中查询的给定类型的所有实体的集合。可以使用<code>DbContext.Set</code>方法从<code>DbContext</code>中创建<code>DbSet</code>对象,<code>DbSet</code>对应数据库中的表，DbSet常用的方法如下</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Result</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Add(Entity)/AddRange</code></td>
+<td>返回添加的Entity</td>
+<td>添加实体到context中，并给实体标记Added状态</td>
+<td><code>dbcontext.Students.Add(studentEntity) </code></td>
+</tr>
+<tr>
+<td><code>AsNoTracking&lt;Entity&gt;</code></td>
+<td><code>DBQuery&lt;Entity&gt;</code></td>
+<td>获取一个不被context缓冲和追踪的序列,多用于获取只读序列</td>
+<td><code>dbcontext.Students.AsNoTracking&lt;Student&gt;().ToList();</code></td>
+</tr>
+<tr>
+<td><code>Attach(Entity)</code></td>
+<td>返回添加的Entity</td>
+<td>将实体添加到context上下文中</td>
+<td><code>dbcontext.Students.Attach(studentEntity);</code></td>
+</tr>
+<tr>
+<td><code>Find(int)</code></td>
+<td>返回对应Id的Entity</td>
+<td>通过主键获取实体对象，如果在数据库和context中不存在那么返回null,注：也会返回在context中存在但还没有写入数据库的实体对象</td>
+<td><code>dbcontext.Students.Find(1);</code></td>
+</tr>
+<tr>
+<td><code>Include</code></td>
+<td>DBQuery</td>
+<td>include必须是外键连接，且立即执行；join连接不需要外键 ，延时执行</td>
+<td><code>dbcontext.Students.Include(&quot;StudentAddress&quot;).ToList&lt;Student&gt;();var studentList = dbcontext.Students.Include(s =&gt; s.StudentAddress).ToList&lt;Student&gt;();</code></td>
+</tr>
+<tr>
+<td><code>Remove/RemoveRange</code></td>
+<td>返回删除的entity</td>
+<td>删除实例，并给实例对象添加deleted标记</td>
+<td><code>dbcontext.Students.Remove(studentEntity);</code></td>
+</tr>
+<tr>
+<td><code>SqlQuery</code></td>
+<td>DBSqlQuery</td>
+<td>通过sql获取实例集合. 默认情况下，返回的集合被追踪的，可以使用AsNoTracking()取消追踪</td>
+<td><code>dbcontext.Students.SqlQuery(&quot;select * from student where studentid = 1&quot;).FirstOrDefault();</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="DBEntityEntry">DBEntityEntry</h3>
+<p>EF中实体的五种状态</p>
+<ol>
+<li><code>detached</code>：实体不在上下文的追踪范围内。如刚new的实例处于<code>detached</code>，可以通过<code>Attach()</code>添加到上下文，此时的状态是<code>unchanged</code></li>
+<li><code>unchanged</code>：未改变，如刚从数据库读出来的实例</li>
+<li><code>added</code>：添加状态  一般执行<code>db.Set&lt;T&gt;.Add(t)/AddRange(ts)</code>时标记为<code>added</code>。因为新对象在数据库中没有相应的记录，所有不能转成<code>deleted</code>和<code>modified</code>状态</li>
+<li><code>deleted</code>:删除状态  一般执行<code>db.Set&lt;T&gt;.Remove(t)/RemoveRange(ts)</code>时标记为<code>deleted</code>。数据库中必须先有了相应的记录，所有<code>deleted</code>不能转为<code>added</code>状态</li>
+<li><code>modified</code>:修改状态  改变了实体的属性处于这个状态，可以转为<code>deleted</code>，不能转为<code>added</code>状态</li>
+</ol>
+<p>为当前所有需要跟踪的实体对象，创建一个相应的<code>DbEntityEntry</code>对象，此对象包容着实体对象每个属性的三个值：<code>Current Value</code>、<code>Original Value</code>和<code>Database Value</code>，只要比较这三个值，很容易地就知道哪个属性值被修改了(设置：<code>context.Configuration.AutoDetectChangesEnabled = false</code>则不会去追踪，默认是打开的），从而生成相应的<code>Sql</code>命令。对象的状态会随着操作而改变，也可以自己指定状态</p>
+<blockquote>
+<p>当<code>DbContext</code>执行<code>SaveChanges()</code>方法时，根据实体的状态生成相应的Sql语句，通过Ado.net完成数据的持久化</p>
+</blockquote>
+<pre><code class="language-cs">DbEntityEntry userEntry = context.Entry(user);
+userEntry.State = EntityState.Added;//添加标记
+userEntry.State = EntityState.Deleted;//删除标记
+userEntry.State = EntityState.Modified;//修改标记
+userEntry.State = EntityState.Unchanged;//无变化标记
+userEntry.State = EntityState.Detached;//不追踪标记
+</code></pre>
+<h2 id="实体关系">实体关系</h2>
+<blockquote>
+<p>EF与数据库一样支持三种关系类型：</p>
+</blockquote>
+<h3 id="One-to-One">One-to-One</h3>
+<h3 id="One-to-Many">One-to-Many</h3>
+<h3 id="Many-to-Many">Many-to-Many</h3>
+]]></content>
+      <categories>
+        <category>EntityFramework</category>
       </categories>
   </entry>
 </search>
