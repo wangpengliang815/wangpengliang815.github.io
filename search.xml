@@ -7969,11 +7969,11 @@ finally
 <blockquote>
 <p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)</p>
 </blockquote>
-<p>所谓同步，就是在发出一个<em>调用</em>时，在没有得到结果之前，该<em>调用</em>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果</p>
+<p>所谓同步，就是在发出一个<strong>调用</strong>时，在没有得到结果之前，该<strong>调用</strong>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果</p>
 <p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在**调用*发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)</p>
 <p>Example</p>
 <p>同步通信机制<br>
-你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，”我查一下&quot;，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）</p>
+你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，“我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）</p>
 <p>异步通信机制<br>
 书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&quot;回电&quot;这种方式来回调</p>
 <h2 id="阻塞与非阻塞">阻塞与非阻塞</h2>
@@ -8049,7 +8049,7 @@ taskName, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoo
 <pre><code class="language-cs"> var t1 = new Task(TaskMethod, TaskCreationOptions.LongRunning);
      t1.Start();
 </code></pre>
-<h2 id="Task生命周期"><code>Task</code>生命周期</h2>
+<h2 id="Task生命周期">Task生命周期</h2>
 <table>
 <thead>
 <tr>
@@ -8092,7 +8092,7 @@ taskName, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoo
 </tr>
 </tbody>
 </table>
-<h2 id="Task任务控制"><code>Task</code>任务控制</h2>
+<h2 id="Task任务控制">Task任务控制</h2>
 <table>
 <thead>
 <tr>
@@ -8234,10 +8234,117 @@ public void Task_Result_Void()
 <pre><code class="language-cs">Task t2 = t1.ContinueWith(TaskMethod2, TaskContinuationOptions.NotOnCanceled);
 </code></pre>
 <h2 id="嵌套Task">嵌套Task</h2>
+<h3 id="关联嵌套">关联嵌套</h3>
+<blockquote>
+<p>在创建<code>cTask</code>时，加入了以参数，<code>TaskCreationOptions.AttachedToParent</code>，这个时候，<code>cTask</code>和<code>pTask</code>就会建立关联，<code>cTask</code>就会成为<code>pTask</code>的一部分</p>
+</blockquote>
+<pre><code class="language-cs">[TestMethod]
+public void Task_Relevance_Example()
+{
+    var pTask = Task.Factory.StartNew(() =&gt;
+    {
+       var cTask= Task.Factory.StartNew(() =&gt;
+         {
+             Console.WriteLine(&quot;Childen task finished!&quot;);
+         }, TaskCreationOptions.AttachedToParent);
+        Console.WriteLine(&quot;Parent task finished!&quot;);
+    });
+    pTask.Wait();
+    Console.WriteLine(&quot;Flag&quot;);
+    Assert.IsTrue(true);
+}
+</code></pre>
+<h3 id="非关联嵌套">非关联嵌套</h3>
+<blockquote>
+<p>外层的pTask运行完后，并不会等待内层的cTask，直接向下走先输出了Flag。这种嵌套有时候相当于我们创建两个Task，但是嵌套在一起的话，在Task比较多时会方便查找和管理，并且还可以在一个Task中途加入多个Task，让进度并行前进</p>
+</blockquote>
+<pre><code class="language-cs">[TestMethod]
+public void Task_NoRelevance_Example()
+{
+    var pTask = Task.Factory.StartNew(() =&gt;
+    {
+        Task.Factory.StartNew(() =&gt;
+        {
+            Console.WriteLine(&quot;Childen task finished!&quot;);
+        });
+        Console.WriteLine(&quot;Parent task finished!&quot;);
+    });
+    pTask.Wait();
+    Console.WriteLine(&quot;Flag&quot;);
+    Assert.IsTrue(true);
+}
+</code></pre>
 <blockquote>
 <p>在<code>Task</code>内部创建<code>Task</code>,如果父任务在子任务之前结束,父任务状态就显示为<code>WaitingForChilderenToComplete</code>,所有的子任务也结束时,父任务的状态就改为<code>RanToCompletion</code>,如果使用<code>TaskContinuationOptions</code>枚举值创建子任务时会有不同结果,取消父任务也会取消子任务</p>
 </blockquote>
 <h2 id="Task取消">Task取消</h2>
+<h3 id="单个任务">单个任务</h3>
+<pre><code class="language-cs">[TestMethod]
+public void Task_CancellationToken_SingleTask_Example()
+{
+    CancellationTokenSource cts = new CancellationTokenSource();
+    Task t1 = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 30; i++)
+        {
+            if (cts.Token.IsCancellationRequested)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+            }
+            else
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i + 1);
+            }
+        }
+    }, cts.Token);
+    Thread.Sleep(2000);
+    // 传达取消请求
+    cts.Cancel();
+    Console.WriteLine($&quot;已停止,Status{t1.Status}&quot;);
+    Assert.IsTrue(true);
+}
+</code></pre>
+<h3 id="多个任务">多个任务</h3>
+<pre><code class="language-cs">[TestMethod]
+public void Task_CancellationToken_MultiTask_Example()
+{
+    CancellationTokenSource cts1 = new CancellationTokenSource();
+    CancellationTokenSource cts2 = new CancellationTokenSource();
+
+    // 任何Task处于取消状态时其余也将取消
+    CancellationTokenSource ctsCombine =
+         CancellationTokenSource.CreateLinkedTokenSource(cts1.Token, cts2.Token);
+    Task t1 = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 30; i++)
+        {
+            if (!ctsCombine.IsCancellationRequested)
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i + 1);
+            }
+        }
+    }, ctsCombine.Token);
+
+    Task t2 = Task.Run(() =&gt;
+    {
+        for (int i = 0; i &lt; 30; i++)
+        {
+            if (!ctsCombine.IsCancellationRequested)
+            {
+                Thread.Sleep(500);
+                Console.WriteLine(&quot;任务t2,共执行30次,当前第{0}次&quot;, i + 1);
+            }
+        }
+    }, ctsCombine.Token);
+    Thread.Sleep(2000);
+    cts1.Cancel();
+    Console.WriteLine($&quot;t1:Status_{t1.Status},t2:Status_{t2.Status}&quot;);
+    Assert.IsTrue(true);
+}
+</code></pre>
+<h3 id="定时取消">定时取消</h3>
 <pre><code class="language-cs">static void Main(string[] args)
 {
     CancellationTokenSource cts = new CancellationTokenSource();
@@ -8274,102 +8381,143 @@ public void Task_Result_Void()
 <p><img src="/images/2019-04-24-18-45-02.png" alt=""><br>
 工作原理<br>
 程序运行主线程创建-&gt;创建<code>CancellationTokenSource</code>对象-&gt;设置<code>task</code>在指定毫秒数后取消(这里是 8000)-&gt;创建<code>task</code>并传入<code>CancellationTokenSource</code>对象生成的<code>token</code>,循环打印 1~30,取消标记为<code>true</code>则抛出异常中止任务,<code>false</code>则正常输出,在输出前等待 500 毫秒(避免 8000 毫秒还没到任务就已经执行完成)-&gt;使用<code>try/catch</code>包裹<code>t1.Wait()</code>等待任务执行完成语句,并捕获处理异常.这里任务在执行完 15 次的时候被取消.</p>
-<h2 id="多个-Task">多个 Task</h2>
-<pre><code class="language-cs">static void Main(string[] args)
+<h2 id="取消时回调">取消时回调</h2>
+<blockquote>
+<p><code>CancellationTokenSource.Token.Register()</code>,使用<code>Register</code>，向取消标记登记一个回调方法。应用程序调用<code>CancellationTokenSource</code> 对象的 <code>Cancel</code> 方法时，这个回调就会运行。但是不能保证这个方法在什么时候执行,可能在任务执行完自己的取消处理之前或之后,也可能在那个过程之中</p>
+</blockquote>
+<pre><code class="language-cs"> [TestMethod]
+ public void Task_CancellationToken_Register_Example()
+ {
+     CancellationTokenSource cts = new CancellationTokenSource();
+     var token = cts.Token;
+     cts.CancelAfter(8000);
+     token.Register(Callback);
+     Task t1 = Task.Run(() =&gt;
+     {
+         for (int i = 0; i &lt; 30; i++)
+         {
+             if (token.IsCancellationRequested)
+             {
+                 token.ThrowIfCancellationRequested();
+             }
+             else
+             {
+                 Thread.Sleep(500);
+                 Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i);
+             }
+         }
+     }, token);
+     try
+     {
+         t1.Wait();
+     }
+     catch (AggregateException e)
+     {
+         foreach (var item in e.InnerExceptions)
+         {
+             Console.WriteLine(item);
+         }
+     }
+     static void Callback()
+     {
+         Console.WriteLine(&quot;Register登记的任务取消回调函数&quot;);
+     }
+     Assert.IsTrue(true);
+ }
+</code></pre>
+<h1>问题记录</h1>
+<h2 id="async-await并不能提升性能">async/await并不能提升性能?</h2>
+<p>问题描述：所谓的异步操作就是A线程在执行任务的时候，执行到一半再把任务交给B线程，然后A线程开始等待B的执行完成了，这不还是同步的吗?</p>
+<blockquote>
+<p>异步编程不能提高性能。异步编程只是提供一种简单的编程模型来提高系统的响应能力，比如，如果在UI线程上执行长时间IO操作，在操作完成之前界面就处在无法操作的状态。<br>
+可以提高性能的是并行技术，比如任务并行库（TPL，Task Parallel Library）、并行LINQ（PLINQ）等，这些技术可以充分利用CPU来提高计算性能。<br>
+一般来说，耗时的IO操作使用异步简化代码，耗时的计算操作使用并行来提高性能</p>
+</blockquote>
+<blockquote>
+<p>比如服务端最大处理请求是100个线程，那么同步模式下，150个请求过来，就有50个请求需要等待执行。async/await 模式下，正在执行的100个线程 可以空闲出来 处理后来的50个请求，前面100个请求异步完成后，再通过上下文切换到当前的100个线程，处理完后续的流程。工作线程是在不停的切换过程中提升了并发效率。而在单个请求中，async/await是有线程上下文切换的性能损耗，所以在处理一个本来就很快速的逻辑,例如读一个Redis缓存，那么性能会有比较显著的下降</p>
+</blockquote>
+<p>总结：异步编程只是提高了线程的利用率，针对一个本来就很“快”的操作，可能异步还不如同步，因为线程上下文的切换也会带来性能损耗</p>
+<h2 id="async-await死锁问题">async/await死锁问题</h2>
+<h3 id="可能发生死锁的程序类型">可能发生死锁的程序类型</h3>
+<ul>
+<li><code>WPF/WinForm</code>程序</li>
+<li><a href="http://asp.net" target="_blank" rel="noopener">asp.net</a>(<a href="http://xn--asp-628d60u5v0a.net" target="_blank" rel="noopener">不包括asp.net</a> core)程序</li>
+</ul>
+<h3 id="什么情况下会产生死锁">什么情况下会产生死锁?</h3>
+<p>调用 <code>Task.Wait()</code> 或者 <code>Task.Result</code> 立刻产生死锁的充分条件</p>
+<ul>
+<li>调用 <code>Wait()</code>或<code>Result</code>的代码位于<code>UI</code>线程</li>
+<li><code>Task</code>的实际执行在其他线程，且需要返回<code>UI</code>线程</li>
+</ul>
+<h3 id="死锁的原因">死锁的原因?</h3>
+<blockquote>
+<p><code>UWP</code>、<code>WPF</code>、<code>Windows Forms</code>程序的 UI 线程都是单线程的。为了让使用了<code>async/await</code>的代码像使用同步代码一样简单，WPF 程序的<code>Application</code>类在构造的时候会将<code>主UI线程</code> Task的同步上下文设置为<code>DispatcherSynchronizationContext</code>的实例，当<code>Task</code>的任务结束时，会从<code>AsyncMethodStateMachine</code>中调用<code>Awaiter</code>的<code>OnComplete()</code>方法，而<code>await</code>后续方法的执行靠的就是<code>OnComplete()</code>方法中一层层调用到 <code>DispatcherSynchronizationContext</code>里的<code>Post</code>方法</p>
+</blockquote>
+<pre><code class="language-cs">/// &lt;summary&gt;
+/// Asynchronously invoke the callback in the SynchronizationContext.
+/// &lt;/summary&gt;
+public override void Post(SendOrPostCallback d, Object state)
 {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    cts.CancelAfter(8000);
-    Task[] tasks = new Task[2];
-    tasks[0] = Task.Run(() =&gt;
-    {
-        for (int i = 0; i &lt; 30; i++)
-        {
-            if (cts.Token.IsCancellationRequested)
-            {
-                cts.Token.ThrowIfCancellationRequested();
-            }
-            else
-            {
-                Thread.Sleep(500);
-                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i);
-            }
-        }
-    }, cts.Token);
-    tasks[1] = Task.Run(() =&gt;
-    {
-        for (int i = 0; i &lt; 50; i++)
-        {
-            if (cts.Token.IsCancellationRequested)
-            {
-                cts.Token.ThrowIfCancellationRequested();
-            }
-            else
-            {
-                Thread.Sleep(500);
-                Console.WriteLine(&quot;任务t2,共执行50次,当前第{0}次&quot;, i);
-            }
-        }
-    }, cts.Token);
-    try
-    {
-        Task.WaitAll(tasks);
-    }
-    catch (AggregateException e)
-    {
-        foreach (var item in e.InnerExceptions)
-        {
-            Console.WriteLine(item);
-        }
-    }
-    Console.ReadKey();
+    // Call BeginInvoke with the cached priority.  Note that BeginInvoke
+    // preserves the behavior of passing exceptions to
+    // Dispatcher.UnhandledException unlike InvokeAsync.  This is
+    // desireable because there is no way to await the call to Post, so
+    // exceptions are hard to observe.
+    _dispatcher.BeginInvoke(_priority, d, state);
 }
 </code></pre>
-<p><img src="/images/2019-04-24-18-45-24.png" alt=""></p>
-<h2 id="使用Task-WaitAll-方法传递一个-Task-数组-并对其中多个-Task-的异常进行捕获处理">使用<code>Task.WaitAll()</code>方法传递一个 Task 数组,并对其中多个 Task 的异常进行捕获处理</h2>
-<p><code>CancellationTokenSource.Token.Register()</code></p>
-<pre><code class="language-cs">static void Main(string[] args)
-{
-    CancellationTokenSource cts = new CancellationTokenSource();
-    var token = cts.Token;
-    cts.CancelAfter(8000);
-    token.Register(Callback);
-    Task t1 = Task.Run(() =&gt;
-    {
-        for (int i = 0; i &lt; 30; i++)
-        {
-            if (token.IsCancellationRequested)
-            {
-                token.ThrowIfCancellationRequested();
-            }
-            else
-            {
-                Thread.Sleep(500);
-                Console.WriteLine(&quot;任务t1,共执行30次,当前第{0}次&quot;, i);
-            }
-        }
-    }, token);
-    try
-    {
-        t1.Wait();
-    }
-    catch (AggregateException e)
-    {
-        foreach (var item in e.InnerExceptions)
-        {
-            Console.WriteLine(item);
-        }
-    }
-    Console.ReadKey();
-}
+<p>这里就是问题的关键！！！</p>
+<p>如果<code>_dispatcher.BeginInvoke(_priority, d, state);</code>这句代码在后台线程，那么此时<code>UI线程</code>处于<code>Wait()/Result</code>调用中的阻塞状态，<code>BeginInvoke</code>中的任务是无论如何也无法执行到的,于是无论如何都无法完成这个<code>Post</code>任务，即无论如何也无法退出此异步任务的执行，于是<code>Wait()</code>便无法完成等待，产生死锁</p>
+<p>Example</p>
+<pre><code class="language-cs">DoAsync().Wait();
 
-static void Callback()
+async Task DoAsync()
 {
-    Console.WriteLine(&quot;Register登记的任务取消回调函数&quot;);
+    await Task.Run(() =&gt; { });
 }
 </code></pre>
-<p>可使用<code>Register</code>，向取消标记登记一个回调方法。应用程序调用<code>CancellationTokenSource</code> 对象的 <code>Cancel</code> 方法时，这个回调就会运行。但是不能保证这个方法在什么时候执行,可 能在任务执行完自己的取消处理之前或之后,也可能在那个过程之中。</p>
+<p>无论是<code>WPF</code>还是<code>UWP</code>，只要在<code>UI</code>线程上调用上述代码，必然死锁</p>
+<h3 id="There-Is-No-Thread">There Is No Thread</h3>
+<blockquote>
+<p>读写文件，访问网络，这些 IO 阻塞的操作执行时，里面根本就没有线程，详情请阅读：<a href="https://blog.stephencleary.com/2013/11/there-is-no-thread.html" target="_blank" rel="noopener">There Is No Thread</a></p>
+</blockquote>
+<p>还有另一些操作，也没有后台线程的参与，于是也不存在从后台线程回到主线程导致死锁的情况。如<code>Task.Yield</code>，还有<code>InvokeAsync</code>，它们也不会造成死锁。如果是控制台程序，或者一个普通的非UI线程，其<code>SynchronizationContext</code>为<code>null</code>，那么异步任务执行完后不需要回到原有线程，也不会造成死锁</p>
+<h3 id="不会造成死锁的充分条件">不会造成死锁的充分条件</h3>
+<ul>
+<li>异步操作执行完后不需要回到原有线程（例如非 UI 线程和控制台线程）</li>
+<li>异步操作不需要单独的线程执行任务</li>
+</ul>
+<h3 id="如何避免死锁">如何避免死锁?</h3>
+<ul>
+<li>在 UI 线程，如果使用了<code>async/await</code>，就尽量不要再使用<code>Task.Wait()/Task.Result</code>了，就一直异步一条路走到黑好了（微软称其为<code>Async All the Way</code>）</li>
+<li>如果可能，尽量在异步任务后添加<code>.ConfigureAwait(false);</code>这样，异步任务后面继续执行的代码就不会回到原<code>UI</code>线程了，而是直接从线程池中再取出一个线程执行；这样，即便<code>UI</code>线程后续可能有别的原因造成阻塞，也不会产生死锁了<br>
+把原来的代码改成这样，就不会死锁了：</li>
+</ul>
+<p>只能是一路<code>async/await</code>。微软将其描述为：<code>async/await 会像病毒一样在你的代码中传播</code></p>
+<blockquote>
+<p>Others have also noticed the spreading behavior of asynchronous programming and have called it “contagious” or compared it to a zombie virus.</p>
+</blockquote>
+<p>这句话的原文参见：<a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming" target="_blank" rel="noopener">Async/Await - Best Practices in Asynchronous Programming</a></p>
+<p>如果你是类库提供者，因为不确定调用者程序是<code>WPF</code>/<code>Winform</code>…,为了防止代码调用者在同步方法中使用<code>Wait()/Result</code>调用异步方法，还需要考虑添加<code>.ConfigureAwait(false);</code></p>
+<pre><code class="language-cs">async Task DoAsync()
+{
+    await Task.Run(() =&gt; { }).ConfigureAwait(false);
+}
+</code></pre>
+<p>这一句的目的是防止执行上下文切换回 UI 线程。</p>
+<p>这样，即便真的使用 DoAsync().Wait() 也不会发生死锁。注意，整个方法调用链都需要使用<code>.ConfigureAwait(false)</code>才能够防止线程切换时，在调用方的 Wait() 方法中发生死锁。详见我的另一篇博客 在编写异步方法时，使用 ConfigureAwait(false) 避免使用者死锁。）</p>
+<h3 id="更多死锁相关">更多死锁相关</h3>
+<p><a href="https://blog.walterlv.com/post/deadlock-in-task-wait.html" target="_blank" rel="noopener">使用 Task.Wait()？立刻死锁（deadlock） - walterlv</a><br>
+<a href="https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html" target="_blank" rel="noopener">不要使用 Dispatcher.Invoke，因为它可能在你的延迟初始化 Lazy 中导致死锁 - walterlv</a><br>
+<a href="https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html" target="_blank" rel="noopener">在有 UI 线程参与的同步锁（如 AutoResetEvent）内部使用 await 可能导致死锁</a><br>
+<a href="https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html" target="_blank" rel="noopener">.NET 中小心嵌套等待的 Task，它可能会耗尽你线程池的现有资源，出现类似死锁的情况 - walterlv</a></p>
+<p>解决方法</p>
+<p><a href="https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html" target="_blank" rel="noopener">在编写异步方法时，使用 ConfigureAwait(false) 避免使用者死锁 - walterlv</a><br>
+<a href="https://walterlv.com/post/convert-async-to-sync-by-push-frame.html" target="_blank" rel="noopener">将 async/await 异步代码转换为安全的不会死锁的同步代码（使用 PushFrame） - walterlv</a></p>
 <h1>参考</h1>
-<p><a href="https://www.cnblogs.com/qingfenglin/p/12058267.html" target="_blank" rel="noopener">https://www.cnblogs.com/qingfenglin/p/12058267.html</a><br>
+<p><a href="https://blog.csdn.net/WPwalter/article/details/78370706" target="_blank" rel="noopener">https://blog.csdn.net/WPwalter/article/details/78370706</a><br>
+<a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming</a><br>
+<a href="https://www.cnblogs.com/qingfenglin/p/12058267.html" target="_blank" rel="noopener">https://www.cnblogs.com/qingfenglin/p/12058267.html</a><br>
 <a href="https://www.cnblogs.com/liqingwen/p/5844095.html" target="_blank" rel="noopener">https://www.cnblogs.com/liqingwen/p/5844095.html</a><br>
 <a href="https://www.cnblogs.com/zhaoshujie/p/11082753.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaoshujie/p/11082753.html</a><br>
 <a href="https://q.cnblogs.com/q/107005/" target="_blank" rel="noopener">https://q.cnblogs.com/q/107005/</a><br>
