@@ -8527,42 +8527,51 @@ async Task DoAsync()
     <url>/2020/12/08/orm/EntityFramework6/</url>
     <content><![CDATA[<h2 id="简介">简介</h2>
 <p><code>EntityFramework</code><a href="http://xn--0iv.Net" target="_blank" rel="noopener">是.Net</a> 平台下<code>ORM</code>框架的一种,.Net 平台下其他的<code>ORM</code>框架除<code>EF</code>外还有<code>NHibernate</code>、<code>Dapper</code>、<code>SqlSugar</code>等。在编程时使用对象映射到底层的数据库结构</p>
-<p><strong>EF优点</strong></p>
-<ul>
-<li>之前需要花费大量的时间来编写将数据保存到数据库的代码，EF极大的减少了这段时间</li>
-<li>将重点放在业务上，而无需担心这些数据的存储</li>
-<li>减少代码量提高生产系效率，同时也使得程序更容易维护</li>
-<li>…</li>
-</ul>
-<h2 id="ORM">ORM</h2>
+<h2 id="ORM简介">ORM简介</h2>
 <blockquote>
 <p><code>ORM（Object Relational Mapping）</code>中文名字：对象关系映射，主要实现【程序对象】到【关系型数据库】的映射</p>
 </blockquote>
-<p>ORM 的含义</p>
+<p>ORM 含义</p>
 <ul>
 <li>O：<code>Domain Object</code> 领域模型</li>
 <li>R：<code>Relational DataBase</code>关系型数据库</li>
 <li>M : <code>Mapping</code> 映射关系</li>
 </ul>
-<p>EF6 可实现许多热门 O/RM 功能：</p>
+<h2 id="Entity-Framework-Features">Entity Framework Features</h2>
 <ul>
-<li>不依赖于任何 EF 类型的 POCO 实体类的映射</li>
-<li>自动更改跟踪</li>
-<li>标识解析和工作单元</li>
-<li>预先、延迟和显式加载</li>
-<li>使用 LINQ（语言集成查询）转换强类型查询</li>
-<li>丰富的映射功能，可支持：</li>
-<li>一对一、一对多和多对多关系</li>
-<li>继承（每个层次结构一张表、每个类型一张表和每个具体类一张表）</li>
-<li>复杂类型</li>
-<li>存储过程</li>
-<li>通过可视化设计器创建实体模型</li>
-<li>通过编写代码创建实体模型的“Code First”体验</li>
-<li>既可从现有数据库生成模型，然后手动编辑，也可从头开始创建模型，然后用于生成新的数据库</li>
-<li>与 .NET Framework 应用程序模型（包括 <a href="http://ASP.NET" target="_blank" rel="noopener">ASP.NET</a>）集成，并通过数据绑定与 WPF 和 WinForms 集成</li>
-<li>基于 <a href="http://ADO.NET" target="_blank" rel="noopener">ADO.NET</a> 的数据库连接和可用于连接到 SQL Server、Oracle、MySQL、SQLite、PostgreSQL、DB2 等的众多提供程序</li>
+<li>跨平台   EF Core是一个跨平台的框架，可以在<code>Windows，Linux</code>和<code>Mac</code>上运行</li>
+<li>建模     EF可以创建具有不同数据类型<code>get/set</code>属性的<code>EDM（Entity Data Model/实体数据模型）</code>。它使用此模型查询或保存底层数据库的数据</li>
+<li>查询     EF允许使用<code>LINQ</code>从底层数据库中检索数据，同时也支持直接对数据库执行原始SQL查询</li>
+<li>更改跟踪 EF会跟踪需要提交到数据库的实体实例（属性值）发生的更改</li>
+<li>保存     EF调用<code>SaveChanges()</code>方法时，根据实体发生的更改，对数据库执行<code>INSERT</code>，<code>UPDATE</code>和<code>DELETE</code>命令。EF还提供了异步的<code>SaveChangesAsync()</code>方法</li>
+<li>并发     默认情况下，从数据是从数据库中提取开始，EF使用乐观并发来避免我们做的修改被其他用户覆盖</li>
+<li>事务     EF在查询或保存数据时自动执行事务管理。它还提供自定义事务管理的选项</li>
+<li>缓存     EF包括开箱即用的第一级缓存。因此，重复查询将从缓存中返回数据，而不是访问数据库</li>
+<li>配置     EF允许使用注释属性配置EF模型，也可以使用<code>Fluent API</code>来覆盖默认约定</li>
+<li>迁移     EF提供了一组迁移命令，可以在<code>NuGet Package Manager</code>控制台或命令行界面中执行这些命令来创建或管理底层数据库计划</li>
 </ul>
-<h2 id="三种开发方式">三种开发方式</h2>
+<h2 id="基本工作流程">基本工作流程</h2>
+<p><img src="/images/2020-12-22-11-16-50.png" alt=""></p>
+<ol>
+<li>首先，需要定义模型。定义模型包括定义域类，从DbContext派生的上下文类和配置（如果有）。EF将根据模型执行CRUD操作</li>
+<li>要插入数据，将域对象添加到上下文中并调用<code>SaveChanges()</code>方法。EF API将构建适当的<code>INSERT命令</code>并将其执行到数据库</li>
+<li>若要读取数据，执行<code>LINQ-to-Entities</code>查询。EF API会将查询转换为基础关系数据库的<code>SQL</code>查询并执行。结果将转换为域（实体）对象</li>
+<li>要编辑或删除数据，请从上下文中更新或删除实体对象，然后调用<code>SaveChanges()</code>方法。EF API将构建适当的<code>UPDATE</code>或<code>DELETE</code>命令并将其执行到数据库</li>
+</ol>
+<h2 id="EF架构">EF架构</h2>
+<p><img src="/images/2020-12-22-11-19-21.png" alt=""></p>
+<ul>
+<li>EDM（实体数据模型）：<code>EDM</code>由三个主要部分组成-概念模型，映射和存储模型</li>
+<li>概念模型：概念模型包含模型类及其关系。独立于数据库表设计</li>
+<li>存储模型：存储模型是数据库设计模型，其中包括表，视图，存储过程以及它们之间的关系和键</li>
+<li>映射：映射包含有关如何将概念模型映射到存储模型的信息</li>
+<li>LINQ到实体： LINQ到实体（L2E）是一种查询语言，用于针对对象模型编写查询。它返回在概念模型中定义的实体</li>
+<li>实体SQL：与<code>LINQ to Entities</code>一样，实体SQL是另一种查询语言（仅适用于EF6）</li>
+<li>对象服务：对象服务是访问数据库中的数据并将其返回的主要入口点。对象服务负责实现，这是将从实体客户数据提供者（下一层）返回的数据转换为实体对象结构的过程</li>
+<li>实体客户数据提供者：这一层的主要职责是将<code>LINQ-to-Entities</code>或实体SQL查询转换为基础数据库可以理解的SQL查询。它与<code>ADO.Net</code>数据提供程序进行通信，后者再从数据库发送或检索数据</li>
+<li><code>ADO.Net</code>数据提供程序：此层使用标准<code>ADO.Net</code>与数据库进行通信</li>
+</ul>
+<h2 id="开发方式">开发方式</h2>
 <h3 id="CodeFirst">CodeFirst</h3>
 <blockquote>
 <p>所有的领域模型都是以类的形式编写的。这种方法最适合于那些高度以领域为中心并且领域模型类创建优先的应用程序。这里需要的数据库只是为了这些领域模型的持久化机制</p>
@@ -8585,36 +8594,12 @@ async Task DoAsync()
 <blockquote>
 <p>这种方法和 Code First 方法很相似，但是这种情况下使用了<code>EDM</code>视觉设计器来设计模型。数据库模式和类将会通过这个概念模型生成。该模型将会给我们创建数据库的<code>SQL</code>语句，可以使用它来创建数据库并连接应用程序</p>
 </blockquote>
-<h2 id="安装">安装</h2>
-<ol>
-<li>通过右键单击项目的“引用” 文件夹并选择<code>管理 NuGet包</code>安装<code>EntityFramework</code>包</li>
-<li>从包管理器控制台安装</li>
-</ol>
-<pre><code>Install-Package EntityFramework
-</code></pre>
-<p>安装指定版本</p>
-<pre><code class="language-cs">Install-Package EntityFramework -Version &lt;number&gt;
-</code></pre>
-<p><code>&lt;number&gt;</code> 表示要安装的 EF 的特定版本</p>
-<h2 id="开发方式选择">开发方式选择</h2>
+<p><img src="/images/2020-12-22-11-22-57.png" alt=""></p>
 <p>之前说到EF支持三种开发方式，在开发时如何选择适合自己的方式</p>
 <ul>
 <li>如果已经有了域类,<code>Code-first</code>,通过类创建数据库</li>
 <li>如果已经有数据库,<code>Database-first</code>,根据现有的数据库生成对应实体类和 EDM 文件</li>
 <li>如果喜欢使用视觉设计图的方式设计数据库模型,<code>Model-first</code></li>
-</ul>
-<h2 id="功能汇总">功能汇总</h2>
-<ul>
-<li>跨平台   EF Core是一个跨平台的框架，可以在<code>Windows，Linux</code>和<code>Mac</code>上运行</li>
-<li>建模     EF可以创建具有不同数据类型<code>get/set</code>属性的<code>EDM（Entity Data Model/实体数据模型）</code>。它使用此模型查询或保存底层数据库的数据</li>
-<li>查询     EF允许使用LINQ从底层数据库中检索数据，同时也支持直接对数据库执行原始SQL查询</li>
-<li>更改跟踪 EF会跟踪需要提交到数据库的实体实例（属性值）发生的更改</li>
-<li>保存     EF调用<code>SaveChanges()</code>方法时，根据实体发生的更改，对数据库执行<code>INSERT</code>，<code>UPDATE</code>和<code>DELETE</code>命令。EF还提供了异步的<code>SaveChangesAsync()</code>方法</li>
-<li>并发     默认情况下，从数据是从数据库中提取开始，EF使用乐观并发来避免我们做的修改被其他用户覆盖</li>
-<li>事务     EF在查询或保存数据时自动执行事务管理。它还提供自定义事务管理的选项</li>
-<li>缓存     EF包括开箱即用的第一级缓存。因此，重复查询将从缓存中返回数据，而不是访问数据库</li>
-<li>配置     EF允许使用注释属性配置EF模型，也可以使用<code>Fluent API</code>来覆盖默认约定</li>
-<li>迁移     EF提供了一组迁移命令，可以在<code>NuGet Package Manager</code>控制台或命令行界面中执行这些命令来创建或管理底层数据库计划</li>
 </ul>
 <h2 id="DbContext">DbContext</h2>
 <blockquote>
@@ -8630,6 +8615,17 @@ async Task DoAsync()
 <blockquote>
 <p>在EF工作过程中，对实体的操作会导致实体状态的变化，<code>Context</code>根据实体状态的变化生成和执行对应的SQL语句。简言之，对实体的操作给实体添加标签（如Added,Deleted,Modified），DbContext根据实体的标签生成（Insert,Delete,Update）Sql语句，然后EF通过Ado.Net执行Sql实现持久化</p>
 </blockquote>
+<h2 id="安装">安装</h2>
+<ol>
+<li>通过右键单击项目的“引用” 文件夹并选择<code>管理 NuGet包</code>安装<code>EntityFramework</code>包</li>
+<li>从包管理器控制台安装</li>
+</ol>
+<pre><code>Install-Package EntityFramework
+</code></pre>
+<p>安装指定版本</p>
+<pre><code class="language-cs">Install-Package EntityFramework -Version &lt;number&gt;
+</code></pre>
+<p><code>&lt;number&gt;</code> 表示要安装的 EF 的特定版本</p>
 <h2 id="DbSet">DbSet</h2>
 <blockquote>
 <p><code>DbSet</code>表示上下文中给定类型的所有实体的集合或可从数据库中查询的给定类型的所有实体的集合。可以使用<code>DbContext.Set</code>方法从<code>DbContext</code>中创建<code>DbSet</code>对象,<code>DbSet</code>对应数据库中的表，DbSet常用的方法如下</p>
@@ -8708,14 +8704,30 @@ userEntry.State = EntityState.Modified;//修改标记
 userEntry.State = EntityState.Unchanged;//无变化标记
 userEntry.State = EntityState.Detached;//不追踪标记
 </code></pre>
-<h2 id="实体关系">实体关系</h2>
+<h2 id="数据持久化">数据持久化</h2>
+<h3 id="Connected-Scenario">Connected Scenario</h3>
 <blockquote>
-<p>EF与数据库一样支持三种关系类型：</p>
+<p>在连接的场景中，上下文类的相同实例（从DbContext派生）用于检索和保存实体。它在生命周期内跟踪所有实体</p>
 </blockquote>
-<h3 id="One-to-One">One-to-One</h3>
-<h3 id="One-to-Many">One-to-Many</h3>
-<h3 id="Many-to-Many">Many-to-Many</h3>
-<h2 id="配置">配置</h2>
+<p><img src="/images/2020-12-22-11-25-01.png" alt=""></p>
+<p><strong>优点</strong>：<br>
+快速执行<br>
+上下文会跟踪所有实体，并在实体发生更改时自动设置适当的状态</p>
+<p><strong>缺点</strong>：<br>
+上下文保持活动状态，因此与数据库的连接保持打开状态。<br>
+利用更多资源。</p>
+<h3 id="Disconnected-Scenario">Disconnected Scenario</h3>
+<blockquote>
+<p>在断开连接的情况下，上下文的不同实例用于检索实体并将其保存到数据库。检索数据后将处置上下文的实例，并创建一个新实例以将实体保存到数据库</p>
+</blockquote>
+<p><img src="/images/2020-12-22-11-25-55.png" alt=""></p>
+<p><strong>优点</strong>：<br>
+与连接的方案相比，使用更少的资源<br>
+没有与数据库的开放连接</p>
+<p><strong>缺点</strong>：<br>
+保存前需要为每个实体设置适当的状态<br>
+执行速度比连接的方案慢</p>
+<h2 id="Conventions">Conventions</h2>
 <blockquote>
 <p><code>Conventions are sets of default rules which automatically configure a conceptual model based on your domain classes when working with the Code-First approach</code></p>
 </blockquote>
@@ -8733,39 +8745,39 @@ userEntry.State = EntityState.Detached;//不追踪标记
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">架构</td>
+<td style="text-align:center">Schema</td>
 <td style="text-align:center">默认情况下，EF 将所有数据库对象创建到 dbo 模式中</td>
 </tr>
 <tr>
-<td style="text-align:center">表名</td>
+<td style="text-align:center">Table Name</td>
 <td style="text-align:center">EntityClassName +‘s’</td>
 </tr>
 <tr>
-<td style="text-align:center">主键名称</td>
+<td style="text-align:center">Primary key Name</td>
 <td style="text-align:center">EF 将为名为 Id 或&lt;实体类名+“Id”（不区分大小写）的属性创建主键列</td>
 </tr>
 <tr>
-<td style="text-align:center">外键属性名称</td>
+<td style="text-align:center">Foreign key property Name</td>
 <td style="text-align:center">默认情况下，EF 将查找与主体实体主键名称相同名称的外键属性如果外键属性不存在，那么 EF 将在 Db 表中使用&lt;依赖导航属性名称+“_”+ &lt;主体实体主键属性名称&gt;创建一个 FK 列</td>
 </tr>
 <tr>
-<td style="text-align:center">空列</td>
+<td style="text-align:center">Null column</td>
 <td style="text-align:center">EF 为所有引用类型属性和可为空的基本属性创建一个空列，例如字符串，Nullable <int>，Student，Grade（所有类类型属性）</td>
 </tr>
 <tr>
-<td style="text-align:center">不是空列</td>
+<td style="text-align:center">Not Null Column</td>
 <td style="text-align:center">EF 为主键属性和非空值类型属性（例如 int，float，decimal，datetime 等）创建 NotNull 列</td>
 </tr>
 <tr>
-<td style="text-align:center">数据库列顺序</td>
+<td style="text-align:center">DB Columns order</td>
 <td style="text-align:center">EF 将按照与实体类中的属性相同的顺序创建数据库列。但是，主键列会先移动</td>
 </tr>
 <tr>
-<td style="text-align:center">映射到数据库的属性</td>
+<td style="text-align:center">Properties mapping to DB</td>
 <td style="text-align:center">默认情况下，所有属性都将映射到数据库。使用该[NotMapped]属性从数据库映射中排除属性或类。</td>
 </tr>
 <tr>
-<td style="text-align:center">级联删除</td>
+<td style="text-align:center">Cascade delete</td>
 <td style="text-align:center">默认情况下为所有类型的关系启用</td>
 </tr>
 </tbody>
@@ -8841,9 +8853,7 @@ userEntry.State = EntityState.Detached;//不追踪标记
 <blockquote>
 <p>数据注解是一种简单的基于属性的配置，可以将其应用于域类及其属性。这些属性不仅用于 EF,还用于 ASP.NETWeb表单或MVC等，包含在<code>system.componentmodel.dataannotations和system.componentmodel.dataannotations.schema</code>中</p>
 </blockquote>
-<blockquote>
-<p>注意：数据注解仅为配置选项的子集,数据注解属性不支持实体框架的所有配置选项。Fluent API，它提供了 EF 的所有配置选项</p>
-</blockquote>
+<p><strong>注意</strong>：数据注解仅为配置选项的子集,数据注解属性不支持实体框架的所有配置选项。<code>Fluent API</code>提供了EF的所有配置选项</p>
 <p><strong>System.ComponentModel.DataAnnotations</strong></p>
 <table>
 <thead>
@@ -8944,7 +8954,7 @@ public class Book
 </code></pre>
 <h3 id="FluentAPI">FluentAPI</h3>
 <blockquote>
-<p>当EF从域类构建模型时，可以应用<code>Fluent API</code>配置。可以通过重写 Entity Framework 6.x 中的<code>OnModelCreating</code>方法来注入 Fluent API 配置 DbContext；在 EF6.x 中，DbModelBuilder 类充当 Fluent API，我们可以使用它来配置许多不同的东西。它提供了比数据注解属性更多的配置选项，要编写 Fluent API 配置，需要覆盖上下文类中的<code>OnModelCreating()</code>方法</p>
+<p>当EF从域类构建模型时，可以应用<code>Fluent API</code>配置。可以通过重写<code>Entity Framework 6.x</code>中的<code>OnModelCreating</code>方法来注入<code>Fluent API</code>配置<code>DbContext</code>；在 EF6.x 中，<code>DbModelBuilder</code>类充当<code>Fluent API</code>，可以使用它来配置许多不同的东西。它提供了比数据注解属性更多的配置选项，要编写<code>Fluent API</code>配置，需要覆盖上下文类中的<code>OnModelCreating()</code>方法</p>
 </blockquote>
 <p><strong>允许同时使用数据注解属性和 Fluent API。Fluent API 优先于数据注解属性</strong></p>
 <table>
@@ -9136,10 +9146,6 @@ public class Book
     }
 }
 </code></pre>
-<h2 id="查询">查询</h2>
-<h2 id="事务">事务</h2>
-<h2 id="延迟加载和预加载">延迟加载和预加载</h2>
-<h2 id="日志记录">日志记录</h2>
 <h2 id="数据库初始化">数据库初始化</h2>
 <p><img src="/images/2020-12-21-16-38-30.png" alt=""></p>
 <blockquote>
@@ -9158,11 +9164,11 @@ public class Book
 <blockquote>
 <p>如果指定了数据库名称参数,<code>CodeFirst</code>将使用本地<code>SQLEXPRESS</code>数据库服务器的基础构造函数中指定的名称创建一个数据库</p>
 </blockquote>
-<h3 id="ConnectionString-名称">ConnectionString 名称</h3>
+<h3 id="ConnectionString">ConnectionString</h3>
 <blockquote>
 <p>在<code>app.config</code>或<code>web.config</code>中定义连接字符串,并在上下文类的基础构造函数中指定以<code>name=</code>开头的连接字符串名称;确保<code>providerName=&quot;System.Data.SqlClient&quot;</code>在连接字符串中包含 <code>SQLServer</code>数据库</p>
 </blockquote>
-<h3 id="EF-提供了四种数据库初始化种策略">EF 提供了四种数据库初始化种策略</h3>
+<h2 id="数据库初始化策略">数据库初始化策略</h2>
 <p>策略一：数据库不存在时重新创建数据库(默认策略)</p>
 <pre><code class="language-cs">Database.SetInitializer&lt;xxDbContext(new CreateDatabaseIfNotExists&lt;xxDbContext());
 </code></pre>
@@ -9176,11 +9182,82 @@ public class Book
 <p>至于<code>DropCreateDatabaseAlways</code>策略每次运行应用程序都会重新创建数据库很好理解</p>
 <p>自定义数据库初始化策略</p>
 <p>通过<code>Database.SetInitializer&lt;BaseDbContext(null);</code>可以自定义初始化策略</p>
+<h2 id="实体关系">实体关系</h2>
+<blockquote>
+<p>EF与数据库一样支持三种关系类型：</p>
+</blockquote>
+<h3 id="One-to-One">One-to-One</h3>
+<h3 id="One-to-Many">One-to-Many</h3>
+<h3 id="Many-to-Many">Many-to-Many</h3>
+<h2 id="Method">Method</h2>
+<h3 id="Add">Add()</h3>
+<h3 id="AddRange">AddRange()</h3>
+<h3 id=""></h3>
+<h2 id="事务">事务</h2>
+<h2 id="延迟加载和预加载">延迟加载和预加载</h2>
+<h2 id="日志记录">日志记录</h2>
 <h2 id="数据迁移">数据迁移</h2>
+<blockquote>
+<p>之前说到 Code-First 中有不同的数据库初始化策略,如<code>CreateDatabaseIfNotExists</code>,<code>DropCreateDatabaseIfModelChanges</code>和<code>DropCreateDatabaseAlways</code>。但是,这些策略存在一些问题,例如,数据库中已经有数据（种子数据除外）或现有的存储过程,触发器等。这些策略用于删除整个数据库并重新创建它,因此将丢失数据和其他数据库对象</p>
+</blockquote>
+<p>EF 引入了一种迁移工具,可在模型更改时自动更新数据库模式,而不会丢失任何现有数据或其他数据库对象。它使用一个名为<code>MigrateDatabaseToLatestVersion</code>的新数据库初始化程序</p>
+<p>有两种迁移方式</p>
+<ul>
+<li>自动迁移</li>
+<li>基于代码的迁移</li>
+</ul>
+<h3 id="自动迁移">自动迁移</h3>
+<blockquote>
+<p>自动迁移可以通过<code>enable-migrations</code>在软件包管理器控制台中执行命令来实现。打开包管理器控制台,然后运行<code>enable-migrations</code>命令(确保默认项目是上下文类所在的项目)。一旦命令成功运行,它将创建一个<code>Configuration</code>从项目<code>DbMigrationConfiguration</code>中的<code>Migration</code>文件夹派生的内部密封类</p>
+</blockquote>
+<p><img src="/images/2020-12-21-16-41-22.png" alt=""></p>
+<p><code>Configuration</code>类的构造函数中,<code>AutomaticMigrationsEnabled</code>设置为 true。启用自动迁移,下一步是将上下文类中的数据库初始化程序设置为<code>MigrateDatabaseToLatestVersion</code>,如下所示</p>
+<pre><code class="language-cs">public EFTestContext() : base(&quot;name=EFTestInstance&quot;)
+{
+    Database.SetInitializer&lt;EFTestContext&gt;(
+        new MigrateDatabaseToLatestVersion&lt;EFTestContext, Configuration&gt;());
+}
+</code></pre>
+<h3 id="基于代码迁移">基于代码迁移</h3>
+<blockquote>
+<p>基于代码的迁移提供了对迁移的更多控制,并允许配置其他内容,例如设置列的默认值,配置计算列等。为了使用基于代码的迁移,需要在 Visual Studio 的包管理器控制台中执行以下命令</p>
+</blockquote>
+<pre><code class="language-cs">public Configuration()
+{
+    //关闭自动迁移,使用基于代码的迁移
+    AutomaticMigrationsEnabled = false;
+    ContextKey = &quot;EFTest.EFTestContext&quot;;
+}
+</code></pre>
+<ul>
+<li><code>Enable-Migrations</code>: 创建 Configuration 类启用项目中的迁移</li>
+<li><code>Add-Migration</code>: 使用 Up()和 Down()方法根据指定的名称创建新的迁移类</li>
+<li><code>Update-Database</code>:执行由该 Add-Migration 命令创建的上一个迁移文件,并将更改应用于数据库模式</li>
+</ul>
+<p><code>nuget</code>中使用<code>Add-Migration</code>带有迁移类名称的命令创建迁移类，<code>Up()</code>方法包含用于创建数据库对象的<code>Down()</code>代码,该方法包含用于删除或删除数据库对象的代码。也可以编写自己的自定义代码以进行其他配置。这比自动迁移更有优势</p>
+<p>使用<code>Add-Migration</code>命令创建迁移文件后,必须更新数据库。执行<code>Update-Database</code>命令来创建或修改数据库模式。使用<code>–verbose</code>选项查看要应用于目标数据库的 SQL 语句</p>
+<h3 id="回滚迁移">回滚迁移</h3>
+<blockquote>
+<p>可以使用update-database –TargetMigration 参数执行命令,使其返回到想要回滚的点</p>
+</blockquote>
+<p><code>update-database -TargetMigration:version</code></p>
+<h2 id="种子数据">种子数据</h2>
+<blockquote>
+<p>可以在数据库初始化过程中将数据插入数据库表中。比如在数据初始化时给应用程序提供一些测试数据</p>
+</blockquote>
+<pre><code class="language-cs">protected override void Seed(EFTest.EFTestContext context)
+{
+    //添加种子数据
+}
+</code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="http://www.entityframeworktutorial.net/code-first/configure-one-to-one-relationship-in-code-first.aspx" target="_blank" rel="noopener">http://www.entityframeworktutorial.net/code-first/configure-one-to-one-relationship-in-code-first.aspx</a><br>
-<a href="http://www.entityframeworktutorial.net/code-first/configure-one-to-many-relationship-in-code-first.aspx" target="_blank" rel="noopener">http://www.entityframeworktutorial.net/code-first/configure-one-to-many-relationship-in-code-first.aspx</a><br>
-<a href="http://www.entityframeworktutorial.net/code-first/configure-many-to-many-relationship-in-code-first.aspx" target="_blank" rel="noopener">http://www.entityframeworktutorial.net/code-first/configure-many-to-many-relationship-in-code-first.aspx</a></p>
+<p><a href="https://docs.microsoft.com/zh-cn/ef/ef6/fundamentals/disconnected-entities/" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/ef/ef6/fundamentals/disconnected-entities/</a><br>
+<a href="https://www.entityframeworktutorial.net/" target="_blank" rel="noopener">https://www.entityframeworktutorial.net/</a><br>
+<a href="http://www.entityframeworktutorial.net/code-first/" target="_blank" rel="noopener">http://www.entityframeworktutorial.net/code-first/</a><br>
+<a href="http://www.entityframeworktutorial.net/code-first/" target="_blank" rel="noopener">http://www.entityframeworktutorial.net/code-first/</a><br>
+<a href="http://www.entityframeworktutorial.net/code-first/" target="_blank" rel="noopener">http://www.entityframeworktutorial.net/code-first/</a><br>
+<a href="https://www.cnblogs.com/chenwolong/p/LazyLoad.html" target="_blank" rel="noopener">https://www.cnblogs.com/chenwolong/p/LazyLoad.html</a><br>
+<a href="https://www.bookstack.cn/read/ef6-zh/40c30223b82a0588.md" target="_blank" rel="noopener">https://www.bookstack.cn/read/ef6-zh/40c30223b82a0588.md</a></p>
 ]]></content>
       <categories>
         <category>ORM</category>
