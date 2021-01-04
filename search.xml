@@ -8531,7 +8531,6 @@ async Task DoAsync()
 <blockquote>
 <p><code>ORM（Object Relational Mapping）</code>中文名字：对象关系映射，主要实现【程序对象】到【关系型数据库】的映射</p>
 </blockquote>
-<p>ORM 含义</p>
 <ul>
 <li>O：<code>Domain Object</code> 领域模型</li>
 <li>R：<code>Relational DataBase</code>关系型数据库</li>
@@ -8539,7 +8538,7 @@ async Task DoAsync()
 </ul>
 <h2 id="Entity-Framework-Features">Entity Framework Features</h2>
 <ul>
-<li>跨平台   EF Core是一个跨平台的框架，可以在<code>Windows，Linux</code>和<code>Mac</code>上运行</li>
+<li>跨平台   <code>EF Core</code>是一个跨平台的框架，可以在<code>Windows，Linux</code>和<code>Mac</code>上运行</li>
 <li>建模     EF可以创建具有不同数据类型<code>get/set</code>属性的<code>EDM（Entity Data Model/实体数据模型）</code>。它使用此模型查询或保存底层数据库的数据</li>
 <li>查询     EF允许使用<code>LINQ</code>从底层数据库中检索数据，同时也支持直接对数据库执行原始SQL查询</li>
 <li>更改跟踪 EF会跟踪需要提交到数据库的实体实例（属性值）发生的更改</li>
@@ -8553,10 +8552,10 @@ async Task DoAsync()
 <h2 id="基本工作流程">基本工作流程</h2>
 <p><img src="/images/2020-12-22-11-16-50.png" alt=""></p>
 <ol>
-<li>首先，需要定义模型。定义模型包括定义域类，从DbContext派生的上下文类和配置（如果有）。EF将根据模型执行CRUD操作</li>
-<li>要插入数据，将域对象添加到上下文中并调用<code>SaveChanges()</code>方法。EF API将构建适当的<code>INSERT命令</code>并将其执行到数据库</li>
-<li>若要读取数据，执行<code>LINQ-to-Entities</code>查询。EF API会将查询转换为基础关系数据库的<code>SQL</code>查询并执行。结果将转换为域（实体）对象</li>
-<li>要编辑或删除数据，请从上下文中更新或删除实体对象，然后调用<code>SaveChanges()</code>方法。EF API将构建适当的<code>UPDATE</code>或<code>DELETE</code>命令并将其执行到数据库</li>
+<li>首先，需要定义模型。定义模型包括定义域类，从<code>DbContext</code>派生的上下文类和配置（如果有）。EF将根据模型执行<code>CRUD</code>操作</li>
+<li>要插入数据，将域对象添加到上下文中并调用<code>SaveChanges()</code>方法。<code>EF API</code>将构建适当的<code>INSERT命令</code>并将其执行到数据库</li>
+<li>若要读取数据，执行<code>LINQ-to-Entities</code>查询。<code>EF API</code>会将查询转换为基础关系数据库的<code>SQL</code>查询并执行。结果将转换为域（实体）对象</li>
+<li>要编辑或删除数据，请从上下文中更新或删除实体对象，然后调用<code>SaveChanges()</code>方法。<code>EF API</code>将构建适当的<code>UPDATE</code>或<code>DELETE</code>命令并将其执行到数据库</li>
 </ol>
 <h2 id="EF架构">EF架构</h2>
 <p><img src="/images/2020-12-22-11-19-21.png" alt=""></p>
@@ -8565,7 +8564,7 @@ async Task DoAsync()
 <li>概念模型：概念模型包含模型类及其关系。独立于数据库表设计</li>
 <li>存储模型：存储模型是数据库设计模型，其中包括表，视图，存储过程以及它们之间的关系和键</li>
 <li>映射：映射包含有关如何将概念模型映射到存储模型的信息</li>
-<li>LINQ到实体： LINQ到实体（L2E）是一种查询语言，用于针对对象模型编写查询。它返回在概念模型中定义的实体</li>
+<li>LINQ到实体： <code>LINQ</code>到实体（L2E）是一种查询语言，用于针对对象模型编写查询。它返回在概念模型中定义的实体</li>
 <li>实体SQL：与<code>LINQ to Entities</code>一样，实体SQL是另一种查询语言（仅适用于EF6）</li>
 <li>对象服务：对象服务是访问数据库中的数据并将其返回的主要入口点。对象服务负责实现，这是将从实体客户数据提供者（下一层）返回的数据转换为实体对象结构的过程</li>
 <li>实体客户数据提供者：这一层的主要职责是将<code>LINQ-to-Entities</code>或实体SQL查询转换为基础数据库可以理解的SQL查询。它与<code>ADO.Net</code>数据提供程序进行通信，后者再从数据库发送或检索数据</li>
@@ -8592,7 +8591,7 @@ async Task DoAsync()
 </ul>
 <h3 id="Model-First">Model First</h3>
 <blockquote>
-<p>这种方法和 Code First 方法很相似，但是这种情况下使用了<code>EDM</code>视觉设计器来设计模型。数据库模式和类将会通过这个概念模型生成。该模型将会给我们创建数据库的<code>SQL</code>语句，可以使用它来创建数据库并连接应用程序</p>
+<p>这种方法和 Code First 方法很相似，但是这种情况下使用了<code>EDM</code>视觉设计器来设计模型。数据库模式和类将会通过这个概念模型生成。该模型将创建数据库的<code>SQL</code>语句，可以使用它来创建数据库并连接应用程序</p>
 </blockquote>
 <p><img src="/images/2020-12-22-11-22-57.png" alt=""></p>
 <p>之前说到EF支持三种开发方式，在开发时如何选择适合自己的方式</p>
@@ -8628,7 +8627,7 @@ async Task DoAsync()
 <p><code>&lt;number&gt;</code> 表示要安装的 EF 的特定版本</p>
 <h2 id="DbSet">DbSet</h2>
 <blockquote>
-<p><code>DbSet</code>表示上下文中给定类型的所有实体的集合或可从数据库中查询的给定类型的所有实体的集合。可以使用<code>DbContext.Set</code>方法从<code>DbContext</code>中创建<code>DbSet</code>对象,<code>DbSet</code>对应数据库中的表，DbSet常用的方法如下</p>
+<p><code>DbSet</code>表示上下文中给定类型的所有实体的集合或可从数据库中查询的给定类型的所有实体的集合。可以使用<code>DbContext.Set</code>方法从<code>DbContext</code>中创建<code>DbSet</code>对象,<code>DbSet</code>对应数据库中的表，常用方法如下</p>
 </blockquote>
 <table>
 <thead>
@@ -8642,44 +8641,44 @@ async Task DoAsync()
 <tbody>
 <tr>
 <td><code>Add(Entity)/AddRange</code></td>
-<td>返回添加的Entity</td>
-<td>添加实体到context中，并给实体标记Added状态</td>
-<td><code>dbcontext.Students.Add(studentEntity) </code></td>
+<td>返回添加的<code>Entity</code></td>
+<td>添加实体到<code>context</code>中，并给实体标记<code>Added</code>状态</td>
+<td><code>dbcontext.Students.Add(studentEntity)</code></td>
 </tr>
 <tr>
 <td><code>AsNoTracking&lt;Entity&gt;</code></td>
 <td><code>DBQuery&lt;Entity&gt;</code></td>
-<td>获取一个不被context缓冲和追踪的序列,多用于获取只读序列</td>
+<td>获取一个不被<code>context</code>缓冲和追踪的序列,多用于获取只读序列</td>
 <td><code>dbcontext.Students.AsNoTracking&lt;Student&gt;().ToList();</code></td>
 </tr>
 <tr>
 <td><code>Attach(Entity)</code></td>
-<td>返回添加的Entity</td>
-<td>将实体添加到context上下文中</td>
+<td>返回添加的<code>Entity</code></td>
+<td>将实体添加到<code>context</code>上下文中</td>
 <td><code>dbcontext.Students.Attach(studentEntity);</code></td>
 </tr>
 <tr>
 <td><code>Find(int)</code></td>
-<td>返回对应Id的Entity</td>
-<td>通过主键获取实体对象，如果在数据库和context中不存在那么返回null,注：也会返回在context中存在但还没有写入数据库的实体对象</td>
+<td>返回对应<code>Id</code>的<code>Entity</code></td>
+<td>通过主键获取实体对象，如果在数据库和<code>context</code>中不存在那么返回null,注：也会返回在<code>context</code>中存在但还没有写入数据库的实体对象</td>
 <td><code>dbcontext.Students.Find(1);</code></td>
 </tr>
 <tr>
 <td><code>Include</code></td>
-<td>DBQuery</td>
-<td>include必须是外键连接，且立即执行；join连接不需要外键 ，延时执行</td>
+<td><code>DBQuery</code></td>
+<td><code>include</code>必须是外键连接，且立即执行；<code>join</code>连接不需要外键 ，延时执行</td>
 <td><code>dbcontext.Students.Include(&quot;StudentAddress&quot;).ToList&lt;Student&gt;();var studentList = dbcontext.Students.Include(s =&gt; s.StudentAddress).ToList&lt;Student&gt;();</code></td>
 </tr>
 <tr>
 <td><code>Remove/RemoveRange</code></td>
-<td>返回删除的entity</td>
-<td>删除实例，并给实例对象添加deleted标记</td>
+<td>返回删除的<code>entity</code></td>
+<td>删除实例，并给实例对象添加<code>deleted</code>标记</td>
 <td><code>dbcontext.Students.Remove(studentEntity);</code></td>
 </tr>
 <tr>
 <td><code>SqlQuery</code></td>
-<td>DBSqlQuery</td>
-<td>通过sql获取实例集合. 默认情况下，返回的集合被追踪的，可以使用AsNoTracking()取消追踪</td>
+<td><code>DBSqlQuery</code></td>
+<td>通过<code>sql</code>获取实例集合. 默认情况下，返回的集合被追踪的，可以使用<code>AsNoTracking()</code>取消追踪</td>
 <td><code>dbcontext.Students.SqlQuery(&quot;select * from student where studentid = 1&quot;).FirstOrDefault();</code></td>
 </tr>
 </tbody>
@@ -8693,9 +8692,9 @@ async Task DoAsync()
 <li><code>deleted</code>:删除状态  一般执行<code>db.Set&lt;T&gt;.Remove(t)/RemoveRange(ts)</code>时标记为<code>deleted</code>。数据库中必须先有了相应的记录，所有<code>deleted</code>不能转为<code>added</code>状态</li>
 <li><code>modified</code>:修改状态  改变了实体的属性处于这个状态，可以转为<code>deleted</code>，不能转为<code>added</code>状态</li>
 </ol>
-<p>为当前所有需要跟踪的实体对象，创建一个相应的<code>DbEntityEntry</code>对象，此对象包容着实体对象每个属性的三个值：<code>Current Value</code>、<code>Original Value</code>和<code>Database Value</code>，只要比较这三个值，很容易地就知道哪个属性值被修改了(设置：<code>context.Configuration.AutoDetectChangesEnabled = false</code>则不会去追踪，默认是打开的），从而生成相应的<code>Sql</code>命令。对象的状态会随着操作而改变，也可以自己指定状态</p>
+<p>为当前所有需要跟踪的实体对象，创建一个相应的<code>DbEntityEntry</code>对象，此对象包容着实体对象每个属性的三个值：<code>Current Value</code>、<code>Original Value</code>和<code>Database Value</code>，比较这三个值，很容易就知道哪个属性值被修改了(设置：<code>context.Configuration.AutoDetectChangesEnabled = false</code>则不会去追踪，默认是打开的），从而生成相应的<code>Sql</code>命令。对象的状态会随着操作而改变，也可以自己指定状态</p>
 <blockquote>
-<p>当<code>DbContext</code>执行<code>SaveChanges()</code>方法时，根据实体的状态生成相应的Sql语句，通过Ado.net完成数据的持久化</p>
+<p>当<code>DbContext</code>执行<code>SaveChanges()</code>方法时，根据实体的状态生成相应的Sql语句，通过<code>Ado.net</code>完成数据的持久化</p>
 </blockquote>
 <pre><code class="language-cs">DbEntityEntry userEntry = context.Entry(user);
 userEntry.State = EntityState.Added;//添加标记
@@ -8727,12 +8726,15 @@ userEntry.State = EntityState.Detached;//不追踪标记
 <p><strong>缺点</strong>：<br>
 保存前需要为每个实体设置适当的状态<br>
 执行速度比连接的方案慢</p>
-<h2 id="Conventions">Conventions</h2>
+<h2 id="域模型配置">域模型配置</h2>
+<blockquote>
+<p>针对域模型，EF提供默认的约定、<code>DataAnnotation</code>、<code>Fluent API</code>对域模型进行配置</p>
+</blockquote>
+<h3 id="Conventions">Conventions</h3>
 <blockquote>
 <p><code>Conventions are sets of default rules which automatically configure a conceptual model based on your domain classes when working with the Code-First approach</code></p>
 </blockquote>
 <p>约定是一组默认规则，在使用 Code-First 方法时会根据您的域类自动配置概念模型</p>
-<p>针对域模型，EF提供默认的约定、<code>DataAnnotation</code>、<code>Fluent API</code>对域模型进行配置</p>
 <p><code>CodeFirst</code>模式下会使用默认约定从域模型创建数据库,同时也提供了方法重写这些约定;有两种方法可以实现<br>
 1.  使用数据注解属性<br>
 2.  使用<code>Fluent API</code></p>
@@ -8851,7 +8853,7 @@ userEntry.State = EntityState.Detached;//不追踪标记
 </table>
 <h3 id="数据注解">数据注解</h3>
 <blockquote>
-<p>数据注解是一种简单的基于属性的配置，可以将其应用于域类及其属性。这些属性不仅用于 EF,还用于 ASP.NETWeb表单或MVC等，包含在<code>system.componentmodel.dataannotations和system.componentmodel.dataannotations.schema</code>中</p>
+<p>数据注解是一种简单的基于属性的配置，可以将其应用于域类及其属性。这些属性不仅用于EF,还用于 <code>ASP.NETWeb</code>表单或<code>MVC</code>等，包含在<code>system.componentmodel.dataannotations和system.componentmodel.dataannotations.schema</code>中</p>
 </blockquote>
 <p><strong>注意</strong>：数据注解仅为配置选项的子集,数据注解属性不支持实体框架的所有配置选项。<code>Fluent API</code>提供了EF的所有配置选项</p>
 <p><strong>System.ComponentModel.DataAnnotations</strong></p>
@@ -9106,7 +9108,7 @@ public class Book
 </code></pre>
 <h3 id="通过类配置-Fluent-API">通过类配置 Fluent API</h3>
 <blockquote>
-<p>数据注释仅为<code>Fluent API</code>的子集，他们都是用来针对域模型做相关操作(项目中如果在 OnModelCreating 中写了大量 Fluent API 配置的域模型，那么会变得难以维护,EF 中可以通过创建单独类为每个类都配置一个相关类来解决)</p>
+<p>数据注释仅为<code>Fluent API</code>的子集，他们都是用来针对域模型做相关操作(项目中如果在<code>OnModelCreating</code>中写了大量<code>Fluent API</code>配置的域模型，那么会变得难以维护,EF 中可以通过创建单独类为每个类都配置一个相关类来解决)</p>
 </blockquote>
 <pre><code class="language-cs">public class BookConfiguration : EntityTypeConfiguration&lt;Book&gt;
 {
@@ -9189,10 +9191,6 @@ public class Book
 <h3 id="One-to-One">One-to-One</h3>
 <h3 id="One-to-Many">One-to-Many</h3>
 <h3 id="Many-to-Many">Many-to-Many</h3>
-<h2 id="Method">Method</h2>
-<h3 id="Add">Add()</h3>
-<h3 id="AddRange">AddRange()</h3>
-<h3 id=""></h3>
 <h2 id="事务">事务</h2>
 <h2 id="延迟加载和预加载">延迟加载和预加载</h2>
 <h2 id="日志记录">日志记录</h2>
