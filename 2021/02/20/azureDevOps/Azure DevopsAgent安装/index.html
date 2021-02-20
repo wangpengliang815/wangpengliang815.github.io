@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>RabbitMQ常用命令 | Wang&#39;Note</title>
+  <title>Azure DevopsAgent | Wang&#39;Note</title>
   <meta name="keywords" content="">
-  <meta name="description" content="RabbitMQ常用命令 | Wang&#39;Note">
+  <meta name="description" content="Azure DevopsAgent | Wang&#39;Note">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="note">
 <meta property="og:type" content="website">
@@ -546,9 +546,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-rabbitMQ/RabbitMQ常用命令" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-azureDevOps/Azure DevopsAgent安装" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">RabbitMQ常用命令</h1>
+        <h1 class="article-title">Azure DevopsAgent</h1>
     
     <div class="article-meta">
         
@@ -558,7 +558,7 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="RabbitMQ">RabbitMQ</a>
+            <a  data-rel="AzureDevops">AzureDevops</a>
             
         </span>
         
@@ -566,12 +566,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-11-22 13:51:45'>2020-11-21 20:57</time>
+            Created At : <time class="date" title='Updated At: 2021-02-20 23:04:48'>2021-02-20 22:59</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:742</span>
+        <span>Count:697</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -590,7 +590,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#用户角色分类"><span class="toc-text">用户角色分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#none"><span class="toc-text">none</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#management"><span class="toc-text">management</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policymaker"><span class="toc-text">policymaker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#monitoring"><span class="toc-text">monitoring</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#administrator"><span class="toc-text">administrator</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ-Control"><span class="toc-text">RabbitMQ Control</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建用户"><span class="toc-text">创建用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置权限"><span class="toc-text">设置权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看用户列表"><span class="toc-text">查看用户列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为用户赋权"><span class="toc-text">为用户赋权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看权限"><span class="toc-text">查看权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#清除权限"><span class="toc-text">清除权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除用户"><span class="toc-text">删除用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改用户密码"><span class="toc-text">修改用户密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#激活RabbitMQ’s-Management-Plugin"><span class="toc-text">激活RabbitMQ’s Management Plugin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动监控管理器"><span class="toc-text">启动监控管理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关闭监控管理器"><span class="toc-text">关闭监控管理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动rabbitmq"><span class="toc-text">启动rabbitmq</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关闭rabbitmq"><span class="toc-text">关闭rabbitmq</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看所有的队列"><span class="toc-text">查看所有的队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#清除所有的队列"><span class="toc-text">清除所有的队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看已有用户及用户的角色"><span class="toc-text">查看已有用户及用户的角色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#新增虚拟主机"><span class="toc-text">新增虚拟主机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将新虚拟主机授权给新用户"><span class="toc-text">将新虚拟主机授权给新用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置用户权限"><span class="toc-text">设置用户权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看-指定hostpath-所有用户的权限信息"><span class="toc-text">查看(指定hostpath)所有用户的权限信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看指定用户的权限信息"><span class="toc-text">查看指定用户的权限信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#清除用户的权限信息"><span class="toc-text">清除用户的权限信息</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Agent安装"><span class="toc-text">Agent安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CI-Agent"><span class="toc-text">CI-Agent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CD-Agent"><span class="toc-text">CD-Agent</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -606,87 +606,91 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="用户角色分类">用户角色分类</h2>
-<h3 id="none">none</h3>
-<p>通常就是普通的生产者和消费者,无法登录控制台,不能访问<code>management plugin</code>，通常就是普通的生产者和消费者</p>
-<h3 id="management">management</h3>
-<p>普通管理者，仅可登陆管理控制台(启用<code>management plugin</code>的情况下)，无法看到节点信息，也无法对<code>policies</code>进行管理。可以通过<code>AMQP</code>做的任何事外加：<br>
-列出自己可以通过<code>AMQP</code>登入的<code>virtual hosts</code><br>
-查看自己的<code>virtual hosts</code>中的<code>queues, exchanges</code> 和 <code>bindings</code><br>
-查看和关闭自己的<code>channels</code> 和 <code>connections</code><br>
-查看有关自己的<code>virtual hosts</code>的“全局”的统计信息，包含其他用户在这些<code>virtual hosts</code>中的活动</p>
-<h3 id="policymaker">policymaker</h3>
-<p>策略制定者，<code>management</code>可以做的任何事外加：<br>
-查看、创建和删除自己的<code>virtual hosts</code>所属的<code>policies</code>和<code>parameters</code></p>
-<h3 id="monitoring">monitoring</h3>
-<p>监控者，<code>management</code>可以做的任何事外加：<br>
-列出所有<code>virtual hosts</code>，包括他们不能登录的<code>virtual hosts</code><br>
-查看其他用户的<code>connections</code>和<code>channels</code><br>
-查看节点级别的数据如<code>clustering</code>和<code>memory</code>使用情况<br>
-查看真正的关于所有<code>virtual hosts</code>的全局的统计信息<br>
-同时可以查看<code>rabbitmq</code>节点的相关信息(进程数，内存使用情况，磁盘使用情况等)</p>
-<h3 id="administrator">administrator</h3>
-<p>，超级管理员，<code>policymaker</code>和<code>monitoring</code>可以做的任何事外加:<br>
-创建和删除<code>virtual hosts</code><br>
-查看、创建和删除<code>users</code><br>
-查看创建和删除<code>permissions</code><br>
-关闭其他用户的<code>connections</code></p>
-<h2 id="RabbitMQ-Control">RabbitMQ Control</h2>
-<blockquote>
-<p>使用Web管理界面可以实现RabbitMQ的大部分常用功能，但是有些功能WebUI是做不到的，如：开启/关闭RabbitMQ应用程序和集群的管理等。RabbitMQ Control是RabbitMQ的命令行管理工具，可以调用所有的RabbitMQ内置功能，主命令是<code>rabbitmqctl </code></p>
-</blockquote>
-<h3 id="创建用户">创建用户</h3>
-<p><code>rabbitmqctl add_user {用户名} {密码}</code></p>
-<h3 id="设置权限">设置权限</h3>
-<p><code>rabbitmqctl set_user_tags {用户名} {权限}</code><br>
-例：创建一个超级用户</p>
-<pre><code>rabbitmqctl add_user admin1 admin1
-rabbitmqctl set_user_tags admin1 administrator
+        <p>记录<code>Azure Devops</code>中CI/CD Agent的安装</p>
+<a id="more"></a>
+<h2 id="Agent安装">Agent安装</h2>
+<p><img src="/images/2020-11-17-23-18-56.png" alt=""></p>
+<h3 id="CI-Agent">CI-Agent</h3>
+<pre><code>PS D:\AzureDevopsServer\install\agent-CI&gt; .\config.cmd
+
+  ___                      ______ _            _ _
+ / _ \                     | ___ (_)          | (_)
+/ /_\ \_____   _ _ __ ___  | |_/ /_ _ __   ___| |_ _ __   ___  ___
+|  _  |_  / | | | '__/ _ \ |  __/| | '_ \ / _ \ | | '_ \ / _ \/ __|
+| | | |/ /| |_| | | |  __/ | |   | | |_) |  __/ | | | | |  __/\__ \
+\_| |_/___|\__,_|_|  \___| \_|   |_| .__/ \___|_|_|_| |_|\___||___/
+                                   | |
+        agent v2.170.1             |_|          (commit bb272bb)
+
+
+&gt;&gt; 连接:
+
+输入 服务器 URL &gt; http://localhost:9090/
+输入 身份验证类型 (对于 Integrated 按 Enter) &gt;
+正在连接到服务器...
+
+&gt;&gt; 注册代理:
+
+输入 代理池 (对于 default 按 Enter) &gt;
+输入 代理名称 (对于 WANGPENGLIANG 按 Enter) &gt;
+正在扫描工具功能。
+正在连接到服务器。
+已成功添加代理
+正在测试代理连接。
+输入 工作文件夹 (对于 _work 按 Enter) &gt;
+2020-11-02 07:17:03Z: 设置已保存。
+输入 是否将代理作为服务运行? (Y/N) (对于 N 按 Enter) &gt; y
+输入 要用于服务的用户帐户 (对于 NT AUTHORITY\NETWORK SERVICE 按 Enter) &gt;
+将文件权限授予“NT AUTHORITY\NETWORK SERVICE”。
+已成功安装服务 vstsagent.localhost.Default.WANGPENGLIANG
+已成功设置服务 vstsagent.localhost.Default.WANGPENGLIANG 的恢复选项
+服务 vstsagent.localhost.Default.WANGPENGLIANG 已成功设置为延迟自动启动
+已成功配置服务 vstsagent.localhost.Default.WANGPENGLIANG
+已成功启动服务 vstsagent.localhost.Default.WANGPENGLIANG
 </code></pre>
-<h3 id="查看用户列表">查看用户列表</h3>
-<p><code>rabbitmqctl list_users</code></p>
-<h3 id="为用户赋权">为用户赋权</h3>
-<pre><code>// 使用户user1具有vhost1这个virtual host中所有资源的配置、写、读权限以便管理其中的资源
-rabbitmqctl  set_permissions -p vhost1 user1 '.*' '.*' '.*' 
+<p><img src="/images/2020-11-17-23-19-12.png" alt=""></p>
+<h3 id="CD-Agent">CD-Agent</h3>
+<p>复制了一份<code>agent</code>文件夹内容，并且命令修改为<code>.\config.cmd --deploymentpool</code></p>
+<pre><code>PS D:\AzureDevopsServer\install\agent-CD&gt; .\config.cmd --deploymentpool
+
+  ___                      ______ _            _ _
+ / _ \                     | ___ (_)          | (_)
+/ /_\ \_____   _ _ __ ___  | |_/ /_ _ __   ___| |_ _ __   ___  ___
+|  _  |_  / | | | '__/ _ \ |  __/| | '_ \ / _ \ | | '_ \ / _ \/ __|
+| | | |/ /| |_| | | |  __/ | |   | | |_) |  __/ | | | | |  __/\__ \
+\_| |_/___|\__,_|_|  \___| \_|   |_| .__/ \___|_|_|_| |_|\___||___/
+                                   | |
+        agent v2.170.1             |_|          (commit bb272bb)
+
+
+&gt;&gt; 连接:
+
+输入 服务器 URL &gt; http://localhost:9090/
+输入 身份验证类型 (对于 Integrated 按 Enter) &gt;
+正在连接到服务器...
+
+&gt;&gt; 注册代理:
+
+输入 部署池名称 &gt; deploymentpool
+输入 代理名称 (对于 WANGPENGLIANG 按 Enter) &gt;
+正在扫描工具功能。
+正在连接到服务器。
+已成功添加代理
+正在测试代理连接。
+输入 工作文件夹 (对于 _work 按 Enter) &gt;
+2020-11-02 07:14:25Z: 设置已保存。
+输入 是否将代理作为服务运行? (Y/N) (对于 N 按 Enter) &gt; y
+输入 要用于服务的用户帐户 (对于 NT AUTHORITY\SYSTEM 按 Enter) &gt;
+诊断日志中报告了 Error。请查看日志了解更多详细信息。
+    - D:\AzureDevopsServer\install\agent-CD\_diag\Agent_20201102-071319-utc.log
+将文件权限授予“NT AUTHORITY\SYSTEM”。
+已成功安装服务 vstsagent.localhost.deploymentpool.WANGPENGLIANG
+已成功设置服务 vstsagent.localhost.deploymentpool.WANGPENGLIANG 的恢复选项
+服务 vstsagent.localhost.deploymentpool.WANGPENGLIANG 已成功设置为延迟自动启动
+已成功配置服务 vstsagent.localhost.deploymentpool.WANGPENGLIANG
+已成功启动服务 vstsagent.localhost.deploymentpool.WANGPENGLIANG
 </code></pre>
-<h3 id="查看权限">查看权限</h3>
-<p><code>rabbitmqctl list_user_permissions user1</code><br>
-<code>rabbitmqctl list_permissions -p vhost1</code></p>
-<h3 id="清除权限">清除权限</h3>
-<p><code>rabbitmqctl clear_permissions [-p VHostPath] User</code></p>
-<h3 id="删除用户">删除用户</h3>
-<p><code>rabbitmqctl delete_user Username</code></p>
-<h3 id="修改用户密码">修改用户密码</h3>
-<p><code>rabbitmqctl change_password Username Newpassword</code></p>
-<h3 id="激活RabbitMQ’s-Management-Plugin">激活RabbitMQ’s Management Plugin</h3>
-<p>找到安装rabbitMQ的路径，然后切换到<code>sbin</code>的文件夹，管理员运行Shell脚本<br>
-<code>rabbitmq-pluginsenable rabbitmq_management</code></p>
-<h3 id="启动监控管理器">启动监控管理器</h3>
-<p><code>rabbitmq-plugins enable rabbitmq_management</code></p>
-<h3 id="关闭监控管理器">关闭监控管理器</h3>
-<p><code>rabbitmq-plugins disable rabbitmq_management</code></p>
-<h3 id="启动rabbitmq">启动rabbitmq</h3>
-<p><code>net start RabbitMQ</code></p>
-<h3 id="关闭rabbitmq">关闭rabbitmq</h3>
-<p><code>net stop RabbitMQ</code></p>
-<h3 id="查看所有的队列">查看所有的队列</h3>
-<p><code>rabbitmqctl list_queues</code></p>
-<h3 id="清除所有的队列">清除所有的队列</h3>
-<p><code>rabbitmqctl reset</code></p>
-<h3 id="查看已有用户及用户的角色">查看已有用户及用户的角色</h3>
-<p><code>rabbitmqctl list_users</code></p>
-<h3 id="新增虚拟主机">新增虚拟主机</h3>
-<p><code>rabbitmqctl add_vhost  vhost_name</code></p>
-<h3 id="将新虚拟主机授权给新用户">将新虚拟主机授权给新用户</h3>
-<p><code>rabbitmqctl set_permissions -p vhost_name username '.*' '.*' '.*'</code></p>
-<h3 id="设置用户权限">设置用户权限</h3>
-<p><code>rabbitmqctl  set_permissions  -p  VHostPath  username  ConfP  WriteP  ReadP</code></p>
-<h3 id="查看-指定hostpath-所有用户的权限信息">查看(指定hostpath)所有用户的权限信息</h3>
-<p><code>rabbitmqctl  list_permissions  [-p  VHostPath]</code></p>
-<h3 id="查看指定用户的权限信息">查看指定用户的权限信息</h3>
-<p><code>rabbitmqctl  list_user_permissions  username</code></p>
-<h3 id="清除用户的权限信息">清除用户的权限信息</h3>
-<p><code>rabbitmqctl  clear_permissions  [-p VHostPath]  username</code></p>
+<p><img src="/images/2020-11-17-23-19-19.png" alt=""></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，如果存在任何有错误或不够清晰的表达或示例代码，可以在下面评论区评论 </span>
