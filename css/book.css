@@ -32,9 +32,6 @@ table th {
 table tbody tr:nth-child(2n) {
   background: rgba(158, 188, 226, 0.12); }
 
-.book-sidebar {
-  width: 18rem; }
-
 .book-container {
   width: 100%;
   height: 100%; }
@@ -463,7 +460,7 @@ img {
 
 .book-sidebar {
   position: fixed;
-  width: 12rem;
+  width: 17rem;
   height: 100%;
   z-index: 500;
   background-color: #f7f8f9;
@@ -503,7 +500,7 @@ img {
     position: fixed;
     top: 3.25rem;
     bottom: 0rem;
-    width: 18rem;
+    width: 17rem;
     overflow-x: hidden;
     overflow-y: auto;
     font-size: 0.7rem; }
