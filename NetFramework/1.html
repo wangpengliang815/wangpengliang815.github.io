@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Wang’Notes’
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>WANG’NOTES’</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <ul>
+<li><a href="/index">Home</a></li>
+</ul>
+<h2 id="DotNET">DotNET</h2>
+<ul>
+<li>
+<p>C#基础</p>
+<ul>
+<li><a href="/NetFramework/1">基础合集</a></li>
+<li><a href="">常用数据结构</a></li>
+<li><a href="">类和对象的关系</a></li>
+<li><a href="">面向对象开发（OOP）</a></li>
+</ul>
+</li>
+<li>
+<p>C#进阶</p>
+<ul>
+<li><a href="">泛型技术</a></li>
+<li><a href="">反射技术实践</a></li>
+<li><a href="">委托和事件详解</a></li>
+<li><a href="">多线程开发</a></li>
+<li><a href="">多线程之线程同步技术</a></li>
+<li><a href="">异步编程async/await</a></li>
+<li><a href="">值类型和引用类型的内存分配</a></li>
+<li><a href="">并行编程</a></li>
+</ul>
+</li>
+<li>
+<p>NetCore</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="http://Asp.Net">Asp.Net</a> Mvc</p>
+</li>
+<li>
+<p>DataProtection</p>
+<ul>
+<li><a href="">1.1 DataProtection简介</a></li>
+<li><a href="">1.2 DataProtection方法介绍</a></li>
+<li><a href="">1.3 落地实践及多环境调试</a></li>
+<li><a href="">1.4 UserSecrets</a></li>
+<li><a href="">1.5 基于DataProtection的数据保护方案</a></li>
+<li><a href="">1.6 方案实践及集成AzureDevops管道</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="UnitTest">UnitTest</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="23种设计模式">23种设计模式</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="SonarQube-代码质量把控">SonarQube 代码质量把控</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="Devops工具-AzureDevops">Devops工具 AzureDevops</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="Devops工具-Jenkins">Devops工具 Jenkins</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="Linux">Linux</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="容器化技术-Docker">容器化技术 Docker</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="常用中间件-Redis-系列">常用中间件 Redis 系列</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="常用中间件-RabbitMQ-系列">常用中间件 RabbitMQ 系列</h2>
+<ul>
+<li><a href="/csharp%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          
+<article id="page">
+  <h1></h1>
+  <h1 id="预定义数据类型">预定义数据类型</h1>
+<p>C# 是面向对象的强类型高级语言，内置了用于存储不同类型数据的内置数据类型。每种数据类型都包含特定的取值范围，使用这些数据类型来表示在应用程序中存储的数据。数据类型进一步又被分类为<strong>值类型</strong>或<strong>引用类型</strong>，这取决于特定类型的变量是存储其自己的数据还是指向存储器中的数据的引用。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>Type Alias</strong></th>
+<th style="text-align:center"><strong>Actual Type</strong></th>
+<th style="text-align:center"><strong>Type</strong></th>
+<th style="text-align:center"><strong>Size (bit)</strong></th>
+<th style="text-align:center"><strong>Range (values)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">byte</td>
+<td style="text-align:center">Byte</td>
+<td style="text-align:center">Unsigned integer</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">0 to 255</td>
+</tr>
+<tr>
+<td style="text-align:center">sbyte</td>
+<td style="text-align:center">SByte</td>
+<td style="text-align:center">Signed integer</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">-128 to 127</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">Int32</td>
+<td style="text-align:center">Signed integer</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">-2,147,483,648 to 2,147,483,647</td>
+</tr>
+<tr>
+<td style="text-align:center">uint</td>
+<td style="text-align:center">UInt32</td>
+<td style="text-align:center">Unsigned integer</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">0 to 4294967295</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">Int16</td>
+<td style="text-align:center">Signed integer</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">-32,768 to 32,767</td>
+</tr>
+<tr>
+<td style="text-align:center">ushort</td>
+<td style="text-align:center">UInt16</td>
+<td style="text-align:center">Unsigned integer</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">0 to 65,535</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">Int64</td>
+<td style="text-align:center">Signed integer</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807</td>
+</tr>
+<tr>
+<td style="text-align:center">ulong</td>
+<td style="text-align:center">UInt64</td>
+<td style="text-align:center">Unsigned integer</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">0 to 18,446,744,073,709,551,615</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">Single</td>
+<td style="text-align:center">Single-precision floating point type</td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">-3.402823e38 to 3.402823e38</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">Double</td>
+<td style="text-align:center">Double-precision floating point type</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">-1.79769313486232e308 to 1.79769313486232e308</td>
+</tr>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">Char</td>
+<td style="text-align:center">A single Unicode character</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">Unicode symbols used in text</td>
+</tr>
+<tr>
+<td style="text-align:center">bool</td>
+<td style="text-align:center">Boolean</td>
+<td style="text-align:center">Logical Boolean type</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">True or False</td>
+</tr>
+<tr>
+<td style="text-align:center">object</td>
+<td style="text-align:center">Object</td>
+<td style="text-align:center">Base type of all other types</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">string</td>
+<td style="text-align:center">String</td>
+<td style="text-align:center">A sequence of characters</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">decimal</td>
+<td style="text-align:center">Decimal</td>
+<td style="text-align:center">Precise fractional or integral type that can represent decimal numbers with 29 significant digits</td>
+<td style="text-align:center">128</td>
+<td style="text-align:center">(+ or -)1.0 x 10e-28 to 7.9 x 10e28</td>
+</tr>
+<tr>
+<td style="text-align:center">DateTime</td>
+<td style="text-align:center">DateTime</td>
+<td style="text-align:center">Represents date and time</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">0:00:00am 1/1/01 to 11:59:59pm 12/31/9999</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><strong>Byte</strong></th>
+<th><strong>System.Byte</strong></th>
+<th><strong>Struct</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sbyte</td>
+<td>System.SByte</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>int</td>
+<td>System.Int32</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>uint</td>
+<td>System.UInt32</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>short</td>
+<td>System.Int16</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>ushort</td>
+<td>System.UInt16</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>long</td>
+<td>System.Int64</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>ulong</td>
+<td>System.UInt64</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>float</td>
+<td>System.Single</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>double</td>
+<td>System.Double</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>char</td>
+<td>System.Char</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>System.Boolean</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>object</td>
+<td>System.Object</td>
+<td>Class</td>
+</tr>
+<tr>
+<td>Alias</td>
+<td>Type Name</td>
+<td>.Net Type</td>
+</tr>
+<tr>
+<td>string</td>
+<td>System.String</td>
+<td>Class</td>
+</tr>
+<tr>
+<td>decimal</td>
+<td>System.Decimal</td>
+<td>struct</td>
+</tr>
+<tr>
+<td>DateTime</td>
+<td>System.DateTime</td>
+<td>struct</td>
+</tr>
+</tbody>
+</table>
+<h2 id="值类型">值类型</h2>
+<p>值类型特点是：<strong>变量直接存储其值</strong>。</p>
+<p>bool / byte / char/  decimal / double / enum / float / int/  long / sbyte / short / struct / uint / ulong / ushort</p>
+<h2 id="引用类型">引用类型</h2>
+<p>引用类型特点是：<strong>引用类型不直接存储其值，它存储值的引用内存地址</strong>。</p>
+<p>string / all array（所有数组，即使它们的元素是值类型）/ Class / Delegates…</p>
+<h1 id="变量">变量</h1>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">语法</span><br><span class="line">&lt;datatype&gt;&lt;variablename&gt;=&lt;<span class="keyword">value</span>&gt;;</span><br><span class="line">示例</span><br><span class="line"><span class="built_in">string</span> name = <span class="string">&quot;wang&quot;</span>;</span><br><span class="line">同时声明多个</span><br><span class="line"><span class="built_in">string</span> name1,name2 = <span class="string">&quot;wang&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>编译器需要用某个初始值对变量进行初始化，之后才能在操作中引用该变量。<br>
+<strong>注意</strong>：</p>
+<ul>
+<li>变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，其默认值就是类型默认值</li>
+<li>方法的局部变量必须在代码中显式初始化才能在语句中使用</li>
+<li>在C#中实例化一个引用对象需要使用<code>new</code>关键字把该引用指向存储在堆上的一个对象</li>
+</ul>
+<h1 id="类型推断">类型推断</h1>
+<p>使用 <code>var</code>  类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。<br>
+<strong>注意</strong>：</p>
+<ul>
+<li>变量必须初始化，否则编译器就没有推断变量类型的依据</li>
+<li>初始化器不能为空</li>
+<li>初始化器必须放在表达式中</li>
+<li>不能把初始化器设置为一个对象，除非在初始化器中创建了一个新对象</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">&quot;wang&quot;</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="变量作用域">变量作用域</h1>
+<p>变量作用域是可以访问该变量的代码区域。</p>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内</li>
+<li>局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内</li>
+<li>在<code>for</code>、 <code>while</code> 或类似语句中声明的局部变量存在于该循环体内</li>
+</ul>
+<h2 id="常量">常量</h2>
+<p>常量是其值在使用过程中不会发生变化的变量。在声明和初始化变量时，在变量的前面加上关键字 <code>const</code>，就可以把该变量指定为一个常量。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">string</span> conntionName = <span class="string">&quot;testConntion&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>常量具有如下特点</strong></p>
+<ul>
+<li>常量必须在声明时初始化。指定其值后就不能再改写</li>
+<li>常量的值必须能在编译时用于计算。因此不能用从一个变量中提取的值来初始化常量。如果需要这么做，应使用只读字段 <code>readonly</code></li>
+<li>常量总是静态的，但注意：不必(实际上，是不允许)在常量声明中包含修饰符</li>
+</ul>
+<p><strong>使用常量的好处</strong></p>
+<ul>
+<li>常量使程序变得更易于阅读（使用易于读取理解的名称替代了较难读取的数字或字符串）</li>
+<li>常量使程序更易于修改</li>
+<li>常量更容易避免程序出现错误，如果在声明常量的位置以外将另一个值赋给常量，编译器就会报错</li>
+</ul>
+<h2 id="只读字段">只读字段</h2>
+<p>常量的概念是一个包含不能修改的值的变量。但有时可能需要一些变量，其值不应改变，但在运行前其值是未知的。C#为这种情形提供了另一种类型的变量<strong>只读字段。</strong><code>readonly</code> 关键字比 <code>const</code> 灵活，允许把一个字段设置为常量，但还需要执行一些计算，以确定它的初始值。其规则是可以在构造函数中给只读段赋值，但不能在其他地方赋值。只读字段可以是一个实例字段，而不是静态字段，类的每个实例可以有不同的值。与<code>const</code>字段不同，如果要把只读字段设置为静态，就必须显式声明。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实例只读字段</span></span><br><span class="line"><span class="keyword">readonly</span> <span class="built_in">double</span> taxRate;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态字段字段</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">double</span> taxRate1;</span><br><span class="line"></span><br><span class="line">BasicsTest()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 只读字段可以在声明时赋值，也可以在构造函数中赋值</span></span><br><span class="line">    taxRate = <span class="number">0.8</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">BasicsTest</span>(<span class="params"></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 静态只读字段在类的静态构造函数中赋值</span></span><br><span class="line">    taxRate1 = <span class="number">0.9</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="常量和只读字段的区别">常量和只读字段的区别</h2>
+<ul>
+<li>常量只能在声明语句中初始化，而且必须初始化，初始化之后在任何地方都不能改变； <code>readonly</code>  字段既可以在声明时初始化，也可以在构造函数中改变它的值。如果是 <code>实例只读字段</code> ，可以在 实例构造函数中改变它的值，如果是 <code>静态只读字段</code> ，则可以在静态构造函数中改变它的值</li>
+<li>常量的值必须在编译时决定，编译完成之后它的值就被替换为字面量； <code>readonly</code>  字段的值可以在运行时决定，可以在不同的构造函数中设置不同的值</li>
+<li>常量总是像静态字段，在类的外部要通过 <code>类名.常量名</code> 的方式访问； <code>readonly</code> 字段既可以是静态字段，也可以是实例字段</li>
+<li>常量在内存中没有存储位置，而  <code>readonly</code>  字段在内存中有存储位置</li>
+</ul>
+<h2 id="值类型和引用类型空值">值类型和引用类型空值</h2>
+<p>默认情况下，引用类型在未初始化时具有空值。</p>
+<p>**例如：**一个字符串变量(或引用类型数据类型的任何其他变量)，但没有赋值。在这种情况下，它具有空值，这意味着它不指向任何其他内存位置，因为它还没有值。值类型变量不能为 <code>null</code> ，因为它包含值而不是内存地址。所以必须在使用前为值类型变量分配值。</p>
+<h2 id="可空类型">可空类型</h2>
+<p><code>C#2.0</code> 为值类型引入了可空类型，允许为值类型变量赋值 <code>null</code> 或声明值类型变量而不为其赋值。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>? age = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="类型转换">类型转换</h2>
+<p>C# 是一门强类型语言，对类型要求比较严格。但是在一定的条件下是可以相互转换的，如将 <code>int</code> 型数据转换成 <code>double</code> 型数据。C# 允许使用两种转换方式：<strong>隐式转换和显式转换。</strong><br>
+<strong>​</strong></p>
+<h3 id="隐式转换">隐式转换</h3>
+<p>隐式转换是系统默认的，不需要加以声明就会自动执行隐式类型转换，在隐式转换过程，编译器无需对转换进行详细检查就能够安全的执行。隐式类型转换是<strong>从低精度数值类型=&gt;高精度数值类型</strong></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">double</span> b = a;<span class="comment">//自动隐式类型转换</span></span><br></pre></td></tr></table></figure>
+<h3 id="显式转换">显式转换</h3>
+<p><strong>将高精度值=&gt;低精度</strong>进行数据转换时，可能会丢失数据，这时候需要使用显式转换。并且要考虑到可能出现算术溢出；显式转换需要明确指出要转换的类型。</p>
+<p>显式转换可能导致错误，进行这种转换时编译器会对转换进行溢出检测，如果有溢出说明转换失败，表示源类型不是一个合法的目标类型无法进行类型转换；强制类型转换会造成数据精度丢失。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">double</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">int</span> b = (<span class="built_in">int</span>)a;<span class="comment">//显式将double类型转换为int</span></span><br></pre></td></tr></table></figure>
+<p>可空类型数据转换=&gt;非可空类型或者另一个可空类型，其中可能会丢失数据，就必须使用显式类型转换。并且如果从可空类型转换为非可空类型时变量值为<code>null</code>，会抛出 <code>InvalidOperationException</code> 异常。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>? a = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> b = (<span class="built_in">int</span>)a;</span><br><span class="line"><span class="comment">//System.InvalidOperationException:“可为空的对象必须具有一个值。</span></span><br></pre></td></tr></table></figure>
+<h3 id="通过方法进行转换">通过方法进行转换</h3>
+<h4 id="ToString">ToString()</h4>
+<p>C#中的类型基类都继承自 <code>Object</code> 类，所以都可以使用 <code>ToString()</code> 来转换成字符串。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">string</span> s = a.ToString();</span><br></pre></td></tr></table></figure>
+<h4 id="Int-Parse">Int.Parse()</h4>
+<p>用于将 <code>string</code> 类型参数转换为 <code>int</code> ，注意： <code>string</code> 类型参数不能为 <code>null</code> ，并且也只能是各种整型，不能是浮点型。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> a = <span class="string">&quot;2&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> b = <span class="string">&quot;2.6&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> c = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> a1 = <span class="built_in">int</span>.Parse(a);<span class="comment">//正常</span></span><br><span class="line"><span class="built_in">int</span> a2 = <span class="built_in">int</span>.Parse(b);<span class="comment">//错误:输入字符串格式错误</span></span><br><span class="line"><span class="built_in">int</span> a3 = <span class="built_in">int</span>.Parse(c);<span class="comment">//值不能为null</span></span><br></pre></td></tr></table></figure>
+<h4 id="Int-TryParse">Int.TryParse()</h4>
+<p>该方法与 <code>Int.Parse()</code> 方法类似，不同点在于 <code>Int.Parse()</code> 方法无法转换成功时会抛出异常。而 <code>Int.TryParse()</code> 方法在无法进行转换时会返回 <code>false</code> ， <code>Int.TryParse()</code> 方法需要一个 <code>out</code> 类型的参数，如果转换成功， <code>out</code> 参数的值就是正常转换的值，否则返回 <code>false</code> 。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> a = <span class="string">&quot;2&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> b = <span class="string">&quot;2.6&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> c = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> i;</span><br><span class="line"><span class="built_in">bool</span> a1 = <span class="built_in">int</span>.TryParse(a，<span class="keyword">out</span> i);<span class="comment">//转换成功，i=2</span></span><br><span class="line"><span class="built_in">bool</span> a2 = <span class="built_in">int</span>.TryParse(b， <span class="keyword">out</span> i);<span class="comment">//转换失败，a2=false</span></span><br><span class="line"><span class="built_in">bool</span> a3 = <span class="built_in">int</span>.TryParse(c， <span class="keyword">out</span> i);<span class="comment">//转换失败，a3=false</span></span><br></pre></td></tr></table></figure>
+<h3 id="通过Convert类进行转换">通过<code>Convert</code>类进行转换</h3>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> a = <span class="string">&quot;2&quot;</span>;</span><br><span class="line"><span class="built_in">int</span> a1 = Convert.ToInt32(a);</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th><strong>方法</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Convert.ToInt32()</td>
+<td>转换为整型(int)</td>
+</tr>
+<tr>
+<td>Convert.ToChar()</td>
+<td>转换为字符型(char)</td>
+</tr>
+<tr>
+<td>Convert.ToString()</td>
+<td>转换为字符串型(string)</td>
+</tr>
+<tr>
+<td>Convert.ToDateTime()</td>
+<td>转换为日期型(datetime)</td>
+</tr>
+<tr>
+<td>Convert.ToDouble()</td>
+<td>转换为双精度浮点型(double)</td>
+</tr>
+<tr>
+<td>Conert.ToSingle()</td>
+<td>转换为单精度浮点型(float)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="实现自定义转换">实现自定义转换</h3>
+<p>通过继承接口 <code>IConventible</code> 或者 <code>TypeConventer</code> 类，可以实现自定义转换。</p>
+<h3 id="使用-as-运算符转换">使用 as 运算符转换</h3>
+<p>使用 <code>as</code> 操作符转换，但是 <code>as</code> 只能用于引用类型和可为空的类型。使用 <code>as</code> 有很多好处，当无法进行类型转换时，会将对象赋值为 <code>NULL</code> ，避免类型转换时报错或是出异常。C#抛出异常在进行捕获异常并进行处理是很消耗资源的，如果只是将对象赋值为 <code>NULL</code> 的话是几乎不消耗资源的(消耗很小的资源)。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">object</span> o = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> s = o <span class="keyword">as</span> <span class="built_in">string</span>; <span class="comment">//执行第一次类型兼容性检查，并返回结果</span></span><br><span class="line"><span class="keyword">if</span> (s != <span class="literal">null</span>)</span><br><span class="line">Console.WriteLine(<span class="string">&quot;转换成功！&quot;</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">Console.WriteLine(<span class="string">&quot;转换失败！&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="装箱和拆箱">装箱和拆箱</h2>
+<p>装箱和拆箱在值类型和引用类型之间架起了一座桥梁，使得任何 <code>value-type</code> 的值都可以转换为 <code>object</code>  类型的值，反之亦可。</p>
+<h3 id="装箱">装箱</h3>
+<p>装箱是指将一个值类型的数据隐式地转换成一个对象类型(<code>object</code>)的数据。执行装箱操作时不可避免的要在堆上申请内存空间，并将堆栈上的值类型数据复制到申请的堆内存空间上，这是要消耗内存和cpu资源的。在执行装箱转换时，也可以使用显式转换。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">object</span> obj = i;   <span class="comment">//装箱：值类型转换为引用类型</span></span><br></pre></td></tr></table></figure>
+<h3 id="拆箱">拆箱</h3>
+<p>拆箱是指将一个对象类型的数据显式地转换成一个值类型数据。拆箱过程是装箱的逆过程，是将存储在堆上的引用类型值转换为值类型并赋给值类型变量。</p>
+<p><strong>拆箱操作分为两步</strong>：</p>
+<ol>
+<li>检查对象实例，确保它是给定值类型的一个装箱值</li>
+<li>将该值从实例复制到值类型变量中</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">object</span> obj = i;   <span class="comment">//装箱：值类型转换为引用类型</span></span><br><span class="line"><span class="built_in">int</span> j = (<span class="built_in">int</span>)obj;  <span class="comment">//拆箱：引用类型转换为值类型</span></span><br></pre></td></tr></table></figure>
+<p><strong>装箱拆箱注意事项：</strong></p>
+<ul>
+<li>装箱可以隐式进行，但拆箱必须显式</li>
+<li>在装箱的时候，并不需要显式类型转换。但在拆箱时需要类型转换。因为在拆箱时对象可以被转换为任何类型</li>
+<li>装什么拆什么，装箱就是要在托管堆重开辟空间，不但要装数值而且还要装类型。所以说装什么拆什么，也就是用什么值类型装箱，就要用什么值类型拆箱</li>
+</ul>
+<h2 id="常见运算符">常见运算符</h2>
+<h3 id="三元运算符">三元运算符</h3>
+<p><code>if/else</code> 的简化形式。首先判断一个条件，如果为真返回第一个值，为假返回后一个值。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a = <span class="number">3</span>;</span><br><span class="line"><span class="built_in">bool</span> result = a &gt; <span class="number">10</span> ? <span class="literal">true</span> : <span class="literal">false</span>; <span class="comment">//a&gt;10?如果大于返回true否则返回false</span></span><br></pre></td></tr></table></figure>
+<h3 id="checked-unchecked">checked/unchecked</h3>
+<p>如果把代码块标记为 <code>checked</code> ， <code>CLR</code> 就会执行栈溢出检测，如果要禁止栈溢出，则可以把代码标记 <code>unchecked</code> 。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//byte类型最大取值255</span></span><br><span class="line"><span class="built_in">byte</span> a = <span class="number">255</span>;</span><br><span class="line">checked</span><br><span class="line">&#123;</span><br><span class="line">     a++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//这里如果不加checed.++后输出0(不会抛异常，但会丢失数据，溢出的位会被舍弃，所以值为0)，加上后会抛出栈溢出异常</span></span><br><span class="line">Console.WriteLine(a);</span><br></pre></td></tr></table></figure>
+<h3 id="is">is</h3>
+<p><code>is</code>  运算符可以检测对象是否与特定类型兼容，兼容表示对象是该类型或者派生自该类型。<br>
+<strong>​</strong></p>
+<p><strong>转换规则如下:</strong></p>
+<ul>
+<li>检查对象类型的兼容性，并返回结果 <code>true/false</code> 。</li>
+<li>不会抛出异常</li>
+<li>如果对象为<code>null</code>，刚返回<code>false</code></li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">object</span> o = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="keyword">if</span> (o <span class="keyword">is</span> <span class="built_in">string</span>) <span class="comment">//执行第一次类型兼容性检查</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> s = (<span class="built_in">string</span>)o; <span class="comment">//执行第二次类型兼容性检查，并转换</span></span><br><span class="line">    Console.WriteLine(<span class="string">&quot;转换成功！&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;转换失败！&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="as">as</h3>
+<p><strong>转换规则如下</strong></p>
+<ul>
+<li>检查对象类型的兼容性并返回转换结果，如果不兼容则返回<code>null</code></li>
+<li>不会抛出异常</li>
+<li>如果结果判断为空，则强制执行类型转换将抛出 <code>NullReferenceException</code> 异常</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">object</span> o = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> s = o <span class="keyword">as</span> <span class="built_in">string</span>; <span class="comment">//执行第一次类型兼容性检查，并返回结果</span></span><br><span class="line"><span class="keyword">if</span> (s != <span class="literal">null</span>)</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;转换成功！&quot;</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    Console.WriteLine(<span class="string">&quot;转换失败！&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="sizeof">sizeof</h3>
+<p><code>sizeof</code> 运算符可以确定栈中值类型需要的长度(单位为字节)。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Console.WriteLine(<span class="keyword">sizeof</span>(<span class="built_in">int</span>));<span class="comment">//4个字节</span></span><br><span class="line">Console.WriteLine(<span class="keyword">sizeof</span>(<span class="built_in">byte</span>));<span class="comment">//1个字节</span></span><br></pre></td></tr></table></figure>
+<h3 id="typeof">typeof</h3>
+<p>返回一个表示特定类型的 <code>System.Type</code> 对象。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Console.WriteLine(<span class="keyword">typeof</span>(<span class="built_in">int</span>));<span class="comment">//System.Int32</span></span><br><span class="line">Console.WriteLine(<span class="keyword">typeof</span>(<span class="built_in">byte</span>));<span class="comment">//System.Byte</span></span><br></pre></td></tr></table></figure>
+<h3 id="可空类型和运算符">可空类型和运算符</h3>
+<p>在 <code>C# 2.0</code> 中出现了可空类型，允许值类型也可以为空 <code>null</code>，可空类型的实现基于 C#泛型。</p>
+<p><strong>注意</strong>：<br>
+在程序中使用可空类型就必须考虑 <code>null</code> 值在各种运算符一起使用的影响，通常可空类型与一元或二元运算符一起使用时，如果一个操作数为 <code>null</code> 或两个操作数为 <code>null</code> ，结果就是 <code>null</code> 。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>? a = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span>? c = a + <span class="number">4</span>; <span class="comment">//c=null</span></span><br></pre></td></tr></table></figure>
+<h3 id="空合并运算符">空合并运算符</h3>
+<p>空合并运算符 <code>??</code> 提供了快捷方式处理可空类型和引用类型时表示 <code>null</code> 可能的值。</p>
+<p><strong>注意：</strong><br>
+只能针对引用类型处理，规则是：</p>
+<ul>
+<li>如果第一个操作数不是<code>null</code>，值就等于第一个操作数的值</li>
+<li>如果第一个操作数是<code>null</code>，值就等于第二个操作数的值</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>? a = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> b;</span><br><span class="line">b = a ?? <span class="number">10</span>;<span class="comment">//第一个操作数是null，值为第二个操作数.10</span></span><br><span class="line">a = <span class="number">3</span>;</span><br><span class="line">b = a ?? <span class="number">10</span>;<span class="comment">//第一个操作数不是null，值为第一个操作数.3</span></span><br></pre></td></tr></table></figure>
+<h2 id="关键字">关键字</h2>
+<p><code>C#</code>包含保留字，对编译器有特殊意义。这些保留字称为“关键字”。关键字不能用作变量，类，接口等的名称(标识符)，关键字不能用作标识符(变量名，类，接口等)。但是，它们可以与前缀“@”一起使用。例如，class 是保留关键字，因此不能用作标识符，但可以使用 <code>@class</code> 。</p>
+<p>🎨 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/index"><strong>关键字的更多信息，访问 MSDN</strong></a></p>
+<h2 id="枚举">枚举</h2>
+<p><code>enum</code> 是值类型数据类型。枚举用于声明命名整数常量的列表。可以直接在命名空间，类或结构中使用<code>enum</code>关键字定义。</p>
+<ul>
+<li>枚举用于为每个常量指定一个名称，以便可以使用其名称引用常量整数默认情况下，枚举的第一个成员的值为 0，每个连续的枚举成员的值增加 1</li>
+<li>枚举可以包括数字数据类型的命名常量，例如 <code>byte</code>，<code>sbyte</code>，<code>short</code>，<code>ushort</code>，<code>int</code>，<code>uint</code>，<code>long</code>或<code>ulong</code></li>
+<li>枚举不能与字符串类型一起使用</li>
+</ul>
+<p><code>Enum</code> 是一个抽象类，包含用于枚举的静态帮助器方法</p>
+<table>
+<thead>
+<tr>
+<th><strong>Enum method</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Format</td>
+<td>将指定的枚举类型值转换为指定的字符串格式</td>
+</tr>
+<tr>
+<td>GetName</td>
+<td>返回指定枚举的指定值的常量的名称</td>
+</tr>
+<tr>
+<td>GetNames</td>
+<td>返回指定枚举的所有常量的字符串名称数组</td>
+</tr>
+<tr>
+<td>GetValues</td>
+<td>返回指定枚举的所有常量值的数组</td>
+</tr>
+<tr>
+<td>object Parse(type, string)</td>
+<td>将一个或多个枚举常量的名称或数值的字符串表示形式转换为等效的枚举对象</td>
+</tr>
+<tr>
+<td>bool TryParse(string, out TEnum)</td>
+<td>将一个或多个枚举常量的名称或数值的字符串表示形式转换为等效的枚举对象，返回值表示转换是否成功</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">enum</span> Color</span><br><span class="line">&#123;</span><br><span class="line">    Red，</span><br><span class="line">    Green，</span><br><span class="line">    Blue</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="预处理器指令">预处理器指令</h2>
+<ul>
+<li>
+<p><code>#region/#endregion</code> 指令用于把一段代码标记为有给定名称的一个块</p>
+</li>
+<li>
+<p><code>#define/#undef</code>  结合 <code>#if/#elif/endif</code>  实现条件编译</p>
+</li>
+<li>
+<p>…</p>
+</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> debug</span></span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">CSharp.Study.Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> debug</span></span><br><span class="line">            Console.WriteLine(<span class="string">&quot;debug&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">          Console.WriteLine(<span class="string">&quot;other&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</article>
+
+<div id="paginator">
+  
+</div>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="W"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Wang,PengLiang</div>
+      <div>2021-09-02</div>
+    </div>
+  </div>
+
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
