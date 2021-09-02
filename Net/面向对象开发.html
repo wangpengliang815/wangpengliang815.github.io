@@ -347,6 +347,21 @@ B类无参构造函数调用父类带参构造函数</p>
 </div>
       </div>
     </div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>
+    <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'cb50701e7967e1d360bd',
+          clientSecret: '9bbbaccd5377708008b373f7f2401447ce47a833',
+          repo: 'blog-comments',
+          owner: 'wangpengliang815',
+          admin: ['wangpengliang815'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    </script>
   </div>
   
   <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
