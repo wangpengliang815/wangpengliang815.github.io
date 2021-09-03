@@ -212,11 +212,11 @@ function sidebar_toggle() {
 <article id="page">
   <h1></h1>
   <h1 id="下载安装包">下载安装包</h1>
-<p>Redis（Remote Dictionary Server )，即远程字典服务，是一个开源的使用 <code>ANSI C</code> 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
-<p><code>Redis </code>是没有 <code>windows</code> 平台下的官方支持版本的。Redis 官方不建议在 windows 下使用，所以官网没有 windows 版本可以下载；可以下载在<code>github</code>上的<code>ServiceStack</code>提供的非官方<code>windows</code>版本的Redis，但不推荐，因为：</p>
+<p>Redis（<code>Remote Dictionary Server</code>  )，即远程字典服务，是一个开源的使用 <code>ANSI C</code> 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p><code>Redis </code>是没有 Windows 平台下的官方支持版本的。Redis 官方不建议在 Windows 下使用，所以官网没有 Windows 版本可以下载；可以下载在 github 上的<code>ServiceStack</code>  提供的非官方 Windows 版本的 Redis 但不推荐，因为：</p>
 <ul>
 <li>该版本并不是官方支持的，缺少官方支持在使用上可能会出现很多问题</li>
-<li>Redis的最新版本与windows版本不同步；Redis官网版本早于Redis中文网</li>
+<li>Redis的最新版本与 Windows 版本不同步，Redis官网版本早于Redis中文网</li>
 </ul>
 <p>所以不考虑Windows下版本安装，直接选择Linux下版本安装</p>
 <p><strong>Linux安装程序分为两种</strong></p>
@@ -230,24 +230,21 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf Redis-6.2.1.tar.gz</span><br></pre></td></tr></table></figure>
 <p>Redis是C语言开发，安装Redis需要先将Redis的源码进行编译，编译依赖gcc环境。因此需要安装gcc，安装过程中有提示时，输入Y即可。（make命令必须在Redis解压后的程序目录下执行）</p>
 <blockquote>
-<p>Centos7安装有默认gcc环境，默认4.8.5版本！编译 Redis-6.x，要求 gcc5.3以上 编译器，否则会遇到大量的错误。<br>
-主要原因是从 Redis-6.x 开始的多线程代码依赖C标准库中的新增类型 _Atomic 。但是注意 gcc 从 4.9 版本才开始正式和完整地支持 stdatomic（gcc-4.8.5 部分支持）<br>
-Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译</p>
+<p>Centos7安装有默认gcc环境，默认4.8.5版本！编译 Redis-6.x，要求 gcc5.3以上 编译器，否则会遇到大量的错误。主要原因是从 Redis-6.x 开始的多线程代码依赖C标准库中的新增类型 _Atomic 。但注意 gcc 从 4.9 版本才开始正式和完整地支持 stdatomic（gcc-4.8.5 部分支持）。Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译</p>
 </blockquote>
 <h1 id="Gcc升级">Gcc升级</h1>
-<p>参考Centos中的&quot;Centos7升级gcc版本&quot;</p>
+<p>参考 ：<a target="_blank" rel="noopener" href="https://wpl.wiki/linux/Centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC">Centos7升级gcc版本</a></p>
 <h1 id="查看gcc版本">查看gcc版本</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang Redis]<span class="comment"># gcc -v</span></span><br></pre></td></tr></table></figure>
 <h1 id="编译Redis">编译Redis</h1>
-<p>进入Redis程序目录</p>
+<p>进入 Redis 程序目录</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/Redis/Redis-6.2.1</span><br></pre></td></tr></table></figure>
-<p>Make</p>
-<p>下载环境并编译Redis程序</p>
+<p>Make：下载环境并编译 Redis 程序</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost Redis-6.2.1]<span class="comment"># make  install #将Redis安装在Linux默认位置：/usr/local/bin</span></span><br><span class="line">或者（推荐）</span><br><span class="line">[root@localhost Redis-6.2.1]<span class="comment"># make  install  PREFIX=/usr/Redis/Redis-6.2.1/installpackage　#将Redis安装在指定位置</span></span><br></pre></td></tr></table></figure>
 <p>安装完成查看文件列表</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># cd /usr/Redis/Redis-6.2.1/installpackage/bin</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ls</span></span><br><span class="line">Redis-benchmark  Redis-check-aof  Redis-check-rdb  Redis-cli  Redis-sentinel  Redis-server</span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ll</span></span><br><span class="line">总用量 21940</span><br><span class="line">-rwxr-xr-x. 1 root root  5675824 4月  18 01:32 Redis-benchmark</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-check-aof -&gt; Redis-server</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-check-rdb -&gt; Redis-server</span><br><span class="line">-rwxr-xr-x. 1 root root  5881760 4月  18 01:32 Redis-cli</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-sentinel -&gt; Redis-server</span><br><span class="line">-rwxr-xr-x. 1 root root 10904032 4月  18 01:32 Redis-server</span><br></pre></td></tr></table></figure>
 <h1 id="配置Redis">配置Redis</h1>
-<p>复制Redis核心配置文件，文件在安装命令目录中（默认位置在 <code>/usr/local/bin</code> ）。我在安装时选择了安装在指定位置（ <code>/usr/Redis/Redis-6.2.1/installpackage</code> ），Redis配置文件需要放在安装目录下。（<code>Redis.conf </code> 配置文件在Redis程序目录中）</p>
+<p>复制 Redis 核心配置文件，文件在安装命令目录中（默认位置在 <code>/usr/local/bin</code> ）。我在安装时选择了安装在指定位置（ <code>/usr/Redis/Redis-6.2.1/installpackage</code> ），Redis配置文件需要放在安装目录下。（<code>Redis.conf </code> 配置文件在 Redis 程序目录中）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入Redis安装目录/bin</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># cd /usr/Redis/Redis-6.2.1/installpackage/bin</span></span><br><span class="line"><span class="comment"># 创建目录conf：用于存放配置文件</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># mkdir conf</span></span><br><span class="line"><span class="comment"># 查看创建结果</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ll</span></span><br><span class="line">总用量 21940</span><br><span class="line">drwxr-xr-x. 2 root root        6 4月  18 01:43 conf</span><br><span class="line">-rwxr-xr-x. 1 root root  5675824 4月  18 01:32 Redis-benchmark</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-check-aof -&gt; Redis-server</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-check-rdb -&gt; Redis-server</span><br><span class="line">-rwxr-xr-x. 1 root root  5881760 4月  18 01:32 Redis-cli</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-sentinel -&gt; Redis-server</span><br><span class="line">-rwxr-xr-x. 1 root root 10904032 4月  18 01:32 Redis-server</span><br><span class="line"><span class="comment"># 复制Redis程序目录中的配置文件放入到Redis安装目录下conf目录中</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># cp /usr/Redis/Redis-6.2.1/Redis.conf /usr/Redis/Redis-6.2.1/install</span></span><br><span class="line">package/bin/conf/[root@wangpengliang bin]<span class="comment"># ll</span></span><br><span class="line">总用量 21940</span><br><span class="line">drwxr-xr-x. 2 root root       24 4月  18 01:44 conf</span><br><span class="line">-rwxr-xr-x. 1 root root  5675824 4月  18 01:32 Redis-benchmark</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-check-aof -&gt; Redis-server</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-check-rdb -&gt; Redis-server</span><br><span class="line">-rwxr-xr-x. 1 root root  5881760 4月  18 01:32 Redis-cli</span><br><span class="line">lrwxrwxrwx. 1 root root       12 4月  18 01:32 Redis-sentinel -&gt; Redis-server</span><br><span class="line">-rwxr-xr-x. 1 root root 10904032 4月  18 01:32 Redis-server</span><br><span class="line"><span class="comment"># 进入Redis安装目录下conf目录</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># cd conf</span></span><br><span class="line"><span class="comment"># 查看配置文件</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment"># ll</span></span><br><span class="line">总用量 92</span><br><span class="line">-rw-r--r--. 1 root root 92222 4月  18 01:44 Redis.conf</span><br></pre></td></tr></table></figure>
 <h1 id="启动Redis">启动Redis</h1>
 <ol>
@@ -261,13 +258,13 @@ Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译</p>
 <h1 id="后台启动Redis">后台启动Redis</h1>
 <p>以上的 <code>Redis</code> 安装和启动可以算是临时服务。当开启服务后，Redis服务窗口是无法再使用的，可以将 <code>Redis</code> 服务设置为后台启动服务，避免 <code>Linux</code> 窗口连接的浪费。</p>
 <ol>
-<li><code>Vim</code>  编辑 <code>Redis</code> 配置文件 <code>Redis.conf</code></li>
-<li>开启 <code>Redis</code> 后台服务（默认是关闭的）</li>
+<li>编辑 Redis 配置文件 <code>Redis.conf</code></li>
+<li>开启 Redis 后台服务（默认是关闭的）</li>
 </ol>
-<p>Step1：<code>vi /usr/Redis/Redis6.x/bin/conf/Redis.conf</code>　打开编辑(键入命令 :set nu 显示行号)</p>
+<p>Step1：<code>vi /usr/Redis/Redis6.x/bin/conf/Redis.conf</code>　打开编辑(键入命令 <code>:set nu</code>  显示行号)</p>
 <p>Step2：输入<code>i</code>、<code>I</code>、<code>a</code> 等进入编辑模式</p>
 <p>Step3：将<code>daemonize</code> no 改成<code>daemonize</code> yes（表示开启Redis后台服务：约225行）</p>
-<p>Step4：按<code>esc</code>退出插入模式，输入:<code>wq</code>保存退出</p>
+<p>Step4：按 <code>esc</code> 退出插入模式，输入<code>:wq</code> 保存退出</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动Redis服务</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ./Redis-server conf/Redis.conf</span></span><br><span class="line"><span class="comment"># 此时Redis服务已经作为后台服务启动，不再占用窗口，直接在本窗口启用客户端测试连接</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ./Redis-cli -p 6379</span></span><br><span class="line">127.0.0.1:6379&gt; ping</span><br><span class="line">PONG</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
 <h1 id="查看Redis服务进程">查看Redis服务进程</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看进程服务，过滤只看Redis的</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ps -ef |grep Redis</span></span><br><span class="line">root      20395      1  0 02:07 ?      00:00:00 ./Redis-server 127.0.0.1:6379</span><br><span class="line">root      20410  20345  0 02:10 pts/1     00:00:00 grep --color=auto Redis</span><br></pre></td></tr></table></figure>
@@ -279,14 +276,11 @@ Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译</p>
 <li><code>Redis  </code> 在虚拟机中安装</li>
 <li>使用 <code>RedisClient</code>  在  <code>Windows</code>  主机中连接</li>
 </ol>
-<p>虚拟机中查看 <code>Redis</code> 进程和端口，都是存在的；但是IP地址需要设置为 <code>0.0.0.0</code> 而不是 <code>127.0.0.1</code> ，更改 <code>Redis</code> 使用的配置文件即可。</p>
+<p>虚拟机中查看 Redis 进程和端口，都是存在的；但是IP地址需要设置为 <code>0.0.0.0</code> 而不是 <code>127.0.0.1</code> ，更改 Redis 使用的配置文件即可。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bind</span> 127.0.0.1</span><br><span class="line">=&gt;</span><br><span class="line"><span class="built_in">bind</span> 0.0.0.0</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><code>127.0.0.1</code>只能是本机能使用</p>
-</blockquote>
-<p>如果 <code>Redis</code> 已经启动，需要先停止才能使配置文件生效</p>
+<p><code>127.0.0.1</code>只能是本机能使用，如果 Redis 已经启动，需要先停止才能使配置文件生效</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># ./Redis-cli -p 6379</span></span><br><span class="line">127.0.0.1:6379&gt; SHUTDOWN</span><br><span class="line">not connected&gt;</span><br></pre></td></tr></table></figure>
-<p>重启 <code>Redis</code></p>
+<p>重启 Redis</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># ./Redis-server conf/Redis.conf</span></span><br></pre></td></tr></table></figure>
 <p>主机中使用 <code>RedisClient</code> 连接</p>
 <p><img src="../images/2021-09-03-16-20-40.png" alt=""></p>

@@ -212,12 +212,12 @@ function sidebar_toggle() {
 <article id="page">
   <h1></h1>
   <h1 id="Rdb">Rdb</h1>
-<p>Rdb （Redis DataBase）是Redis用来进行持久化的一种方式，是把当前内存中的数据集快照写入磁盘，也就是 Snapshot 快照（数据库中所有键值对数据）。恢复时将快照文件直接读到内存里。</p>
-<p>Rdb 是 Redis 默认的持久化方案。在指定的时间间隔内，执行指定次数的写操作，则会将内存中的数据写入到磁盘中。即在指定目录下生成一个 <code>dump.rdb</code> 文件。<code>Redis</code> 重启会通过加载<code>dump.rdb</code>文件恢复数据。</p>
+<p>Rdb （Redis DataBase）是Redis用来进行持久化的一种方式，是把当前内存中的数据集快照写入磁盘，也就是 <code>Snapshot</code> 快照（数据库中所有键值对数据）。恢复时将快照文件直接读到内存里。</p>
+<p>Rdb 是 Redis 默认的持久化方案。在指定的时间间隔内，执行指定次数的写操作，则会将内存中的数据写入到磁盘中。即在指定目录下生成一个 <code>dump.rdb</code> (默认名称)文件。<code>Redis</code> 重启会通过加载<code>dump.rdb</code>文件恢复数据。</p>
 <h2 id="基本原理">基本原理</h2>
-<p>Rdb 持久化主要是通过<code>SAVE</code>和<code>BGSAVE</code>两个命令对<code>Redis</code>数据库中当前的数据做<code>snapshot</code>并生成<code>rdb</code>文件来实现的。其中<strong>SAVE是阻塞的，BGSAVE是非阻塞的</strong>，通过 <code>fork</code> 了一个子进程来完成的。在<code>Redis</code>启动的时候会检测 <code>rdb</code> 文件，然后载入 <code>rdb</code> 文件中未过期的数据到服务器中。</p>
+<p>Rdb 持久化主要是通过 <code>SAVE</code> 和 <code>BGSAVE</code> 两个命令对 <code>Redis</code> 数据库中当前的数据做 <code>snapshot</code> 并生成 <code>rdb</code> 文件来实现的。其中<code>SAVE</code> 是阻塞的，<code>BGSAVE</code> 是非阻塞的，通过 <code>fork</code> 了一个子进程来完成的。在 Redis启动时会检测 <code>rdb</code> 文件，然后载入 <code>rdb</code> 文件中未过期的数据到服务器中。</p>
 <h2 id="触发方式">触发方式</h2>
-<p>Rdb 有两种触发方式：自动触发/手动触发。（快照的名称是<code>dump.rdb</code>）</p>
+<p>Rdb 有两种触发方式：自动触发/手动触发。</p>
 <h3 id="自动触发"><strong>自动触发</strong></h3>
 <p>在 redis.conf 配置文件中的 <code>SNAPSHOTTING</code> 下</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># You can set these explicitly by uncommenting the three following lines.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># *快照持久化规则设置</span></span><br><span class="line"><span class="comment"># *如果3600秒内，至少一个Key进行了修改，就会进行持久化</span></span><br><span class="line"><span class="comment"># save 3600 1</span></span><br><span class="line"><span class="comment"># save 300 100</span></span><br><span class="line"><span class="comment"># save 60 10000</span></span><br><span class="line"><span class="comment"># 60s内至少一个Key进行了修改就会进行持久化</span></span><br><span class="line">save 60 1</span><br></pre></td></tr></table></figure>
@@ -242,11 +242,11 @@ function sidebar_toggle() {
 <tbody>
 <tr>
 <td><code>save</code></td>
-<td>该命令会阻塞当前Redis服务器，执行save命令期间，Redis不能处理其他命令，直到Rdb 过程完成为止</td>
+<td>该命令会阻塞当前<code>Redis</code> 服务器，执行 <code>save</code> 命令期间，<code>Redis</code> 不能处理其他命令，直到 <code>Rdb</code>  过程完成为止</td>
 </tr>
 <tr>
 <td><code>bgsave</code></td>
-<td>执行该命令时，Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。具体操作是Redis进程执行fork操作创建子进程，Rdb 持久化过程由子进程负责，完成后自动结束。阻塞只发生在fork阶段，一般时间很短</td>
+<td>执行该命令时，<code>Redis</code> 会在后台异步进行快照操作，快照同时还可以响应客户端请求。具体操作是 <code>Redis</code> 进程执行 <code>fork</code> 操作创建子进程，Rdb 持久化过程由子进程负责，完成后自动结束。阻塞只发生在 <code>fork</code> 阶段，一般时间很短</td>
 </tr>
 <tr>
 <td><code>flushall</code></td>
@@ -259,7 +259,7 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <h2 id="Rdb文件恢复数据">Rdb文件恢复数据</h2>
-<p>将dump.rdb 文件拷贝到redis的安装目录的bin目录下，重启redis服务即可。在实际开发中，一般会考虑到物理机硬盘损坏情况，选择备份dump.rdb。</p>
+<p>将 <code>dump.rdb</code>  文件拷贝到 Redis 的安装目录的<code>bin</code> 目录下，重启 Redis 服务即可。在实际开发中，一般会考虑到物理机硬盘损坏情况，选择备份<code>dump.rdb</code> 。</p>
 <h2 id="Rdb优缺点">Rdb优缺点</h2>
 <table>
 <thead>
@@ -271,7 +271,7 @@ function sidebar_toggle() {
 <tbody>
 <tr>
 <td style="text-align:left">适合大规模的数据恢复</td>
-<td style="text-align:left">数据的完整性和一致性不高，因为Rdb可能在最后一次备份时宕机了</td>
+<td style="text-align:left">数据的完整性和一致性不高，因为可能在最后一次备份时宕机了</td>
 </tr>
 <tr>
 <td style="text-align:left">二进制压缩文件，恢复速度快</td>
@@ -283,28 +283,28 @@ function sidebar_toggle() {
 </tr>
 </tbody>
 </table>
-<p><strong>注意</strong>：假设save策略设置的是60秒，Redis在58秒宕机，会丢失最后一次的数据</p>
+<p><strong>注意</strong>：假设 <code>save</code> 策略设置的是60秒，Redis在58秒宕机，会丢失最后一次的数据。</p>
 <h1 id="Aof">Aof</h1>
-<p>Redis 默认不开启。它的出现是为了弥补Rdb的不足（数据的不一致性），所以它采用日志的形式来记录每个<strong>写操作</strong>，并<strong>追加</strong>到文件中。Redis 重启的会根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</p>
+<p>Redis 默认不开启。它的出现是为了弥补Rdb的不足（数据的不一致性），所以它采用日志的形式来记录每个<strong>写操作</strong>，并<strong>追加</strong>到文件中。Redis 重启的会根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作。</p>
 <h2 id="基本原理-v2">基本原理</h2>
-<p>AOF（Append Only File）持久化是通过将存储每次执行的客户端命令，然后由一个伪客户端来执行这些命令将数据写入到服务器中的方式实现的。一共分为命令追加（append）/文件写入/文件同步（sync）三个步骤完成。</p>
+<p>AOF（<code>Append Only File</code> ）持久化是通过将存储每次执行的客户端命令，然后由一个伪客户端来执行这些命令将数据写入到服务器中的方式实现的。一共分为命令追加（append）/文件写入/文件同步（sync）三个步骤完成。</p>
 <p>在 redis.conf 配置文件中的<code>APPEND ONLY MODE</code>下</p>
-<p>1 redis 默认关闭，开启需要手动把<code>no</code>改为<code>yes</code></p>
+<p>1 redis 默认关闭，开启需要手动把 <code>no</code> 改为 <code>yes</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
-<p>2 指定本地数据库文件名，默认值为<code>appendonly.aof</code></p>
+<p>2 指定本地数据库文件名，默认值为 <code>appendonly.aof</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appendfilename <span class="string">&quot;appendonly.aof&quot;</span></span><br></pre></td></tr></table></figure>
 <p>3 指定更新日志条件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># appendfsync always</span></span><br><span class="line">appendfsync everysec</span><br><span class="line"><span class="comment"># appendfsync no</span></span><br></pre></td></tr></table></figure>
-<p><code>always</code>：同步持久化，每次发生数据变化会立刻写入到磁盘中。性能较差当数据完整性比较好（慢，安全）</p>
+<p><code>always</code>：同步持久化，每次发生数据变化会立刻写入到磁盘中。性能较差但数据完整性比较好（慢，安全）</p>
 <p><code>everysec</code>：出厂默认推荐，每秒异步记录一次（默认值）</p>
 <p><code>no</code>：不同步</p>
 <p>4 配置重写触发机制</p>
-<p>当<code>aof</code>文件大小是上次<code>rewrite</code>后大小的一倍且文件大于64M时触发；Redis 会<code>fork出一条新进程，读取内存中的数据，并重新写到一个临时文件中。并没有读取旧文件最后替换旧的</code>aof`文件。这里的“一倍”和“64M” 可以通过配置文件修改。</p>
+<p>当 <code>aof</code> 文件大小是上次 <code>rewrite</code> 后大小的一倍且文件大于 <code>64M</code> 时触发；Redis 会 <code>fork出一条新进程，读取内存中的数据，并重新写到一个临时文件中。并没有读取旧文件最后替换旧的aof文件</code>。这里的“一倍”和“64M” 可以通过配置文件修改。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">auto-aof-rewrite-min-size 64mb</span><br></pre></td></tr></table></figure>
 <h2 id="触发方式-v2">触发方式</h2>
 <p>根据 <code>redis.conf</code>  配置文件的配置内容触发。</p>
 <h2 id="Aof文件恢复数据">Aof文件恢复数据</h2>
-<p>正常情况下，将<code>appendonly.aof</code> 文件拷贝到redis的安装目录的bin目录下，重启redis服务即可。</p>
+<p>正常情况下，将 <code>appendonly.aof</code> 文件拷贝到redis的安装目录的<code>bin</code> 目录下，重启redis服务即可。</p>
 <h2 id="Aof文件修复">Aof文件修复</h2>
 <p>在实际开发中，可能因为某些原因导致 <code>appendonly.aof</code> 文件格式异常，从而导致数据还原失败，可以通过命令 <code>redis-check-aof --fix appendonly.aof</code> 进行修复。</p>
 <h2 id="Aof-优缺点">Aof 优缺点</h2>
@@ -327,14 +327,14 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <h1 id="总结">总结</h1>
-<p>Redis 默认开启Rdb持久化方式，在指定的时间间隔内，执行指定次数的写操作，则将内存中的数据写入到磁盘中。</p>
-<p>Rdb持久化适合大规模的数据恢复但它的数据一致性和完整性较差。</p>
-<p>Redis 需要手动开启Aof持久化方式，默认是每秒将写操作日志追加到Aof文件中。</p>
-<p>Aof的数据完整性比Rdb高，但记录内容多了，会影响数据恢复的效率。</p>
-<p>Redis 针对 Aof文件大的问题，提供重写的瘦身机制。</p>
+<p>Redis 默认开启rdb持久化方式。在指定的时间间隔内，执行指定次数的写操作，则将内存中的数据写入到磁盘中。</p>
+<p>rdb持久化适合大规模的数据恢复但它的数据一致性和完整性较差。</p>
+<p>Redis 需要手动开启 aof 持久化方式，默认是每秒将写操作日志追加到 aof 文件中。</p>
+<p>aof 的数据完整性比 rdb 高，但记录内容多了，会影响数据恢复的效率。</p>
+<p>Redis 针对 aof 文件大的问题，提供重写的瘦身机制。</p>
 <p>若只打算用Redis 做缓存，可以关闭持久化。</p>
-<p>若打算使用Redis 的持久化。建议Rdb和Aof都开启。其实Rdb更适合做数据的备份，留一后手。Aof出问题了，还有Rdb。</p>
-<p>当rdb和aof文件同时存在时，Redis会优先使用aof文件恢复。</p>
+<p>若打算使用Redis 的持久化。建议rdb和aof都开启。其实rdb更适合做数据的备份，留一后手。aof 出问题了，还有 rdb。</p>
+<p>当 rdb 和 aof 文件同时存在时，Redis会优先使用 aof 文件恢复。</p>
 
 </article>
 
