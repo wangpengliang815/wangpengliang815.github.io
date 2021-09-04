@@ -212,35 +212,7 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="网络模式">网络模式</h1>
-<ul>
-<li>VMnet0（桥接模式）</li>
-<li>VMnet1（仅主机模式）</li>
-<li>VMnet8（NAT模式）</li>
-</ul>
-<h2 id="NAT-网络地址转换模式-VMnet8">NAT(网络地址转换模式)-VMnet8</h2>
-<p>虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
-<p><code>NAT</code>模式下的虚拟系统的<code>TCP/IP</code>配置信息是由<code>VMnet8(NAT)</code>虚拟网络的<code>DHCP</code>服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。</p>
-<p><img src="../images/2021-09-03-15-22-27.png" alt=""></p>
-<blockquote>
-<p>虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机</p>
-</blockquote>
-<h2 id="Bridged-桥接模式-VMnet0">Bridged(桥接模式)-VMnet0</h2>
-<p>虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。</p>
-<p>需要<code>手工</code>为虚拟系统配置<code>IP地址</code>、<code>子网掩码</code>，而且还要和宿主机器<code>处于同一网段</code>，这样虚拟系统才能和宿主机器进行通信。以实现通过局域网的网关或路由器访问互联网。使用<code>Bridged模式</code>的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动来配置IP地址，子网掩码，并且他是和真实主机在同一个网段（nat是两个网段）。</p>
-<p><img src="../images/2021-09-03-15-23-07.png" alt=""></p>
-<blockquote>
-<p>这个模式里，虚拟机和宿主机可以互相ping通</p>
-</blockquote>
-<h1 id="查看本机IP及网卡信息">查看本机IP及网卡信息</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr</span><br></pre></td></tr></table></figure>
-<p><img src="../images/2021-09-03-15-23-43.png" alt=""></p>
-<h1 id="使用VI模式编辑网卡信息">使用<code>VI</code>模式编辑网卡信息</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet</span><br><span class="line">BOOTPROTO=static #修改成static</span><br><span class="line">DEFROUTE=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">NAME=eno16777736</span><br><span class="line">UUID=bf5337ab-c044-4af7-9143-12da0d493b89</span><br><span class="line">DEVICE=eno16777736</span><br><span class="line">ONBOOT=yes #修改成yes</span><br><span class="line">PEERDNS=yes</span><br><span class="line">PEERROUTES=yes</span><br><span class="line">IPV6_PEERDNS=yes</span><br><span class="line">IPV6_PEERROUTES=yes</span><br><span class="line">IPADDR=192.168.31.32  # 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段</span><br><span class="line">NETMASK=255.255.255.0 # 设置子网掩码，跟宿主一样</span><br><span class="line">GATEWAY=192.168.31.1  # 默认网关，跟宿主一样</span><br><span class="line">DNS1=192.168.31.1 # DNS，跟宿主一样</span><br></pre></td></tr></table></figure>
-<h1 id="重启network">重启network</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
-
+  
 </article>
 
 <div id="paginator">
@@ -273,7 +245,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-05</div>
     </div>
   </div>
 
