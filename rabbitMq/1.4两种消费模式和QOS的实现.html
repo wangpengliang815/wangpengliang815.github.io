@@ -219,76 +219,22 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <table>
-<thead>
-<tr>
-<th style="text-align:center">目录</th>
-<th style="text-align:left">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><code>/boot</code></td>
-<td style="text-align:left">该目录默认下存放的是Linux的启动文件和内核</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/bin</code></td>
-<td style="text-align:left">Binary的缩写，该目录中存放Linux的常用命令</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/sbin</code></td>
-<td style="text-align:left">Supaer User；该目录用来存放系统管理员使用的管理程序</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/var</code></td>
-<td style="text-align:left">该目录存放那些经常被修改的文件，包括各种日志、数据文件</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/etc</code></td>
-<td style="text-align:left">该目录存放系统管理时要用到的各种配置文件和子目录，例如网络配置文件、文件系统、系统配置文件、设备配置信息、设置用户信息等</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/dev</code></td>
-<td style="text-align:left">d是Device的缩写；该目录包含了Linux系统中使用的所有外部设备，它实际上是访问这些外部设备的端口，访问这些外部设备与访问一个文件或一个目录没有区别</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/mnt</code></td>
-<td style="text-align:left">临时将别的文件系统挂在该目录下</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/root</code></td>
-<td style="text-align:left">如果你是以超级用户的身份登录的，这个就是超级用户的主目录</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/home</code></td>
-<td style="text-align:left">如果建立一个名为“xx”的用户，那么在/home目录下就有一个对应的“/home/xx”路径，用来存放该用户的主目录</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/usr</code></td>
-<td style="text-align:left">用户的应用程序和文件几乎都存放在该目录下</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/lib</code></td>
-<td style="text-align:left">该目录用来存放系统动态链接共享库，几乎所有的应用程序都会用到该目录下的共享库</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/opt</code></td>
-<td style="text-align:left">第三方软件在安装时默认会找这个目录,所以你没有安装此类软件时它是空的,但如果你一旦把它删除了,以后在安装此类软件时就有可能碰到麻烦</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/tmp</code></td>
-<td style="text-align:left">用来存放不同程序执行时产生的临时文件，该目录会被系统自动清理干净</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/lost＋found</code></td>
-<td style="text-align:left">该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在此</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/proc</code></td>
-<td style="text-align:left">可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里</td>
-</tr>
-</tbody>
-</table>
+  <h1 id="消费模式">消费模式</h1>
+<h2 id="EventingBasicConsumer">EventingBasicConsumer</h2>
+<p><code>EventingBasicConsumer</code>是发布/订阅模式的消费者，即只要订阅的<code>queue</code>中有了新消息，Broker就会立即把消息推送给消费者，这种模式可以保证消息及时地被消费者接收到。<code>EventingBasicConsumer</code>是长连接的，只需要创建一个<code>Connection</code>,然后在<code>Connection</code>的基础上创建通道<code>channel</code>，消息的发送都是通过<code>channel</code>来执行的，这样可以减少<code>Connection</code>的创建，比较节省资源。之前一直使用的就是<code>EventingBasicConsumer</code>不再赘述。</p>
+<h2 id="BasicGet">BasicGet</h2>
+<p><code>EventingBasicConsumer</code>可以让消费者最及时地获取到消息，使用<code>EventingBasicConsumer</code>模式时消费者在被动的接收消息，即消息是推送过来的，<code>Broker</code>是主动的一方，如果想让消费者作为主动的一方什么时候想要消息了，就自己发送一个请求去找<code>Broker</code>可以使用<code>Get</code>方式。<code>Get</code>方式是短连接的，消费者每次想要消息的时候，首先建立一个<code>connection</code>，发送一次请求，<code>Broker</code>接收到请求后，响应一条消息给消费者，然后断开连接。RabbitMQ中Get方式和HTTP的请求响应流程基本一样，Get方式的实时性比较差，也比较耗费资源。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BasicGetResult result = channel.BasicGet(queue: <span class="string">&quot;test&quot;</span>, autoAck: <span class="literal">true</span>);</span><br><span class="line">Assert.IsNotNull(result.Body.ToArray());</span><br><span class="line">Console.WriteLine(<span class="string">$&quot;接收到消息<span class="subst">&#123;Encoding.UTF8.GetString(result.Body.ToArray())&#125;</span>&quot;</span>);</span><br><span class="line"><span class="comment">// 打印exchange和routingKey</span></span><br><span class="line">Console.WriteLine(<span class="string">$&quot;exchange：<span class="subst">&#123;result.Exchange&#125;</span>,routingKey:<span class="subst">&#123;result.RoutingKey&#125;</span>&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="QueueBaicConsumer">QueueBaicConsumer</h2>
+<p>用法和Get方式类似，QueueBaicConsumer在官方API中标记已过时，不再介绍。</p>
+<h1 id="BasicQos">BasicQos</h1>
+<ul>
+<li>当消息有十万，百万条时，一股脑把消息发送给消费者，可能会造成消费者内存爆满</li>
+<li>当消息处理比较慢的时，单一的消费者处理这些消息可能很长时间，自然想到再添加一个消费者加快消息的处理速度，但是这些消息都被原来的消费者接收了，状态为<code>Unacked</code>，所以这些消息不会再发送给新添加的消费者</li>
+</ul>
+<p>RabbitMQ提供的<code>Qos(服务质量)</code>可以完美解决上边的问题，使用<code>Qos</code>时，<code>Broke</code>不会再把消息全部发送给消费者，可以设置每次传输给消费者的消息条数<code>n</code>，消费者把这n条消息处理完成后，再获取n条数据进行处理，这样就不用担心消息丢失、服务端内存爆满的问题，因为没有发送的消息状态都是<code>Ready</code>，所以新增一个消费者时，消息也可以立即发送给新增的消费者。</p>
+<p>使用<code>Qos</code>的方式十分简单,在消费端调用<code>channel.BasicQos()</code>方法即可</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.BasicQos(prefetchSize: <span class="number">0</span>, prefetchCount: <span class="number">2</span>, <span class="keyword">global</span>: <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
 
 </article>
 
@@ -322,7 +268,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-05</div>
     </div>
   </div>
 
