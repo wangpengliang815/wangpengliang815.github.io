@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
 <li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
@@ -151,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/docker/2.1Docker%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8BDockerSwarm">2.1 Docker三剑客之DockerSwarm</a></li>
 <li><a href="/docker/2.2Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">2.2 Docker常用命令</a></li>
 <li><a href="/docker/Portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF">Portainer可视化面板</a></li>
-<li><a href="/docker/%E5%AE%9E%E6%88%98Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">实战案例：Docker搭建Redis集群</a></li>
 </ul>
 <h2 id="分布式开发">分布式开发</h2>
 <ul>
@@ -241,65 +241,49 @@ function sidebar_toggle() {
   <h1 id="Redis集群">Redis集群</h1>
 <p>Redis支持三种集群方案</p>
 <ul>
-<li>主从复制模式</li>
-<li>Sentinel（哨兵）模式</li>
-<li>Cluster 模式</li>
+<li>主从复制</li>
+<li>Sentinel（哨兵）</li>
+<li>Cluster</li>
 </ul>
-<h2 id="主从复制模式">主从复制模式</h2>
-<p>通过持久化功能，Redis保证了即使在服务器重启的情况下也不会丢失（或少量丢失）数据，因为持久化会把内存中数据保存到硬盘上，重启会从硬盘上加载数据。 但是由于数据是存储在一台服务器上的，如果这台服务器出现硬盘故障等问题，也会导致数据丢失。</p>
-<p>为了避免单点故障，通常的做法是将数据库复制多个副本以部署在不同的服务器上，这样即使有一台服务器出现故障，其他服务器依然可以继续提供服务。</p>
-<p>为此， <strong>Redis 提供了复制（replication）功能，可以实现当一台数据库中的数据更新后，自动将更新的数据同步到其他数据库上</strong>。</p>
-<p>在复制的概念中，数据库分为两类，一类是主数据库（master），另一类是从数据库(slave）。主数据库可以进行读写操作，当写操作导致数据变化时会自动将数据同步给从数据库。而从数据库一般是只读的，只接受主数据库同步过来的数据。<strong>一个主数据库可以拥有多个从数据库，而一个从数据库只能拥有一个主数据库</strong>。</p>
-<h3 id="主从复制原理">主从复制原理</h3>
-<ul>
-<li>从数据库启动成功后，连接主数据库，发送 <code>SYNC</code> 命令</li>
-<li>主数据库接收到 <code>SYNC</code> 命令后，开始执行 <code>BGSAVE</code> 命令生成 <code>rdb</code>文件并使用缓冲区记录此后执行的所有写命令</li>
-<li>主数据库 <code>BGSAVE</code> 执行完后，向所有从数据库发送快照文件，并在发送期间继续记录被执行的写命令</li>
-<li>从数据库收到快照文件后丢弃所有旧数据，载入收到的快照</li>
-<li>主数据库快照发送完毕后开始向从数据库发送缓冲区中的写命令</li>
-<li>从数据库完成对快照的载入，开始接收命令请求，并执行来自主数据库缓冲区的写命令（<strong>从数据库初始化完成</strong>）</li>
-<li>主数据库每执行一个写命令就会向从数据库发送相同的写命令，从数据库接收并执行收到的写命令（<strong>从数据库初始化完成后的操作</strong>）</li>
-<li>出现断开重连后，2.8之后的版本会将断线期间的命令传给重数据库，增量复制</li>
-<li>主从刚刚连接的时候，进行全量同步。全同步结束后，进行增量同步。当然，如果有需要 slave 在任何时候都可以发起全量同步。Redis 的策略是：无论如何，首先会尝试进行增量同步，如不成功，要求从机进行全量同步</li>
-</ul>
+<h2 id="主从复制">主从复制</h2>
+<p>通过持久化功能，Redis保证了即使在服务器重启的情况下也不会丢失（或少量丢失）数据，因为持久化会把内存中数据保存到硬盘上，重启会从硬盘上加载数据。 但是由于数据是存储在一台服务器上的，如果这台服务器出现硬盘故障等问题，也会导致数据丢失。为了避免单点故障，通常的做法是将数据库复制多个副本以部署在不同的服务器上，这样即使有一台服务器出现故障，其他服务器依然可以继续提供服务。</p>
+<p>为此： <code>Redis 提供了复制（replication）功能，可以实现当一台数据库中的数据更新后，自动将更新的数据同步到其他数据库上</code>。</p>
+<p>在复制的概念中，数据库分为两类，一类是主数据库（master），另一类是从数据库(slave）。主数据库可以进行读写操作，当写操作导致数据变化时会自动将数据同步给从数据库。而从数据库一般是只读的，只接受主数据库同步过来的数据。<code>一个主数据库可以拥有多个从数据库，而一个从数据库只能拥有一个主数据库</code>。</p>
+<h3 id="实现原理">实现原理</h3>
+<ol>
+<li>从库启动成功后连接主库，发送 <code>SYNC</code> 命令</li>
+<li>主库接收到 <code>SYNC</code> 命令后，开始执行 <code>BGSAVE</code> 命令生成 <code>rdb</code> 文件并使用缓冲区记录此后执行的所有写命令</li>
+<li>主库 <code>BGSAVE</code> 执行完毕后，向所有从库发送快照文件，并在发送期间继续记录被执行的写命令</li>
+<li>从库收到快照文件后丢弃所有旧数据，载入收到的快照</li>
+<li>主库快照发送完毕后开始向从库发送缓冲区中的写命令</li>
+<li>从库完成对快照的载入，开始接收命令请求，并执行来自主库缓冲区的写命令（至此：从库初始化完成）</li>
+<li>主库每执行一个写命令就会向从库发送相同的写命令，从库接收并执行收到的写命令（备注：从库初始化完成后的操作）</li>
+<li>出现断开重连后，2.8之后的版本会将断线期间的命令传给从库。增量复制</li>
+<li>主从刚连接时：进行全量同步。全同步结束后：进行增量同步。当然如果有需要 slave 可以在任何时候都可以发起全量同步。Redis 的策略是：无论如何，首先会尝试进行增量同步，如不成功，要求从机进行全量同步</li>
+</ol>
 <h3 id="主从复制优缺点"><strong>主从复制优缺点</strong></h3>
-<table>
-<thead>
-<tr>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>主机会自动将数据同步到从机，可以进行读写分离</td>
-<td>Redis不具备自动容错和恢复功能，主机从机的宕机都会导致前端部分读写请求失败，需要等待机器重启或者手动切换前端的IP才能恢复（人工介入）</td>
-</tr>
-<tr>
-<td>为了分载 <code>master</code> 的读操作压力，<code>slave</code> 服务器可以为客户端提供只读操作的服务，写服务仍然必须由<code>master</code> 来完成</td>
-<td>主机宕机，宕机前有部分数据未能及时同步到从机，切换IP后还会引入数据不一致的问题，降低了系统的可用性</td>
-</tr>
-<tr>
-<td><code>slave</code> 同样可以接受其它 <code>slaves</code> 的连接和同步请求，这样可以有效的分载 <code>master</code> 的同步压力</td>
-<td>如果多个<code>slave</code>断线了，需要重启的时候，尽量不要在同一时间段进行重启。因为只要 <code>slave</code> 启动，就会发送<code>sync</code> 请求和主机全量同步，当多个 <code>slave</code> 重启的时候，可能会导致 <code>master</code> <code>IO</code> 剧增从而宕机</td>
-</tr>
-<tr>
-<td><code>master</code>/<code>server</code> 是以非阻塞的方式为 <code>slaves</code>提供服务。所以在 <code>master-slave</code> 同步期间，客户端仍然可以提交查询或修改请求</td>
-<td>Redis 较难支持在线扩容，在集群容量达到上限时在线扩容会变得很复杂</td>
-</tr>
-<tr>
-<td><code>slave server</code> 同样是以非阻塞的方式完成数据同步。在同步期间，如果有客户端提交查询请求，Redis则返回同步之前的数据</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<p><strong>优点</strong></p>
+<ul>
+<li>主机会自动将数据同步到从机，可以进行读写分离</li>
+<li>为了分载 <code>master</code> 的读操作压力，<code>slave</code> 服务器可以为客户端提供只读操作的服务，但写服务仍必须由 <code>master</code> 完成</li>
+<li><code>slave</code> 同样可以接受其它 <code>slaves</code> 的连接和同步请求，这样可以有效的分载 <code>master</code> 的同步压力</li>
+<li><code>master-server</code> 是以非阻塞的方式为 <code>slaves</code>提供服务。所以在 <code>master-slave</code> 同步期间，客户端仍然可以提交查询或修改请求</li>
+<li><code>slave-server</code> 同样是以非阻塞的方式完成数据同步。在同步期间，如果有客户端提交查询请求，则返回同步之前的数据</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>不具备自动容错和恢复功能，主机从机的宕机都会导致前端部分读写请求失败，需要等待机器重启或者手动切换 <code>IP</code> 才能恢复（人工介入方式）</li>
+<li>主机宕机，宕机前如有部分数据未能及时同步到从机，切换IP后还会引入数据不一致的问题，降低了系统的可用性</li>
+<li>如果多个 <code>slave</code> 掉线需要重启时，尽量不要在同一时间段进行重启。因为只要 <code>slave</code> 启动，就会发送<code>sync</code> 请求和主机全量同步，当多个 <code>slave</code> 重启时，可能会导致 <code>master</code> <code>IO</code> 剧增从而宕机</li>
+<li>较难支持在线扩容，在集群容量达到上限时在线扩容会变得很复杂</li>
+</ul>
 <h3 id="主从复制搭建">主从复制搭建</h3>
 <ul>
-<li>Redis集群至少需要3个节点，因为投票容错机制要求超过半数节点认为某个节点挂了该节点才是挂了，所以低于3个节点无法构成集群</li>
-<li>要保证集群的高可用，需要每个节点都有从节点，也就是备份节点。所以Redis集群至少需要6台服务器。因为我没有那么多服务器，也启动不了那么多虚拟机，所在这里搭建的是伪分布式集群（<strong>单机多实例</strong>）</li>
-<li>默认情况下不指定主机的话，每台Redis都是主节点</li>
+<li>集群至少需要3个节点，因为投票容错机制要求超过半数节点认为某个节点挂了该节点才是挂了，所以低于3个节点无法构成集群</li>
+<li>要保证集群的高可用，需要每个节点都有从节点，也就是备份节点。所以Redis集群至少需要6台服务器。这里模拟搭建的是伪分布式集群（<strong>单机多实例</strong>）</li>
+<li>默认情况下不指定主机的话，每台 Redis 都是主节点</li>
 </ul>
-<p>1)：单虚机运行3个redis实例（一主二从），修改端口号为（79-81）。复制2份 <code>redis.conf</code> 模拟2个从机实例</p>
+<p>1)：虚机运行3个 Redis 实例（一主二从），修改端口号为（79-81）。复制2份 <code>redis.conf</code> 模拟2个从机实例</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># ls</span></span><br><span class="line">conf  dump.rdb  redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br><span class="line">[root@wangpengliang bin]<span class="comment"># cd conf</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment"># ls</span></span><br><span class="line">redis.conf</span><br><span class="line">[root@wangpengliang conf]<span class="comment"># cp redis.conf redis80.conf</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment"># cp redis.conf redis81.conf</span></span><br></pre></td></tr></table></figure>
 <table>
 <thead>
@@ -351,41 +335,43 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; info replication</span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:2</span><br><span class="line">slave0:ip=127.0.0.1,port=6380,state=online,offset=210,lag=0</span><br><span class="line">slave1:ip=127.0.0.1,port=6381,state=online,offset=210,lag=0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:fb828085ccb5c0b804cfa2e8112656aef5f561c8</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:210</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:1</span><br><span class="line">repl_backlog_histlen:210</span><br></pre></td></tr></table></figure>
 <p><strong>注意</strong>：使用命令的方式集群是暂时的；如果需要永久生效需要修改配置文件</p>
 <p>5)：修改配置文件设置主从</p>
-<p><code>replicaof &lt;masterip&gt; &lt;masterport&gt;</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure>
 <p>redis80.conf</p>
-<p><code>replicaof 0.0.0.0 6379</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">replicaof 0.0.0.0 6379</span><br></pre></td></tr></table></figure>
 <p>redis81.conf</p>
-<p><code>replicaof 0.0.0.0 6379</code></p>
-<p>如果主机有密码可以通过 <code>masterauth &lt;master-password&gt;</code> 设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">replicaof 0.0.0.0 6379</span><br></pre></td></tr></table></figure>
+<p>如果主机有密码通过 <code>masterauth &lt;master-password&gt;</code> 设置。</p>
 <p><strong>注意</strong></p>
 <ul>
-<li>主机可写，从机只能读取不能写</li>
+<li>主机可写，从机只能读不能写</li>
 <li>主机中数据会自动备份到从机</li>
 </ul>
 <p>6)：主机宕机测试</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SHUTDOWN</span><br><span class="line">not connected&gt; <span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># ps -ef|grep redis</span></span><br><span class="line">root       2723      1  0 03:12 ?        00:00:00 ./redis-server 0.0.0.0:6380</span><br><span class="line">root       2728   2605  0 03:12 pts/1    00:00:00 ./redis-cli -p 6380</span><br><span class="line">root       2730      1  0 03:12 ?        00:00:00 ./redis-server 0.0.0.0:6381</span><br><span class="line">root       2735   2624  0 03:12 pts/2    00:00:00 ./redis-cli -p 6381</span><br><span class="line">root       2738   2643  0 03:16 pts/3    00:00:00 grep --color=auto redis</span><br></pre></td></tr></table></figure>
 <p>80</p>
-<p>此时并没有配置哨兵，所以在主机79宕机后，80依旧是从机</p>
+<p>此时并没有配置哨兵，所以在 <code>Master</code> 79宕机后，80依旧是从机。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; info replication</span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:slave</span><br><span class="line">master_host:0.0.0.0</span><br><span class="line">master_port:6379</span><br><span class="line">master_link_status:down</span><br><span class="line">master_last_io_seconds_ago:-1</span><br><span class="line">master_sync_in_progress:0</span><br><span class="line">slave_repl_offset:1130</span><br><span class="line">master_link_down_since_seconds:17</span><br><span class="line">slave_priority:100</span><br><span class="line">slave_read_only:1</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:fb828085ccb5c0b804cfa2e8112656aef5f561c8</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:1130</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:771</span><br><span class="line">repl_backlog_histlen:360</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>主机断线重连后，从机还是可以读取到主机的值<br>
-从机断线重连后，从机还是可以读取到主机的值</p>
-</blockquote>
+<ul>
+<li>主机断线重连后，从机依旧可以读取到主机的值</li>
+<li>从机断线重连后，从机依旧可以读取到主机的值</li>
+</ul>
 <p>7)：手动切换主节点</p>
-<p>使用 <code>Slaveof no one</code> 命令可以使自己变成主机</p>
+<p>此时使用 <code>Slaveof no one</code> 命令可以使80变成主机。</p>
 <h2 id="Sentinel（哨兵）模式">Sentinel（哨兵）模式</h2>
-<p>主从切换的方法是：当主服务器宕机后，需要手动把一台从服务器切换为主服务器，这就需要人工干预，费事费力，还会造成一段时间内服务不可用。这不是一种推荐的方式。</p>
-<h3 id="概述">概述</h3>
-<p>哨兵模式是一种特殊的模式，首先Redis提供了哨兵的命令，哨兵是一个独立的进程，作为进程，它会独立运行。其原理是 <strong>哨兵通过发送命令，等待Redis服务器响应，从而监控运行的多个Redis实例</strong>。</p>
+<p>主从切换的方法是：当主服务器宕机后，需要手动把从服务器切换为主服务器，这就需要人工干预，费事费力，还会造成一段时间内服务不可用。这不是一种推荐的方式。哨兵模式是一种特殊的模式，首先 Redis 提供了哨兵的命令，哨兵是一个独立的进程，作为进程，它会独立运行。其原理是：哨兵通过发送命令等待Redis服务器响应，从而监控运行的多个Redis实例。</p>
 <h3 id="哨兵作用">哨兵作用</h3>
-<p>1：通过发送命令，让Redis服务器返回监控其运行状态，包括主服务器和从服务器。</p>
-<p>2：当哨兵监测到 <code>master</code> 宕机，会自动将 <code>slave </code>切换成 <code>master</code> ，然后通过 <strong>发布订阅模式</strong> 通知其他的从机修改配置文件，让它们切换主机。</p>
-<p>3 ：<code>master-slave</code> 切换后，<code>m aster_redis.conf</code> 、<code>slave_redis.conf</code> 和 <code>sentinel.conf</code> 的内容都会发生改变，即 <code>master_redis.conf</code>中会多一行<code>slaveof</code> 的配置，<code>sentinel.conf</code> 的监控目标会随之调换。</p>
-<p>4 ：一个哨兵进程对<code>Redis</code>服务器进行监控，可能会出现问题，为此可以使用多个哨兵进行监控。各个哨兵之间还会进行监控，这就形成了多哨兵模式。</p>
+<ul>
+<li>通过发送命令，让 Redis 服务器返回监控其运行状态，包括主服务器和从服务器</li>
+<li>当哨兵监测到 master 宕机，会自动将 slave切换成  master ，然后通过 发布订阅模式通知其他的从机修改配置文件，让它们切换主机</li>
+<li>master 切换后，<code>master_redis.conf</code> 、<code>slave_redis.conf</code> 和 <code>sentinel.conf</code> 的内容都会发生改变，<code>master_redis.conf</code>  中会多一行 <code>slaveof </code>的配置，<code>sentinel.conf</code> 的监控目标会随之调换</li>
+<li>一个哨兵进程对 <code>Redis</code> 服务器进行监控，可能会出现问题，为此可以使用多个哨兵进行监控。各个哨兵之间还会进行监控，这就形成了多哨兵模式</li>
+</ul>
 <h3 id="故障切换（failover）过程">故障切换（failover）过程</h3>
-<p>假设主服务器宕机，哨兵1先检测到这个结果，系统并不会马上进行 <code>failover</code> 过程，仅仅是哨兵1主观的认为主服务器不可用，这个现象称为 <strong>主观下线</strong>。</p>
-<p>当后面的哨兵也检测到主服务器不可用，并且数量达到一定值时，那么哨兵之间就会进行一次投票，投票的结果由一个哨兵发起，进行 <code>failover</code> 操作。切换成功后，就会通过发布订阅模式，让各个哨兵把自己监控的从服务器实现切换主机，这个过程称为 <strong>客观下线</strong>。</p>
+<ul>
+<li>假设主服务器宕机，哨兵1先检测到这个结果，系统并不会马上进行 <code>failover</code>，仅仅是哨兵1主观的认为主服务器不可用，这个现象称为 <strong>主观下线</strong></li>
+<li>当后面的哨兵也检测到主服务器不可用，并且数量达到一定值时，那么哨兵之间就会进行一次投票，投票的结果由一个哨兵发起，进行 <code>failover</code> 。切换成功后，就会通过发布订阅模式，让各个哨兵把自己监控的从服务器实现切换主机，这个过程称为 <strong>客观下线</strong></li>
+</ul>
 <h3 id="哨兵工作方式">哨兵工作方式</h3>
 <ul>
 <li>每个<code>sentinel</code>以每秒钟一次的频率向它所知的<code>master</code>、<code>slave</code>、 <code>sentinel</code> 实例发送一个 <code>PING</code> 命令</li>
@@ -397,24 +383,15 @@ function sidebar_toggle() {
 <li>若没有足够数量的 <code>sentinel</code> 同意 <code>master</code> 已经下线， <code>master</code> 的客观下线状态就会被移除。若<code>master</code> 重新向 <code>sentinel</code> 的 <code>PING</code> 命令返回有效回复，<code>master</code> 的主观下线状态就会被移除</li>
 </ul>
 <h3 id="哨兵模式优缺点">哨兵模式优缺点</h3>
-<table>
-<thead>
-<tr>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>哨兵模式是基于主从模式的，所有主从的优点哨兵模式都具有</td>
-<td>Redis 较难支持在线扩容，在集群容量达到上限时在线扩容会变得很复杂</td>
-</tr>
-<tr>
-<td>主从可以自动切换。系统更健壮、可用性更高(<strong>可以看作自动版的主从复制</strong>)</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<p><strong>优点</strong></p>
+<ul>
+<li>哨兵模式是基于主从模式的，所有主从的优点哨兵模式都具有</li>
+<li>主从可以自动切换。系统更健壮、可用性更高（可以看作自动版的主从复制）</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>Redis 较难支持在线扩容，在集群容量达到上限时在线扩容会变得很复杂</li>
+</ul>
 <h3 id="哨兵模式搭建">哨兵模式搭建</h3>
 <p>1)：Redis安装目录下有一个 <code>sentinel.conf</code> 文件，<code>copy  </code>一份进行修改</p>
 <p>2)：配置哨兵</p>
@@ -427,14 +404,12 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; info replication</span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:1</span><br><span class="line">slave0:ip=127.0.0.1,port=6381,state=online,offset=4615,lag=1</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:872d3e4c9538abb9f117dcc47de99ac57791433a</span><br><span class="line">master_replid2:612af05d7a22d2b35e595f43be74ddd771765798</span><br><span class="line">master_repl_offset:4615</span><br><span class="line">second_repl_offset:1212</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:1</span><br><span class="line">repl_backlog_histlen:4615</span><br></pre></td></tr></table></figure>
 <p>79重新连接</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># ./redis-server conf/redis.conf</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ./redis-cli -p 6379</span></span><br><span class="line">127.0.0.1:6379&gt; ping</span><br><span class="line">PONG</span><br><span class="line">127.0.0.1:6379&gt; info replication</span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:slave</span><br><span class="line">master_host:127.0.0.1</span><br><span class="line">master_port:6380</span><br><span class="line">master_link_status:up</span><br><span class="line">master_last_io_seconds_ago:1</span><br><span class="line">master_sync_in_progress:0</span><br><span class="line">slave_repl_offset:35074</span><br><span class="line">slave_priority:100</span><br><span class="line">slave_read_only:1</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:872d3e4c9538abb9f117dcc47de99ac57791433a</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:35074</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:32735</span><br><span class="line">repl_backlog_histlen:2340</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>79重新连接后只能是从机了，master已经被80抢占</p>
-</blockquote>
+<p>79重新连接后只能是从机了，master已经被80抢占。</p>
 <h2 id="Cluster-集群模式">Cluster 集群模式</h2>
-<p>Redis Cluster是一种服务器 Sharding 技术，3.0版本开始正式提供。Redis 的哨兵模式基本已经可以实现高可用，读写分离 ，但是在这种模式下每台 Redis 服务器都存储相同的数据，很浪费内存，所以在 Redis3.0上加入了 Cluster 集群模式，实现了 Redis 的分布式存储。<strong>也就是说每台 Redis 节点上存储不同的内容</strong>。</p>
+<p>Redis Cluster是一种服务器 Sharding 技术，3.0版本开始正式提供。Redis 的哨兵模式基本已经可以实现高可用，读写分离 ，但是在这种模式下每台 Redis 服务器都存储相同的数据，很浪费内存，所以在 Redis3.0上加入了 Cluster 集群模式，实现了 Redis 的分布式存储。也就是说每台 Redis 节点上存储不同的内容。</p>
 <h3 id="Cluster特点">Cluster特点</h3>
 <ul>
-<li>多主多从，去中心化：从节点作为备用，复制主节点，不做读写操作，不提供服务</li>
+<li>多主多从去中心化：从节点作为备用，复制主节点，不做读写操作不提供服务（可通过 <code>readOnly</code> 实现只读）</li>
 <li>不支持处理多个key：因为数据分散在多个节点，在数据量大高并发的情况下会影响性能</li>
 <li>支持动态扩容节点：Rerdis Cluster 最大的优点之一</li>
 <li>节点之间相互通信，相互选举，不再依赖Sentinel：准确来说是主节点之间相互“监督”，保证及时故障转移</li>
@@ -464,7 +439,7 @@ function sidebar_toggle() {
 <li>第三节点拥有剩余的<code>11001-16384</code>哈希槽</li>
 </ul>
 <p>通过计算键的 <code>CRC16</code> 哈希值，然后对16384进行取模得到：<code>HASH_SLOT=CRC16(key) modulo 16383</code>，Redis提供了<strong>CLUSTER KEYSLOT</strong>命令来执行哈希槽的计算。</p>
-<p><strong>注意</strong>：集群节点保存键值对以及键值对过期时间的处理方式与Redis单机模式是一样的，<strong>唯一不同就是节点只能使用0号数据库，而单机Redis服务器则没有限制</strong></p>
+<p><strong>注意</strong>：集群节点保存键值对以及键值对过期时间的处理方式与Redis单机模式是一样的，唯一不同就是节点只能使用0号数据库，而单机Redis服务器则没有限制。</p>
 <h3 id="集群内部通讯机制">集群内部通讯机制</h3>
 <p>各个数据库互相通信，保存各个库中槽的编号数据。</p>
 <p>1)：客户端发出一个key访问A，通过算法计算出key的存储位置</p>
@@ -472,7 +447,7 @@ function sidebar_toggle() {
 <p>3)：一次未命中，告知具体位置</p>
 <p>4)：一次命中或者两次命中提高数据访问效率</p>
 <p><img src="../images/2021-09-03-17-12-36.png" alt=""></p>
-<h3 id="Cluster搭建">Cluster搭建</h3>
+<h3 id="Cluster集群搭建">Cluster集群搭建</h3>
 <p>1)：单虚机运行6个redis实例（三主三从），端口号为（79-84）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># cd /usr/local/redis/bin</span></span><br><span class="line">[root@wangpengliang bin]<span class="comment"># ls</span></span><br><span class="line">conf  redis-benchmark  redis-check-aof  redis-check-rdb  redis-cli  redis-sentinel  redis-server</span><br><span class="line">[root@wangpengliang bin]<span class="comment"># cd conf</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment"># ls</span></span><br><span class="line">redis80.conf  redis81.conf  redis.conf  sentinel.conf</span><br><span class="line">[root@wangpengliang conf]<span class="comment"># cp redis.conf redis82.conf</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment"># cp redis.conf redis83.conf</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment"># cp redis.conf redis84.conf</span></span><br><span class="line">[root@wangpengliang conf]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
 <table>
@@ -518,7 +493,7 @@ function sidebar_toggle() {
 <p><strong>4)</strong>：创建集群</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--cluster create  192.168.80.251:6379 192.168.80.251:6380 192.168.80.251:6381 192.168.80.251:6382 192.168.80.251:6383 192.168.80.251:6384  --cluster-replicas 1</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang bin]<span class="comment"># ./redis-cli --cluster create  192.168.15.251:6379 192.168.15.251:6380 192.168.15.251:6381 192.168.15.251:6382 192.168.15.251:6383 192.168.15.251:6384  --cluster-replicas 1</span></span><br><span class="line">&gt;&gt;&gt; Performing <span class="built_in">hash</span> slots allocation on 6 nodes...</span><br><span class="line">Master[0] -&gt; Slots 0 - 5460</span><br><span class="line">Master[1] -&gt; Slots 5461 - 10922</span><br><span class="line">Master[2] -&gt; Slots 10923 - 16383</span><br><span class="line">Adding replica 192.168.15.251:6383 to 192.168.15.251:6379</span><br><span class="line">Adding replica 192.168.15.251:6384 to 192.168.15.251:6380</span><br><span class="line">Adding replica 192.168.15.251:6382 to 192.168.15.251:6381</span><br><span class="line">&gt;&gt;&gt; Trying to optimize slaves allocation <span class="keyword">for</span> anti-affinity</span><br><span class="line">[WARNING] Some slaves are <span class="keyword">in</span> the same host as their master</span><br><span class="line">M: 48f3cbacb014f1d0f89fe99bb494e1cabb1f80f4 192.168.15.251:6379</span><br><span class="line">   slots:[0-5460] (5461 slots) master</span><br><span class="line">M: ee511eed5a7d08d39ceef29823b98e299435523e 192.168.15.251:6380</span><br><span class="line">   slots:[5461-10922] (5462 slots) master</span><br><span class="line">M: e4c70b085d10d51a3201c6bf4bfa47adfa000f2e 192.168.15.251:6381</span><br><span class="line">   slots:[10923-16383] (5461 slots) master</span><br><span class="line">S: 5261a1ccb42ac160a93572beae7344e6b0c7c520 192.168.15.251:6382</span><br><span class="line">   replicates 48f3cbacb014f1d0f89fe99bb494e1cabb1f80f4</span><br><span class="line">S: d420ca1e3ef8edd538286e1c7698783447312148 192.168.15.251:6383</span><br><span class="line">   replicates ee511eed5a7d08d39ceef29823b98e299435523e</span><br><span class="line">S: 235fb6093a7f1c92e7144109aee10d1e341d2fb9 192.168.15.251:6384</span><br><span class="line">   replicates e4c70b085d10d51a3201c6bf4bfa47adfa000f2e</span><br><span class="line">Can I <span class="built_in">set</span> the above configuration? (<span class="built_in">type</span> <span class="string">&#x27;yes&#x27;</span> to accept): yes</span><br><span class="line">&gt;&gt;&gt; Nodes configuration updated</span><br><span class="line">&gt;&gt;&gt; Assign a different config epoch to each node</span><br><span class="line">&gt;&gt;&gt; Sending CLUSTER MEET messages to join the cluster</span><br><span class="line">Waiting <span class="keyword">for</span> the cluster to join</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Performing Cluster Check (using node 192.168.15.251:6379)</span><br><span class="line">M: 48f3cbacb014f1d0f89fe99bb494e1cabb1f80f4 192.168.15.251:6379</span><br><span class="line">   slots:[0-5460] (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">M: e4c70b085d10d51a3201c6bf4bfa47adfa000f2e 192.168.15.251:6381</span><br><span class="line">   slots:[10923-16383] (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">M: ee511eed5a7d08d39ceef29823b98e299435523e 192.168.15.251:6380</span><br><span class="line">   slots:[5461-10922] (5462 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: 5261a1ccb42ac160a93572beae7344e6b0c7c520 192.168.15.251:6382</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 48f3cbacb014f1d0f89fe99bb494e1cabb1f80f4</span><br><span class="line">S: 235fb6093a7f1c92e7144109aee10d1e341d2fb9 192.168.15.251:6384</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates e4c70b085d10d51a3201c6bf4bfa47adfa000f2e</span><br><span class="line">S: d420ca1e3ef8edd538286e1c7698783447312148 192.168.15.251:6383</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates ee511eed5a7d08d39ceef29823b98e299435523e</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line">&gt;&gt;&gt; Check <span class="keyword">for</span> open slots...</span><br><span class="line">&gt;&gt;&gt; Check slots coverage...</span><br><span class="line">[OK] All 16384 slots covered.</span><br></pre></td></tr></table></figure>
-<h1 id="Redis-Cluster相关集群命令">Redis-Cluster相关集群命令</h1>
+<h1 id="Redis-Cluster集群命令">Redis-Cluster集群命令</h1>
 <ul>
 <li><code>cluster info</code> ：打印集群的信息</li>
 <li><code>cluster nodes</code>：列出集群当前已知的所有节点（ node），以及这些节点的相关信息</li>
@@ -573,7 +548,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-10</div>
     </div>
   </div>
 

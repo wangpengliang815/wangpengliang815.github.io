@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
 <li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
@@ -151,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/docker/2.1Docker%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8BDockerSwarm">2.1 Docker三剑客之DockerSwarm</a></li>
 <li><a href="/docker/2.2Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">2.2 Docker常用命令</a></li>
 <li><a href="/docker/Portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF">Portainer可视化面板</a></li>
-<li><a href="/docker/%E5%AE%9E%E6%88%98Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">实战案例：Docker搭建Redis集群</a></li>
 </ul>
 <h2 id="分布式开发">分布式开发</h2>
 <ul>
@@ -239,82 +239,82 @@ function sidebar_toggle() {
 <article id="page">
   <h1></h1>
   <h1 id="环境准备">环境准备</h1>
-<p>为了让环境更加真实，本文使用多机环境。</p>
 <table>
 <thead>
 <tr>
 <th style="text-align:center">IP</th>
 <th style="text-align:center">操作系统</th>
-<th style="text-align:center">内存大小</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">192.168.168.143</td>
+<td style="text-align:center">192.168.252.191</td>
 <td style="text-align:center">CentOS Linux release 7.9.2009 (Core)</td>
-<td style="text-align:center">最大内存*3/4</td>
 </tr>
 <tr>
-<td style="text-align:center">192.168.168.144</td>
+<td style="text-align:center">192.168.252.192</td>
 <td style="text-align:center">CentOS Linux release 7.9.2009 (Core)</td>
-<td style="text-align:center"></td>
 </tr>
 <tr>
-<td style="text-align:center">192.168.168.145</td>
+<td style="text-align:center">192.168.252.193</td>
 <td style="text-align:center">CentOS Linux release 7.9.2009 (Core)</td>
-<td style="text-align:center"></td>
 </tr>
 <tr>
-<td style="text-align:center">192.168.168.146</td>
+<td style="text-align:center">192.168.252.194</td>
 <td style="text-align:center">CentOS Linux release 7.9.2009 (Core)</td>
-<td style="text-align:center"></td>
 </tr>
 <tr>
-<td style="text-align:center">192.168.168.147</td>
+<td style="text-align:center">192.168.252.195</td>
 <td style="text-align:center">CentOS Linux release 7.9.2009 (Core)</td>
-<td style="text-align:center"></td>
 </tr>
 <tr>
-<td style="text-align:center">192.168.168.148</td>
+<td style="text-align:center">192.168.252.196</td>
 <td style="text-align:center">CentOS Linux release 7.9.2009 (Core)</td>
-<td style="text-align:center"></td>
 </tr>
 </tbody>
 </table>
-<h1 id="创建Redis容器">创建Redis容器</h1>
+<h1 id="整体搭建步骤">整体搭建步骤</h1>
 <p>整体搭建步骤主要分为以下几步：</p>
-<ul>
+<ol>
 <li>下载 Redis 镜像（可以省略，创建容器时如果本地镜像不存在就会去远程拉取）</li>
-<li>编写 Redis 配置文件</li>
-<li>创建 Redis 容器</li>
-<li>创建 Redis Cluster 集群</li>
-</ul>
-<h2 id="Step1：编写Redis配置文件">Step1：编写Redis配置文件</h2>
-<p>获取 redis.conf  修改默认配置</p>
+<li>更改 Redis 配置文件</li>
+<li>创建并运行 Redis 容器</li>
+<li>使用集群命令创建 Redis Cluster 集群</li>
+</ol>
+<h1 id="Step1：下载镜像">Step1：下载镜像</h1>
+<blockquote>
+<p>省略</p>
+</blockquote>
+<h1 id="Step2：更改配置文件">Step2：更改配置文件</h1>
+<p>获取 <code>redis.conf</code>  修改默认配置</p>
 <ul>
-<li><code>bind 127.0.0.1</code> ：  修改为 <code>0.0.0.0</code> 或指定IP，<code>127.0.0.1</code>限制Redis 只能本地访问</li>
-<li><code>protected-mode no</code>： 默认 <code>yes</code> ，开启保护模式限制为本地访问</li>
-<li><code>daemonize no</code>  ： 默认<code>no</code> ，改为 <code>yes</code> 意为以守护进程方式启动可后台运行，改为 <code>yes</code> 会使配置文件方式启动redis失败</li>
-<li><code>dir  ./</code> ：输入本地 <code>Redis</code>  数据库存放文件夹（可选）</li>
-<li><code>appendonly yes</code> ：<code>Redis</code> 持久化（可选）</li>
-<li><code>cluster-enabled </code>： 设置为集群节点</li>
+<li><code>bind 127.0.0.1</code> ：  修改为 <code>0.0.0.0</code> 或指定<code>IP</code>（<code>127.0.0.1</code> 限制了 Redis 只能本地访问）</li>
+<li><code>protected-mode no</code>： 改为<code>yes</code> ：开启保护模式限制为本地访问</li>
+<li><code>daemonize no</code>  ：改为 <code>yes</code>：是否以守护进程方式启动可后台运行</li>
+<li><code>dir  ./</code> ：Redis 数据存放文件夹（可选）</li>
+<li><code>appendonly yes</code> ：Redis 持久化（可选）</li>
+<li><code>cluster-enabled </code>：设置为集群节点</li>
 </ul>
-<h2 id="Step2：创建并启动Redis容器">Step2：创建并启动Redis容器</h2>
+<h1 id="Step3：创建并启动容器">Step3：创建并启动容器</h1>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --net host --name redis  -v /usr/confs/redis.conf:/etc/redis/redis.conf -v /usr/redisdata:/data redis redis-server /etc/redis/redis.conf --appendonly yes</span><br></pre></td></tr></table></figure>
 <p>命令解释：</p>
 <ul>
 <li><code>--name redis</code> ：指定容器名称</li>
 <li><code>-v</code> ：挂载目录，前表示主机部分/后表示容器部分</li>
-<li><code>-d</code> ：表示后台启动 <code>Redis</code></li>
+<li><code>-d</code> ：表示后台启动</li>
 <li><code>redis-server /etc/redis/redis.conf</code> ：以配置文件启动 <code>Redis</code> ，加载容器内的 <code>conf</code> 文件，最终找到的是 <code>/usr/confs/redis.conf</code></li>
 <li><code>appendonly yes</code>：开启 <code>Redis</code>  持久化</li>
 <li><code>--requirepass</code>：“如果有密码”</li>
 </ul>
-<p>在每台虚机上重复执行 <code>Step1</code> 和 <code>Step2</code> 启动6个redis节点。</p>
-<h1 id="创建Redis集群">创建Redis集群</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker exec -it redis redis-cli --cluster create  192.168.168.143:6379 192.168.168.144:6379 192.168.168.145:6379 192.168.168.146:6379 192.168.168.147:6379 192.168.168.148:6379  --cluster-replicas 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Performing <span class="built_in">hash</span> slots allocation on 6 nodes...</span></span><br><span class="line">Master[0] -&gt; Slots 0 - 5460</span><br><span class="line">Master[1] -&gt; Slots 5461 - 10922</span><br><span class="line">Master[2] -&gt; Slots 10923 - 16383</span><br><span class="line">Adding replica 192.168.168.147:6379 to 192.168.168.143:6379</span><br><span class="line">Adding replica 192.168.168.148:6379 to 192.168.168.144:6379</span><br><span class="line">Adding replica 192.168.168.146:6379 to 192.168.168.145:6379</span><br><span class="line">M: 4c10ce08fcf23e58c1397a3b515232bae6e8ce0f 192.168.168.143:6379</span><br><span class="line">   slots:[0-5460] (5461 slots) master</span><br><span class="line">M: fe8889c921fb602fa080a0604cb127d610d160d7 192.168.168.144:6379</span><br><span class="line">   slots:[5461-10922] (5462 slots) master</span><br><span class="line">M: 00067aa1ac68cb803cf903223f663a8b5832fd51 192.168.168.145:6379</span><br><span class="line">   slots:[10923-16383] (5461 slots) master</span><br><span class="line">S: 8438ede3355fda20d2e944cc64d7a70619425e38 192.168.168.146:6379</span><br><span class="line">   replicates 00067aa1ac68cb803cf903223f663a8b5832fd51</span><br><span class="line">S: 1ad0517208ac2eb1b9aeceb48ed942d0f36e174c 192.168.168.147:6379</span><br><span class="line">   replicates 4c10ce08fcf23e58c1397a3b515232bae6e8ce0f</span><br><span class="line">S: 5d2ba31f6b0445037e2819939d1c262f535bd3ff 192.168.168.148:6379</span><br><span class="line">   replicates fe8889c921fb602fa080a0604cb127d610d160d7</span><br><span class="line">Can I set the above configuration? (type &#x27;yes&#x27; to accept): yes</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Nodes configuration updated</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Assign a different config epoch to each node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Sending CLUSTER MEET messages to join the cluster</span></span><br><span class="line">Waiting for the cluster to join</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Performing Cluster Check (using node 192.168.168.143:6379)</span></span><br><span class="line">M: 4c10ce08fcf23e58c1397a3b515232bae6e8ce0f 192.168.168.143:6379</span><br><span class="line">   slots:[0-5460] (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">M: fe8889c921fb602fa080a0604cb127d610d160d7 192.168.168.144:6379</span><br><span class="line">   slots:[5461-10922] (5462 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: 8438ede3355fda20d2e944cc64d7a70619425e38 192.168.168.146:6379</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 00067aa1ac68cb803cf903223f663a8b5832fd51</span><br><span class="line">S: 5d2ba31f6b0445037e2819939d1c262f535bd3ff 192.168.168.148:6379</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates fe8889c921fb602fa080a0604cb127d610d160d7</span><br><span class="line">M: 00067aa1ac68cb803cf903223f663a8b5832fd51 192.168.168.145:6379</span><br><span class="line">   slots:[10923-16383] (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: 1ad0517208ac2eb1b9aeceb48ed942d0f36e174c 192.168.168.147:6379</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 4c10ce08fcf23e58c1397a3b515232bae6e8ce0f</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Check <span class="keyword">for</span> open slots...</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;&gt; Check slots coverage...</span></span><br><span class="line">[OK] All 16384 slots covered.</span><br></pre></td></tr></table></figure>
+<p>在每台虚机上重复执行 <code>Step2</code> 和 <code>Step3</code> 启动6个redis节点。</p>
+<blockquote>
+<p>注意：如果在执行创建集群命令时卡在&quot; Waiting for the cluster to join …&quot;，启动容器时添加 <code>--net host</code></p>
+</blockquote>
+<h1 id="Step4：创建Redis集群">Step4：创建Redis集群</h1>
+<p>格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it redis redis-cli --cluster create 192.168.252.191:6379 192.168.252.192:6379 192.168.252.193:6379 192.168.252.194:6379 192.168.252.195:6379 192.168.252.196:6379 --cluster-replicas 1</span><br></pre></td></tr></table></figure>
 <p>查看结果</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker exec -it redis  /bin/bash</span><br><span class="line">root@centos-01:/data# redis-cli      </span><br><span class="line">127.0.0.1:6379&gt; CLUSTER nodes</span><br><span class="line">00067aa1ac68cb803cf903223f663a8b5832fd51 192.168.168.145:6379@16379 master - 0 1625646473525 3 connected 10923-16383</span><br><span class="line">4c10ce08fcf23e58c1397a3b515232bae6e8ce0f 192.168.168.143:6379@16379 master - 0 1625646471506 1 connected 0-5460</span><br><span class="line">8438ede3355fda20d2e944cc64d7a70619425e38 192.168.168.146:6379@16379 slave 00067aa1ac68cb803cf903223f663a8b5832fd51 0 1625646471000 3 connected</span><br><span class="line">5d2ba31f6b0445037e2819939d1c262f535bd3ff 192.168.168.148:6379@16379 slave fe8889c921fb602fa080a0604cb127d610d160d7 0 1625646472517 2 connected</span><br><span class="line">fe8889c921fb602fa080a0604cb127d610d160d7 192.168.168.144:6379@16379 myself,master - 0 1625646470000 2 connected 5461-10922</span><br><span class="line">1ad0517208ac2eb1b9aeceb48ed942d0f36e174c 192.168.168.147:6379@16379 slave 4c10ce08fcf23e58c1397a3b515232bae6e8ce0f 0 1625646472000 1 connected</span><br><span class="line">127.0.0.1:6379&gt; CLUSTER info</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:6</span><br><span class="line">cluster_my_epoch:2</span><br><span class="line">cluster_stats_messages_ping_sent:166</span><br><span class="line">cluster_stats_messages_pong_sent:189</span><br><span class="line">cluster_stats_messages_meet_sent:1</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker exec -it redis /bin/bash</span><br><span class="line">root@centos-01:/data# redis-cli </span><br><span class="line">127.0.0.1:6379&gt; CLUSTER NODES</span><br><span class="line">ea3bd63f54103bf7873bfa1b8bea4b7c1190d489 192.168.252.191:6379@16379 myself,master - 0 1631258399000 1 connected 0-5460</span><br><span class="line">9d512a4a1bb7b2a92f09005298065c974d3cd545 192.168.252.194:6379@16379 master - 0 1631258399500 9 connected 10923-16383</span><br><span class="line">752d6f9633db932d8347f69d3a4eb52f640d2bdb 192.168.252.192:6379@16379 slave 05debcade3fbaae47c561fefd6c982641a74185c 0 1631258398000 10 connected</span><br><span class="line">7020b7697b4c0c3f5237f8d56a8ee24b41e1faa2 192.168.252.193:6379@16379 slave 9d512a4a1bb7b2a92f09005298065c974d3cd545 0 1631258400520 9 connected</span><br><span class="line">05debcade3fbaae47c561fefd6c982641a74185c 192.168.252.196:6379@16379 master - 0 1631258398478 10 connected 5461-10922</span><br><span class="line">60f3a530a42c1f984d82f93fbb9a4017f40fb498 192.168.252.195:6379@16379 slave ea3bd63f54103bf7873bfa1b8bea4b7c1190d489 0 1631258397457 1 connected</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; CLUSTER INFO</span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:16384</span><br><span class="line">cluster_slots_ok:16384</span><br><span class="line">cluster_slots_pfail:0</span><br><span class="line">cluster_slots_fail:0</span><br><span class="line">cluster_known_nodes:6</span><br><span class="line">cluster_size:3</span><br><span class="line">cluster_current_epoch:10</span><br><span class="line">cluster_my_epoch:1</span><br><span class="line">cluster_stats_messages_ping_sent:6497</span><br><span class="line">cluster_stats_messages_pong_sent:6333</span><br><span class="line">cluster_stats_messages_fail_sent:32</span><br><span class="line">cluster_stats_messages_auth-ack_sent:4</span><br><span class="line">cluster_stats_messages_sent:12866</span><br><span class="line">cluster_stats_messages_ping_received:6328</span><br><span class="line">cluster_stats_messages_pong_received:6488</span><br><span class="line">cluster_stats_messages_meet_received:5</span><br><span class="line">cluster_stats_messages_fail_received:6</span><br><span class="line">cluster_stats_messages_auth-req_received:4</span><br><span class="line">cluster_stats_mes</span><br></pre></td></tr></table></figure>
 
 </article>
 
@@ -348,7 +348,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-09</div>
+      <div>2021-09-10</div>
     </div>
   </div>
 
