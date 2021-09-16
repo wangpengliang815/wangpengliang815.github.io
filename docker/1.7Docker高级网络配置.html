@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis</a></li>
 <li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
-<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
 <ul>
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/rabbitMq/1.7RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5">1.7 RabbitMQ常见策略</a></li>
 <li><a href="/rabbitMq/1.8RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.8 RabbitMQ常见问题</a></li>
 <li><a href="/rabbitMq/1.9RabbitMQ%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 RabbitMQ集群方案</a></li>
-<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ%E6%96%B9%E6%A1%88">客户端连接RabbitMQ方案</a></li>
+<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ">客户端连接RabbitMQ</a></li>
 </ul>
 <h2 id="Docker">Docker</h2>
 <ul>
@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="Devops工具-Jenkins">Devops工具 Jenkins</h2>
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式缓存</a></li>
 </ul>
 
 </div>
@@ -240,46 +246,38 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <p>除了自动创建的网络，还可以根据业务需要创建自定义网络。Docker提供三种自定义网络驱动： <code>bridge</code> 、 <code>overlay</code> 和 <code>macvlan</code> ， <code>overlay</code>  和 <code>macvlan</code> 用于创建跨主机的网络。</p>
+  <p>除了自动创建的网络，还可以创建自定义网络。Docker提供三种自定义网络驱动： <code>bridge</code> /<code>overlay</code> / <code>macvlan</code> ，其中 <code>overlay</code>  和 <code>macvlan</code> 用于创建跨主机的网络。</p>
 <blockquote>
-<p>注：建议使用自定义的网络来控制哪些容器可以相互通信，可以自动DNS解析容器名称到IP地址</p>
+<p>注意：建议使用自定义的网络来控制哪些容器可以相互通信，可以自动DNS解析容器名称到IP地址</p>
 </blockquote>
 <h1 id="自定义创建bridge网络">自定义创建bridge网络</h1>
-<blockquote>
-<p>测试通过 bridge 驱动创建类似于默认的 bridge 网络（自定义网桥中会自己分配ip地址和网关地址）</p>
-</blockquote>
-<ul>
-<li>创建自定义网桥</li>
-</ul>
+<p>通过 bridge 驱动创建类似于默认的 bridge 网络（自定义网桥中会自己分配ip地址和网关地址）。</p>
+<p><strong>创建自定义网桥</strong></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker network create --driver bridge my-net</span><br><span class="line">c62a2e3d6ad5dece71a470cde488ad9c41c24fac9380689f43905ffbd70d4389</span><br><span class="line"></span><br><span class="line">[root@centos-01 ~]# brctl show</span><br><span class="line">bridge name	bridge id		STP enabled	interfaces</span><br><span class="line">br-c62a2e3d6ad5		8000.0242ae4b8680	no		</span><br><span class="line">docker0		8000.0242cbf135ea	no		</span><br><span class="line"></span><br><span class="line">[root@centos-01 ~]# docker network ls</span><br><span class="line">NETWORK ID     NAME      DRIVER    SCOPE</span><br><span class="line">f6524186651f   bridge    bridge    local</span><br><span class="line">ed7ffc7437dd   host      host      local</span><br><span class="line">c62a2e3d6ad5   my-net    bridge    local</span><br><span class="line">fa66bc1a17f4   none      null      local</span><br></pre></td></tr></table></figure>
-<p>看到新增网桥<code>br-c62a2e3d6ad5</code>， <code>c62a2e3d6ad5</code>  是新建网桥 <code>my-net</code> 的短id，<code>docker network inspect</code>   看下 <code>my-net</code> 的配置信息</p>
+<p>看到新增网桥<code>br-c62a2e3d6ad5</code>， <code>c62a2e3d6ad5</code>  是新建网桥 <code>my-net</code> 的短id，<code>docker network inspect</code>   看下 <code>my-net</code> 的配置信息：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># docker network inspect my-net </span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;my-net&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Id&quot;</span>: <span class="string">&quot;c62a2e3d6ad5dece71a470cde488ad9c41c24fac9380689f43905ffbd70d4389&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Created&quot;</span>: <span class="string">&quot;2021-06-18T11:16:55.17530733+08:00&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Scope&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;bridge&quot;</span>,</span><br><span class="line">        <span class="string">&quot;EnableIPv6&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;IPAM&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;default&quot;</span>,</span><br><span class="line">            <span class="string">&quot;Options&quot;</span>: &#123;&#125;,</span><br><span class="line">            <span class="string">&quot;Config&quot;</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;Subnet&quot;</span>: <span class="string">&quot;172.19.0.0/16&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;Gateway&quot;</span>: <span class="string">&quot;172.19.0.1&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;Internal&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;Attachable&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;Ingress&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;ConfigFrom&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;Network&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;ConfigOnly&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">&quot;Containers&quot;</span>: &#123;&#125;,</span><br><span class="line">        <span class="string">&quot;Options&quot;</span>: &#123;&#125;,</span><br><span class="line">        <span class="string">&quot;Labels&quot;</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>这里 <code>172.19.0.0/16</code> 是 <code>Docker</code> 自动分配的IP网段，网关为 <code>172.19.0.1</code> ,在 <code>my-net</code> 对应的网桥<code>br-c62a2e3d6ad5</code>上</p>
-<blockquote>
-<p>注：如果想要指定IP网段。只需在创建网段时指定 <code>--subnet</code>  和 <code>-gateway</code> 参数即可，命令如下：</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network create --driver bridge --subnet 172.22.16.0/24 --gateway 172.22.16.1 my-net</span><br></pre></td></tr></table></figure>
-<p>容器要使用新的网络，需要在启动时通过 <code>--network</code> 指定</p>
+<p>如果想要指定IP网段。只需在创建网段时指定 <code>--subnet</code>  和 <code>-gateway</code> 参数即可，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network create --driver bridge --subnet 172.22.16.0/24 --gateway 172.22.16.1 my-net</span><br></pre></td></tr></table></figure>
+<p>容器要使用新的网络，需要在启动时通过 <code>--network</code> 指定：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker run -d --network=my-net --name nginx  nginx</span><br><span class="line">2104ba150f62d9ea552d09b05ccb0b376db10ce054b50908d16361a639826b84</span><br></pre></td></tr></table></figure>
-<p>查看容器配置</p>
+<p>查看容器配置：</p>
 <p><img src="../images/2021-09-09-14-45-27.png" alt=""></p>
-<p>容器分配到的IP为 <code>172.19.0.2</code> 到目前为止，这里的IP是docker自动从 <code>subnet</code> 中分配的，如果想要指定一个静态IP可以通过 <code>--ip</code> 指定</p>
+<p>容器分配到的IP为 <code>172.19.0.2</code> 到目前为止，这里的IP是docker自动从 <code>subnet</code> 中分配的，如果想要指定一个静态IP可以通过 <code>--ip</code> 指定。</p>
 <p>这里有个问题需要注意：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker run -d --network=my-net --ip 172.19.0.110 --name nginx  nginx</span><br><span class="line">5506e7ca82c8252727d8e7e4ae2c25ae1e3e5276fcf031112a17702ac4194e77</span><br><span class="line">docker: Error response from daemon: user specified IP address is supported only when connecting to networks with user configured subnets.</span><br></pre></td></tr></table></figure>
 <p>Docker中只有使用 <code>--subnet</code> 创建的网络才能指定静态IP。因此在使用 <code>docker-compose</code> 或者 <code>docker run</code> 命令创建容器时，如果需要指定可以使用 ：</p>
 <ul>
-<li><code>–subnet</code>   指定 <code>IP</code> 段</li>
+<li><code>–subnet</code>   指定 IP 段</li>
 <li><code>–gateway</code> 指定网关</li>
 <li><code>my-net</code>     指定网桥名称</li>
 </ul>
 <h1 id="同网桥下容器通信">同网桥下容器通信</h1>
-<ul>
-<li>nginx1:</li>
-</ul>
+<p><strong>nginx1</strong>：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker run -d --name nginx1 --network=my-net nginx</span><br><span class="line">96a448f4c29fef3038abdd91410d7f9264ef3620cb1a80974bcb63694e61953c</span><br></pre></td></tr></table></figure>
 <p><img src="../images/2021-09-09-14-46-48.png" alt=""></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker exec -it nginx1 /bin/bash</span><br><span class="line">root@96a448f4c29f:/# ping 172.19.0.3</span><br><span class="line">PING 172.19.0.3 (172.19.0.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.19.0.3: icmp_seq=1 ttl=64 time=0.175 ms</span><br><span class="line">64 bytes from 172.19.0.3: icmp_seq=2 ttl=64 time=0.052 ms</span><br><span class="line">64 bytes from 172.19.0.3: icmp_seq=3 ttl=64 time=0.044 ms</span><br></pre></td></tr></table></figure>
-<p>nginx2:</p>
+<p><strong>nginx2</strong>:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker run -d --name nginx2 --network=my-net nginx</span><br><span class="line">8d47f51c8138e0ef935f3e8a7447c16a655ce21f18e87a0af0bc6e5ea2daaa21</span><br></pre></td></tr></table></figure>
 <p><img src="../images/2021-09-09-14-47-06.png" alt=""></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker exec -it nginx2 /bin/bash</span><br><span class="line">root@8d47f51c8138:/# ping 172.19.0.2</span><br><span class="line">PING 172.19.0.2 (172.19.0.2) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.19.0.2: icmp_seq=1 ttl=64 time=0.043 ms</span><br><span class="line">64 bytes from 172.19.0.2: icmp_seq=2 ttl=64 time=0.064 ms</span><br><span class="line">64 bytes from 172.19.0.2: icmp_seq=3 ttl=64 time=0.049 ms</span><br></pre></td></tr></table></figure>
@@ -291,51 +289,41 @@ function sidebar_toggle() {
 <p>新建容器 <code>nginx3</code> 但不指定网桥所以会使用默认的 <code>bridge</code> 网络，结果显示 <code>br-c62a2e3d6ad5</code> 上绑定了两个虚拟网卡 <code>veth0a1e1ba</code> 和 <code>veth1069d0c</code> 对应 <code>nginx1</code> 和 <code>nginx2</code> , <code>docker0</code> 上绑定了 <code>veth3147348</code> ，对应 <code>ngnix3</code> ，分配的IP地址是 <code>172.17.0.2</code> 也可以看出来不在一个网段。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># docker exec -it nginx1 /bin/bash</span></span><br><span class="line">root@96a448f4c29f:/<span class="comment"># ping 172.17.0.2</span></span><br><span class="line">PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.</span><br></pre></td></tr></table></figure>
 <p>结果可知：不同网段的确是 <code>ping</code> 不通的。</p>
-<p>思考：“不同的网络如果加上路由是否可以通信”，如果host上对每个网络都有一条路由，同时操作系统上打开了 <code>ip forwarding</code> ，host就成了一个路由器，挂接在不同网桥上的网络就能够相互通信。试试看</p>
-<p>查看路由表</p>
+<p>思考：“不同的网络如果加上路由是否可以通信”，如果host上对每个网络都有一条路由，同时操作系统上打开了 <code>ip forwarding</code> ，host就成了一个路由器，挂接在不同网桥上的网络就能够相互通信。试试看。</p>
+<p>查看路由表：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># ip r</span></span><br><span class="line">default via 192.168.126.67 dev ens33 proto static metric 100 </span><br><span class="line">172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 </span><br><span class="line">172.19.0.0/16 dev br-c62a2e3d6ad5 proto kernel scope link src 172.19.0.1 </span><br><span class="line">192.168.126.0/24 dev ens33 proto kernel scope link src 192.168.126.143 metric 100 </span><br></pre></td></tr></table></figure>
 <p><img src="../images/2021-09-09-14-49-20.png" alt=""><br>
-<code>172.17.0.0/16</code> 和172…16.0/24两个网络的路由都定义好了。再看看 <code>ip forwarding</code> ：</p>
+<code>172.17.0.0/16</code> 和 <code>172..16.0/24</code> 两个网络的路由都定义好了。再看看 <code>ip forwarding</code> ：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># sysctl net.ipv4.ip_forward</span></span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure>
 <p>这里看到路由转发也是开启的，条件都满足的情况下为什么还不行呢，再看看 <code>iptables</code></p>
 <p><img src="../images/2021-09-09-14-49-47.png" alt=""></p>
-<p>这里看到原因是因为： <code>iptables</code> DROP掉了网桥 <code>dockero</code> 与 <code>br-c62a2e3d6ad5</code> 之间双向的流量。从规则命名 <code>DOCKER-ISOLATION</code> 可知 <code>docker</code> 在设计上就是要隔离不同的 <code>netwrok</code>, 这里可以通过使用 <code>docker network connect</code> 命令添加一块网卡来实现不同网桥容器通信。</p>
+<p>这里看到原因是因为： <code>iptables</code> DROP掉了网桥 <code>dockero</code> 与 <code>br-c62a2e3d6ad5</code> 之间双向的流量。从规则命名 <code>DOCKER-ISOLATION</code> 可知 <code>docker</code> 在设计上就是要隔离不同的 <code>netwrok</code>, 这里可以通过使用 <code>docker network connect</code> 命令添加一块网卡来实现不同网桥容器通信：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED        STATUS        PORTS     NAMES</span><br><span class="line">220cc3010771   nginx     &quot;/docker-entrypoint.…&quot;   34 hours ago   Up 34 hours   80/tcp    nginx3</span><br><span class="line">8d47f51c8138   nginx     &quot;/docker-entrypoint.…&quot;   34 hours ago   Up 34 hours   80/tcp    nginx2</span><br><span class="line">96a448f4c29f   nginx     &quot;/docker-entrypoint.…&quot;   34 hours ago   Up 34 hours   80/tcp    nginx1</span><br><span class="line"></span><br><span class="line">[root@centos-01 ~]# docker network connect my-net 220cc3010771 #将nginx3连接到my-net中</span><br></pre></td></tr></table></figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]# docker exec -it nginx1 /bin/bash</span><br><span class="line">root@96a448f4c29f:/# ping 172.19.0.4</span><br><span class="line">PING 172.19.0.4 (172.19.0.4) 56(84) bytes of data.</span><br><span class="line">64 bytes from 172.19.0.4: icmp_seq=1 ttl=64 time=0.130 ms</span><br><span class="line">64 bytes from 172.19.0.4: icmp_seq=2 ttl=64 time=0.046 ms</span><br><span class="line">64 bytes from 172.19.0.4: icmp_seq=3 ttl=64 time=0.060 ms</span><br></pre></td></tr></table></figure>
 <p>此时发现 <code>nginx1</code> 已经可以访问到 <code>nginx3</code> 了。</p>
-<h1 id="外部访问容器">外部访问容器</h1>
+<h1 id="端口映射">端口映射</h1>
 <p>容器访问外网是通过 <code>iptables</code> 的 <code>SNAT</code> 实现的，docker容器在启动的时候，如果不指定端口映射参数，容器外部无法通过网络访问容器内的网络应用和服务。需要设置端口映射，也可以使用 <code>Dockerfile</code> 文件中的 <code>EXPOSE</code> 指令来配置。</p>
 <p>端口映射使用 <code>-p</code> 、 <code>-P</code> 来实现</p>
 <ul>
 <li><code>-p</code> 容器内部端口绑定到指定的主机端口</li>
 <li><code>-P</code> 容器内部端口随机映射到主机的高端口</li>
 </ul>
-<h2 id="IP-HOSTPORT-CONTAINERPORT"><code>IP:HOSTPORT:CONTAINERPORT</code></h2>
-<blockquote>
-<p><code>指定ip:指定宿主机port:指定容器port</code> : 适用于映射到指定地址的指定端口</p>
-</blockquote>
+<p><strong>格式</strong>：<code>指定ip:指定宿主机端口:指定容器端口</code>/<code>IP:HOSTPORT:CONTAINERPORT</code></p>
+<p>这适用于将容器端口映射到指定地址的指定端口：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run -it -d -p 127.0.0.1:5000:5000 --name redis redis #将容器的5000端口映射到指定地址127.0.0.1的5000端口上</span><br><span class="line">c2179a906b05e210c42eb6561cf76285f3391e703d5db249a154e06d4d025f28</span><br><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                NAMES</span><br><span class="line">4927cb5dfe67   redis     &quot;docker-entrypoint.s…&quot;   49 seconds ago   Up 48 seconds   127.0.0.1:5000-&gt;5000/tcp, 6379/tcp   redis</span><br></pre></td></tr></table></figure>
-<h2 id="IP-CONTAINERPORT"><code>IP::CONTAINERPORT</code></h2>
-<blockquote>
-<p><code>指定ip、未指定宿主机port（随机）、指定容器port</code> :适用于映射到指定地址的任意端口</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run -it -d -p 127.0.0.1::5000 --name redis redis  #将容器的5000端口映射到指定地址127.0.0.1的任意端口上</span><br><span class="line">c19e6b8f249db67b2f50455d35159f718a1d68e6efd02c106f0148bae14ba496</span><br><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                 NAMES</span><br><span class="line">c19e6b8f249d   redis     &quot;docker-entrypoint.s…&quot;   2 seconds ago   Up 2 seconds   6379/tcp, 127.0.0.1:49153-&gt;5000/tcp   redis</span><br></pre></td></tr></table></figure>
-<h2 id="HOSTPORT-CONTAINERPORT"><code>HOSTPORT:CONTAINERPORT</code></h2>
-<blockquote>
-<p><code>未指定ip、指定宿主机port、指定容器port</code> :适用于将容器指定端口指定映射到宿主机的一个端口上（映射所有接口地址）</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]<span class="comment"># docker run -it -d -p 80:8000 --name redis redis #将容器的8000端口映射到宿主机的80端口上</span></span><br><span class="line">3ad63ffd90665413e644cd16f2eb7d404fcb14bb509eee05f67e0db8f1c067a4</span><br><span class="line">[root@wangpengliang ~]<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                             NAMES</span><br><span class="line">3ad63ffd9066   redis     <span class="string">&quot;docker-entrypoint.s…&quot;</span>   5 seconds ago   Up 4 seconds   6379/tcp, 0.0.0.0:80-&gt;8000/tcp, :::80-&gt;8000/tcp   redis</span><br></pre></td></tr></table></figure>
+<p><strong>格式</strong>：<code>指定ip、宿主机随机端口、指定容器端口</code> /<code>IP::CONTAINERPORT</code></p>
+<p>这适用于将容器端口映射到指定地址的任意端口：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run -it -d -p 127.0.0.1::5000 --name redis redis   #将容器的5000端口映射到指定地址127.0.0.1的任意端口上</span><br><span class="line">c19e6b8f249db67b2f50455d35159f718a1d68e6efd02c106f0148bae14ba496</span><br><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                 NAMES</span><br><span class="line">c19e6b8f249d   redis     &quot;docker-entrypoint.s…&quot;   2 seconds ago   Up 2 seconds   6379/tcp, 127.0.0.1:49153-&gt;5000/tcp   redis</span><br></pre></td></tr></table></figure>
+<p><strong>格式</strong>：<code>不指定ip、指定宿主机端口、指定容器端口</code>/<code>HOSTPORT:CONTAINERPORT</code></p>
+<p>这适用于将容器指定端口映射到宿主机的指定端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]<span class="comment"># docker run -it -d -p 80:8000 --name redis redis          #将容器的8000端口映射到宿主机的80端口上</span></span><br><span class="line">3ad63ffd90665413e644cd16f2eb7d404fcb14bb509eee05f67e0db8f1c067a4</span><br><span class="line">[root@wangpengliang ~]<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                             NAMES</span><br><span class="line">3ad63ffd9066   redis     <span class="string">&quot;docker-entrypoint.s…&quot;</span>   5 seconds ago   Up 4 seconds   6379/tcp, 0.0.0.0:80-&gt;8000/tcp, :::80-&gt;8000/tcp   redis</span><br></pre></td></tr></table></figure>
 <h2 id="绑定-UDP-端口">绑定 UDP 端口</h2>
-<blockquote>
-<p>默认情况下 <code>-p</code> 和 <code>-P</code> 绑定的都是 <code>tcp</code> 协议端口，如果要绑定 <code>udp</code> 协议端口，只能使用 <code>-p</code> 参数，且在最后添加 <code>/udp</code> 字符串</p>
-</blockquote>
+<p>默认情况下 <code>-p</code> 和 <code>-P</code> 绑定的都是 <code>tcp</code> 协议端口，如果要绑定 <code>udp</code> 协议端口，只能使用 <code>-p</code> 参数，且在最后添加 <code>/udp</code> 字符串。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]<span class="comment"># docker run -d -p 127.0.0.1:5553:5000/udp jcdemo/flaskapp</span></span><br><span class="line">6aa30aa070a6e77f0d3f8653df69c654edf6e8bb68cea475aefbc68f6f7f9572</span><br></pre></td></tr></table></figure>
 <h2 id="绑定多个端口">绑定多个端口</h2>
-<blockquote>
-<p>多次使用 <code>-p</code> 参数可以映射多个端口</p>
-</blockquote>
+<p>多次使用 <code>-p</code> 参数可以映射多个端口。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]<span class="comment"># docker run -d -p 5552:5000  -p 5551:5001 jcdemo/flaskapp</span></span><br><span class="line">fa116ae4f5c19d82d9d4f40560c3219c85540a21d88f7fa999b60382ab57524a</span><br></pre></td></tr></table></figure>
-<h2 id="查看映射端口配置">查看映射端口配置</h2>
+<h1 id="查看映射端口">查看映射端口</h1>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker port container_ID <span class="comment">#容器ID</span></span><br><span class="line"><span class="comment">#结果输出</span></span><br><span class="line">80/tcp -&gt; 0.0.0.0:800</span><br></pre></td></tr></table></figure>
 <h1 id="跨主机网络解决方案">跨主机网络解决方案</h1>
 <p>TODO</p>
@@ -372,7 +360,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-09</div>
+      <div>2021-09-16</div>
     </div>
   </div>
 

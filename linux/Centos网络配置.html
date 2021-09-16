@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis</a></li>
 <li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
-<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
 <ul>
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/rabbitMq/1.7RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5">1.7 RabbitMQ常见策略</a></li>
 <li><a href="/rabbitMq/1.8RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.8 RabbitMQ常见问题</a></li>
 <li><a href="/rabbitMq/1.9RabbitMQ%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 RabbitMQ集群方案</a></li>
-<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ%E6%96%B9%E6%A1%88">客户端连接RabbitMQ方案</a></li>
+<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ">客户端连接RabbitMQ</a></li>
 </ul>
 <h2 id="Docker">Docker</h2>
 <ul>
@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="Devops工具-Jenkins">Devops工具 Jenkins</h2>
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式缓存</a></li>
 </ul>
 
 </div>
@@ -246,16 +252,16 @@ function sidebar_toggle() {
 <li>VMnet1（仅主机模式）</li>
 <li>VMnet8（NAT模式）</li>
 </ul>
-<h2 id="NAT-网络地址转换模式-VMnet8">NAT(网络地址转换模式)-VMnet8</h2>
+<h2 id="NAT-地址转换-VMnet8">NAT(地址转换)-VMnet8</h2>
 <p>虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
-<p><code>NAT</code>模式下的虚拟系统的<code>TCP/IP</code>配置信息是由<code>VMnet8(NAT)</code>虚拟网络的<code>DHCP</code>服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。</p>
+<p><code>NAT</code> 模式下的虚拟系统的 <code>TCP/IP</code> 配置信息是由 <code>VMnet8(NAT)</code> 虚拟网络的 <code>DHCP</code> 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。</p>
 <p><img src="../images/2021-09-03-15-22-27.png" alt=""></p>
 <blockquote>
 <p>虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机</p>
 </blockquote>
-<h2 id="Bridged-桥接模式-VMnet0">Bridged(桥接模式)-VMnet0</h2>
+<h2 id="Bridged-桥接-VMnet0">Bridged(桥接)-VMnet0</h2>
 <p>虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。</p>
-<p>需要<code>手工</code>为虚拟系统配置<code>IP地址</code>、<code>子网掩码</code>，而且还要和宿主机器<code>处于同一网段</code>，这样虚拟系统才能和宿主机器进行通信。以实现通过局域网的网关或路由器访问互联网。使用<code>Bridged模式</code>的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动来配置IP地址，子网掩码，并且他是和真实主机在同一个网段（nat是两个网段）。</p>
+<p>需要手工为虚拟系统配置<code>IP地址</code>、<code>子网掩码</code>，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。</p>
 <p><img src="../images/2021-09-03-15-23-07.png" alt=""></p>
 <blockquote>
 <p>这个模式里，虚拟机和宿主机可以互相ping通</p>
@@ -301,7 +307,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-16</div>
     </div>
   </div>
 

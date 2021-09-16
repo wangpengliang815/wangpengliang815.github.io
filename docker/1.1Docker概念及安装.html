@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis</a></li>
 <li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
-<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
 <ul>
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/rabbitMq/1.7RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5">1.7 RabbitMQ常见策略</a></li>
 <li><a href="/rabbitMq/1.8RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.8 RabbitMQ常见问题</a></li>
 <li><a href="/rabbitMq/1.9RabbitMQ%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 RabbitMQ集群方案</a></li>
-<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ%E6%96%B9%E6%A1%88">客户端连接RabbitMQ方案</a></li>
+<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ">客户端连接RabbitMQ</a></li>
 </ul>
 <h2 id="Docker">Docker</h2>
 <ul>
@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="Devops工具-Jenkins">Devops工具 Jenkins</h2>
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式缓存</a></li>
 </ul>
 
 </div>
@@ -246,7 +252,7 @@ function sidebar_toggle() {
 <li>操作系统的设置</li>
 <li>各种库和组件的安装</li>
 </ul>
-<p>比如安装一个dotnetCore 应用，计算机必须有dotnetSDK，还必须有各种依赖，可能还要配置环境变量。而且换一台机器就要重新配置一遍。能不能做到软件可以带环境安装？也就是说，安装的时候，把原始环境一模一样地复制过来。</p>
+<p>比如安装一个dotnet core 应用，计算机必须有dotnet SDK，还必须有各种依赖，可能还要配置环境变量。而且换一台机器就要重新配置一遍。能不能做到软件可以带环境安装？也就是说，安装的时候，把原始环境一模一样地复制过来。</p>
 <blockquote>
 <p>“在我的机器可以运行”（It works on my machine），言下之意就是，其他机器很可能跑不了</p>
 </blockquote>
@@ -254,22 +260,22 @@ function sidebar_toggle() {
 <p>虚拟机（virtual machine）就是带环境安装的一种解决方案。它可以在一种操作系统里面运行另一种操作系统，比如在 Windows 系统里面运行 Linux 系统。应用程序对此毫无感知，因为虚拟机看上去跟真实系统一模一样，而对于底层系统来说，虚拟机就是一个普通文件不需要了就删掉，对其他部分毫无影响。</p>
 <p>虽然可以通过虚拟机还原软件的原始环境。但是这个方案有几个缺点：</p>
 <ul>
-<li><strong>资源占用多</strong>：虚拟机会独占一部分内存和硬盘空间。它运行的时候其他程序就不能使用这些资源了。哪怕虚拟机里面的应用程序，真正使用的内存只有1MB，虚拟机依然需要几百 MB 的内存才能运行</li>
+<li><strong>资源占用多</strong>：虚拟机会独占一部分内存和硬盘空间。它运行的时候其他程序就不能使用这些资源了。哪怕虚拟机里面的应用程序，真正使用的内存只有1MB，虚拟机依然需要几百MB的内存才能运行</li>
 <li><strong>冗余步骤多</strong>：虚拟机是完整的操作系统，一些系统级别的操作步骤，往往无法跳过，比如用户登录</li>
 <li><strong>启动慢</strong>：启动操作系统需要多久，启动虚拟机就需要多久。可能要等几分钟，应用程序才能真正运行</li>
 </ul>
 <h1 id="Linux-容器">Linux 容器</h1>
-<p>由于虚拟机存在这些缺点，Linux 发展出了另一种虚拟化技术：Linux 容器（ <code>Linux Containers</code> 缩写为 <code>LXC</code> ）**Linux 容器不是模拟一个完整的操作系统，而是对进程进行隔离。**或者说，在正常进程的外面套了一个<a target="_blank" rel="noopener" href="https://opensource.com/article/18/1/history-low-level-container-runtimes">保护层</a>。对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。</p>
+<p>由于虚拟机存在这些缺点，Linux 发展出了另一种虚拟化技术：Linux 容器（ <code>Linux Containers</code> 缩写为 <code>LXC</code> ）**Linux 容器不是模拟一个完整的操作系统，而是对进程进行隔离。或者说，在正常进程的外面套了一个<a target="_blank" rel="noopener" href="https://opensource.com/article/18/1/history-low-level-container-runtimes">保护层</a>。对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。</p>
 <p>由于容器是进程级别的，相比虚拟机有很多优势：</p>
 <ul>
 <li><strong>启动快</strong>：容器里面的应用，直接就是底层系统的一个进程而不是虚拟机内部的进程。所以启动容器相当于启动本机的一个进程，而不是启动一个操作系统，速度就快很多</li>
 <li><strong>资源占用少</strong>：容器只占用需要的资源，不占用没有用到的资源；虚拟机由于是完整的操作系统，不可避免要占用所有资源。另外，多个容器可以共享资源，虚拟机都是独享资源</li>
-<li><strong>体积小</strong>：容器只要包含用到的组件即可，而虚拟机是整个操作系统的打包    所以容器文件比虚拟机文件要小很多</li>
+<li><strong>体积小</strong>：容器只要包含用到的组件即可，而虚拟机是整个操作系统的打包，所以容器文件比虚拟机文件要小很多</li>
 </ul>
 <blockquote>
 <p>总之，容器有点像轻量级的虚拟机，能够提供虚拟化的环境，但是成本开销小得多</p>
 </blockquote>
-<p>下图比较了 Docker 和传统虚拟化方式的不同之处。传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程。</p>
+<p>下图比较了Docker和传统虚拟化方式的不同之处。传统虚拟机技术是虚拟出一套硬件后，在其上运行一个完整操作系统，在该系统上再运行所需应用进程。</p>
 <p><img src="../images/2021-09-09-13-28-12.png" alt=""></p>
 <p>容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。因此容器要比传统虚拟机更为轻便。</p>
 <p><img src="../images/2021-09-09-13-28-29.png" alt=""></p>
@@ -278,16 +284,16 @@ function sidebar_toggle() {
 <p>Docker 属于 Linux 容器的一种封装，提供简单易用的容器使用接口。它是目前最流行的 Linux 容器解决方案</p>
 </blockquote>
 <p>Docker 将应用程序与该程序的依赖，打包在一个文件里面。运行这个文件，就会生成一个虚拟容器。程序在这个虚拟容器里运行，就好像在真实的物理机上运行一样。有了 Docker就不用再担心环境问题。</p>
-<p><strong>Docker</strong> 使用 <code>Google</code> 公司推出的 <a target="_blank" rel="noopener" href="https://golang.google.cn/">Go 语言</a> 进行开发实现，基于 <code>Linux</code> 内核的 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Cgroups">cgroup</a>，<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linux_namespaces">namespace</a>，以及 <a target="_blank" rel="noopener" href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/">OverlayFS</a> 类的 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Union_mount">Union FS</a> 等技术，对进程进行封装隔离，属于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Operating-system-level_virtualization">操作系统层面的虚拟化技术</a>。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 <a target="_blank" rel="noopener" href="https://linuxcontainers.org/lxc/introduction/">LXC</a>，从 <code>0.7</code> 版本以后开始去除 <code>LXC</code>，转而使用自行开发的 <a target="_blank" rel="noopener" href="https://github.com/docker/libcontainer">libcontainer</a>，从 <code>1.11</code> 版本开始，则进一步演进为用 <a target="_blank" rel="noopener" href="https://github.com/opencontainers/runc">runC</a> 和 <a target="_blank" rel="noopener" href="https://github.com/containerd/containerd">containerd</a>。</p>
+<p>Docker 使用 <code>Google</code> 公司推出的 <a target="_blank" rel="noopener" href="https://golang.google.cn/">Go 语言</a> 进行开发实现，基于 <code>Linux</code> 内核的 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Cgroups">cgroup</a>，<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Linux_namespaces">namespace</a>，以及 <a target="_blank" rel="noopener" href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/">OverlayFS</a> 类的 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Union_mount">Union FS</a> 等技术，对进程进行封装隔离，属于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Operating-system-level_virtualization">操作系统层面的虚拟化技术</a>。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。最初实现是基于 <a target="_blank" rel="noopener" href="https://linuxcontainers.org/lxc/introduction/">LXC</a>，从 <code>0.7</code> 版本以后开始去除 <code>LXC</code>，转而使用自行开发的 <a target="_blank" rel="noopener" href="https://github.com/docker/libcontainer">libcontainer</a>，从 <code>1.11</code> 版本开始，则进一步演进为用 <a target="_blank" rel="noopener" href="https://github.com/opencontainers/runc">runC</a> 和 <a target="_blank" rel="noopener" href="https://github.com/containerd/containerd">containerd</a>。</p>
 <h1 id="Docker-优点">Docker 优点</h1>
-<p>作为一种新兴的虚拟化方式，Docker 跟传统的虚拟化方式相比具有众多的优势</p>
+<p>作为一种新兴的虚拟化方式，Docker 跟传统的虚拟化方式相比具有众多的优势：</p>
 <ul>
-<li>**更高效的利用系统资源：**由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用</li>
-<li>**更快速的启动：**传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用，由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间</li>
-<li>**一致的运行环境：**开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 <em>「这段代码在我机器上没问题」</em> 这类问题</li>
-<li>**持续交付和部署：**对开发和运维（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DevOps">DevOps</a>）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。使用 Docker 可以通过定制应用镜像来实现持续集成、持续交付、部署。开发人员可以通过 <a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/docker_practice-v1.1.0/$image-dockerfile">Dockerfile</a> 来进行镜像构建，并结合 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Continuous_integration">持续集成(Continuous Integration)</a> 系统进行集成测试，而运维人员则可以直接在生产环境中快速部署该镜像，甚至结合 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Continuous_delivery">持续部署(Continuous Delivery/Deployment)</a> 系统进行自动部署。而且使用 <code>Dockerfile</code> 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像</li>
-<li>**更轻松的迁移：**由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云其运行结果是一致的。因此可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况</li>
-<li>**更轻松的维护和扩展：**Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外Docker 团队同各个开源项目团队一起维护了一大批高质量的 <a target="_blank" rel="noopener" href="https://hub.docker.com/search/?type=image&amp;image_filter=official">官方镜像</a>，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本</li>
+<li><strong>更高效的利用系统资源</strong>：由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用</li>
+<li><strong>更快速的启动</strong>：传统的虚拟机技术启动应用服务往往需要数分钟，而 Docker 容器应用由于直接运行于宿主内核，无需启动完整的操作系统，因此可以做到秒级、甚至毫秒级的启动时间。大大的节约了开发、测试、部署的时间</li>
+<li><strong>一致的运行环境</strong>：开发过程中一个常见的问题是环境一致性问题。由于开发环境、测试环境、生产环境不一致，导致有些 bug 并未在开发过程中被发现。而 Docker 的镜像提供了除内核外完整的运行时环境，确保了应用运行环境一致性，从而不会再出现 <em>「这段代码在我机器上没问题」</em> 这类问题</li>
+<li><strong>持续交付和部署</strong>：对开发和运维（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DevOps">DevOps</a>）人员来说，最希望的就是一次创建或配置，可以在任意地方正常运行。使用 Docker 可以通过定制应用镜像来实现持续集成、持续交付、部署。开发人员可以通过 <a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/docker_practice-v1.1.0/$image-dockerfile">Dockerfile</a> 来进行镜像构建，并结合 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Continuous_integration">持续集成(Continuous Integration)</a> 系统进行集成测试，而运维人员则可以直接在生产环境中快速部署该镜像，甚至结合 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Continuous_delivery">持续部署(Continuous Delivery/Deployment)</a> 系统进行自动部署。而且使用 <code>Dockerfile</code> 使镜像构建透明化，不仅仅开发团队可以理解应用运行环境，也方便运维团队理解应用运行所需条件，帮助更好的生产环境中部署该镜像</li>
+<li><strong>更轻松的迁移</strong>：由于 Docker 确保了执行环境的一致性，使得应用的迁移更加容易。Docker 可以在很多平台上运行，无论是物理机、虚拟机、公有云、私有云其运行结果是一致的。因此可以很轻易的将在一个平台上运行的应用，迁移到另一个平台上，而不用担心运行环境的变化导致应用无法正常运行的情况</li>
+<li><strong>更轻松的维护和扩展</strong>：Docker 使用的分层存储以及镜像的技术，使得应用重复部分的复用更为容易，也使得应用的维护更新更加简单，基于基础镜像进一步扩展镜像也变得非常简单。此外Docker 团队同各个开源项目团队一起维护了一大批高质量的 <a target="_blank" rel="noopener" href="https://hub.docker.com/search/?type=image&amp;image_filter=official">官方镜像</a>，既可以直接在生产环境使用，又可以作为基础进一步定制，大大的降低了应用服务的镜像制作成本</li>
 </ul>
 <p><strong>Docker对比传统虚拟机总结</strong></p>
 <table>
@@ -438,7 +444,7 @@ Container是由Docker镜像创建的运行实例，类似于虚拟机。容器�
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-09</div>
+      <div>2021-09-16</div>
     </div>
   </div>
 

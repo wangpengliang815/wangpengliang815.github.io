@@ -1,4 +1,16 @@
 @charset "UTF-8";
+a img {
+  border-color: beige; }
+
+img {
+  border-style: solid;
+  border-color: #FF9900;
+  border-width: 4px;
+  border-radius: 5px;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-bottom: 20px; }
+
 /*自定义css美化table*/
 table {
   width: 100%;

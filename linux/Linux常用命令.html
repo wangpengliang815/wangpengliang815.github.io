@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis</a></li>
 <li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
-<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
 <ul>
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/rabbitMq/1.7RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5">1.7 RabbitMQ常见策略</a></li>
 <li><a href="/rabbitMq/1.8RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.8 RabbitMQ常见问题</a></li>
 <li><a href="/rabbitMq/1.9RabbitMQ%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 RabbitMQ集群方案</a></li>
-<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ%E6%96%B9%E6%A1%88">客户端连接RabbitMQ方案</a></li>
+<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ">客户端连接RabbitMQ</a></li>
 </ul>
 <h2 id="Docker">Docker</h2>
 <ul>
@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="Devops工具-Jenkins">Devops工具 Jenkins</h2>
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式缓存</a></li>
 </ul>
 
 </div>
@@ -240,131 +246,362 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <ul>
-<li><code>arch</code>显示机器的处理器架构</li>
-<li><code>uname -m</code>  显示机器的处理器架构</li>
-<li><code>uname -r</code>  显示正在使用的内核版本</li>
-<li><code>dmidecode -q</code>  显示硬件系统部件 - (SMBIOS / DMI)</li>
-<li><code>hdparm -i /dev/hda</code>  罗列一个磁盘的架构特性</li>
-<li><code>hdparm -tT /dev/sda</code>  在磁盘上执行测试性读取操作</li>
-<li><code>cat /proc/cpuinfo</code>  显示CPU info的信息</li>
-<li><code>cat /proc/interrupts</code> 显示中断</li>
-<li><code>cat /proc/meminfo</code>  校验内存使用</li>
-<li><code>cat /proc/swaps</code>  显示哪些swap被使用</li>
-<li><code>cat /proc/version</code>  显示内核的版本</li>
-<li><code>cat /proc/net/dev</code>  显示网络适配器及统计</li>
-<li><code>cat /proc/mounts</code>  显示已加载的文件系统</li>
-<li><code>lspci -tv</code> 罗列 PCI 设备</li>
-<li><code>lsusb -tv</code> 显示 USB 设备</li>
-<li><code>date</code> 显示系统日期</li>
-<li><code>cal 2007</code> 显示2007年的日历表</li>
-<li><code>date 041217002007.00</code> 设置日期和时间 - 月日时分年.秒</li>
-<li><code>clock -w</code> 将时间修改保存到 BIOS</li>
-<li><code>shutdown -h now</code> 关闭系统<code>init 0</code> 关闭系统</li>
-<li><code>telinit 0</code> 关闭系统</li>
-<li><code>shutdown -c</code> 取消按预定时间关闭系统</li>
-<li><code>shutdown -r now</code>重启</li>
-<li><code>reboot</code> 重启</li>
-<li><code>logout</code> 注销</li>
-</ul>
-<h2 id="cd-home"><code>cd /home</code></h2>
-<p>进入指定目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang /]<span class="comment"># ls</span></span><br><span class="line">bin   dev  home  lib64  mnt  proc  run   srv  tmp  var</span><br><span class="line">boot  etc  lib   media  opt  root  sbin  sys  usr</span><br><span class="line">[root@wangpengliang /]<span class="comment"># cd home</span></span><br><span class="line">[root@wangpengliang home]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h2 id="cd"><code>cd ..</code></h2>
-<p>返回上一级目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang /]<span class="comment"># ls</span></span><br><span class="line">bin   dev  home  lib64  mnt  proc  run   srv  tmp  var</span><br><span class="line">boot  etc  lib   media  opt  root  sbin  sys  usr</span><br><span class="line">[root@wangpengliang /]<span class="comment"># cd home</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># cd ..</span></span><br><span class="line">[root@wangpengliang /]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h2 id="cd-v2"><code>cd ../..</code></h2>
-<p>返回上两级目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang /]<span class="comment"># ls</span></span><br><span class="line">bin   dev  home  lib64  mnt  proc  run   srv  tmp  var</span><br><span class="line">boot  etc  lib   media  opt  root  sbin  sys  usr</span><br><span class="line">[root@wangpengliang /]<span class="comment"># cd home</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin</span><br><span class="line">[root@wangpengliang home]<span class="comment"># cd admin</span></span><br><span class="line">[root@wangpengliang admin]<span class="comment"># ls</span></span><br><span class="line">[root@wangpengliang admin]<span class="comment"># cd ../../</span></span><br></pre></td></tr></table></figure>
-<h2 id="cd-v3"><code>cd</code></h2>
-<p>进入个人的主目录</p>
-<h2 id="cd-user1"><code>cd ~user1</code></h2>
-<p>进入个人的主目录</p>
-<h2 id="cd-v4"><code>cd -</code></h2>
-<p>返回上次所在的目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang /]<span class="comment"># cd home</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin</span><br><span class="line">[root@wangpengliang home]<span class="comment"># cd /home/admin</span></span><br><span class="line">[root@wangpengliang admin]<span class="comment"># cd -</span></span><br><span class="line">/home</span><br><span class="line">[root@wangpengliang home]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h2 id="pwd"><code>pwd</code></h2>
-<p>显示工作路径</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang /]<span class="comment"># cd home</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># pwd</span></span><br><span class="line">/home</span><br><span class="line">[root@wangpengliang home]<span class="comment"># cd /usr/local</span></span><br><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># pwd</span></span><br><span class="line">/usr/<span class="built_in">local</span></span><br></pre></td></tr></table></figure>
-<h2 id="ls"><code>ls</code></h2>
-<p>查看目录中的文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># ls</span></span><br><span class="line">bin  games    lib    libexec  redis6.2.1  share</span><br><span class="line">etc  include  lib64  redis    sbin        src</span><br><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h2 id="ls-F"><code>ls -F</code></h2>
-<p>查看目录中的文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># ls -F</span></span><br><span class="line">bin/  games/    lib/    libexec/  redis6.2.1/  share/</span><br><span class="line">etc/  include/  lib64/  redis/    sbin/        src/</span><br></pre></td></tr></table></figure>
-<h2 id="ls-l"><code>ls -l</code></h2>
-<p>显示文件和目录的详细资料</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># ls -l</span></span><br><span class="line">总用量 0</span><br><span class="line">drwxr-xr-x. 2 root root  6 4月  18 01:30 bin</span><br><span class="line">drwxr-xr-x. 2 root root  6 4月  11 2018 etc</span><br><span class="line">drwxr-xr-x. 2 root root  6 4月  11 2018 games</span><br><span class="line">drwxr-xr-x. 2 root root  6 4月  11 2018 include</span><br><span class="line">drwxr-xr-x. 2 root root  6 4月  11 2018 lib</span><br></pre></td></tr></table></figure>
-<h2 id="ls-a"><code>ls -a</code></h2>
-<p>显示隐藏文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># ls -a</span></span><br><span class="line">.   bin  games    lib    libexec  redis6.2.1  share</span><br><span class="line">..  etc  include  lib64  redis    sbin        src</span><br></pre></td></tr></table></figure>
-<h2 id="ls-0-9"><code>ls *[0-9]*</code></h2>
-<p>显示包含数字的文件名和目录名</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment"># ls *[1-7]*</span></span><br><span class="line">lib64:</span><br><span class="line"></span><br><span class="line">redis6.2.1:</span><br><span class="line">[root@wangpengliang <span class="built_in">local</span>]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h2 id="tree"><code>tree</code></h2>
-<p>显示文件和目录由根目录开始的树形结构</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang home]<span class="comment"># tree</span></span><br><span class="line">.</span><br><span class="line">└── admin</span><br><span class="line"></span><br><span class="line">1 directory, 0 files</span><br><span class="line">[root@wangpengliang home]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h2 id="mkdir-dir"><code>mkdir dir</code></h2>
-<p>创建一个目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang home]<span class="comment"># mkdir test1</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin  test1</span><br></pre></td></tr></table></figure>
-<h2 id="mkdir-dir1-dir2"><code>mkdir dir1 dir2</code></h2>
-<p>同时创建两个目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang home]<span class="comment"># mkdir test1 test2</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin  test1  test2</span><br></pre></td></tr></table></figure>
-<h2 id="mkdir-p-tmp-dir1-dir2"><code>mkdir -p /tmp/dir1/dir2</code></h2>
-<p>创建一个目录树</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang home]<span class="comment"># mkdir -p tmp/test1/test2</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin  tmp</span><br><span class="line">[root@wangpengliang home]<span class="comment"># tree</span></span><br><span class="line">.</span><br><span class="line">├── admin</span><br><span class="line">└── tmp</span><br><span class="line">    └── test1</span><br><span class="line">        └── test2</span><br><span class="line"></span><br><span class="line">4 directories, 0 files</span><br></pre></td></tr></table></figure>
-<h2 id="rm-f-file1"><code>rm -f file1</code></h2>
-<p>删除一个文件</p>
-<h2 id="rmdir-dir1"><code>rmdir dir1</code></h2>
-<p>删除一个目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang home]<span class="comment"># mkdir temp</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin  temp</span><br><span class="line">[root@wangpengliang home]<span class="comment"># rmdir temp</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin</span><br></pre></td></tr></table></figure>
-<h2 id="rm-rf-dir1"><code>rm -rf dir1</code></h2>
-<p>删除一个目录并同时删除内容</p>
-<h2 id="rm-rf-dir1-dir2"><code>rm -rf dir1 dir2</code></h2>
-<p>同时删除两个目录及内容</p>
-<h2 id="mv-dir1-new-dir"><code>mv dir1 new_dir</code></h2>
-<p>重命名/移动 一个目录</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang home]<span class="comment"># ls</span></span><br><span class="line">admin  tmp2</span><br><span class="line">[root@wangpengliang home]<span class="comment"># tree</span></span><br><span class="line">.</span><br><span class="line">├── admin</span><br><span class="line">└── tmp2</span><br><span class="line"></span><br><span class="line">2 directories, 0 files</span><br><span class="line">[root@wangpengliang home]<span class="comment"># mkdir tmp1</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># tree</span></span><br><span class="line">.</span><br><span class="line">├── admin</span><br><span class="line">├── tmp1</span><br><span class="line">└── tmp2</span><br><span class="line"></span><br><span class="line">3 directories, 0 files</span><br><span class="line">[root@wangpengliang home]<span class="comment"># mv tmp1 tmp2</span></span><br><span class="line">[root@wangpengliang home]<span class="comment"># tree</span></span><br><span class="line">.</span><br><span class="line">├── admin</span><br><span class="line">└── tmp2</span><br><span class="line">    └── tmp1</span><br><span class="line"></span><br><span class="line">3 directories, 0 files</span><br></pre></td></tr></table></figure>
-<h2 id="cp-file1-file2"><code>cp file1 file2</code></h2>
-<p>复制一个文件</p>
-<h2 id="cp-dir"><code>cp dir/* .</code></h2>
-<p>复制一个目录下的所有文件到当前工作目录</p>
-<h2 id="cp-a-tmp-dir1"><code>cp -a /tmp/dir1.</code></h2>
-<p>复制一个目录到当前工作目录</p>
-<h2 id="cp-a-dir1-dir2"><code>cp -a dir1 dir2</code></h2>
-<p>复制一个目录</p>
-<h2 id="ln-s-file1-lnk1"><code>ln -s file1 lnk1</code></h2>
-<p>创建一个指向文件或目录的软链接</p>
-<h2 id="ln-file1-lnk1"><code>ln file1 lnk1</code></h2>
-<p>创建一个指向文件或目录的物理链接</p>
-<h2 id="touch-t-0712250000-file1"><code>touch -t 0712250000 file1</code></h2>
-<p>修改一个文件或目录的时间戳 - (YYMMDDhhmm)</p>
-<h2 id="ip-addr"><code>ip addr</code></h2>
-<p>查看本机IP及网卡信息</p>
-<h2 id="vi-directory"><code>vi &#123;directory&#125;</code></h2>
-<p>使用<code>vi</code>进入文本后，按<code>i</code>编辑文本</p>
-<p>按<code>ESC</code>键</p>
+  <h1 id="系统级别">系统级别</h1>
+<table>
+<thead>
+<tr>
+<th>描述</th>
+<th>示例</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>显示机器的处理器架构</td>
+<td><code>arch</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示机器的处理器架构</td>
+<td><code>uname -m</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示正在使用的内核版本</td>
+<td><code>uname -r</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示硬件系统部件 - (SMBIOS / DMI)</td>
+<td><code>dmidecode -q</code></td>
+<td></td>
+</tr>
+<tr>
+<td>罗列一个磁盘的架构特性</td>
+<td><code>hdparm -i /dev/hda</code></td>
+<td></td>
+</tr>
+<tr>
+<td>在磁盘上执行测试性读取操作</td>
+<td><code>hdparm -tT /dev/sda</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示CPU info的信息</td>
+<td><code>cat /proc/cpuinfo</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示中断</td>
+<td><code>cat /proc/interrupts</code></td>
+<td></td>
+</tr>
+<tr>
+<td>校验内存使用</td>
+<td><code>cat /proc/meminfo</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示哪些swap被使用</td>
+<td><code>cat /proc/swaps</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示内核的版本</td>
+<td><code>cat /proc/version</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示网络适配器及统计</td>
+<td><code>cat /proc/net/dev</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示已加载的文件系统</td>
+<td><code>cat /proc/mounts</code></td>
+<td></td>
+</tr>
+<tr>
+<td>罗列 PCI 设备</td>
+<td><code>lspci -tv</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示 USB 设备</td>
+<td><code>lsusb -tv</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示系统日期</td>
+<td><code>date</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示2007年的日历表</td>
+<td><code>cal 2007</code></td>
+<td></td>
+</tr>
+<tr>
+<td>设置日期和时间 - 月日时分年.秒</td>
+<td><code>date 041217002007.00</code></td>
+<td></td>
+</tr>
+<tr>
+<td>将时间修改保存到 BIOS</td>
+<td><code>clock -w</code></td>
+<td></td>
+</tr>
+<tr>
+<td>关闭系统</td>
+<td><code>shutdown -h now</code></td>
+<td></td>
+</tr>
+<tr>
+<td>关闭系统</td>
+<td><code>telinit 0</code></td>
+<td></td>
+</tr>
+<tr>
+<td>取消按预定时间关闭系统</td>
+<td><code>shutdown -c</code></td>
+<td></td>
+</tr>
+<tr>
+<td>重启</td>
+<td><code>shutdown -r now</code></td>
+<td></td>
+</tr>
+<tr>
+<td>重启</td>
+<td><code>reboot</code></td>
+<td></td>
+</tr>
+<tr>
+<td>注销</td>
+<td><code>logout</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="目录相关">目录相关</h1>
+<table>
+<thead>
+<tr>
+<th>描述</th>
+<th>示例</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>进入指定目录</td>
+<td><code>cd /home</code></td>
+<td></td>
+</tr>
+<tr>
+<td>返回上一级目录</td>
+<td><code>cd ..</code></td>
+<td></td>
+</tr>
+<tr>
+<td>返回上两级目录</td>
+<td><code>cd ../..</code></td>
+<td></td>
+</tr>
+<tr>
+<td>进入个人主目录</td>
+<td><code>cd</code></td>
+<td></td>
+</tr>
+<tr>
+<td>进入上次操作所在目录</td>
+<td><code>cd -</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示当前工作路径</td>
+<td><code>pwd</code></td>
+<td></td>
+</tr>
+<tr>
+<td>查看目录中的文件</td>
+<td><code>ls</code></td>
+<td></td>
+</tr>
+<tr>
+<td>查看目录中的文件</td>
+<td><code>ls -F</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示文件和目录的详细信息</td>
+<td><code>ls -l</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示隐藏文件</td>
+<td><code>ls -a</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示包含数字的文件名和目录名</td>
+<td><code>ls *[0-9]*</code></td>
+<td></td>
+</tr>
+<tr>
+<td>显示文件和目录由根目录开始的树形结构</td>
+<td><code>tree</code></td>
+<td><code>yum install tree -y</code></td>
+</tr>
+<tr>
+<td>创建目录</td>
+<td><code>mkdir dir</code></td>
+<td></td>
+</tr>
+<tr>
+<td>创建多个目录</td>
+<td><code>mkdir dir1 dir2</code></td>
+<td></td>
+</tr>
+<tr>
+<td>创建目录树</td>
+<td><code>mkdir -p /tmp/dir1/dir2</code></td>
+<td></td>
+</tr>
+<tr>
+<td>删除文件</td>
+<td><code>rm -f file1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>删除目录</td>
+<td><code>rmdir dir1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>删除目录并同时删除内容</td>
+<td><code>rm -rf dir1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>同时删除多个目录及内容</td>
+<td><code>rm -rf dir1 dir2</code></td>
+<td></td>
+</tr>
+<tr>
+<td>重命名/移动 目录</td>
+<td><code>mv dir1 new_dir</code></td>
+<td></td>
+</tr>
+<tr>
+<td>复制文件</td>
+<td><code>cp file1 file2</code></td>
+<td></td>
+</tr>
+<tr>
+<td>复制目录下的所有文件到当前工作目录</td>
+<td><code>cp dir/* .</code></td>
+<td></td>
+</tr>
+<tr>
+<td>复制目录到当前工作目录</td>
+<td><code>cp -a /tmp/dir1.</code></td>
+<td></td>
+</tr>
+<tr>
+<td>复制目录</td>
+<td><code>cp -a dir1 dir2</code></td>
+<td></td>
+</tr>
+<tr>
+<td>创建一个指向文件或目录的软链接</td>
+<td><code>ln -s file1 lnk1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>创建一个指向文件或目录的物理链接</td>
+<td><code>ln file1 lnk1</code></td>
+<td></td>
+</tr>
+<tr>
+<td>修改一个文件或目录的时间戳 - (YYMMDDhhmm)</td>
+<td><code>touch -t 0712250000 file1</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="网络相关">网络相关</h1>
+<table>
+<thead>
+<tr>
+<th>描述</th>
+<th>示例</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查看本机IP及网卡信息</td>
+<td><code>ip addr</code></td>
+<td></td>
+</tr>
+<tr>
+<td>重启网络</td>
+<td><code>service network restart</code></td>
+<td></td>
+</tr>
+<tr>
+<td>防火墙添加端口例外</td>
+<td><code>firewall-cmd --add-port=8080/tcp --permanent</code></td>
+<td></td>
+</tr>
+<tr>
+<td>重新加载防火墙</td>
+<td><code>firewall-cmd --reload</code></td>
+<td></td>
+</tr>
+<tr>
+<td>启动防火墙，也可以使用 <code>service firewalld start</code></td>
+<td><code>systemctl start firewalld.service</code></td>
+<td></td>
+</tr>
+<tr>
+<td>停止防火墙，也可以使用 <code>service firewalld stop</code></td>
+<td><code>systemctl stop firewalld.service</code></td>
+<td></td>
+</tr>
+<tr>
+<td>启用防火墙</td>
+<td><code>systemctl enable firewalld.service</code></td>
+<td></td>
+</tr>
+<tr>
+<td>重启防火墙</td>
+<td><code>service firewalld restart</code></td>
+<td></td>
+</tr>
+<tr>
+<td>查看端口列表，也可以使用 <code>firewall-cmd --list-all</code></td>
+<td><code>firewall-cmd --permanent --list-port</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="其他命令">其他命令</h1>
+<p>使用 VI 编辑文件。使用<code>vi</code>进入文本后，按<code>i</code>编辑文本</p>
+<p>按<code>ESC</code>键：</p>
 <ul>
-<li><code>:q!</code>  不保存文件，强制退出vi命令</li>
-<li><code>:w</code>   保存文件，不退出vi命令</li>
-<li><code>:wq</code>  保存文件，退出vi命令</li>
+<li><code>:q!</code>  不保存文件，强制退出vi命令</li>
+<li><code>:w</code>   保存文件，不退出vi命令</li>
+<li><code>:wq</code>  保存文件，退出vi命令</li>
 </ul>
-<h2 id="service-network-restart"><code>service network restart</code></h2>
-<p>重启网络；注意：添加后需要重新加载防火墙才能生效</p>
-<h2 id="firewall-cmd-add-port-8080-tcp-permanent"><code>firewall-cmd --add-port=8080/tcp --permanent</code></h2>
-<p>防火墙添加端口列外</p>
-<h2 id="firewall-cmd-reload"><code>firewall-cmd --reload</code></h2>
-<p>重新加载防火墙</p>
-<h2 id="systemctl-start-firewalld-service"><code>systemctl start firewalld.service</code></h2>
-<p>启动防火墙，也可以使用 <code>service firewalld start</code></p>
-<h2 id="systemctl-stop-firewalld-service"><code>systemctl stop firewalld.service</code></h2>
-<p>停止防火墙，也可以使用 <code>service firewalld stop</code></p>
-<h2 id="systemctl-enable-firewalld-service"><code>systemctl enable firewalld.service</code></h2>
-<p>启用防火墙</p>
-<h2 id="service-firewalld-restart"><code>service firewalld restart</code></h2>
-<p>重启防火墙</p>
-<h2 id="firewall-cmd-permanent-list-port"><code>firewall-cmd --permanent --list-port</code></h2>
-<p>查看端口列表，也可以使用 <code>firewall-cmd --list-all</code></p>
+<h2 id=""></h2>
+<h2 id="-v2"></h2>
+<h2 id="-v3"></h2>
+<h2 id="-v4"></h2>
+<h2 id="-v5"></h2>
+<h2 id="-v6"></h2>
+<h2 id="-v7"></h2>
 
 </article>
 
@@ -398,7 +635,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-16</div>
     </div>
   </div>
 

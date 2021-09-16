@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
 <li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
 <li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis</a></li>
 <li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
-<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis方案</a></li>
 </ul>
 <h2 id="RabbitMQ">RabbitMQ</h2>
 <ul>
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/rabbitMq/1.7RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5">1.7 RabbitMQ常见策略</a></li>
 <li><a href="/rabbitMq/1.8RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.8 RabbitMQ常见问题</a></li>
 <li><a href="/rabbitMq/1.9RabbitMQ%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 RabbitMQ集群方案</a></li>
-<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ%E6%96%B9%E6%A1%88">客户端连接RabbitMQ方案</a></li>
+<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ">客户端连接RabbitMQ</a></li>
 </ul>
 <h2 id="Docker">Docker</h2>
 <ul>
@@ -180,6 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="Devops工具-Jenkins">Devops工具 Jenkins</h2>
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
+<h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式缓存</a></li>
 </ul>
 
 </div>
@@ -245,18 +251,21 @@ function sidebar_toggle() {
 <h1 id="启动容器">启动容器</h1>
 <p>启动容器有两种方式</p>
 <ul>
-<li>基于镜像新建一个容器并启动</li>
+<li>基于镜像新建容器并启动</li>
 <li>将在终止状态（<code>stopped</code>）的容器重新启动</li>
 </ul>
 <h2 id="新建并启动容器">新建并启动容器</h2>
-<p>比如下面的命令输出“hello world!”，之后终止容器</p>
+<p>比如下面的命令输出“hello world!”，之后终止容器：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run ubuntu /bin/echo &#x27;hello world!&#x27;</span><br><span class="line">hello world!</span><br></pre></td></tr></table></figure>
-<p>下面的命令则启动一个 bash 终端，允许用户进行交互</p>
+<p>下面的命令则启动一个 bash 终端，允许用户进行交互：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run -it ubuntu /bin/bash</span><br><span class="line">root@ef8fa7a1ffd6:/# </span><br></pre></td></tr></table></figure>
-<p><code>-t</code> 选项让Docker分配一个伪终端（pseudo-tty）并绑定到容器的标准输入上， <code>-i</code> 则让容器的标准输入保持打开。 <code>-it</code> 是简写<br>
-在交互模式下可以通过所创建的终端来输入命令，比如：</p>
+<ul>
+<li><code>-t</code> 选项让Docker分配一个伪终端（pseudo-tty）并绑定到容器的标准输入上</li>
+<li><code>-i</code> 让容器的标准输入保持打开</li>
+</ul>
+<p><code>-it</code> 是简写，在交互模式下可以通过所创建的终端来输入命令，比如：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run -it ubuntu /bin/bash</span><br><span class="line">root@ef8fa7a1ffd6:/# pwd</span><br><span class="line">/</span><br><span class="line">root@ef8fa7a1ffd6:/# ls</span><br><span class="line">bin  boot  dev  etc  home  lib  lib32  lib64  libx32  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br><span class="line">root@ef8fa7a1ffd6:/# </span><br></pre></td></tr></table></figure>
-<p>当利用 <code>docker run</code> 创建容器时，Docker 在后台运行的标准操作包括：</p>
+<p>使用 docker run 创建容器时，Docker 在后台运行的标准操作包括：</p>
 <ol>
 <li>检查本地是否存在指定的镜像，不存在就从公有仓库下载</li>
 <li>利用镜像创建并启动一个容器</li>
@@ -267,31 +276,32 @@ function sidebar_toggle() {
 <li>执行完毕后容器被终止</li>
 </ol>
 <h2 id="启动已终止容器">启动已终止容器</h2>
-<p>可以利用 <code>docker container start</code> 命令，直接将一个已经终止的容器启动运行。容器的核心为所执行的应用程序，所需要的资源都是应用程序运行所必需的。除此之外，并没有其它的资源。可以在伪终端中利用 <code>ps</code> 或 <code>top</code> 来查看进程信息</p>
+<p>可以利用 <code>docker container start</code> 命令，直接将一个已经终止的容器启动运行。可以在伪终端中利用 <code>ps</code> 或 <code>top</code> 来查看进程信息：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@ef8fa7a1ffd6:/# ps</span><br><span class="line">   PID TTY          TIME CMD</span><br><span class="line">     1 pts/0    00:00:00 bash</span><br><span class="line">    12 pts/0    00:00:00 ps</span><br></pre></td></tr></table></figure>
-<h1 id="后台运行容器">后台运行容器</h1>
+<h1 id="后台运行">后台运行</h1>
 <p>更多的时候，需要让 Docker 在后台运行而不是直接把执行命令的结果输出在当前宿主机下。可以通过添加 <code>-d</code> 参数来实现。</p>
-<h2 id="不使用-d-参数">不使用 -d 参数</h2>
+<p>不使用 <code>-d</code> 参数：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run ubuntu /bin/sh -c &#x27;while true;do echo hello docker; sleep 1;done&#x27;</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br></pre></td></tr></table></figure>
 <p>容器会把输出的结果 (STDOUT) 打印到宿主机上1s打印一次&quot;hello docker&quot;。</p>
-<h2 id="使用-d-参数">使用 -d 参数</h2>
+<hr>
+<p>使用 <code>-d</code> 参数：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker run -d ubuntu /bin/sh -c &#x27;while true;do echo hello docker; sleep 1;done&#x27;</span><br><span class="line">3c443074634c5edd6272c62fd08d8439ac2b5f3b9677233aae06deb2724c917c</span><br></pre></td></tr></table></figure>
-<p>此时容器会在后台运行并不会把输出结果 (STDOUT) 打印到宿主机上，可以使用 <code>docker logs</code> 查看输出结果</p>
+<p>此时容器会在后台运行并不会把输出结果 (STDOUT) 打印到宿主机上。</p>
+<hr>
+<p>可以使用 <code>docker logs</code> 查看输出结果</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker logs 3c443074634c</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>注意： 容器是否会长久运行，和 docker run 指定的命令有关，和 -d 参数无关</p>
-</blockquote>
-<p>使用 <code>-d</code>  参数启动后会返回一个唯一的 id，也可以通过 <code>docker container ls</code>  命令来查看容器信息</p>
+<p>使用 <code>-d</code>  参数启动后会返回一个唯一的 id，也可以通过 <code>docker container ls</code>  命令来查看容器信息：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker container ls</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS         PORTS                               NAMES</span><br><span class="line">3c443074634c   ubuntu      &quot;/bin/sh -c &#x27;while t…&quot;   2 minutes ago   Up 2 minutes                                       affectionate_agnesi</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   17 hours ago    Up 17 hours    0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br></pre></td></tr></table></figure>
-<p>要获取容器的输出信息，可以通过 <code>docker container logs</code>  命令，格式 <code>$ docker container logs [container ID or NAMES]</code></p>
+<p>要获取容器的输出信息，可以按上面说的使用 <code>docker container logs</code>  命令，格式 <code>$ docker container logs [container ID or NAMES]</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker container logs  3c443074634c</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br><span class="line">hello docker</span><br></pre></td></tr></table></figure>
 <h1 id="终止容器">终止容器</h1>
-<p>可以使用 <code>docker container stop</code>  来终止一个运行中的容器，此外当 Docker 容器中指定的应用终结时，容器也自动终止。</p>
-<p>比如对于上面只启动了一个终端的容器，通过 <code>exit</code>  命令或 <code>ctrl+d</code>   退出终端时，创建的容器立刻终止。终止状态的容器可以用 <code>docker container ls -a</code>  命令看到</p>
+<p>使用 <code>docker container stop</code>  来终止一个运行中的容器，此外当 Docker 容器中指定的应用终结时，容器也自动终止。比如对于上面只启动了一个终端的容器，通过 <code>exit</code>  命令或 <code>ctrl+d</code>   退出终端时，创建的容器立刻终止。</p>
+<p>终止状态的容器可以用 <code>docker container ls -a</code>  命令看到：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker container ls -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS                      PORTS                               NAMES</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   18 hours ago   Up 18 hours                 0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">bab7ffb6e2e9   nginx:2.0   &quot;/docker-entrypoint.…&quot;   3 days ago     Exited (255) 18 hours ago   0.0.0.0:81-&gt;80/tcp, :::81-&gt;80/tcp   webserver2</span><br><span class="line">470e01aed950   nginx   </span><br></pre></td></tr></table></figure>
-<p>处于终止状态的容器，可以通过 <code>docker container start</code>  命令来重新启动</p>
+<p>处于终止状态的容器，可以通过 <code>docker container start</code>  命令来重新启动：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker container start webserver</span><br><span class="line">webserver</span><br><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS                      PORTS                               NAMES</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   18 hours ago   Up 18 hours                 0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">bab7ffb6e2e9   nginx:2.0   &quot;/docker-entrypoint.…&quot;   3 days ago     Exited (255) 18 hours ago   0.0.0.0:81-&gt;80/tcp, :::81-&gt;80/tcp   webserver2</span><br><span class="line">470e01aed950   nginx       &quot;/docker-entrypoint.…&quot;   3 days ago     Up 5 seconds                0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp   webserver</span><br></pre></td></tr></table></figure>
-<p>此外 <code>docker container restart </code> 命令会将一个运行状态的容器终止，然后再重新启动。</p>
+<p><code>docker container restart </code> 命令会将一个运行状态的容器终止，然后再重新启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker container restart webserver</span><br><span class="line">webserver</span><br></pre></td></tr></table></figure>
 <h1 id="进入容器">进入容器</h1>
 <p>使用 <code>-d</code>  参数时，容器启动后会进入后台，某些时候需要进入容器进行操作，包括使用 <code>docker attach</code> 或 <code>docker exec</code>  命令，推荐使用 <code>docker exec</code> 。</p>
 <h2 id="attach">attach</h2>
@@ -309,7 +319,7 @@ function sidebar_toggle() {
 <p>如果从这个 stdin 中 exit，不会导致容器的停止。这就是为什么推荐使用 <code>docker exec</code> 的原因，更多参数说明使用 <code>docker exec --help</code>  查看。</p>
 <h1 id="导入和导出">导入和导出</h1>
 <h2 id="导出容器">导出容器</h2>
-<p>如果要导出本地某个容器，可以使用 <code>docker export</code>  命令，这将导出容器快照到本地文件。</p>
+<p>如果要导出本地某个容器，可以使用 <code>docker export</code>  命令，这将导出容器快照到本地文件：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS                      PORTS                               NAMES</span><br><span class="line">2687f43c0e42   ubuntu      &quot;/bin/bash&quot;              2 hours ago    Up 2 minutes                                                    romantic_greider</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   20 hours ago   Up 20 hours                 0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">bab7ffb6e2e9   nginx:2.0   &quot;/docker-entrypoint.…&quot;   3 days ago     Exited (255) 20 hours ago   0.0.0.0:81-&gt;80/tcp, :::81-&gt;80/tcp   webserver2</span><br><span class="line">470e01aed950   nginx       &quot;/docker-entrypoint.…&quot;   3 days ago     Up 2 hours                  0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp   webserver</span><br><span class="line">[root@wangpengliang ~]# docker export 2687f43c0e42 &gt; ubuntu.tar</span><br></pre></td></tr></table></figure>
 <h2 id="导入容器">导入容器</h2>
 <p>可以使用 <code>docker import</code>  从容器快照文件中再导入为镜像。比如：</p>
@@ -317,15 +327,14 @@ function sidebar_toggle() {
 <p>此外，也可以通过指定 URL 或者某个目录来导入，比如：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker import http://example.com/exampleimage.tgz example/imagerepo</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>注：用户既可以使用 <code>docker load</code>  来导入镜像存储文件到本地镜像库，也可以使用 <code>docker import</code> 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息</p>
+<p>注意：用户既可以使用 <code>docker load</code>  来导入镜像存储文件到本地镜像库，也可以使用 <code>docker import</code> 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息</p>
 </blockquote>
 <h1 id="删除容器">删除容器</h1>
-<p><strong>可以使用 <strong><code>**docker container rm**</code></strong>  来删除一个处于终止状态的容器</strong></p>
+<p>可以使用 <code>docker container rm</code>  来删除一个处于终止状态的容器</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS                      PORTS                               NAMES</span><br><span class="line">2687f43c0e42   ubuntu      &quot;/bin/bash&quot;              2 hours ago    Up 6 minutes                                                    romantic_greider</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   20 hours ago   Up 20 hours                 0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">bab7ffb6e2e9   nginx:2.0   &quot;/docker-entrypoint.…&quot;   3 days ago     Exited (255) 20 hours ago   0.0.0.0:81-&gt;80/tcp, :::81-&gt;80/tcp   webserver2</span><br><span class="line">470e01aed950   nginx       &quot;/docker-entrypoint.…&quot;   3 days ago     Up 2 hours                  0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp   webserver</span><br><span class="line"></span><br><span class="line">[root@wangpengliang ~]# docker container rm bab7ffb6e2e9</span><br><span class="line">bab7ffb6e2e9</span><br><span class="line"></span><br><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS         PORTS                               NAMES</span><br><span class="line">2687f43c0e42   ubuntu      &quot;/bin/bash&quot;              2 hours ago    Up 7 minutes                                       romantic_greider</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   20 hours ago   Up 20 hours    0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">470e01aed950   nginx       &quot;/docker-entrypoint.…&quot;   3 days ago     Up 2 hours     0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp   webserver</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>如果要删除一个运行中的容器，可以添加 <strong><code>**-f**</code></strong>  参数。Docker 会发送 <strong><code>**SIGKILL**</code></strong>  信号给容器</strong></p>
+<p>如果要删除一个运行中的容器，可以添加 <code>-f</code>  参数。Docker 会发送 <code>SIGKILL</code>  信号给容器</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS         PORTS                               NAMES</span><br><span class="line">2687f43c0e42   ubuntu      &quot;/bin/bash&quot;              2 hours ago    Up 8 minutes                                       romantic_greider</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   20 hours ago   Up 20 hours    0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">470e01aed950   nginx       &quot;/docker-entrypoint.…&quot;   3 days ago     Up 2 hours     0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp   webserver</span><br><span class="line"></span><br><span class="line">[root@wangpengliang ~]# docker container rm -f 2687f43c0e42</span><br><span class="line">2687f43c0e42</span><br><span class="line"></span><br><span class="line">[root@wangpengliang ~]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE       COMMAND                  CREATED        STATUS        PORTS                               NAMES</span><br><span class="line">a1ea64a6c039   nginx:3.0   &quot;/docker-entrypoint.…&quot;   20 hours ago   Up 20 hours   0.0.0.0:82-&gt;80/tcp, :::82-&gt;80/tcp   webserver3</span><br><span class="line">470e01aed950   nginx       &quot;/docker-entrypoint.…&quot;   3 days ago     Up 2 hours    0.0.0.0:80-&gt;80/tcp, :::80-&gt;80/tcp   webserver</span><br></pre></td></tr></table></figure>
-<p><strong>清理所有处于终止状态的容器</strong><br>
-用 <code>docker container ls -a</code>  命令可以查看所有已经创建的包括终止状态的容器，如果数量太多一个个删除可能会很麻烦，用下面的命令可以清理掉所有处于终止状态的容器。</p>
+<p>用 <code>docker container ls -a</code>  命令可以查看所有已经创建的包括终止状态的容器，如果数量太多一个个删除可能会很麻烦，用下面的命令可以清理掉所有处于终止状态的容器：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker container prune</span></span><br></pre></td></tr></table></figure>
 
 </article>
@@ -360,7 +369,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-09</div>
+      <div>2021-09-16</div>
     </div>
   </div>
 
