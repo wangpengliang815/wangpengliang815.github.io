@@ -249,8 +249,10 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="Consul-是什么">Consul 是什么</h1>
-<p>Consul 是一个支持多数据中心分布式高可用的 服务发现 和 配置共享 的服务软件，由 HashiCorp 公司用 Go 语言开发, 基于 Mozilla Public License 2.0 的协议进行开源。 Consul 支持 健康检查，并允许 HTTP 、GRPC 和 DNS 协议调用 API 存储键值对。 一致性协议采用 Raft 算法,用来保证服务的高可用。使用 GOSSIP 协议管理成员和广播消息，并且支持 ACL 访问控制。</p>
+  <p>官网地址：<a target="_blank" rel="noopener" href="https://www.consul.io">https://www.consul.io</a></p>
+<h1 id="1-使用-Consul">1. 使用 Consul</h1>
+<h2 id="1-1-简介">1.1 简介</h2>
+<p>Consul 是一个支持多数据中心分布式高可用的服务发现和配置共享的服务软件，由 HashiCorp 公司用 Go 语言开发, 基于 Mozilla Public License 2.0 的协议进行开源。 Consul 支持 健康检查，并允许 HTTP 、GRPC 和 DNS 协议调用 API 存储键值对。 一致性协议采用 Raft 算法,用来保证服务的高可用。使用 GOSSIP 协议管理成员和广播消息，并且支持 ACL 访问控制。</p>
 <p>Consul 包含多个组件，但作为整体来看的话主要功能是：为基础设施提供服务发现和服务配置的工具，主要提供以下关键特性：</p>
 <ul>
 <li><strong>服务发现</strong>：Consul 的客户端用于注册服务，其他的客户端可以通过 Consul 来中找到这个注册的服务（使用 DNS 或 HTTP）</li>
@@ -259,12 +261,17 @@ function sidebar_toggle() {
 <li><strong>安全服务通信</strong>：Consul 可以为服务生成和分发 TLS 证书，以建立相互的 TLS 连接。 <a target="_blank" rel="noopener" href="https://www.consul.io/docs/connect/intentions">意图</a> 可用于定义允许哪些服务进行通信。可以通过实时更改意图轻松管理服务分段，而不是使用复杂的网络拓扑和静态防火墙规则</li>
 <li><strong>多数据中心</strong>：Consul 支持开箱即用的多个数据中心。这意味着 Consul 的用户不必担心构建额外的抽象层以扩展到多个区域</li>
 </ul>
-<h1 id="Consul-Agent">Consul Agent</h1>
-<p>每个为 Consul 提供服务的节点都会运行一个 Consul 代理，启动 Consul 必须运行 agent， agent可以运行为 <code>server</code> 或 <code>client</code> 模式， 这个 agent 目的在于：负责对节点上的服务以及节点本身进行健康检查。agent 会与一台或多台 Consul Server 保持通信。Consul Server 用于存储和复制数据。Server 会自己选举一个Leader。虽然 Consul 可以在一台服务器上运行，但建议使用 3 到 5 台，以达到高可用。建议为每个数据中心使用 Consul 服务器集群。</p>
-<p>服务器维护一个目录，这个目录保存着所有代理提交的信息，维护集群的高级视图，包括哪些服务可用、哪些节点运行哪些服务、运行状况信息等。可以在<a target="_blank" rel="noopener" href="https://www.consul.io/docs/internals/anti-entropy#catalog">此处</a>找到代理和目录的交互方式 。</p>
-<p>当需要查找 Consul 中注册的服务或者各节点的基础设施组件时可以查询任何 Consul Server 或者 任何 Consul 代理。代理自动将查询转发到服务器。</p>
-<p>每个数据中心都运行一个 Consul 服务器集群。当进行跨数据中心的服务发现或配置请求时，本地Consul服务器将请求转发到远程数据中心并返回结果。</p>
-<h1 id="Consul-对比其它中间件">Consul 对比其它中间件</h1>
+<h2 id="1-2-Consul-Agent">1.2 Consul Agent</h2>
+<p>每个为 Consul 提供服务的节点都会运行一个 Consul agent，启动 Consul 必须运行 agent（可以选择运行为 <code>Server</code> 或 <code>Client</code> 模式。每个数据中心至少要有一台 <code>Server</code>，一个 <code>Client</code>是一个非常轻量级的进程，用于注册服务，运行健康检查和转发对 <code>Server</code> 的查询） 这个 agent 功能主要在于：</p>
+<ol>
+<li>负责对节点上的服务以及节点本身进行健康检查</li>
+<li>agent 会与一台或多台 Consul Server 保持通信（Consul Server 用于存储和复制数据）</li>
+<li>Server 会自己选举一个 Leader。虽然 Consul 可以在一台服务器上运行，但建议使用 3 到 5 台以达到高可用。建议为每个数据中心启用 Consul Server集群</li>
+<li>Server 维护一个目录，这个目录保存着所有 Agent 提交的信息，包括哪些服务可用、哪些节点运行哪些服务、运行状况信息等。可以在<a target="_blank" rel="noopener" href="https://www.consul.io/docs/internals/anti-entropy#catalog">此处</a>找到 Agent 和目录的交互方式</li>
+</ol>
+<p>当需要查找 Consul 中注册的服务或者各节点的基础设施组件时可以查询任何 Consul Server 或者 任何 Consul 代理。代理自动将查询转发到 Server。</p>
+<p>每个数据中心都运行一个 Consul 服务器集群。当进行跨数据中心的服务发现或配置请求时，本地 Consul Server 将请求转发到远程数据中心并返回结果。</p>
+<h2 id="1-3-Consul-对比">1.3 Consul 对比</h2>
 <p>针对服务注册发现有很多中间件都可以做，比如 <code>zookeeper</code>  、<code>Etcd</code> 、<code>doozerd</code> 、<code>eureka</code>，Consul 相比于这些软件优势在于：</p>
 <ul>
 <li>使用 <code>Raft</code> 算法来保证一致性：<code>Raft</code> 比复杂的 <code>Paxos</code> 算法更直接。（<code>zookeeper</code> 采用的是 <code>Paxos</code>,  <code>etcd</code> 使用的则是 <code>Raft</code>）</li>
@@ -274,7 +281,7 @@ function sidebar_toggle() {
 <li>官方提供 WEB 管理界面，etcd 无此功能</li>
 </ul>
 <p>综合比较，Consul 作为服务注册和配置管理的新星，还是比较值得关注和研究的。官网：<a target="_blank" rel="noopener" href="https://www.consul.io/docs/intro/vs/chef-puppet">Consul Vs Other Software </a>。</p>
-<h1 id="Consul-架构">Consul 架构</h1>
+<h2 id="1-4-Consul-架构">1.4 Consul 架构</h2>
 <p><img src="../images/2021-09-20-04-10-46.png" alt=""></p>
 <p>上图是官网给出的 Consul 架构图，简单了解一下这张图。首先可以看到有两个数据中心，分别标注为 &quot;DATACENTER1&quot;和 “DATACENTER2”。Consul对多个数据中心有天然非常好的支持，并推荐这么做。</p>
 <p>每个数据中心内都混合着 <code>Client</code> 和 <code>Server</code>。推荐是3到5台 Server。这是在权衡故障场景下可用性和性能之间取得平衡给出的建议（随着机器的增加，共识的速度会逐渐变慢）。但Client 的数量没有限制的可以轻松地扩展到数千或数万。</p>
@@ -291,7 +298,7 @@ function sidebar_toggle() {
 <p>In general, data is not replicated between different Consul datacenters. When a request is made for a resource in another datacenter, the local Consul servers forward an RPC request to the remote Consul servers for that resource and return the results. If the remote datacenter is not available, then those resources will also not be available, but that won’t otherwise affect the local datacenter. There are some special situations where a limited subset of data can be replicated, such as with Consul’s built-in <a target="_blank" rel="noopener" href="https://learn.hashicorp.com/tutorials/consul/access-control-replication-multiple-datacenters">ACL replication</a> capability, or external tools like <a target="_blank" rel="noopener" href="https://github.com/hashicorp/consul-replicate">consul-replicate</a>.</p>
 <p>In some places, client agents may cache data from the servers to make it available locally for performance and reliability. Examples include Connect certificates and intentions which allow the client agent to make local decisions about inbound connection requests without a round trip to the servers. Some API endpoints also support optional result caching. This helps reliability because the local agent can continue to respond to some queries like service-discovery or Connect authorization from cache even if the connection to the servers is disrupted or the servers are temporarily unavailable.</p>
 </blockquote>
-<h1 id="Consul-安装">Consul 安装</h1>
+<h2 id="1-5-Consul-安装">1.5 Consul 安装</h2>
 <p>安装 Consul 没什么难度。具体参考官网：<a target="_blank" rel="noopener" href="https://www.consul.io/docs/install">Consul 安装</a> ，这里只记录如何使用 Docker 安装 Consul。</p>
 <p>准备consul镜像：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull consul <span class="comment"># 默认拉取latest</span></span><br><span class="line">docker pull consul:1.6.1 <span class="comment"># 拉取指定版本</span></span><br></pre></td></tr></table></figure>
@@ -302,7 +309,7 @@ function sidebar_toggle() {
 <li><code>CONSUL_DATA_DIR</code> ：配置 Consul 的数据持久化目录</li>
 <li><code>CONSUL_CONFIG_DIR</code>：配置 Consul 的配置文件目录</li>
 </ul>
-<h1 id="Consul-单机">Consul 单机</h1>
+<h2 id="1-6-Consul-单机">1.6 Consul 单机</h2>
 <p>先启动一个单机版 Consul，由于是单机模式选择 <code>Server</code>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 coresrc]# docker run -d  --name=consul -p 8500:8500 consul  agent -server -bootstrap -ui -node=1 -client=&#x27;0.0.0.0&#x27;</span><br><span class="line">355be46f502ca9f9e1498022e4c86fabf96c9e72b161cf4c71deff9c2012338b</span><br><span class="line">[root@centos-01 coresrc]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                                                                         NAMES</span><br><span class="line">355be46f502c   consul    &quot;docker-entrypoint.s…&quot;   4 seconds ago   Up 3 seconds   8300-8302/tcp, 8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8500-&gt;8500/tcp, :::8500-&gt;8500/tcp   consul</span><br><span class="line">[root@centos-01 coresrc]# </span><br></pre></td></tr></table></figure>
 <ul>
