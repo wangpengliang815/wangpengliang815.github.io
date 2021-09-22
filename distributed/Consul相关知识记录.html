@@ -250,38 +250,37 @@ function sidebar_toggle() {
 <article id="page">
   <h1></h1>
   <p>官网地址：<a target="_blank" rel="noopener" href="https://www.consul.io">https://www.consul.io</a></p>
-<h1 id="1-使用-Consul">1. 使用 Consul</h1>
-<h2 id="1-1-简介">1.1 简介</h2>
+<h1 id="简介">简介</h1>
 <p>Consul 是一个支持多数据中心分布式高可用的服务发现和配置共享的服务软件，由 HashiCorp 公司用 Go 语言开发, 基于 Mozilla Public License 2.0 的协议进行开源。 Consul 支持 健康检查，并允许 HTTP 、GRPC 和 DNS 协议调用 API 存储键值对。 一致性协议采用 Raft 算法,用来保证服务的高可用。使用 GOSSIP 协议管理成员和广播消息，并且支持 ACL 访问控制。</p>
 <p>Consul 包含多个组件，但作为整体来看的话主要功能是：为基础设施提供服务发现和服务配置的工具，主要提供以下关键特性：</p>
 <ul>
 <li><strong>服务发现</strong>：Consul 的客户端用于注册服务，其他的客户端可以通过 Consul 来中找到这个注册的服务（使用 DNS 或 HTTP）</li>
-<li><strong>健康检查</strong>：Consul 客户端可以提供任意数量的健康检查，要么与给定的服务相关联（“网络服务器是否返回 200 OK”），要么与本地节点（“内存利用率是否低于 90%”）相关联。可以通过这个信息来监控集群健康状况，并且服务发现组件可以使用它来避免将请求路由到了不健康的主机上</li>
-<li><strong>KV 存储</strong>：应用程序可以将 Consul 的分层键/值存储用于多种目的，包括动态配置、功能标记、协调、领导选举等。简单的 HTTP API 使其易于使用。</li>
+<li><strong>健康检查</strong>：Consul 客户端可以提供任意数量的健康检查，要么与给定的服务相关联（“网络服务器是否返回 200 OK”），要么与本地节点（“内存利用率是否低于 90%”）相关联。可以通过这个信息来监控集群健康状况，并且服务发现组件可以使用它来避免将请求路由到不健康的主机上</li>
+<li><strong>KV 存储</strong>：应用程序可以将 Consul 的分层键/值存储用于多种目的，包括动态配置、功能标记、协调、领导选举等。简单的 HTTP API 使其易于使用</li>
 <li><strong>安全服务通信</strong>：Consul 可以为服务生成和分发 TLS 证书，以建立相互的 TLS 连接。 <a target="_blank" rel="noopener" href="https://www.consul.io/docs/connect/intentions">意图</a> 可用于定义允许哪些服务进行通信。可以通过实时更改意图轻松管理服务分段，而不是使用复杂的网络拓扑和静态防火墙规则</li>
 <li><strong>多数据中心</strong>：Consul 支持开箱即用的多个数据中心。这意味着 Consul 的用户不必担心构建额外的抽象层以扩展到多个区域</li>
 </ul>
-<h2 id="1-2-Consul-Agent">1.2 Consul Agent</h2>
-<p>每个为 Consul 提供服务的节点都会运行一个 Consul agent，启动 Consul 必须运行 agent（可以选择运行为 <code>Server</code> 或 <code>Client</code> 模式。每个数据中心至少要有一台 <code>Server</code>，一个 <code>Client</code>是一个非常轻量级的进程，用于注册服务，运行健康检查和转发对 <code>Server</code> 的查询） 这个 agent 功能主要在于：</p>
+<h1 id="Consul-Agent">Consul Agent</h1>
+<p>每个为 Consul 提供服务的节点都会运行一个 Consul Agent，启动 Consul 必须运行 Agent（可以选择运行为 <code>Server</code> 或 <code>Client</code> 模式。每个数据中心至少要有一台 <code>Server</code>，一个 <code>Client</code>是一个非常轻量级的进程，用于注册服务，运行健康检查和转发对 <code>Server</code> 的查询） 这个 Agent 功能主要在于：</p>
 <ol>
 <li>负责对节点上的服务以及节点本身进行健康检查</li>
-<li>agent 会与一台或多台 Consul Server 保持通信（Consul Server 用于存储和复制数据）</li>
-<li>Server 会自己选举一个 Leader。虽然 Consul 可以在一台服务器上运行，但建议使用 3 到 5 台以达到高可用。建议为每个数据中心启用 Consul Server集群</li>
+<li>Agent 会与一台或多台 Consul Server 保持通信（Consul Server 用于存储和复制数据）</li>
+<li>Server 会自己选举一个 Leader。虽然 Consul 可以在一台服务器上运行，但建议使用 3 到 5 台以达到高可用。建议为每个数据中心启用 Consul Server 集群</li>
 <li>Server 维护一个目录，这个目录保存着所有 Agent 提交的信息，包括哪些服务可用、哪些节点运行哪些服务、运行状况信息等。可以在<a target="_blank" rel="noopener" href="https://www.consul.io/docs/internals/anti-entropy#catalog">此处</a>找到 Agent 和目录的交互方式</li>
 </ol>
 <p>当需要查找 Consul 中注册的服务或者各节点的基础设施组件时可以查询任何 Consul Server 或者 任何 Consul 代理。代理自动将查询转发到 Server。</p>
 <p>每个数据中心都运行一个 Consul 服务器集群。当进行跨数据中心的服务发现或配置请求时，本地 Consul Server 将请求转发到远程数据中心并返回结果。</p>
-<h2 id="1-3-Consul-对比">1.3 Consul 对比</h2>
+<h1 id="Consul-对比">Consul 对比</h1>
 <p>针对服务注册发现有很多中间件都可以做，比如 <code>zookeeper</code>  、<code>Etcd</code> 、<code>doozerd</code> 、<code>eureka</code>，Consul 相比于这些软件优势在于：</p>
 <ul>
-<li>使用 <code>Raft</code> 算法来保证一致性：<code>Raft</code> 比复杂的 <code>Paxos</code> 算法更直接。（<code>zookeeper</code> 采用的是 <code>Paxos</code>,  <code>etcd</code> 使用的则是 <code>Raft</code>）</li>
+<li>使用 Raft 算法来保证一致性：Raft  比复杂的 Paxos  算法更直接。（<code>zookeeper</code> 采用的是 <code>Paxos</code>,  <code>etcd</code> 使用的则是 <code>Raft</code>）</li>
 <li>支持多数据中心：内外网服务采用不同端口进行监听，多数据中心集群可以避免单数据中心的单点故障。（<code>zookeeper</code> 和 <code>etcd</code> 不支持多数据中心）</li>
 <li>支持健康检查： <code>etcd</code> 不支持此功能</li>
 <li>支持 <code>HTTP</code>/<code>DNS</code> /<code>GPRS</code> 协议接口： <code>zookeeper</code> 集成比较复杂，<code>etcd</code> 只支持 <code>http 协议</code></li>
-<li>官方提供 WEB 管理界面，etcd 无此功能</li>
+<li>官方提供 WEB 管理界面，<code>etcd</code> 无此功能</li>
 </ul>
 <p>综合比较，Consul 作为服务注册和配置管理的新星，还是比较值得关注和研究的。官网：<a target="_blank" rel="noopener" href="https://www.consul.io/docs/intro/vs/chef-puppet">Consul Vs Other Software </a>。</p>
-<h2 id="1-4-Consul-架构">1.4 Consul 架构</h2>
+<h1 id="Consul-架构">Consul 架构</h1>
 <p><img src="../images/2021-09-20-04-10-46.png" alt=""></p>
 <p>上图是官网给出的 Consul 架构图，简单了解一下这张图。首先可以看到有两个数据中心，分别标注为 &quot;DATACENTER1&quot;和 “DATACENTER2”。Consul对多个数据中心有天然非常好的支持，并推荐这么做。</p>
 <p>每个数据中心内都混合着 <code>Client</code> 和 <code>Server</code>。推荐是3到5台 Server。这是在权衡故障场景下可用性和性能之间取得平衡给出的建议（随着机器的增加，共识的速度会逐渐变慢）。但Client 的数量没有限制的可以轻松地扩展到数千或数万。</p>
@@ -298,50 +297,42 @@ function sidebar_toggle() {
 <p>In general, data is not replicated between different Consul datacenters. When a request is made for a resource in another datacenter, the local Consul servers forward an RPC request to the remote Consul servers for that resource and return the results. If the remote datacenter is not available, then those resources will also not be available, but that won’t otherwise affect the local datacenter. There are some special situations where a limited subset of data can be replicated, such as with Consul’s built-in <a target="_blank" rel="noopener" href="https://learn.hashicorp.com/tutorials/consul/access-control-replication-multiple-datacenters">ACL replication</a> capability, or external tools like <a target="_blank" rel="noopener" href="https://github.com/hashicorp/consul-replicate">consul-replicate</a>.</p>
 <p>In some places, client agents may cache data from the servers to make it available locally for performance and reliability. Examples include Connect certificates and intentions which allow the client agent to make local decisions about inbound connection requests without a round trip to the servers. Some API endpoints also support optional result caching. This helps reliability because the local agent can continue to respond to some queries like service-discovery or Connect authorization from cache even if the connection to the servers is disrupted or the servers are temporarily unavailable.</p>
 </blockquote>
-<h2 id="1-5-Consul-安装">1.5 Consul 安装</h2>
+<h1 id="Consul-安装">Consul 安装</h1>
 <p>安装 Consul 没什么难度。具体参考官网：<a target="_blank" rel="noopener" href="https://www.consul.io/docs/install">Consul 安装</a> ，这里只记录如何使用 Docker 安装 Consul。</p>
-<p>准备consul镜像：</p>
+<p>准备 Consul 镜像：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull consul <span class="comment"># 默认拉取latest</span></span><br><span class="line">docker pull consul:1.6.1 <span class="comment"># 拉取指定版本</span></span><br></pre></td></tr></table></figure>
-<p>Consul 镜像提供了几个个常用环境变量</p>
-<ul>
-<li><code>CONSUL_CLIENT_INTERFACE</code> ：配置 Consul 的 <code>-client=&lt;interface ip&gt; </code>命令参数</li>
-<li><code>CONSUL_BIND_INTERFACE</code>：配置 Consul 的 <code>-bind=&lt;interface ip&gt;</code>命令参数</li>
-<li><code>CONSUL_DATA_DIR</code> ：配置 Consul 的数据持久化目录</li>
-<li><code>CONSUL_CONFIG_DIR</code>：配置 Consul 的配置文件目录</li>
-</ul>
-<h2 id="1-6-Consul-单机">1.6 Consul 单机</h2>
-<p>先启动一个单机版 Consul，由于是单机模式选择 <code>Server</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 coresrc]# docker run -d  --name=consul -p 8500:8500 consul  agent -server -bootstrap -ui -node=1 -client=&#x27;0.0.0.0&#x27;</span><br><span class="line">355be46f502ca9f9e1498022e4c86fabf96c9e72b161cf4c71deff9c2012338b</span><br><span class="line">[root@centos-01 coresrc]# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                                                                         NAMES</span><br><span class="line">355be46f502c   consul    &quot;docker-entrypoint.s…&quot;   4 seconds ago   Up 3 seconds   8300-8302/tcp, 8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8500-&gt;8500/tcp, :::8500-&gt;8500/tcp   consul</span><br><span class="line">[root@centos-01 coresrc]# </span><br></pre></td></tr></table></figure>
+<p>验证安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># docker exec -it consul /bin/sh</span></span><br><span class="line">/ <span class="comment"># consul </span></span><br><span class="line">Usage: consul [--version] [--<span class="built_in">help</span>] &lt;<span class="built_in">command</span>&gt; [&lt;args&gt;]</span><br><span class="line"></span><br><span class="line">Available commands are:</span><br><span class="line">    acl            Interact with Consul<span class="string">&#x27;s ACLs</span></span><br><span class="line"><span class="string">    agent          Runs a Consul agent</span></span><br><span class="line"><span class="string">    catalog        Interact with the catalog</span></span><br><span class="line"><span class="string">    config         Interact with Consul&#x27;</span>s Centralized Configurations</span><br><span class="line">    connect        Interact with Consul Connect</span><br><span class="line">    debug          Records a debugging archive <span class="keyword">for</span> operators</span><br><span class="line">    event          Fire a new event</span><br><span class="line">    <span class="built_in">exec</span>           Executes a <span class="built_in">command</span> on Consul nodes</span><br><span class="line">    force-leave    Forces a member of the cluster to enter the <span class="string">&quot;left&quot;</span> state</span><br><span class="line">    info           Provides debugging information <span class="keyword">for</span> operators.</span><br><span class="line">    intention      Interact with Connect service intentions</span><br><span class="line">    join           Tell Consul agent to join cluster</span><br><span class="line">    keygen         Generates a new encryption key</span><br><span class="line">    keyring        Manages gossip layer encryption keys</span><br><span class="line">    kv             Interact with the key-value store</span><br><span class="line">    leave          Gracefully leaves the Consul cluster and shuts down</span><br><span class="line">    lock           Execute a <span class="built_in">command</span> holding a lock</span><br><span class="line">    login          Login to Consul using an auth method</span><br><span class="line">    <span class="built_in">logout</span>         Destroy a Consul token created with login</span><br><span class="line">    maint          Controls node or service maintenance mode</span><br><span class="line">    members        Lists the members of a Consul cluster</span><br><span class="line">    monitor        Stream logs from a Consul agent</span><br><span class="line">    operator       Provides cluster-level tools <span class="keyword">for</span> Consul operators</span><br></pre></td></tr></table></figure>
+<h1 id="Consul-Server">Consul Server</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 coresrc]<span class="comment"># docker run -d --name=consul_server -p 8500:8500 consul agent -server -bootstrap -ui -node=1 -client=&#x27;0.0.0.0&#x27;</span></span><br><span class="line">355be46f502ca9f9e1498022e4c86fabf96c9e72b161cf4c71deff9c2012338b</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>agent</code>：启动 agent 进程（前面提过启动 Consul 必须运行 agent）</li>
-<li><code>-server</code>：以 <code>Server</code>  模式启动</li>
-<li><code>-client</code>：以 <code> Cilent</code> 模式启动</li>
+<li><code>-server</code>：以 Server 模式启动</li>
 <li><code>bootstrap</code>：表示这个节点是 <code>Server-Leader</code> ，上面说过正常情况下 Leader 是通过 Raft 算法选举出来的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，就不要使用此标志了</li>
-<li><code>ui</code>：启动 Web UI 管理器（默认开放端口 <code>8500</code>）</li>
 <li><code>node</code>：节点名称（集群中必须是唯一的，默认是该节点的主机名）</li>
-<li><code>client</code>：consul 服务监听地址（这个地址提供 HTTP、DNS、RPC 等服务，默认是 <code>127.0.0.1</code> 不对外提供服务，需要对外提供服务改成 <code>0.0.0.0</code>）</li>
-<li><code>join</code>：表示加入到某个集群中 （比·如：<code>-join=192.168.0.11</code>）</li>
+<li><code>-client</code>：Consul 服务监听地址（这个地址提供 HTTP、DNS、RPC 等服务，默认是 <code>127.0.0.1</code> 不对外提供服务，需要对外提供服务改成 <code>0.0.0.0</code>）</li>
 </ul>
-<p>浏览器访问：</p>
-<p><img src="../images/2021-09-20-04-46-14.png" alt=""></p>
-<p>上图显示已经成功 Consul，启动了一个节点名称为 <code>1</code> 的节点 ，并且可以通过管理器管理 Node 节点、Key/Value 功能等。</p>
-<h1 id="Consul-集群">Consul 集群</h1>
-<p>在上面单机版的基础上面来拓展集群，下面加入两个 Server 模式的 Consul 到集群中。Server 模式在集群中建议是 3个以上，这样更好的避免因为 Server 的宕机导致整个集群挂掉的风险，做到高可用。</p>
-<h2 id="Server-加入集群">Server 加入集群</h2>
+<p>其它参数：</p>
+<ul>
+<li><code>-bootstrap-expect</code> ：在一个数据中心中期望提供的 Server 节点数量，当该值提供的时候，Consul一直等到达到指定 Sever 数目的时候才会引导整个集群，该标记不能和 <code>bootstrap</code> 共用</li>
+<li><code>-bind</code>：该地址用来在集群内部的通讯，集群内的所有节点到地址都必须是可达的，默认是 <code>0.0.0.0</code></li>
+<li><code>ui</code>：启动 Web UI 管理器（默认开放端口 <code>8500</code>）</li>
+<li><code>-rejoin</code>：使 Consul 忽略先前的离开，在再次启动后仍旧尝试加入集群中</li>
+<li><code>-config-dir</code>：配置文件目录，里面所有以.json结尾的文件都会被加载</li>
+</ul>
 <p>查看集群信息：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 coresrc]<span class="comment"># docker exec -it consul  consul members</span></span><br><span class="line">Node  Address          Status  Type    Build   Protocol  DC   Segment</span><br><span class="line">1     172.17.0.2:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br></pre></td></tr></table></figure>
-<p>加入两个 Server：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d  --name=consul2  consul  agent -server -bootstrap -ui -node=2 -client=&#x27;0.0.0.0&#x27; -join=172.17.0.2</span><br><span class="line">docker run -d  --name=consul3  consul  agent -server -bootstrap -ui -node=3 -client=&#x27;0.0.0.0&#x27; -join=172.17.0.2</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># docker exec -it consul  consul members</span></span><br><span class="line">Node  Address          Status  Type    Build   Protocol  DC   Segment</span><br><span class="line">1     172.17.0.2:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="Consul-Server-集群">Consul Server 集群</h1>
+<p>加入两个 Server 模式的 Consul 到集群中。Server 模式在集群中建议是 3个以上，这样更好的避免因为 Server 的宕机导致整个集群挂掉的风险，做到高可用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d  --name=consul_server2  consul  agent -server -bootstrap  -node=2 -client=<span class="string">&#x27;0.0.0.0&#x27;</span> -join=172.17.0.2</span><br><span class="line">docker run -d  --name=consul_server3  consul  agent -server -bootstrap  -node=3 -client=<span class="string">&#x27;0.0.0.0&#x27;</span> -join=172.17.0.2</span><br></pre></td></tr></table></figure>
 <p>查看集群信息：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 coresrc]<span class="comment"># docker exec -it consul  consul members</span></span><br><span class="line">Node  Address          Status  Type    Build   Protocol  DC   Segment</span><br><span class="line">1     172.17.0.2:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">2     172.17.0.3:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">3     172.17.0.4:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;C</span><br></pre></td></tr></table></figure>
-<p>Web UI 也可以看到新加入了两个节点：</p>
-<p><img src="../images/2021-09-20-05-01-35.png" alt=""></p>
-<h2 id="Client-加入集群">Client 加入集群</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># docker exec -it consul_server  consul members</span></span><br><span class="line">Node  Address          Status  Type    Build   Protocol  DC   Segment</span><br><span class="line">1     172.17.0.2:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">2     172.17.0.3:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">3     172.17.0.4:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="Consul-Client-加入集群">Consul Client 加入集群</h1>
 <p>Client 在 Consul 集群中起到了代理 Server 的作用，Client 模式不持久化数据。一般情况每台应用服务器都会安装一个 Client ，这样可以减轻跨服务器访问带来性能损耗。也可以减轻 Server 的请求压力。</p>
-<p>加入两个 Client：</p>
+<p>加入两个 Client 模式的 Consul：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name=consul_client1 consul agent -client -node=4 -join=172.17.0.2 -client=<span class="string">&#x27;0.0.0.0&#x27;</span></span><br><span class="line">docker run -d --name=consul_client2 consul agent -client -node=5 -join=172.17.0.2 -client=<span class="string">&#x27;0.0.0.0&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>查看集群信息：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 coresrc]<span class="comment"># docker exec -it consul  consul members</span></span><br><span class="line">Node          Address          Status  Type    Build   Protocol  DC   Segment</span><br><span class="line">1             172.17.0.2:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">2             172.17.0.3:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">3             172.17.0.4:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">66656e67bf3f  172.17.0.6:8301  alive   client  1.10.2  2         dc1  &lt;default&gt;</span><br><span class="line">fd748cf0c70d  172.17.0.5:8301  alive   client  1.10.2  2         dc1  &lt;default&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos-01 ~]<span class="comment"># docker exec -it consul_server  consul members</span></span><br><span class="line">Node          Address          Status  Type    Build   Protocol  DC   Segment</span><br><span class="line">1             172.17.0.2:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">2             172.17.0.3:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">3             172.17.0.4:8301  alive   server  1.10.2  2         dc1  &lt;all&gt;</span><br><span class="line">53c94791711e  172.17.0.5:8301  alive   client  1.10.2  2         dc1  &lt;default&gt;</span><br><span class="line">fa871a7045ec  172.17.0.6:8301  alive   client  1.10.2  2         dc1  &lt;default&gt;</span><br></pre></td></tr></table></figure>
 <h1 id="Consul-对外接口">Consul 对外接口</h1>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http%3A%2F%2Flocalhost%3A8500%2Fv1%2Fstatus%2Fleader">http://localhost:8500/v1/status/leader</a>: 显示当前集群的Leader</li>
@@ -351,12 +342,14 @@ function sidebar_toggle() {
 <li><a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http%3A%2F%2Flocalhost%3A8500%2Fv1%2Fcatalog%2Fnodes">http://localhost:8500/v1/catalog/nodes</a>：显示集群节点的详细信息</li>
 </ul>
 <h1 id="参考：">参考：</h1>
-<p><a target="_blank" rel="noopener" href="https://www.consul.io/docs/install">https://www.consul.io/docs/install</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/consul-guide/06_setup_cluster.md">https://www.bookstack.cn/read/consul-guide/06_setup_cluster.md</a></p>
-<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1416526">https://cloud.tencent.com/developer/article/1416526</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b12037fa3249">https://www.jianshu.com/p/b12037fa3249</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/liuzhuchen/article/details/81913562">https://blog.csdn.net/liuzhuchen/article/details/81913562</a></p>
-<p><a target="_blank" rel="noopener" href="http://www.liangxiansen.cn/2017/04/06/consul/#%E4%BD%BF%E7%94%A8consul">http://www.liangxiansen.cn/2017/04/06/consul/#使用consul</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.consul.io/docs/install">https://www.consul.io/docs/install</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/consul-guide/06_setup_cluster.md">https://www.bookstack.cn/read/consul-guide/06_setup_cluster.md</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1416526">https://cloud.tencent.com/developer/article/1416526</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b12037fa3249">https://www.jianshu.com/p/b12037fa3249</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/liuzhuchen/article/details/81913562">https://blog.csdn.net/liuzhuchen/article/details/81913562</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.liangxiansen.cn/2017/04/06/consul/#%E4%BD%BF%E7%94%A8consul">http://www.liangxiansen.cn/2017/04/06/consul/#使用consul</a></li>
+</ul>
 
 </article>
 
@@ -390,7 +383,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-20</div>
+      <div>2021-09-22</div>
     </div>
   </div>
 
