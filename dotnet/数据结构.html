@@ -67,9 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>C#基础</p>
 <ul>
 <li><a href="/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86">基础合集</a></li>
-<li><a href="/dotnet/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">常用数据结构</a></li>
-<li><a href="/dotnet/%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B3%E7%B3%BB">类和对象的关系</a></li>
-<li><a href="/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%BC%80%E5%8F%91">面向对象开发</a></li>
+<li><a href="/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a></li>
+<li><a href="/dotnet/%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1">类和对象</a></li>
+<li><a href="/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">面向对象</a></li>
 </ul>
 </li>
 <li>
@@ -85,14 +85,18 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B">并行编程</a></li>
 </ul>
 </li>
-<li>
-<p>NetCore</p>
-</li>
-<li>
-<p><a target="_blank" rel="noopener" href="http://Asp.Net">Asp.Net</a> Mvc</p>
-</li>
-<li>
-<p>DataProtection</p>
+</ul>
+<h2 id="DotNET-Core">DotNET Core</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+</ul>
+<h2 id="Asp-Net-Mvc"><a target="_blank" rel="noopener" href="http://Asp.Net">Asp.Net</a> Mvc</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+</ul>
+<h2 id="DataProtection">DataProtection</h2>
 <ul>
 <li><a href="">1.1 DataProtection简介</a></li>
 <li><a href="">1.2 DataProtection方法介绍</a></li>
@@ -100,8 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="">1.4 UserSecrets</a></li>
 <li><a href="">1.5 基于DataProtection的数据保护方案</a></li>
 <li><a href="">1.6 方案实践及集成AzureDevops管道</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="Linux">Linux</h2>
 <ul>
@@ -182,6 +184,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
 </ul>
+<h2 id="Devops工具-Jenkins-v2">Devops工具 Jenkins</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
 <h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
 <ul>
 <li><a href="/sample/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA">1.1 微服务入门：项目搭建</a></li>
@@ -252,14 +258,15 @@ function sidebar_toggle() {
   <h1 id="数组">数组</h1>
 <p>数组是一种特殊类型的数据类型，它可以使用特殊语法<strong>顺序存储固定数量的值。</strong></p>
 <p><img src="http://www.tutorialsteacher.com/Content/images/csharp/array.png#align=left&amp;display=inline&amp;height=147&amp;margin=%5Bobject%20Object%5D&amp;originHeight=147&amp;originWidth=404&amp;status=done&amp;style=none&amp;width=404" alt=""></p>
-<p><strong>数组声明</strong></p>
+<p>数组声明：</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> [] intArr;</span><br></pre></td></tr></table></figure>
-<p><strong>数组初始化</strong>：使用<code>new</code>关键字同时声明和初始化数组，下面三种方式等价</p>
+<p>数组初始化：使用<code>new</code>关键字同时声明和初始化数组，下面三种方式等价</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>[] intArr = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">5</span>]; </span><br><span class="line"><span class="built_in">int</span>[] intArr = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">5</span>]&#123;<span class="number">1</span>， <span class="number">2</span>， <span class="number">3</span>， <span class="number">4</span>， <span class="number">5</span>&#125;;</span><br><span class="line"><span class="built_in">int</span>[] intArr = &#123;<span class="number">1</span>， <span class="number">2</span>， <span class="number">3</span>， <span class="number">4</span>， <span class="number">5</span>&#125;;</span><br></pre></td></tr></table></figure>
-<p><strong>延迟初始化</strong>：可以先声明后再初始化数组</p>
+<p>延迟初始化：可以先声明后再初始化数组</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span>[] strArr， strArr;</span><br><span class="line">strArr = <span class="keyword">new</span> <span class="built_in">string</span>[<span class="number">5</span>]&#123; <span class="string">&quot;1st Element&quot;</span>，<span class="string">&quot;2nd Element&quot;</span>， <span class="string">&quot;3rd Element&quot;</span>&#125;;</span><br><span class="line">strArr = <span class="keyword">new</span> <span class="built_in">string</span>[]&#123; <span class="string">&quot;1st Element&quot;</span>，<span class="string">&quot;2nd Element&quot;</span>， <span class="string">&quot;3rd Element&quot;</span>&#125;;</span><br></pre></td></tr></table></figure>
-<p><strong>索引访问数组中元素</strong></p>
+<p>索引访问数组中元素：</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">intArr[索引位置];</span><br></pre></td></tr></table></figure>
+<p>常用方法和属性：</p>
 <table>
 <thead>
 <tr>
@@ -409,10 +416,8 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Array arr = Array.CreateInstance(Type.GetType(<span class="string">&quot;System.Int32&quot;</span>)， <span class="number">3</span>);           </span><br><span class="line">arr.SetValue(<span class="number">1</span>， <span class="number">0</span>);</span><br><span class="line">arr.SetValue(<span class="number">3</span>， <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">Console.WriteLine(<span class="string">&quot;IsFixedSize:取一个值，该值指示数组是否带有固定大小，值为:&#123;0&#125;&quot;</span>， arr.IsFixedSize);</span><br><span class="line">Console.WriteLine(<span class="string">&quot;IsReadOnly:取一个值，该值指示数组是否只读，值为:&#123;0&#125;&quot;</span>， arr.IsReadOnly);</span><br><span class="line">Console.WriteLine(<span class="string">&quot;Length:获取一个 32 位整数，该值表示所有维度的数组中的元素总数，值为:&#123;0&#125;&quot;</span>， arr.Length);</span><br><span class="line">Console.WriteLine(<span class="string">&quot;LongLength:获取一个 64 位整数，该值表示所有维度的数组中的元素总数，值为:&#123;0&#125;&quot;</span>， arr.LongLength);</span><br><span class="line">Console.WriteLine(<span class="string">&quot;Rank:获取数组的秩（维度），值为:&#123;0&#125;&quot;</span>， arr.Rank);</span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> arr)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="集合">集合</h1>
-<p>C＃包括在特定系列中包含许多值或对象的专用类，称为集合。C＃中有两种类型的集合：<code>非泛型集合</code>和<code>泛型集合</code>。每个集合类都实现 <code>IEnumerable</code> 接口，因此可以使用 <code>foreach</code> 循环访问集合中的值。</p>
-<h2 id="非泛型集合">非泛型集合</h2>
-<p><code>System.Collections</code>中命名空间包括以下非泛型集合：</p>
+<h1 id="非泛型集合">非泛型集合</h1>
+<p>每个集合类都实现 <code>IEnumerable</code>接口，因此可以使用 <code>foreach</code> 循环访问集合中的值。<code>System.Collections</code> 命名空间中包括以下非泛型集合：</p>
 <table>
 <thead>
 <tr>
@@ -447,12 +452,12 @@ function sidebar_toggle() {
 </tr>
 </tbody>
 </table>
-<h3 id="ArrayList">ArrayList</h3>
-<p>可以包含任何数据类型的元素。类似于数组，但是在添加元素时不需要指定<code>ArrayList</code>的大小会自动增长。</p>
-<p><strong>要点：</strong></p>
+<h2 id="ArrayList">ArrayList</h2>
+<p>可以包含任何数据类型的元素。类似于数组，但是在添加元素时不需要指定大小， <code>ArrayList</code> 的大小会自动增长。</p>
+<p>要点：</p>
 <ul>
-<li>可以存储<strong>任何数据类型</strong>的项(元素)</li>
-<li>添加元素时会<strong>自动调整大小</strong></li>
+<li>可以存储任何数据类型的项(元素)</li>
+<li>添加元素时会自动调整大小</li>
 <li>可以包含多个<code>null</code></li>
 <li>可以使用 <code>foreach</code> 或 <code>for</code> 循环或索引器访问</li>
 </ul>
@@ -545,15 +550,14 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ArrayList arrayList = <span class="keyword">new</span> ArrayList();</span><br><span class="line">arrayList.Add(<span class="string">&quot;wang&quot;</span>);</span><br><span class="line">arrayList.Add(<span class="number">1</span>);</span><br><span class="line"><span class="comment">// ArrayList允许插入null</span></span><br><span class="line">arrayList.Add(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> arrayList)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="SortedList">SortedList</h3>
-<p><code>SortedList</code>集合默认按键的<strong>升序存储键值对</strong>。<code>SortedList</code>类实现<code>IDictionary</code>和<code>ICollection</code>接口，因此可以通过键和索引访问元素。</p>
-<p>C＃包括两种类型的<code>SortedList</code>，泛型<code>SortedList</code>和非泛型<code>SortedList</code></p>
-<p><strong>要点：</strong></p>
+<h2 id="SortedList">SortedList</h2>
+<p><code>SortedList</code> 集合默认按键的升序存储键值对。<code>SortedList</code> 类实现了 <code>IDictionary</code> 和 <code>ICollection</code> 接口，因此可以通过键和索引访问元素。</p>
+<p>要点：</p>
 <ul>
 <li>C#具有泛型和非泛型 <code>SortedList</code></li>
 <li><code>SortedList</code> 按键的升序存储键值对。键必须是唯一的，不能为<code>null</code>，而值可以为<code>null</code>或重复项</li>
 <li>非泛型 <code>SortedList</code> 存储任何数据类型的键和值。因此，需要将值转换为适当的数据类型</li>
-<li>键值对可以强制转换为<code>DictionaryEntry</code></li>
+<li>键值对可以强制转换为 <code>DictionaryEntry</code></li>
 <li>使用索引器访问单个值。<code>SortedList</code> 索引器接受键并返回与之关联的值</li>
 </ul>
 <table>
@@ -641,15 +645,14 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">SortedList sortedList = <span class="keyword">new</span> SortedList();</span><br><span class="line">sortedList.Add(<span class="number">2</span>， <span class="string">&quot;wang&quot;</span>);</span><br><span class="line">sortedList.Add(<span class="number">5</span>， <span class="string">&quot;li&quot;</span>);</span><br><span class="line">sortedList.Add(<span class="number">3</span>， <span class="number">5</span>);</span><br><span class="line"><span class="comment">//SortedList键可以是任何数据类型，但不能在同一SortedList中添加不同数据类型的键。</span></span><br><span class="line">sortedList.Add(<span class="string">&quot;wang&quot;</span>， <span class="number">32</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; sortedList.Count; i++)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;key:&#123;0&#125;，value:&#123;1&#125;&quot;</span>， sortedList.GetKey(i)， sortedList.GetByIndex(i));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (DictionaryEntry item <span class="keyword">in</span> sortedList)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;key:&#123;0&#125;，value:&#123;1&#125;&quot;</span>， item.Key， item.Value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Stack">Stack</h3>
-<p>C＃包含一种特殊类型的集合，它以 <code>LIFO</code> 样式存储元素(<strong>后进先出)</strong>。</p>
-<p>C#包括通用和非通用堆栈，非泛型堆栈。<code>Stack</code>允许空值以及重复值。它提供了一个 <code>Push()</code> 方法来添加一个值， <code>Pop()</code> 或 <code>Peek()</code> 方法来检索值。</p>
-<p><strong>要点：</strong></p>
+<h2 id="Stack">Stack</h2>
+<p>以 <code>LIFO</code> 样式存储元素（后进先出）。C#包括通用和非通用堆栈，非泛型堆栈。<code>Stack</code>允许空值以及重复值。它提供了一个 <code>Push()</code> 方法来添加一个值， <code>Pop()</code> 或 <code>Peek()</code> 方法来检索值。</p>
+<p>要点：</p>
 <ul>
-<li><code>Stack</code>将值存储在<code>LIFO(后进先出)</code>样式中。最后添加的元素将是首先出现的元素</li>
-<li>使用<code>Push()</code>方法将元素添加到<code>Stack</code>中</li>
-<li><code>Pop()</code>方法返回并从堆栈顶部删除元素。在空<code>Stack</code>上调用<code>Pop()</code>方法将引发异常</li>
-<li><code>Peek()</code>方法总是返回<code>Stack</code>中最顶层的元素</li>
+<li>最后添加的元素将是首先出现的元素<code>LIFO(后进先出)</code></li>
+<li>使用 <code>Push()</code> 方法添加元素</li>
+<li><code>Pop() </code>方法返回并从堆栈顶部删除元素。在空 <code>Stack</code> 上调用 <code>Pop()</code> 方法将引发异常</li>
+<li><code>Peek()</code> 方法返回 <code>Stack</code> 中最顶层的元素</li>
 </ul>
 <p><img src="http://www.tutorialsteacher.com/Content/images/csharp/stack.png#align=left&amp;display=inline&amp;height=223&amp;margin=%5Bobject%20Object%5D&amp;originHeight=254&amp;originWidth=296&amp;status=done&amp;style=none&amp;width=260" alt=""></p>
 <table>
@@ -697,13 +700,12 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Stack stack = <span class="keyword">new</span> Stack();</span><br><span class="line">stack.Push(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">stack.Push(<span class="number">1</span>);</span><br><span class="line">stack.Push(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> stack)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Queue">Queue</h3>
-<p>C＃包含<code>System.Collection</code>命名空间中的<code>Queue</code>集合类。队列以<code>FIFO</code>样式(先进先出)存储元素。</p>
-<p>与<code>Stack</code>集合完全相反。它按照添加顺序包含元素。队列集合允许多个空值和重复值。使用<code>Enqueue()</code>方法添加值，使用<code>Dequeue()</code>方法从队列中检索值。</p>
-<p><strong>要点：</strong></p>
+<h2 id="Queue">Queue</h2>
+<p>以<code>FIFO</code>样式(先进先出)存储元素。与<code>Stack</code>集合完全相反，它按照添加顺序包含元素。队列集合允许多个空值和重复值。使用 <code>Enqueue()</code> 方法添加值，使用<code>Dequeue()</code>方法从队列中检索值。</p>
+<p>要点：</p>
 <ul>
-<li>队列将值存储在<code>FIFO(先进先出)</code>样式中。首先添加的元素将首先出现</li>
-<li>使用<code>Enqueue()</code>方法将元素添加到Queue中</li>
+<li>首先添加的元素将首先出现<code>FIFO(先进先出)</code></li>
+<li>使用<code>Enqueue()</code>方法添加元素</li>
 <li><code>Dequeue()</code>方法返回并从队列的开头删除元素。在空队列上调用<code>Dequeue()</code>方法将引发异常</li>
 <li><code>Peek()</code>方法总是返回最顶层的元素</li>
 </ul>
@@ -757,15 +759,15 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Queue queue = <span class="keyword">new</span> Queue();</span><br><span class="line">queue.Enqueue(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">queue.Enqueue(<span class="number">1</span>);</span><br><span class="line">queue.Enqueue(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> queue)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Hashtable">Hashtable</h3>
-<p>C＃包含<code>System.Collections</code>命名空间中的<code>Hashtable</code>集合，类似于通用字典集合。<code>Hashtable</code>集合存储键值对。<strong>通过计算每个密钥的哈希码来优化查找</strong>，并在内部将其存储在不同的存储桶中，然后在访问值时匹配指定密钥的哈希码。</p>
-<p><strong>要点：</strong></p>
+<h2 id="Hashtable">Hashtable</h2>
+<p>类似于通用字典集合。<code>Hashtable</code>集合存储键值对。通过计算每个密钥的哈希码来优化查找，并在内部将其存储在不同的存储桶中，然后在访问值时匹配指定密钥的哈希码。</p>
+<p>要点：</p>
 <ul>
 <li>存储<code>Key</code>必须唯一的任何数据类型的键值对</li>
 <li>键不能为<code>null</code>，而值可以为<code>null</code></li>
-<li>通过比较键的哈希码来检索项目。因此它的性能比<code>Dictionary</code>集合慢</li>
-<li>使用默认的哈希码提供程序，即<code>object.GetHash()</code>。还可以使用自定义哈希码提供程序</li>
-<li>将<code>DictionaryEntry</code>与<code>foreach</code>语句一起使用以迭代<code>Hashtable</code></li>
+<li>通过比较键的哈希码来检索项目。因此性能比 <code>Dictionary</code> 集合慢</li>
+<li>使用默认的哈希码提供程序，即 <code>object.GetHash()</code>。还可以使用自定义哈希码提供程序</li>
+<li>将 <code>DictionaryEntry</code> 与 <code>foreach</code> 语句一起使用以迭代 <code>Hashtable</code></li>
 </ul>
 <table>
 <thead>
@@ -836,8 +838,8 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Hashtable hashtable = <span class="keyword">new</span> Hashtable();</span><br><span class="line">hashtable.Add(<span class="number">1</span>， <span class="string">&quot;wang&quot;</span>);</span><br><span class="line">hashtable.Add(<span class="number">3</span>， <span class="literal">false</span>);</span><br><span class="line">hashtable.Add(<span class="number">2</span>， <span class="string">&quot;li&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (DictionaryEntry item <span class="keyword">in</span> hashtable)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;key:&#123;0&#125;， value:&#123;1&#125;&quot;</span>， item.Key， item.Value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="BitArray">BitArray</h3>
-<p><code>BitArray</code> 类管理一个紧凑型的位值数组，它使用布尔值来表示，其中<code>true</code>表示位是开启的(1)，false 表示位是关闭的(0)。当需要存储位，但是事先不知道位数时，则使用点阵列。可以使用整型索引从点阵列集合中访问各项，索引从零开始。</p>
+<h2 id="BitArray">BitArray</h2>
+<p><code>BitArray</code> 类管理一个紧凑型的位值数组，它使用布尔值来表示，其中<code>true</code>表示位是开启的(1)，false 表示位是关闭的(0)。当需要存储位但是事先不知道位数时，则使用点阵列。可以使用整型索引从点阵列集合中访问各项，索引从零开始。</p>
 <table>
 <thead>
 <tr>
@@ -902,10 +904,10 @@ function sidebar_toggle() {
 </tr>
 </tbody>
 </table>
-<h2 id="泛型集合">泛型集合</h2>
-<p>同传统的集合相比，<strong>泛型集合是一种强类型的集合</strong>，它解决了类型安全问题，同时避免了集合中每次的装箱与拆箱的操作，提升了性能。</p>
-<h3 id="List-T"><code>List&lt;T&gt;</code></h3>
-<p><code>List&lt;T&gt;</code>在C#应用程序中是一种快捷、易于使用的泛型集合类型，使用泛型编程为编写面向对象程序增加了极大的效率和灵活性，不会强行对值类型进行装箱和拆箱，或对引用类型进行向下强制类型转换。</p>
+<h1 id="泛型集合">泛型集合</h1>
+<p>同传统的集合相比，泛型集合是一种强类型的集合，它解决了类型安全问题，同时避免了集合中每次的装箱与拆箱的操作，提升了性能。</p>
+<h2 id="List-T"><code>List&lt;T&gt;</code></h2>
+<p><code>List&lt;T&gt;</code> 在C#应用程序中是一种快捷、易于使用的泛型集合类型，使用泛型编程为编写面向对象程序增加了极大的效率和灵活性，不会强行对值类型进行装箱和拆箱，或对引用类型进行向下强制类型转换。</p>
 <table>
 <thead>
 <tr>
@@ -1001,17 +1003,17 @@ function sidebar_toggle() {
 </tbody>
 </table>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">List&lt;intintList = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt;();</span><br><span class="line">intList.Add(<span class="number">3</span>);</span><br><span class="line">intList.Add(<span class="number">54</span>);</span><br><span class="line">intList.Add(<span class="number">14</span>);</span><br><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> intList)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Stack-T"><code>Stack&lt;T&gt;</code></h3>
-<p>以<strong>后进先出</strong>的方式维护数据的集合，包含<code>pop()</code>和<code>push()</code>，从栈内压入或移除数据。</p>
-<h3 id="Quenue-T"><code>Quenue&lt;T&gt;</code></h3>
-<p>以<strong>先进先出</strong>的方式访问数据，使用<code>Enqueue()</code>和<code>Dequeue()</code>添加数据和移除数据。</p>
-<h3 id="SortedSet-T"><code>SortedSet&lt;T&gt;</code></h3>
+<p><code>Stack&lt;T&gt;</code></p>
+<p>以 <strong>后进先出</strong> 的方式维护数据的集合，包含 <code>pop()</code> 和 <code>push()</code> 从栈内压入或移除数据。</p>
+<h2 id="Quenue-T"><code>Quenue&lt;T&gt;</code></h2>
+<p>以 <strong>先进先出</strong> 的方式访问数据，使用 <code>Enqueue()</code> 和 <code>Dequeue()</code>添加数据和移除数据。</p>
+<h2 id="SortedSet-T"><code>SortedSet&lt;T&gt;</code></h2>
 <p>这个类中的数据是排序的，在插入和移除数据之后仍然能自动排序，需要向其构造函数中传递一个实现了<code>IComparer&lt;T&gt;</code>，该接口定义了<code>Compare</code>方法。</p>
-<h3 id="ObservableCollection-T"><code>ObservableCollection&lt;T&gt;</code></h3>
-<p>表示能在添加、移除或者刷新整个列表时提供通知的动态数据集合， <code>ReadOnlyObservableCollection&lt;T&gt;</code> 的操作与之类似，不过是只读的。 <code>ObservableCollection&lt;T&gt;</code> 实现了一个名为<code>CollectionChanged</code>事件，该事件在插入新的数据或者移除数据时触发。</p>
-<h3 id="Dictionary-k-v"><code>Dictionary&lt;k,v&gt;</code></h3>
+<h2 id="ObservableCollection-T"><code>ObservableCollection&lt;T&gt;</code></h2>
+<p>表示能在添加、移除或者刷新整个列表时提供通知的动态数据集合， <code>ReadOnlyObservableCollection&lt;T&gt;</code> 的操作与之类似，不过是只读的<code>ObservableCollection&lt;T&gt;</code> 实现了一个名为<code>CollectionChanged</code>事件，该事件在插入新的数据或者移除数据时触发。</p>
+<h2 id="Dictionary-k-v"><code>Dictionary&lt;k,v&gt;</code></h2>
 <p>提供快速的基于键值的元素查找。结构是：<code>Dictionary &lt;[key],[value]&gt;</code>，当有很多元素的时候可以用它。在使用前，必须声明它的键类型和值类型。</p>
-<h1 id="数组-ArrayList-List三者的区别">数组/ArrayList/List三者的区别</h1>
+<h1 id="数组-ArrayList-List区别">数组/ArrayList/List区别</h1>
 <ul>
 <li>数组：针对特定类型固定长度，值不可为<code>null</code>，在声明数组的时候必须指定数组的长度，可有多个维度</li>
 <li>Array：数组的另一种创建方式抽象类，作为所有数组的基类，针对任意类型固定长度，值可以为<code>null</code>，输出会被替换为0</li>
@@ -1019,7 +1021,7 @@ function sidebar_toggle() {
 <li>List：强类型的集合，固定类型、任意长度，值不可为<code>null</code>，是类型安全的</li>
 </ul>
 <h1 id="索引器-Indexer">索引器(Indexer)</h1>
-<p><code>Indexer</code>是一种特殊类型的属性，允许以与其内部集合的数组相同的方式访问类或结构。除了使用带有方括号和参数的此关键字定义的属性外，它与属性相同。</p>
+<p><code>Indexer </code>是一种特殊类型的属性，允许以访问数组相同的方式访问类或结构。除了使用带有方括号和参数的此关键字定义的属性外，它与属性相同。</p>
 <ul>
 <li>索引器与属性相同，除了它使用带有方括号的此关键字定义，该参数具有参数</li>
 <li>可以通过具有不同类型的参数来覆盖索引器</li>
@@ -1027,7 +1029,7 @@ function sidebar_toggle() {
 <li>索引器可以作为接口成员包含在内</li>
 </ul>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;<span class="keyword">return</span> typethis[&lt;parameter typeindex]</span><br><span class="line">&#123;</span><br><span class="line">    Get&#123;</span><br><span class="line">    <span class="comment">// return the value from the specified index</span></span><br><span class="line">    &#125;</span><br><span class="line">    Set&#123;</span><br><span class="line">    <span class="comment">// set values at the specified index</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Indexer</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="built_in">int</span>[] indexs = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">int</span> <span class="keyword">this</span>[<span class="built_in">int</span> index]</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">get</span> &#123; <span class="keyword">return</span> indexs[index]; &#125;</span><br><span class="line">            <span class="keyword">set</span></span><br><span class="line">            &#123;</span><br><span class="line">                indexs[index] = <span class="keyword">value</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Indexer是一种特殊类型的属性，允许以与其内部集合的数组相同的方式访问类或结构。</span></span><br><span class="line"><span class="comment">除了使用带有方括号和参数的此关键字定义的属性外，它与属性相同。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">Console.WriteLine(<span class="string">&quot;********************索引器*********************&quot;</span>);</span><br><span class="line"></span><br><span class="line">Indexer indexer = <span class="keyword">new</span> Indexer();</span><br><span class="line">indexer[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">indexer[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">Console.WriteLine(indexer[<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Indexer</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="built_in">int</span>[] indexs = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">int</span> <span class="keyword">this</span>[<span class="built_in">int</span> index]</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">get</span> &#123; <span class="keyword">return</span> indexs[index]; &#125;</span><br><span class="line">            <span class="keyword">set</span></span><br><span class="line">            &#123;</span><br><span class="line">                indexs[index] = <span class="keyword">value</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Indexer是一种特殊类型的属性，允许以与其内部集合的数组相同的方式访问类或结构。</span></span><br><span class="line"><span class="comment">除了使用带有方括号和参数的此关键字定义的属性外，它与属性相同。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">Console.WriteLine(<span class="string">&quot;********************索引器*********************&quot;</span>);</span><br><span class="line"></span><br><span class="line">Indexer indexer = <span class="keyword">new</span> Indexer();</span><br><span class="line">indexer[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">indexer[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">Console.WriteLine(indexer[<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
 
 </article>
 
@@ -1061,7 +1063,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-24</div>
     </div>
   </div>
 

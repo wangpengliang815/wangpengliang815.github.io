@@ -67,9 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>C#基础</p>
 <ul>
 <li><a href="/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86">基础合集</a></li>
-<li><a href="/dotnet/%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">常用数据结构</a></li>
-<li><a href="/dotnet/%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B3%E7%B3%BB">类和对象的关系</a></li>
-<li><a href="/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%BC%80%E5%8F%91">面向对象开发</a></li>
+<li><a href="/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a></li>
+<li><a href="/dotnet/%E7%B1%BB%E5%92%8C%E5%AF%B9%E8%B1%A1">类和对象</a></li>
+<li><a href="/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">面向对象</a></li>
 </ul>
 </li>
 <li>
@@ -85,14 +85,18 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B">并行编程</a></li>
 </ul>
 </li>
-<li>
-<p>NetCore</p>
-</li>
-<li>
-<p><a target="_blank" rel="noopener" href="http://Asp.Net">Asp.Net</a> Mvc</p>
-</li>
-<li>
-<p>DataProtection</p>
+</ul>
+<h2 id="DotNET-Core">DotNET Core</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+</ul>
+<h2 id="Asp-Net-Mvc"><a target="_blank" rel="noopener" href="http://Asp.Net">Asp.Net</a> Mvc</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式事务</a></li>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">分布式锁</a></li>
+</ul>
+<h2 id="DataProtection">DataProtection</h2>
 <ul>
 <li><a href="">1.1 DataProtection简介</a></li>
 <li><a href="">1.2 DataProtection方法介绍</a></li>
@@ -100,8 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="">1.4 UserSecrets</a></li>
 <li><a href="">1.5 基于DataProtection的数据保护方案</a></li>
 <li><a href="">1.6 方案实践及集成AzureDevops管道</a></li>
-</ul>
-</li>
 </ul>
 <h2 id="Linux">Linux</h2>
 <ul>
@@ -182,6 +184,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <ul>
 <li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
 </ul>
+<h2 id="Devops工具-Jenkins-v2">Devops工具 Jenkins</h2>
+<ul>
+<li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+</ul>
 <h2 id="示例项目：Microservice-Sample">示例项目：Microservice.Sample</h2>
 <ul>
 <li><a href="/sample/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA">1.1 微服务入门：项目搭建</a></li>
@@ -258,21 +264,20 @@ function sidebar_toggle() {
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 基类</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 使用virtual关键字定义的方法允许在派生类中使用override重写</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;基类的SayHello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 派生自Person</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title">ChinaPerson</span> : <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 使用override关键字重写基类的SayHello方法</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;你好&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 派生自Person</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title">ThailandPerson</span> : <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;萨瓦迪卡&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>把一个基类函数声明为 <code>virtual</code>，就可以在任何派生类中重写该函数，<code>virtual</code> 也适用于属性。</p>
 <blockquote>
-<p>注意；成员字段和静态函数都不能声明为 <code>virtual</code> ，因为这个概念只对类中的实例成员有意义</p>
+<p>注意：成员字段和静态函数都不能声明为 <code>virtual</code> ，因为这个概念只对类中的实例成员有意义</p>
 </blockquote>
-<h2 id="隐藏方法">隐藏方法</h2>
+<h1 id="隐藏方法">隐藏方法</h1>
 <p>如果签名相同的方法在基类和派生类中都进行了声明，但该方法没有声明为 <code>virtual</code> 和 <code>override</code>，派生类会隐藏基类方法。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">   &#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">       &#123;</span><br><span class="line">           Console.WriteLine(<span class="string">&quot;基类的SayHello&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">class</span> <span class="title">ChinaPerson</span> : <span class="title">Person</span></span><br><span class="line">   &#123;</span><br><span class="line">       <span class="comment">//提示:隐藏继承的成员Person.SayHello，如果有意的，请使用关键字new</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">       &#123;</span><br><span class="line">           Console.WriteLine(<span class="string">&quot;你好&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="调用基类方法">调用基类方法</h2>
+<h1 id="调用基类方法">调用基类方法</h1>
 <p>C#中可以使用 <code>base.</code> 这种语法来调用方法的基类版本。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;基类的SayHello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">ChinaPerson</span> : <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">base</span>.SayHello();</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;你好&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="接口继承">接口继承</h1>
-<p>表示一个类型只继承了函数的签名，没有继承任何实现代码。在需要指定该类型具有某些可用的特性时，最好使用这种类型的继承。</p>
-<p>接口名称通常以字母 <code>I</code> 开头，以便知道这是一个接口。C#支持多接口继承和单一实现继承，接口继承中又分为隐式实现和显式实现。</p>
+<p>表示一个类型只继承了函数的签名，没有继承任何实现代码。在需要指定该类型具有某些可用的特性时，最好使用这种类型的继承。接口名称通常以字母 <code>I</code> 开头，以便知道这是一个接口。C#支持多接口继承和单一实现继承，接口继承中又分为隐式实现和显式实现。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title">IPerson</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 隐式实现接口</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title">ChinaPerson</span> : <span class="title">IPerson</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;你好&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 显式实现接口</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title">ThailandPerson</span> : <span class="title">IPerson</span></span><br><span class="line">&#123;      </span><br><span class="line">    <span class="keyword">void</span> IPerson.SayHello()</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;莎娃迪卡&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>对于隐式实现的接口调用这两种方式都可以</p>
+<p>对于隐式实现的接口调用这两种方式都可以：</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ChinaPerson chinaPerson = <span class="keyword">new</span> ChinaPerson();</span><br><span class="line">IPerson person = <span class="keyword">new</span> ChinaPerson();</span><br><span class="line">person.SayHello();</span><br><span class="line">chinaPerson.SayHello();</span><br></pre></td></tr></table></figure>
-<p>对于显式实现的接口调用只能使用接口调用</p>
+<p>对于显式实现的接口调用只能使用接口调用：</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IPerson thailandPerson = <span class="keyword">new</span> ThailandPerson();</span><br><span class="line">thailandPerson.SayHello();</span><br></pre></td></tr></table></figure>
 <h1 id="抽象类和抽象函数">抽象类和抽象函数</h1>
 <ul>
@@ -284,7 +289,7 @@ function sidebar_toggle() {
 </ul>
 <h1 id="密封类和密封方法">密封类和密封方法</h1>
 <p>C#允许把类和方法声明为 <code>sealed</code> ，对于类这表示不能继承；对于方法这表示不能重写该方法。</p>
-<h1 id="派生类的构造函数执行顺序">派生类的构造函数执行顺序</h1>
+<h1 id="派生类构造函数执行顺序">派生类构造函数执行顺序</h1>
 <p>首先定义基类 <code>A</code>，为了方便查看，显式指明基类的无参构造函数</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">public</span> <span class="built_in">int</span> Age &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="title">A</span>(<span class="params"></span>)</span></span><br><span class="line">       &#123;</span><br><span class="line">           Console.WriteLine(<span class="string">&quot;A类无参构造函数&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 <p>然后定义<code>B</code>类继承自<code>A</code>类</p>
@@ -377,7 +382,7 @@ B类无参构造函数调用父类带参构造函数</p>
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-24</div>
     </div>
   </div>
 
