@@ -1,11 +1,18 @@
 @charset "UTF-8";
+blockquote {
+  border-left: 4px solid #42b983;
+  padding: 10px 15px;
+  color: #777;
+  background-color: rgba(66, 185, 131, 0.1);
+  margin: 1rem auto 1rem; }
+
 a img {
   border-color: white; }
 
 img {
   border-style: solid;
   border-color: #FF9900;
-  border-width: 4px;
+  border-width: 3px;
   border-radius: 5px;
   margin-top: 20px;
   margin-left: 10px;

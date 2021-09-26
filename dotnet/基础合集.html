@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <ul>
 <li><a href="//"></a></li>
 </ul>
-<h2 id="DataProtection">DataProtection</h2>
+<h2 id="DataProtection-数据保护">DataProtection 数据保护</h2>
 <ul>
 <li><a href="/dotnet/1.1DataProtection%E7%AE%80%E4%BB%8B">1.1 DataProtection简介</a></li>
 <li><a href="/dotnet/1.2DataProtection%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D">1.2 DataProtection方法介绍</a></li>
@@ -145,13 +145,16 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/docker/2.2Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">2.2 Docker常用命令</a></li>
 <li><a href="/docker/Portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF">Portainer可视化面板</a></li>
 </ul>
-<h2 id="分布式相关">分布式相关</h2>
+<h2 id="服务注册与发现">服务注册与发现</h2>
 <ul>
-<li><a href="/distributed/Consul%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E8%AE%B0%E5%BD%95">Consul 相关知识记录</a></li>
+<li><a href="/distributed/Consul">Consul</a></li>
 </ul>
 <h2 id="UnitTest">UnitTest</h2>
 <ul>
-<li><a href="/%E5%9F%BA%E7%A1%80/1">Categories</a></li>
+<li><a href="/unittest/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
+<li><a href="/unittest/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95">集成测试</a></li>
+<li><a href="/unittest/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95">自动化UI测试（Selenium）</a></li>
+<li><a href="/unittest/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6">压力测试（k6）</a></li>
 </ul>
 <h2 id="23种设计模式">23种设计模式</h2>
 <ul>
@@ -247,49 +250,25 @@ function sidebar_toggle() {
 <li>指针类型（Pointer types）</li>
 </ul>
 <h1 id="值类型">值类型</h1>
-<p>值类型特点是：变量直接存储其值，派生于 <code>System.ValueType</code>。值类型又细分为简单类型、枚举类型、结构类型、可以为 null 的值类型。</p>
-<p><strong>简单类型：</strong></p>
+<p>值类型特点是：变量直接存储其值，派生于 System.ValueType。值类型又细分为简单类型、枚举类型、结构类型、可以为 null 的值类型。</p>
+<p>简单类型：</p>
 <ul>
-<li>有符号的整型：<code>sbyte</code>、<code>short</code>、<code>int</code>、<code>long</code></li>
-<li>无符号的整型：<code>byte</code>、<code>ushort</code>、<code>uint</code>、<code>ulong</code></li>
-<li>Unicode 字符：<code>char</code></li>
-<li>IEEE 二进制浮点：<code>float</code>、<code>double</code></li>
-<li>高精度十进制浮点数：<code>decimal</code></li>
-<li>布尔：<code>bool</code></li>
-</ul>
-<p><strong>枚举类型：</strong></p>
-<ul>
-<li>格式为 <code>enum E &#123;…&#125;</code> 的用户定义类型</li>
-</ul>
-<p><strong>结构类型：</strong></p>
-<ul>
-<li>格式为 <code>struct S &#123;…&#125;</code> 的用户定义类型</li>
-</ul>
-<p><strong>可以为 null 的值类型：</strong></p>
-<ul>
-<li>值为 <code>null</code> 的其他所有值类型的扩展</li>
+<li>有符号的整型：sbyte、short、int、long</li>
+<li>无符号的整型：byte、ushort、uint、ulong</li>
+<li>Unicode 字符：char</li>
+<li>IEEE 二进制浮点：float、double</li>
+<li>高精度十进制浮点数：decimal</li>
+<li>布尔：bool</li>
 </ul>
 <h1 id="引用类型">引用类型</h1>
-<p>引用类型特点是：引用类型不直接存储其值，派生于 <code>System.Object</code>，它存储值的引用内存地址。多个变量指向一个内存位置时。如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。</p>
-<p><strong>类类型：</strong></p>
+<p>引用类型特点是：引用类型不直接存储其值，派生于 System.Object，它存储值的引用内存地址。多个变量指向一个内存位置时。如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。</p>
+<p>类类型：</p>
 <ul>
 <li>所有类型的最终基类：<code>object</code></li>
 <li>Unicode 字符串：<code>string</code></li>
 <li>格式为：<code>class C &#123;…&#125;</code> 的用户定义类型</li>
 </ul>
-<p><strong>接口类型：</strong></p>
-<ul>
-<li>格式为： <code>interface I &#123;…&#125;</code> 的用户定义类型</li>
-</ul>
-<p><strong>数组类型：</strong></p>
-<ul>
-<li>一维和多维。例如： <code>int[]</code> 和 <code>int[,]</code></li>
-</ul>
-<p><strong>委托类型：</strong></p>
-<ul>
-<li>格式为： <code>delegate int D(…)</code> 的用户定义类型</li>
-</ul>
-<p>有关数值类型的详细信息，参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/integral-numeric-types">整型类型</a> / <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types">浮点类型表</a>。</p>
+<p>接口类型、数组类型、委托类型，有关数值类型的详细信息，参考：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/integral-numeric-types">整型类型</a> / <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types">浮点类型表</a>。</p>
 <h1 id="变量">变量</h1>
 <p>编译器需要用某个初始值对变量进行初始化，之后才能在操作中使用该变量。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 语法</span></span><br><span class="line">&lt;datatype&gt;&lt;variablename&gt;=&lt;<span class="keyword">value</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 示例</span></span><br><span class="line"><span class="built_in">string</span> name = <span class="string">&quot;wang&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同时声明多个</span></span><br><span class="line"><span class="built_in">string</span> name1,name2 = <span class="string">&quot;wang&quot;</span>;</span><br></pre></td></tr></table></figure>
@@ -297,18 +276,19 @@ function sidebar_toggle() {
 <ul>
 <li>变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，默认值就是类型默认值</li>
 <li>方法的局部变量必须在代码中显式初始化才能在语句中使用</li>
-<li>在C#中实例化一个引用对象需要使用<code>new</code>关键字把该引用指向存储在堆上的一个对象</li>
+<li>在C#中实例化一个引用对象需要使用 new 关键字把该引用指向存储在堆上的一个对象</li>
 </ul>
-<p>变量作用域是可以访问该变量的代码区域。但需要注意：</p>
+<p>变量作用域指的是：可以访问该变量的代码区域。</p>
+<p>注意：</p>
 <ul>
 <li>只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内</li>
 <li>局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内</li>
-<li>在<code>for</code>、 <code>while</code> 或类似语句中声明的局部变量存在于该循环体内</li>
+<li>在 for、 while 或类似语句中声明的局部变量存在于该循环体内</li>
 </ul>
 <h1 id="类型推断">类型推断</h1>
-<p>使用 <code>var</code> 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。</p>
+<p>使用 var 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name =<span class="string">&quot;wang&quot;</span>;</span><br></pre></td></tr></table></figure>
-<p><strong>注意</strong>：</p>
+<p>注意：</p>
 <ul>
 <li>变量必须初始化，否则编译器就没有推断变量类型的依据</li>
 <li>初始化器不能为空</li>
@@ -316,65 +296,63 @@ function sidebar_toggle() {
 <li>不能把初始化器设置为一个对象，除非在初始化器中创建了一个新对象</li>
 </ul>
 <h1 id="常量">常量</h1>
-<p>常量是其值在使用过程中不会发生变化的变量。在声明和初始化变量时，在变量的前面加上关键字 <code>const</code>，就可以把该变量指定为一个常量。</p>
+<p>常量指的是：其值在使用过程中不会发生变化的变量。在声明和初始化变量时，在变量的前面加上关键字 const，就可以把该变量指定为一个常量。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">string</span> conntionName = <span class="string">&quot;testConntion&quot;</span>;</span><br></pre></td></tr></table></figure>
-<p><strong>常量具有如下特点</strong>：</p>
+<p>常量具有如下特点：</p>
 <ul>
 <li>常量必须在声明时初始化。指定其值后就不能再改写</li>
-<li>常量的值必须能在编译时用于计算。因此不能用从一个变量中提取的值来初始化常量。如果需要这么做，应使用只读字段 <code>readonly</code></li>
+<li>常量的值必须能在编译时用于计算。因此不能用从一个变量中提取的值来初始化常量。如果需要这么做，应使用只读字段 readonly</li>
 <li>常量总是静态的，但注意：不必(实际上，是不允许)在常量声明中包含修饰符</li>
 </ul>
-<p><strong>使用常量的好处</strong>：</p>
+<p>使用常量的好处：</p>
 <ul>
 <li>常量使程序变得更易于阅读（使用易于读取理解的名称替代了较难读取的数字或字符串）</li>
 <li>常量使程序更易于修改</li>
 <li>常量更容易避免程序出现错误，如果在声明常量的位置以外将另一个值赋给常量，编译器就会报错</li>
 </ul>
 <h1 id="只读字段">只读字段</h1>
-<p>常量的概念是一个包含不能修改的值的变量。但有时可能需要一些变量，其值不应改变，但在运行前其值是未知的。C#为这种情形提供了另一种类型的变量<strong>只读字段。</strong><code>readonly</code> 关键字比 <code>const</code> 灵活，允许把一个字段设置为常量，但还需要执行一些计算，以确定它的初始值。其规则是：可以在构造函数中给只读段赋值，但不能在其他地方赋值。只读字段可以是一个实例字段，而不是静态字段，类的每个实例可以有不同的值。与<code>const</code>字段不同，如果要把只读字段设置为静态，就必须显式声明。</p>
+<p>常量的概念是一个包含不能修改的值的变量。但有时可能需要一些变量，其值不应改变，但在运行前其值是未知的。C#为这种情形提供了另一种类型的变量：只读字段。</p>
+<blockquote>
+<p>readonly 关键字比 const 灵活，允许把一个字段设置为常量，但还需要执行一些计算，以确定它的初始值。其规则是：可以在构造函数中给只读段赋值，但不能在其他地方赋值。只读字段可以是一个实例字段，而不是静态字段，类的每个实例可以有不同的值。与const 字段不同，如果要把只读字段设置为静态，就必须显式声明。</p>
+</blockquote>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实例只读字段</span></span><br><span class="line"><span class="keyword">readonly</span> <span class="built_in">double</span> taxRate;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 静态字段字段</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">double</span> taxRate1;</span><br><span class="line"></span><br><span class="line">BasicsTest()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 只读字段可以在声明时赋值，也可以在构造函数中赋值</span></span><br><span class="line">    taxRate = <span class="number">0.8</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">BasicsTest</span>(<span class="params"></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 静态只读字段在类的静态构造函数中赋值</span></span><br><span class="line">    taxRate1 = <span class="number">0.9</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="常量和只读字段的区别">常量和只读字段的区别</h1>
-<ul>
-<li>常量只能在声明语句中初始化，而且必须初始化，初始化之后在任何地方都不能改变。 <code>readonly字段</code>  既可以在声明时初始化，也可以在构造函数中改变它的值。如果是 <code>实例只读字段</code> 可以在实例构造函数中改变它的值，如果是<code>静态只读字段</code> 则可以在静态构造函数中改变它的值</li>
-<li>常量的值必须在编译时决定，编译完成之后它的值就被替换为字面量。 <code>readonly字段</code>  的值可以在运行时决定，可以在不同的构造函数中设置不同的值</li>
-<li>常量总是像静态字段，在类的外部要通过 <code>类名.常量名</code> 的方式访问。<code>readonly字段</code> 既可以是静态字段，也可以是实例字段</li>
-<li>常量在内存中没有存储位置，而  <code>readonly字段</code>  在内存中有存储位置</li>
-</ul>
+<ol>
+<li>常量只能在声明语句中初始化，而且必须初始化，初始化之后在任何地方都不能改变。 readonly字段既可以在声明时初始化，也可以在构造函数中改变它的值。（如果是 <strong>实例只读字段</strong> 可以在实例构造函数中改变它的值，如果是 <strong>静态只读字段</strong> 则可以在静态构造函数中改变它的值）</li>
+<li>常量的值必须在编译时决定，编译完成之后它的值就被替换为字面量。 readonly字段的值可以在运行时决定，可以在不同的构造函数中设置不同的值</li>
+<li>常量总是像静态字段，在类的外部要通过 <strong>类名.常量名</strong> 的方式访问。readonly字段既可以是静态字段，也可以是实例字段</li>
+<li>常量在内存中没有存储位置，而readonly字段在内存中有存储位置</li>
+</ol>
 <h1 id="值类型和引用类型空值">值类型和引用类型空值</h1>
 <p>默认情况下，引用类型在未初始化时具有空值。</p>
 <ul>
 <li>一个字符串变量(或引用类型数据类型的任何其他变量)，但没有赋值。这种情况下它具有空值，这意味着它不指向任何其他内存位置</li>
-<li>值类型变量不能为 <code>null</code> ，因为它包含值而不是内存地址。所以必须在使用前为值类型变量分配值</li>
+<li>值类型变量不能为 null ，因为它包含值而不是内存地址。所以必须在使用前为值类型变量分配值</li>
 </ul>
 <h1 id="可空类型">可空类型</h1>
-<p><code>C#2.0</code> 为值类型引入了可空类型，允许为值类型变量赋值 <code>null</code> 或声明值类型变量而不为其赋值。</p>
+<p>C#2.0 为值类型引入了可空类型，允许为值类型变量赋值 null 或声明值类型变量而不为其赋值。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>? age = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
 <h1 id="类型转换">类型转换</h1>
-<p>C# 是一门强类型语言，对类型要求比较严格。但是在一定的条件下是可以相互转换的，如将 <code>int</code> 型数据转换成 <code>double</code> 型数据。C# 允许使用两种转换方式：</p>
-<ul>
-<li>隐式转换</li>
-<li>显式转换<br>
-<strong>​</strong></li>
-</ul>
+<p>C# 是一门强类型语言，对类型要求比较严格。但是在一定的条件下是可以相互转换的，如将 int 型数据转换成 double 型数据。C# 允许使用两种转换方式：隐式转换、显式转换。</p>
 <h2 id="隐式转换">隐式转换</h2>
-<p>隐式转换是系统默认的，不需要加以声明就会自动执行隐式类型转换，在隐式转换过程，编译器无需对转换进行详细检查就能够安全的执行。隐式类型转换是<strong>从低精度数值类型=&gt;高精度数值类型</strong>。</p>
+<p>隐式转换是系统默认的，不需要加以声明就会自动执行隐式类型转换，在隐式转换过程，编译器无需对转换进行详细检查就能够安全的执行。隐式类型转换是 <strong>从低精度数值类型=&gt;高精度数值类型</strong>。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">double</span> b = a;<span class="comment">// 自动隐式类型转换</span></span><br></pre></td></tr></table></figure>
 <h2 id="显式转换">显式转换</h2>
-<p><strong>将高精度值=&gt;低精度</strong>进行数据转换时，可能会丢失数据，这时候需要使用显式转换。并且要考虑到可能出现算术溢出。显式转换需要明确指出要转换的类型。显式转换可能导致错误，进行这种转换时编译器会对转换进行溢出检测，如果有溢出说明转换失败，表示源类型不是一个合法的目标类型无法进行类型转换，强制类型转换会造成数据精度丢失。</p>
+<p><strong>高精度值=&gt;低精度</strong> 进行数据转换时，可能会丢失数据，这时候需要使用显式转换。并且要考虑到可能出现算术溢出。显式转换需要明确指出要转换的类型。显式转换可能导致错误，进行这种转换时编译器会对转换进行溢出检测，如果有溢出说明转换失败，表示源类型不是一个合法的目标类型无法进行类型转换，强制类型转换会造成数据精度丢失。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">double</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">int</span> b = (<span class="built_in">int</span>)a;<span class="comment">// 显式将double类型转换为int</span></span><br></pre></td></tr></table></figure>
 <p>可空类型数据转换=&gt;非可空类型或者另一个可空类型，其中可能会丢失数据，就必须使用显式类型转换。并且如果从可空类型转换为非可空类型时变量值为<code>null</code>，会抛出 <code>InvalidOperationException</code> 异常。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>? a = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> b = (<span class="built_in">int</span>)a;</span><br><span class="line"><span class="comment">// System.InvalidOperationException:“可为空的对象必须具有一个值。</span></span><br></pre></td></tr></table></figure>
 <h2 id="通过方法进行转换">通过方法进行转换</h2>
-<p><code>ToString()</code></p>
+<p><strong>ToString()</strong></p>
 <p>C#中的类型基类都继承自 <code>Object</code> 类，所以都可以使用 <code>ToString()</code> 来转换成字符串。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">string</span> s = a.ToString();</span><br></pre></td></tr></table></figure>
-<p><code>Int.Parse()</code></p>
+<p><strong>Int.Parse()</strong></p>
 <p>将 <code>string</code> 类型参数转换为 <code>int</code> ，注意： <code>string</code> 类型参数不能为 <code>null</code> ，并且也只能是各种整型，不能是浮点型。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> a = <span class="string">&quot;2&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> b = <span class="string">&quot;2.6&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> c = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> a1 = <span class="built_in">int</span>.Parse(a);<span class="comment">//正常</span></span><br><span class="line"><span class="built_in">int</span> a2 = <span class="built_in">int</span>.Parse(b);<span class="comment">//错误:输入字符串格式错误</span></span><br><span class="line"><span class="built_in">int</span> a3 = <span class="built_in">int</span>.Parse(c);<span class="comment">//值不能为null</span></span><br></pre></td></tr></table></figure>
-<p><code>Int.TryParse()</code></p>
+<p><strong>Int.TryParse()</strong></p>
 <p>该方法与 <code>Int.Parse()</code> 方法类似，不同点在于 <code>Int.Parse()</code> 方法无法转换成功时会抛出异常。而 <code>Int.TryParse()</code> 方法在无法进行转换时会返回 <code>false</code> ， <code>Int.TryParse()</code> 方法需要一个 <code>out</code> 类型的参数，如果转换成功， <code>out</code> 参数的值就是正常转换的值，否则返回 <code>false</code> 。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> a = <span class="string">&quot;2&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> b = <span class="string">&quot;2.6&quot;</span>;</span><br><span class="line"><span class="built_in">string</span> c = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">int</span> i;</span><br><span class="line"><span class="built_in">bool</span> a1 = <span class="built_in">int</span>.TryParse(a，<span class="keyword">out</span> i);<span class="comment">//转换成功，i=2</span></span><br><span class="line"><span class="built_in">bool</span> a2 = <span class="built_in">int</span>.TryParse(b， <span class="keyword">out</span> i);<span class="comment">//转换失败，a2=false</span></span><br><span class="line"><span class="built_in">bool</span> a3 = <span class="built_in">int</span>.TryParse(c， <span class="keyword">out</span> i);<span class="comment">//转换失败，a3=false</span></span><br></pre></td></tr></table></figure>
-<p><code>Convert.To()</code></p>
+<p><strong>Convert()</strong></p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> a = <span class="string">&quot;2&quot;</span>;</span><br><span class="line"><span class="built_in">int</span> a1 = Convert.ToInt32(a);</span><br></pre></td></tr></table></figure>
 <table>
 <thead>
@@ -560,7 +538,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-24</div>
+      <div>2021-09-26</div>
     </div>
   </div>
 

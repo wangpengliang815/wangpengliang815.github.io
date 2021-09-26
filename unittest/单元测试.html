@@ -243,121 +243,89 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="什么是NoSQL">什么是NoSQL</h1>
-<p>在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd’s提出的关系模型的论文 “A relational model of data for large shared data banks”，这使得数据建模和应用程序编程更加简单。</p>
-<blockquote>
-<p>NoSQL(NoSQL = Not Only SQL )，意即&quot;不仅仅是SQL&quot;</p>
-</blockquote>
-<h1 id="为什么要使用NoSQL">为什么要使用NoSQL</h1>
-<p>传统关系型数据库面对海量数据的存储，以及实现高访问量、高并发读/写，显得力不从心。尤其是当面对超大规模、高并发、高吞吐量的大型动态网站的时候，就会暴露出很多难以克服的问题，影响用户体验。为了满足对海量数据的高速存储需求，实现高并发、高吞吐量，NoSQL 应运而生。NoSQL 的出现可以解决传统关系型数据库所不能解决的问题。</p>
-<p><strong>1) ：NoSQL 解决了高并发读/写问题</strong></p>
-<p>Web 2.0 动态网站需要根据用户的个性化信息来实时生成动态页面和提供动态信息，而无法使用动态页面的静态化技术，因此数据库的并发负载就会非常高。比如，微博、朋友圈的实时更新，就会出现每秒上万次的读/写需求。关系型数据库在面对每秒上万次的 SQL 查询操作时还能应对自如，但是在面对每秒上万次的 SQL 写操作时就难以胜任了。普通的 BBS 系统网站也存在高并发读/写的需求，比如，实时统计在线人数、记录热门帖子的浏览次数等，当面对这些需求时，传统的关系型数据库就会出现大量问题。</p>
-<p><strong>2) NoSQL 解决了海量数据的高效率存储和访问问题</strong></p>
-<p>面对实时产生的<a target="_blank" rel="noopener" href="http://c.biancheng.net/big_data/">大数据</a>量的存储与查询，关系型数据库是难以应付的，会显得效率非常低。而利用 NoSQL 的高效存储与查询能力，就能解决这个问题。</p>
-<p><strong>3) NoSQL 实现了高可用性及高可扩展性</strong></p>
-<p>在基于 Web 的架构中，关系型数据库难以进行横向扩展。当一个网站系统的用户量和访问量与日俱增的时候，数据库没有办法像 Web 服务器或应用服务器那样通过添加更多的硬件来搭建负载均衡的服务器。对于很多提供 24 小时不间断服务的网站来说，对数据库系统的维护升级和扩展是非常折磨人的一件事，往往需要停机维护和数据迁移。</p>
-<h1 id="NoSQL-数据库特点">NoSQL 数据库特点</h1>
-<p>NoSQL 数据库具有如下特点</p>
+  <h1 id="常见测试类型">常见测试类型</h1>
 <ul>
-<li>容易扩展，方便使用。数据之间没有关系</li>
-<li>数据模型非常灵活，无须提前为要存储的数据建立字段类型，随时可以存储自定义的数据格式</li>
-<li>适合大数据量、高性能的存储</li>
-<li>具有高并发读/写、高可用性</li>
+<li>单元测试</li>
+<li>集成测试</li>
+<li>Web测试</li>
+<li>负载测试</li>
+<li>其他</li>
 </ul>
-<h1 id="在什么应用场景下使用-NoSQL">在什么应用场景下使用 NoSQL</h1>
-<p>NoSQL 数据库的应用场景比较广泛</p>
+<h1 id="依赖倒置原则-DIP）">依赖倒置原则(DIP）</h1>
+<p>很多情况下,一个类或者是方法它会依赖一些外部组件，如其他开发写的代码、第三方类库、数据库、网络等，当被测试的代码与这些组件紧耦合时，这段代码将可能是不可测的。如一个方法中依赖一个数据库组件去访问数据库，那么在执行这个方法时，必然要与数据库交互，如果没有数据库，那么该方法就无法运行。所以单元测试不仅是对代码逻辑进行检查，同时还对整个代码结构有所限制，面向对象编程时应当遵循“依赖倒置”原则，模块应该依赖抽象，抽象不应该依赖实现。并且所依赖的抽象，应该显示的通过构造或者方法参数进行暴露，让组件的使用者对组件的依赖一目了然,在单元测试时为了屏蔽这些抽象依赖，不同测试框架中提供了<code>stub</code>、<code>mock</code>、<code>fake</code> 等方式对抽象进行模拟，以便于代码能够正常执行。</p>
+<h1 id="单元测试">单元测试</h1>
+<p>软件应用程序有多种类型的测试。 其中包括集成测试、Web 测试、负载测试和其他测试。 “单元测试”用于对软件中的最小可测试单元进行检查和验证。 单元测试仅测试开发人员控件内的代码。 它们不测试基础结构问题。 基础结构问题包括数据库、文件系统和网络资源。</p>
+<p>编写单元测试时，尽量不要引入基础结构依赖项。这些依赖项会降低测试速度，使测试更加脆弱，应将其保留供集成测试使用。 可以通过遵循<code>Explicit Dependencies Principle</code>（显式依赖项原则）和使用<code>Dependency Injection</code>（依赖项注入）避免应用程序中的这些依赖项。还可以将单元测试保留在单独的项目中，与集成测试相分隔。 这可确保单元测试项目没有引用或依赖于基础结构包。</p>
+<h1 id="单元测试的好处">单元测试的好处</h1>
 <ul>
-<li>对于大数据量、高并发的存储系统及相关应用</li>
-<li>对于一些数据模型比较简单的相关应用</li>
-<li>对数据一致性要求不是很高的业务场景</li>
-<li>对于给定 key 来映射一些复杂值的环境</li>
-<li>对一些大型系统的日志信息的存储</li>
-<li>存储用户信息，如大型电商系统的购物车、会话等</li>
-<li>对于多数据源的数据存储</li>
-<li>对易变化、热点高频信息、关键字等信息的存储</li>
+<li>比执行功能测试节省时间</li>
+<li>防止回归：新功能上线时可通过单元测试来确保之前存在的功能正常运行不会破坏现有功能</li>
+<li>减少耦合：当代码紧密耦合时，可能很难进行单元测试，如果不为代码编写单元测试，耦合可能就不太明显了</li>
 </ul>
-<h1 id="NoSQL四大分类">NoSQL四大分类</h1>
-<h2 id="键值-Key-Value">键值(Key-Value)</h2>
-<p>键值数据库就像在传统语言中使用的哈希表。可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。</p>
-<p><strong>产品</strong>：Riak、Redis、Memcached、Amazon’s Dynamo、Project Voldemort</p>
-<p><strong>适用场景</strong>：</p>
-<p>储存用户信息，比如会话、配置文件、参数、购物车等等。这些信息一般都和ID(键)挂钩，这种情景下键值数据库是个很好的选择。</p>
-<p><strong>不适用场景</strong>：</p>
-<p>取代通过键查询，而是通过值来查询。Key-Value数据库中根本没有通过值查询的途径</p>
-<p>需要储存数据之间的关系。在Key-Value数据库中不能通过两个或以上的键来关联数据</p>
-<p>事务的支持。在Key-Value数据库中故障产生时不可以进行回滚</p>
-<h2 id="列存储"><strong>列存储</strong></h2>
-<p>列存储数据库将数据储存在列族(column family)中，一个列族存储经常被一起查询的相关数据。举个例子，如果我们有一个Person类，我们通常会一起查询他们的姓名和年龄而不是薪资。这种情况下，姓名和年龄就会被放入一个列族中，而薪资则在另一个列族中。</p>
-<p><strong>产品</strong>：Cassandra、HBase</p>
-<p><strong>适用场景</strong></p>
-<p>可以将数据储存在不同的列中，每个应用程序可以将信息写入自己的列族中。</p>
-<p>博客平台。储存每个信息到不同的列族中。举例：标签储存在一个，类别在一个，文章则在另一个。</p>
-<p><strong>不适用场景</strong></p>
-<p>如果需要ACID事务。Vassandra就不支持事务</p>
-<p>原型设计。如果分析Cassandra的数据结构，就会发现结构是基于期望的数据查询方式而定。在模型设计之初，根本不可能去预测它的查询方式，而一旦查询方式改变，就必须重新设计列族。</p>
-<h2 id="文档型"><strong>文档型</strong></h2>
-<p>面向文档数据库会将数据以文档的形式储存。每个文档都是自包含的数据单元，是一系列数据项的集合。每个数据项都有一个名称与对应的值，值既可以是简单的数据类型，如字符串、数字和日期等;也可以是复杂的类型，如有序列表和关联对象。数据存储的最小单位是文档，同一个表中存储的文档属性可以是不同的，数据可以使用XML、JSON或者JSONB等多种形式存储。</p>
-<p><strong>产品</strong>：MongoDB、CouchDB、RavenDB</p>
-<p><strong>适用场景</strong></p>
-<p>日志，企业环境下，每个应用程序都有不同的日志信息。Document-Oriented数据库并没有固定的模式，所以可以使用它储存不同的信息</p>
-<p>分析，鉴于它的弱模式结构，不改变模式下就可以储存不同的度量方法及添加新的度量</p>
-<p><strong>不适用场景</strong></p>
-<p>在不同的文档上添加事务。Document-Oriented数据库并不支持文档间的事务，如果对这方面有需求则不应该选用这个解决方案。</p>
-<h2 id="图形-Graph"><strong>图形(Graph)</strong></h2>
-<p>图数据库允许将数据以图的方式储存。实体会被作为顶点，而实体之间的关系则会被作为边。比如我们有三个实体，Steve Jobs、Apple和Next，则会有两个“Founded by”的边将Apple和Next连接到Steve Jobs。</p>
-<p><strong>产品</strong>：Neo4J、Infinite Graph、OrientDB</p>
-<p><strong>适用场景</strong></p>
-<p>在一些关系性强的数据中</p>
-<p>推荐引擎。如果将数据以图的形式表现，那么将会非常有益于推荐的制定</p>
-<p><strong>不适用场景</strong></p>
-<p>不适合的数据模型。图数据库的适用范围很小，因为很少有操作涉及到整个图</p>
-<h2 id="NoSQL数据库对比"><strong>NoSQL数据库对比</strong></h2>
-<table>
-<thead>
-<tr>
-<th><strong>分类</strong></th>
-<th><strong>Examples举例</strong></th>
-<th><strong>典型应用场景</strong></th>
-<th><strong>数据模型</strong></th>
-<th><strong>优点</strong></th>
-<th style="text-align:left"><strong>缺点</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>键值（key-value）</td>
-<td>Key 指向 Value 的键值对，通常用hash table来实现</td>
-<td></td>
-<td></td>
-<td></td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td>列存储数据库</td>
-<td>Cassandra, HBase, Riak</td>
-<td>分布式的文件系统</td>
-<td>以列簇式存储，将同一列数据存在一起</td>
-<td>查找速度快，可扩展性强，更容易进行分布式扩展</td>
-<td style="text-align:left">功能相对局限</td>
-</tr>
-<tr>
-<td>文档型数据库</td>
-<td>CouchDB, MongoDb</td>
-<td>Web应用（与Key-Value类似，Value是结构化的，不同的是数据库能够了解Value的内容）</td>
-<td>Key-Value对应的键值对，Value为结构化数据</td>
-<td>数据结构要求不严格，表结构可变，不需要像关系型数据库一样需要预先定义表结构</td>
-<td style="text-align:left">查询性能不高，而且缺乏统一的查询语法。</td>
-</tr>
-<tr>
-<td>图形(Graph)数据库</td>
-<td>Neo4J, InfoGrid, Infinite Graph</td>
-<td>社交网络，推荐系统等。专注于构建关系图谱</td>
-<td>图结构</td>
-<td>利用图结构相关算法。比如最短路径寻址，N度关系查找等</td>
-<td style="text-align:left">很多时候需要对整个图做计算才能得出需要的信息，而且这种结构不太好做分布式的集群方案。</td>
-</tr>
-</tbody>
-</table>
+<h1 id="优质单元测试的特征">优质单元测试的特征</h1>
+<ul>
+<li>快速： 对成熟项目进行数千次单元测试，这很常见。 应花非常少的时间来运行单元测试</li>
+<li>独立： 单元测试是独立的，可以单独运行，并且不依赖文件系统或数据库等任何外部因素</li>
+<li>可重复：运行单元测试的结果应该保持一致，也就是说，如果在运行期间不更改任何内容，总是返回相同结果</li>
+<li>自检查： 测试应该能够在没有任何人工交互的情况下，自动检测测试是否通过</li>
+</ul>
+<h1 id="代码覆盖率">代码覆盖率</h1>
+<p>高代码覆盖率百分比通常与较高的代码质量相关联，但该度量值本身无法确定代码的质量。 设置过高的代码覆盖率百分比目标可能会适得其反，高代码覆盖率百分比不代表代码质量就高， 它仅仅表示单元测试所涵盖的代码量。</p>
+<p>代码覆盖率工具有两种类型</p>
+<ul>
+<li>数据收集器： 数据收集器监视测试执行并收集有关测试运行的信息。 它们以各种输出格式（例如 <code>XML</code>和 <code>JSON</code>）报告收集的信息</li>
+<li>报表生成器： 使用从测试运行收集的数据生成报表，通常为带样式的 <code>HTML</code></li>
+</ul>
+<p>若要通过 Coverlet 获得代码覆盖率，现有单元测试项目必须具有相应的包依赖项，或者依赖于全局工具和对应的 <code>coverlet.console NuGet</code> 包，代码覆盖率是单元测试运行的代码量（行、分支或方法）的度量值，企业版的VS自带了代码覆盖率分析工具，参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/test/using-code-coverage-to-determine-how-much-code-is-being-tested">https://docs.microsoft.com/en-us/visualstudio/test/using-code-coverage-to-determine-how-much-code-is-being-tested</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Microsoft/vstest-docs/blob/master/docs/analyze.md#coverage">https://github.com/Microsoft/vstest-docs/blob/master/docs/analyze.md#coverage</a></li>
+</ul>
+<p><code>.dotnet Core</code>（暂不支持<code>.NetFramework</code>）获取代码覆盖率的大致步骤：<code>coverlet(数据收集器)</code>=&gt;<code>ReportGenerator(报表生成器)</code>=&gt;代码覆盖率报告。</p>
+<h1 id="单元测试框架">单元测试框架</h1>
+<p><code>dotnet core </code>中常用的单元测试的框架有<code>MSTest</code>、<code>NUnit</code>和<code>xUnit.net</code>，使用方法都非常相似，都是通过特性标记的方式声明测试方法，然后在方法中使用断言<code>Assertions</code>来判别方法执行结果是否达到预期。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/core/testing/?pivots=mstest">dotnet 平台下单元测试各框架介绍</a></p>
+<p><a target="_blank" rel="noopener" href="http://https://xunit.github.io/docs/comparisons">框架特性及断言比较参考</a></p>
+<h1 id="MSBuild">MSBuild</h1>
+<p>使用 <code>MSBuild</code> 方式运行测试并生成指定名称的测试结果文件，输出到指定目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet test TestApplication.UnitTests.csproj  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/</span><br></pre></td></tr></table></figure>
+<p><img src="../images/2021-09-26-14-18-49.png" alt=""><br>
+这里有个问题：对使用依赖注入的项目这里获取的覆盖率为0，详情：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/KnownIssues.md">https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/KnownIssues.md</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/coverlet-coverage/coverlet/issues/922">https://github.com/coverlet-coverage/coverlet/issues/922</a></li>
+</ul>
+<h1 id="VSTest">VSTest</h1>
+<p>使用 <code>coverlet</code> 命令生成覆盖率<code>xml</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet test TestApplication.UnitTests.csproj --collect:&quot;XPlat Code Coverage&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="Reportgenerator">Reportgenerator</h1>
+<p>使用 <code>reportgenerator</code> 命令将<code>xml</code>文件渲染成<code>Html</code>，因为<code>Msbuild</code> 和 <code>VsTest </code>方式生成的目录结果有所不同所以渲染命令也有所不同。</p>
+<h2 id="MSBuild-v2">MSBuild</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reportgenerator &quot;-reports:./TestResults/*.xml;&quot;&quot;--targetdir:D:\RunTime\TestReport&quot;  -reporttypes:Html</span><br></pre></td></tr></table></figure>
+<h2 id="VSTest-v2">VSTest</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reportgenerator &quot;-reports:./TestResults/*/*.xml&quot; &quot;--targetdir:D:\RunTime\TestReport&quot;  -reporttypes:Html</span><br></pre></td></tr></table></figure>
+<h2 id="合并渲染">合并渲染</h2>
+<p>找到<code>xml</code>文件路径，<code>-reports</code> 命令中以<code>;</code>分割即可。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reportgenerator &quot;-reports:TestApplication.UnitTests/TestResults/*.xml;TestApplication.IntegrationTests/TestResults/*.xml;&quot; &quot;--targetdir:D:\RunTime\TestReport&quot;  -reporttypes:Html</span><br></pre></td></tr></table></figure>
+<p><strong>注意当前的工作目录</strong></p>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cgzl/p/9326127.html">https://www.cnblogs.com/cgzl/p/9326127.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/coverlet-coverage/coverlet">https://github.com/coverlet-coverage/coverlet</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/danielpalme/ReportGenerator">https://github.com/danielpalme/ReportGenerator</a></li>
+</ul>
+<h1 id="测试可重复性">测试可重复性</h1>
+<ul>
+<li>使用<code>COM+自动事务</code>(TestFixture)</li>
+<li>使用数据清理来保证测试用例的独立和可重复性<code>TestInitialize/TestCleanup</code></li>
+</ul>
+<h1 id="Mock">Mock</h1>
+<p>面向对象编程应该显式依赖抽象，单元测试时应屏蔽依赖的影响(无论是依赖还未实现，或者实现的依赖会阻碍代码执行)，为了满足这一需求出现了<code>Mock</code>、<code>Fake</code>等方式，其原理就是创建一个&quot;假&quot;的&quot;空&quot;的依赖，并用其替代真实依赖，以确保代码能够运行。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OrgPublisherServiceTests</span> : <span class="title">TestBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Mock&lt;ILogRecorder&lt;OrgPublisherService&gt;&gt; _logger;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OrgPublisherServiceTests</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _logger = <span class="keyword">new</span> Mock&lt;ILogRecorder&lt;OrgPublisherService&gt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="http://https://docs.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-best-practices">单元测试最佳实践</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dotnet/aspnetcore/wiki/Engineering-guidelines#unit-tests-and-functional-tests">单元测试规范</a></p>
+<h1 id="注意">注意</h1>
+<p>单元测试仅能保证软件的最小可执行单元是正确的，真正的软件是由这些最小可执行单元组成的一个整体，单元的正确性无法保证整体的正确性。</p>
 
 </article>
 
@@ -391,7 +359,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-26</div>
     </div>
   </div>
 

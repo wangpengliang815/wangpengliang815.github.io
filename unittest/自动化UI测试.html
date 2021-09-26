@@ -243,121 +243,32 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="什么是NoSQL">什么是NoSQL</h1>
-<p>在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd’s提出的关系模型的论文 “A relational model of data for large shared data banks”，这使得数据建模和应用程序编程更加简单。</p>
+  <p><code>Selenium</code>可以用来做<code>自动化UI测试</code>，支持多语言，这里使用<code>C#</code>编写测试脚本。</p>
+<h1 id="NetFramework">.NetFramework</h1>
+<p><code>Selenium.Support</code>，<code>Selenium.WebDriver</code>,<code>Selenium.RC</code></p>
+<h1 id="Dotnet-core">Dotnet core</h1>
+<p>核心库：<code>Selenium.Support</code>，<code>Selenium.WebDriver</code>,<code>Selenium.Chrome.WebDriver</code></p>
+<p>注意：Selenium.RC包在dotnetcore会存在不兼容的问题，无法正常找到<code>chromedriver.exe</code> 文件。</p>
+<p><strong>Exception</strong></p>
 <blockquote>
-<p>NoSQL(NoSQL = Not Only SQL )，意即&quot;不仅仅是SQL&quot;</p>
+<p>The chromedriver.exe file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at <a target="_blank" rel="noopener" href="http://chromedriver.storage.googleapis.com/index.html.%E2%80%9D">http://chromedriver.storage.googleapis.com/index.html.”</a></p>
 </blockquote>
-<h1 id="为什么要使用NoSQL">为什么要使用NoSQL</h1>
-<p>传统关系型数据库面对海量数据的存储，以及实现高访问量、高并发读/写，显得力不从心。尤其是当面对超大规模、高并发、高吞吐量的大型动态网站的时候，就会暴露出很多难以克服的问题，影响用户体验。为了满足对海量数据的高速存储需求，实现高并发、高吞吐量，NoSQL 应运而生。NoSQL 的出现可以解决传统关系型数据库所不能解决的问题。</p>
-<p><strong>1) ：NoSQL 解决了高并发读/写问题</strong></p>
-<p>Web 2.0 动态网站需要根据用户的个性化信息来实时生成动态页面和提供动态信息，而无法使用动态页面的静态化技术，因此数据库的并发负载就会非常高。比如，微博、朋友圈的实时更新，就会出现每秒上万次的读/写需求。关系型数据库在面对每秒上万次的 SQL 查询操作时还能应对自如，但是在面对每秒上万次的 SQL 写操作时就难以胜任了。普通的 BBS 系统网站也存在高并发读/写的需求，比如，实时统计在线人数、记录热门帖子的浏览次数等，当面对这些需求时，传统的关系型数据库就会出现大量问题。</p>
-<p><strong>2) NoSQL 解决了海量数据的高效率存储和访问问题</strong></p>
-<p>面对实时产生的<a target="_blank" rel="noopener" href="http://c.biancheng.net/big_data/">大数据</a>量的存储与查询，关系型数据库是难以应付的，会显得效率非常低。而利用 NoSQL 的高效存储与查询能力，就能解决这个问题。</p>
-<p><strong>3) NoSQL 实现了高可用性及高可扩展性</strong></p>
-<p>在基于 Web 的架构中，关系型数据库难以进行横向扩展。当一个网站系统的用户量和访问量与日俱增的时候，数据库没有办法像 Web 服务器或应用服务器那样通过添加更多的硬件来搭建负载均衡的服务器。对于很多提供 24 小时不间断服务的网站来说，对数据库系统的维护升级和扩展是非常折磨人的一件事，往往需要停机维护和数据迁移。</p>
-<h1 id="NoSQL-数据库特点">NoSQL 数据库特点</h1>
-<p>NoSQL 数据库具有如下特点</p>
-<ul>
-<li>容易扩展，方便使用。数据之间没有关系</li>
-<li>数据模型非常灵活，无须提前为要存储的数据建立字段类型，随时可以存储自定义的数据格式</li>
-<li>适合大数据量、高性能的存储</li>
-<li>具有高并发读/写、高可用性</li>
-</ul>
-<h1 id="在什么应用场景下使用-NoSQL">在什么应用场景下使用 NoSQL</h1>
-<p>NoSQL 数据库的应用场景比较广泛</p>
-<ul>
-<li>对于大数据量、高并发的存储系统及相关应用</li>
-<li>对于一些数据模型比较简单的相关应用</li>
-<li>对数据一致性要求不是很高的业务场景</li>
-<li>对于给定 key 来映射一些复杂值的环境</li>
-<li>对一些大型系统的日志信息的存储</li>
-<li>存储用户信息，如大型电商系统的购物车、会话等</li>
-<li>对于多数据源的数据存储</li>
-<li>对易变化、热点高频信息、关键字等信息的存储</li>
-</ul>
-<h1 id="NoSQL四大分类">NoSQL四大分类</h1>
-<h2 id="键值-Key-Value">键值(Key-Value)</h2>
-<p>键值数据库就像在传统语言中使用的哈希表。可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。</p>
-<p><strong>产品</strong>：Riak、Redis、Memcached、Amazon’s Dynamo、Project Voldemort</p>
-<p><strong>适用场景</strong>：</p>
-<p>储存用户信息，比如会话、配置文件、参数、购物车等等。这些信息一般都和ID(键)挂钩，这种情景下键值数据库是个很好的选择。</p>
-<p><strong>不适用场景</strong>：</p>
-<p>取代通过键查询，而是通过值来查询。Key-Value数据库中根本没有通过值查询的途径</p>
-<p>需要储存数据之间的关系。在Key-Value数据库中不能通过两个或以上的键来关联数据</p>
-<p>事务的支持。在Key-Value数据库中故障产生时不可以进行回滚</p>
-<h2 id="列存储"><strong>列存储</strong></h2>
-<p>列存储数据库将数据储存在列族(column family)中，一个列族存储经常被一起查询的相关数据。举个例子，如果我们有一个Person类，我们通常会一起查询他们的姓名和年龄而不是薪资。这种情况下，姓名和年龄就会被放入一个列族中，而薪资则在另一个列族中。</p>
-<p><strong>产品</strong>：Cassandra、HBase</p>
-<p><strong>适用场景</strong></p>
-<p>可以将数据储存在不同的列中，每个应用程序可以将信息写入自己的列族中。</p>
-<p>博客平台。储存每个信息到不同的列族中。举例：标签储存在一个，类别在一个，文章则在另一个。</p>
-<p><strong>不适用场景</strong></p>
-<p>如果需要ACID事务。Vassandra就不支持事务</p>
-<p>原型设计。如果分析Cassandra的数据结构，就会发现结构是基于期望的数据查询方式而定。在模型设计之初，根本不可能去预测它的查询方式，而一旦查询方式改变，就必须重新设计列族。</p>
-<h2 id="文档型"><strong>文档型</strong></h2>
-<p>面向文档数据库会将数据以文档的形式储存。每个文档都是自包含的数据单元，是一系列数据项的集合。每个数据项都有一个名称与对应的值，值既可以是简单的数据类型，如字符串、数字和日期等;也可以是复杂的类型，如有序列表和关联对象。数据存储的最小单位是文档，同一个表中存储的文档属性可以是不同的，数据可以使用XML、JSON或者JSONB等多种形式存储。</p>
-<p><strong>产品</strong>：MongoDB、CouchDB、RavenDB</p>
-<p><strong>适用场景</strong></p>
-<p>日志，企业环境下，每个应用程序都有不同的日志信息。Document-Oriented数据库并没有固定的模式，所以可以使用它储存不同的信息</p>
-<p>分析，鉴于它的弱模式结构，不改变模式下就可以储存不同的度量方法及添加新的度量</p>
-<p><strong>不适用场景</strong></p>
-<p>在不同的文档上添加事务。Document-Oriented数据库并不支持文档间的事务，如果对这方面有需求则不应该选用这个解决方案。</p>
-<h2 id="图形-Graph"><strong>图形(Graph)</strong></h2>
-<p>图数据库允许将数据以图的方式储存。实体会被作为顶点，而实体之间的关系则会被作为边。比如我们有三个实体，Steve Jobs、Apple和Next，则会有两个“Founded by”的边将Apple和Next连接到Steve Jobs。</p>
-<p><strong>产品</strong>：Neo4J、Infinite Graph、OrientDB</p>
-<p><strong>适用场景</strong></p>
-<p>在一些关系性强的数据中</p>
-<p>推荐引擎。如果将数据以图的形式表现，那么将会非常有益于推荐的制定</p>
-<p><strong>不适用场景</strong></p>
-<p>不适合的数据模型。图数据库的适用范围很小，因为很少有操作涉及到整个图</p>
-<h2 id="NoSQL数据库对比"><strong>NoSQL数据库对比</strong></h2>
-<table>
-<thead>
-<tr>
-<th><strong>分类</strong></th>
-<th><strong>Examples举例</strong></th>
-<th><strong>典型应用场景</strong></th>
-<th><strong>数据模型</strong></th>
-<th><strong>优点</strong></th>
-<th style="text-align:left"><strong>缺点</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>键值（key-value）</td>
-<td>Key 指向 Value 的键值对，通常用hash table来实现</td>
-<td></td>
-<td></td>
-<td></td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td>列存储数据库</td>
-<td>Cassandra, HBase, Riak</td>
-<td>分布式的文件系统</td>
-<td>以列簇式存储，将同一列数据存在一起</td>
-<td>查找速度快，可扩展性强，更容易进行分布式扩展</td>
-<td style="text-align:left">功能相对局限</td>
-</tr>
-<tr>
-<td>文档型数据库</td>
-<td>CouchDB, MongoDb</td>
-<td>Web应用（与Key-Value类似，Value是结构化的，不同的是数据库能够了解Value的内容）</td>
-<td>Key-Value对应的键值对，Value为结构化数据</td>
-<td>数据结构要求不严格，表结构可变，不需要像关系型数据库一样需要预先定义表结构</td>
-<td style="text-align:left">查询性能不高，而且缺乏统一的查询语法。</td>
-</tr>
-<tr>
-<td>图形(Graph)数据库</td>
-<td>Neo4J, InfoGrid, Infinite Graph</td>
-<td>社交网络，推荐系统等。专注于构建关系图谱</td>
-<td>图结构</td>
-<td>利用图结构相关算法。比如最短路径寻址，N度关系查找等</td>
-<td style="text-align:left">很多时候需要对整个图做计算才能得出需要的信息，而且这种结构不太好做分布式的集群方案。</td>
-</tr>
-</tbody>
-</table>
+<p><strong>解决方法</strong></p>
+<blockquote>
+<p>nuget Selenium.Chrome.WebDriver。将ChromeDriver.exe放入构建目录中</p>
+</blockquote>
+<p><strong>注意</strong>：.netcore2.1中引入了<code>Selenium.Chrome.WebDriver</code>包依旧会出现上面的异常</p>
+<h1 id="浏览器驱动下载">浏览器驱动下载</h1>
+<p>需下载本机对应版本，不区分32/64</p>
+<p><a target="_blank" rel="noopener" href="https://npm.taobao.org/mirrors/chromedriver/">https://npm.taobao.org/mirrors/chromedriver/</a></p>
+<h1 id="PageObject">PageObject</h1>
+<p>解决的问题：版本迭代太快，UI层元素的属性经常变换，导致维护人员需要花大把的时间去维护代码，为了节省维护成本及时间，就可以利用PageObject 这种设计模式，它就大大的减少了维护时间。</p>
+<p>创建对应浏览器配置，创建WebDriver对象：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">TestBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">protected</span> IWebDriver driver;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">WebDriverInit</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        ChromeOptions options = <span class="keyword">new</span> ChromeOptions();</span><br><span class="line">        <span class="comment">// 窗口最大化</span></span><br><span class="line">        options.AddArgument(<span class="string">&quot;start-maximized&quot;</span>);</span><br><span class="line">        driver = <span class="keyword">new</span> ChromeDriver(options);</span><br><span class="line">        driver.Navigate().GoToUrl(url);</span><br><span class="line">        Thread.Sleep(<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ClockInPage，页面模型，封装页面标签属性以及对应操作：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ClockInPage</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">PagePath</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span> input_loginName_id = <span class="string">&quot;tb_LoginID_Account_589f1fc067ff4031&quot;</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span> input_passWord_id = <span class="string">&quot;tb_Password&quot;</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span> submit_login_Name = <span class="string">&quot;ctl10&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LoginClick</span>(<span class="params">IWebDriver driver, <span class="built_in">string</span> logiName, <span class="built_in">string</span> passWord</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        driver.FindElement(By</span><br><span class="line">            .Id(PagePath.input_loginName_id)).SendKeys(logiName);</span><br><span class="line">        driver.FindElement(By</span><br><span class="line">            .Id(PagePath.input_passWord_id)).SendKeys(passWord);</span><br><span class="line">        driver.FindElement(By</span><br><span class="line">            .Name(PagePath.submit_login_Name)).Click();</span><br><span class="line">        Thread.Sleep(<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ClockInTests，测试方法,采用DDT数据驱动方式提供测试数据：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">TestCategory(<span class="meta-string">&quot;ui\\CodedUITest&quot;</span>)</span>]</span><br><span class="line">[<span class="meta">TestClass()</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ClockInTests</span> : <span class="title">TestBase</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">TestCleanup</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Clean</span>(<span class="params"></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        driver.Dispose();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">DataTestMethod</span>]</span><br><span class="line">    [<span class="meta">DataRow(<span class="meta-string">&quot;http://11.11.141.10/OMSP//Login/JSS.aspx&quot;</span>, <span class="meta-string">&quot;wangpengliang&quot;</span>, <span class="meta-string">&quot;Wpl-19950815&quot;</span>, true)</span>]</span><br><span class="line">    [<span class="meta">DataRow(<span class="meta-string">&quot;http://11.11.141.10/OMSP//Login/JSS.aspx&quot;</span>, <span class="meta-string">&quot;111111&quot;</span>, <span class="meta-string">&quot;222222&quot;</span>, false)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ClockIn_Login_01_Normal</span>(<span class="params"><span class="built_in">string</span> url, <span class="built_in">string</span> loginName, <span class="built_in">string</span> passWord, <span class="built_in">bool</span> expect</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        WebDriverInit(url);</span><br><span class="line">        ClockInPage page = <span class="keyword">new</span> ClockInPage();</span><br><span class="line">        page.LoginClick(driver, loginName, passWord);</span><br><span class="line">        Assert.AreEqual(expect, driver.Url != url);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 </article>
 
@@ -391,7 +302,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-09-26</div>
     </div>
   </div>
 
