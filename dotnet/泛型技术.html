@@ -223,7 +223,7 @@ function sidebar_toggle() {
 <li>二进制代码重用</li>
 </ul>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArrayList arrs = <span class="keyword">new</span> ArrayList</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;wang&quot;</span>，</span><br><span class="line">    <span class="number">100</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>问题一：这里如果将 <code>item</code> 设置为 <code>int</code> 类型遍历集合，会抛出异常，因为集合中存在<code>string</code> 类型项</p>
+<p>问题一：这里如果将 <code>item</code> 设置为 <code>int</code> 类型遍历集合，会抛出异常，因为集合项中存在<code>string</code> 类型</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> arrs)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>问题二：遍历时不可避免装箱/拆箱操作</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> arrs)</span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -341,7 +341,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-24</div>
+      <div>2021-10-15</div>
     </div>
   </div>
 
