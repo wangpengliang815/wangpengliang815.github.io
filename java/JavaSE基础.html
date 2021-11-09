@@ -215,76 +215,62 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <table>
-<thead>
-<tr>
-<th style="text-align:center">目录</th>
-<th style="text-align:left">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><code>/boot</code></td>
-<td style="text-align:left">该目录默认下存放的是Linux的启动文件和内核</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/bin</code></td>
-<td style="text-align:left">Binary的缩写，该目录中存放Linux的常用命令</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/sbin</code></td>
-<td style="text-align:left">Supaer User；该目录用来存放系统管理员使用的管理程序</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/var</code></td>
-<td style="text-align:left">该目录存放那些经常被修改的文件，包括各种日志、数据文件</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/etc</code></td>
-<td style="text-align:left">该目录存放系统管理时要用到的各种配置文件和子目录，例如网络配置文件、文件系统、系统配置文件、设备配置信息、设置用户信息等</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/dev</code></td>
-<td style="text-align:left">d是Device的缩写；该目录包含了Linux系统中使用的所有外部设备，它实际上是访问这些外部设备的端口，访问这些外部设备与访问一个文件或一个目录没有区别</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/mnt</code></td>
-<td style="text-align:left">临时将别的文件系统挂在该目录下</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/root</code></td>
-<td style="text-align:left">如果你是以超级用户的身份登录的，这个就是超级用户的主目录</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/home</code></td>
-<td style="text-align:left">如果建立一个名为“xx”的用户，那么在/home目录下就有一个对应的“/home/xx”路径，用来存放该用户的主目录</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/usr</code></td>
-<td style="text-align:left">用户的应用程序和文件几乎都存放在该目录下</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/lib</code></td>
-<td style="text-align:left">该目录用来存放系统动态链接共享库，几乎所有的应用程序都会用到该目录下的共享库</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/opt</code></td>
-<td style="text-align:left">第三方软件在安装时默认会找这个目录,所以你没有安装此类软件时它是空的,但如果你一旦把它删除了,以后在安装此类软件时就有可能碰到麻烦</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/tmp</code></td>
-<td style="text-align:left">用来存放不同程序执行时产生的临时文件，该目录会被系统自动清理干净</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/lost＋found</code></td>
-<td style="text-align:left">该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在此</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>/proc</code></td>
-<td style="text-align:left">可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里</td>
-</tr>
-</tbody>
-</table>
+  <h1 id="概念解释">概念解释</h1>
+<p>JavaSE</p>
+<blockquote></blockquote>
+<p>JavaME</p>
+<blockquote></blockquote>
+<p>JavaEE</p>
+<blockquote></blockquote>
+<ul>
+<li><code>JVM</code>：<code>Java Virtual Machine </code>Java虚拟机</li>
+<li><code>JDK</code>：<code>Java Development kit</code> Java开发者工具</li>
+<li><code>JRE</code>：<code>Java Runtime Environment</code> Java运行时环境</li>
+</ul>
+<h1 id="JDK-安装">JDK 安装</h1>
+<ol>
+<li>下载电脑对应版本的<code>JDK</code> ,下载地址：<a target="_blank" rel="noopener" href="https://www.oracle.com/downloads">https://www.oracle.com/downloads</a></li>
+<li>安装 <code>JDK</code></li>
+<li>配置环境变量<code>JAVA_HOME</code>。在系统变量<code>path</code>中添加<code>%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;</code></li>
+<li>使用<code>java -version</code> 测试</li>
+</ol>
+<h1 id="JDK-卸载">JDK 卸载</h1>
+<ol>
+<li>删除<code>JDK</code> 安装目录</li>
+<li>删除环境变量 <code>JAVA_HOME</code></li>
+<li>删除<code>path</code>下关于Java的目录</li>
+<li>使用<code>java -version</code> 测试</li>
+</ol>
+<h1 id="Hello-World">Hello World</h1>
+<ol>
+<li>编写<code>java</code> 文件<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.print(<span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><code>javac.\Hello.java</code>：使用<code>javac</code> 编译 Java文件，生成<code>.class</code>文件</li>
+<li><code>java .\Hello</code> 运行</li>
+</ol>
+<blockquote>
+<p>注意：Java大小写敏感；<strong>类名必须与文件名一致</strong></p>
+</blockquote>
+<h1 id="Java-运行机制">Java 运行机制</h1>
+<p>计算机高级编程语言类型分为：</p>
+<ul>
+<li>编译型</li>
+<li>解释型</li>
+</ul>
+<p>Java 是两种语言的结合（编译命令：<code>javac.exe</code>   解释命令：<code>java.exe</code>）</p>
+<ul>
+<li><code>javac</code> ：负责编译部分，当执行 <code>javac</code> 时会启动Java的编译器程序。对指定扩展名的<code>.java</code> 文件进行编译。 生成<code>jvm</code>可识别的字节码文件也就是 <code>.class</code>文件</li>
+<li><code>java</code>：负责运行部分，会启动 <code>jvm</code> 加载运行时所需的类库，并对 <code>.class</code>文件进行执行，一个文件要被执行，必须要有一个执行的起始点，这个起始点就是 <code>main</code>函数</li>
+</ul>
+<p>Java程序组成：</p>
+<ul>
+<li>Java源文件</li>
+<li>字节码文件</li>
+<li>机器码指令</li>
+</ul>
+<p><img src="../images/2021-11-09-21-31-44.png" alt=""></p>
+<p>编译型与解释型运行区别：<br>
+<img src="../images/2021-11-09-21-37-12.png" alt=""></p>
 
 </article>
 
@@ -318,7 +304,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-09-03</div>
+      <div>2021-11-09</div>
     </div>
   </div>
 
