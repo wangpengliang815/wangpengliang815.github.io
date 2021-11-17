@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="JAVA">JAVA</h2>
 <ul>
-<li><a href="/java/JavaSE%E5%9F%BA%E7%A1%80">JavaSE基础</a></li>
+<li><a href="/java/Java%E5%9F%BA%E7%A1%80">JavaSE基础</a></li>
 </ul>
 <h2 id="Linux">Linux</h2>
 <ul>
@@ -282,7 +282,78 @@ function sidebar_toggle() {
 <p><img src="../images/2021-11-09-21-31-44.png" alt=""></p>
 <p>编译型与解释型运行区别：<br>
 <img src="../images/2021-11-09-21-37-12.png" alt=""></p>
-<h1 id="Java-包机制">Java 包机制</h1>
+<h1 id="8种基本数据类型">8种基本数据类型</h1>
+<ul>
+<li>整数类型：<code>byte</code>，<code>short</code>，<code>int</code>，<code>long</code></li>
+<li>浮点数类型：<code>float</code>，<code>double</code></li>
+<li>字符类型：<code>char</code></li>
+<li>布尔类型：<code>boolean</code></li>
+</ul>
+<p><strong>占用字节大小</strong></p>
+<p>计算机内存最小存储单元是字节（byte）即8个bit。一个字节是1byte，1024字节是1K，1024K是1M，1024M是1G，1024G是1T。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 8大数据类型</span></span><br><span class="line">		<span class="keyword">byte</span> byteData = <span class="number">62</span>;</span><br><span class="line">		<span class="keyword">short</span> shortData = <span class="number">4</span>;</span><br><span class="line">		<span class="keyword">int</span> intData = <span class="number">1000_0000</span>;</span><br><span class="line">		<span class="keyword">long</span> longData = <span class="number">10000L</span>;</span><br><span class="line">		<span class="keyword">float</span> floatData = <span class="number">100000F</span>;</span><br><span class="line">		<span class="keyword">double</span> doubleData = <span class="number">1000.00</span>;</span><br><span class="line">		<span class="keyword">boolean</span> booleanData = <span class="number">1</span> + <span class="number">1</span> &gt; <span class="number">3</span>;</span><br><span class="line">		<span class="keyword">char</span> charData = <span class="string">&#x27;男&#x27;</span>;</span><br><span class="line"></span><br><span class="line">		System.out.println(MessageFormat.format(<span class="string">&quot;byteData：&#123;0&#125;,shortData:&#123;1&#125;,intData:&#123;2&#125;,longData:&#123;3&#125;,floatData:&#123;4&#125;,doubleData:&#123;5&#125;,booleanData:&#123;6&#125;,&quot;</span> +</span><br><span class="line">				<span class="string">&quot;charData:&#123;7&#125;&quot;</span>, byteData, shortData, intData, longData, floatData, doubleData, booleanData, charData));</span><br><span class="line"></span><br><span class="line">		String stringData = <span class="string">&quot;hello world&quot;</span>;    <span class="comment">// String引用类型</span></span><br><span class="line">		System.out.println(stringData.getBytes().length); <span class="comment">// 获取占用字节大小</span></span><br><span class="line">		<span class="keyword">final</span> <span class="keyword">double</span> PI = <span class="number">3.14</span>;    <span class="comment">// 常亮推荐名称全大写</span></span><br><span class="line">		<span class="keyword">var</span> message = <span class="string">&quot;hello world&quot;</span>;  <span class="comment">// var类型推断</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> i = <span class="number">10</span>;</span><br><span class="line">		<span class="keyword">int</span> q = i++; <span class="comment">// ++后置：先赋值给q再+1</span></span><br><span class="line">		<span class="keyword">int</span> w = i--; <span class="comment">// --后置：先赋值给q再-1</span></span><br><span class="line">		<span class="keyword">int</span> j = <span class="number">20</span>;</span><br><span class="line">		<span class="keyword">int</span> e = ++j; <span class="comment">// ++前置：先+1再赋值给e</span></span><br><span class="line">		<span class="keyword">int</span> r = --j; <span class="comment">// --后置：先-1再赋值给r</span></span><br><span class="line">		System.out.println(MessageFormat.format(<span class="string">&quot;q=&#123;0&#125;,w=&#123;1&#125;,e=&#123;2&#125;,r=&#123;3&#125;&quot;</span>, q, w, e, r));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// <span class="doctag">TODO:</span>位运算</span></span><br><span class="line">		<span class="keyword">int</span> n = <span class="number">10</span>;</span><br><span class="line">		System.out.println(MessageFormat.format(<span class="string">&quot;n=&#123;0&#125;,二进制：&#123;1&#125;&quot;</span>, n, Integer.toBinaryString(n)));</span><br><span class="line">		<span class="keyword">int</span> a = n &lt;&lt; <span class="number">1</span>;</span><br><span class="line">		System.out.println(MessageFormat.format(<span class="string">&quot;a=&#123;0&#125;,二进制：&#123;1&#125;&quot;</span>, a, Integer.toBinaryString(a)));</span><br><span class="line"></span><br><span class="line">		Scanner scanner = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">		System.out.println(<span class="string">&quot;please input you name:&quot;</span>);</span><br><span class="line">		String name = scanner.nextLine();</span><br><span class="line">		System.out.println(MessageFormat.format(<span class="string">&quot;name=&#123;0&#125;&quot;</span>, name));</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>占位（字节）</th>
+<th>数据范围</th>
+<th>初始值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte</td>
+<td>1</td>
+<td>[-128~127]</td>
+<td>0</td>
+</tr>
+<tr>
+<td>short</td>
+<td>2</td>
+<td>[32768 ~ 32767]</td>
+<td>0</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4</td>
+<td>[-2147483648 ~ 2147483647]</td>
+<td>0</td>
+</tr>
+<tr>
+<td>long</td>
+<td>8</td>
+<td>[-9223372036854775808 ~ 9223372036854775807]</td>
+<td>0L</td>
+</tr>
+<tr>
+<td>float</td>
+<td>4</td>
+<td>[+/-3.4E+38F（6~7 个有效位）]</td>
+<td>0.0F</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8</td>
+<td>[+/-1.8E+308 (15 个有效位）]</td>
+<td>0.0D</td>
+</tr>
+<tr>
+<td>char</td>
+<td>2</td>
+<td>ISO 单一字符集</td>
+<td><code>\u0000</code> 表示空</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>1</td>
+<td>true 或 false</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Getter-Setter">Getter/Setter</h1>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetterSetter</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Person person = <span class="keyword">new</span> Person();</span><br><span class="line">		person.setAge(<span class="number">100</span>);</span><br><span class="line">		person.setName(<span class="string">&quot;wang&quot;</span>);</span><br><span class="line">		System.out.println(MessageFormat.format(<span class="string">&quot;name:&#123;0&#125;,age:&#123;1&#125;&quot;</span>, person.getName(), person.getAge()));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 通过getter/setter方法将字段封装</span></span><br><span class="line"><span class="comment">		 * */</span></span><br><span class="line">		<span class="keyword">private</span> String name;</span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> name;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// 参数检查</span></span><br><span class="line">			<span class="keyword">if</span> (name == <span class="keyword">null</span> || name.isBlank()) &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;invalid name&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">this</span>.name = name.strip();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> age;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// this始终指向当前实例,这里的this.age表示字段age而非参数age</span></span><br><span class="line">			<span class="keyword">this</span>.age = age;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
 
 </article>
 
@@ -316,7 +387,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-11-12</div>
+      <div>2021-11-17</div>
     </div>
   </div>
 
