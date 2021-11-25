@@ -225,9 +225,9 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="用户和程序交互">用户和程序交互</h1>
+  <h1 id="程序交互相关">程序交互相关</h1>
 <blockquote>
-<p>运行 Java 程序的参数运行 Java 程序时在类名后紧跟一个或多个字符串（多个字符串之间以<strong>空格</strong>隔开），JVM 就会把这些字符串依次赋给 args 数组元素</p>
+<p>运行 Java 程序的参数运行 Java 程序时在类名后紧跟一个或多个字符串（多个字符串之间以<strong>空格</strong>隔开），JVM 会把这些字符串依次赋给 args 数组元素</p>
 </blockquote>
 <h2 id="java-io-Console">java.io.Console</h2>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过调用 System.console() 方法获得该类唯一的实例</span></span><br><span class="line">Console console = System.console();</span><br><span class="line"><span class="comment">// 从控制台读取单行文本</span></span><br><span class="line">String line = console.readLine();</span><br></pre></td></tr></table></figure>
@@ -235,216 +235,393 @@ function sidebar_toggle() {
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// System.in 代表标准输入，即键盘输入</span></span><br><span class="line">Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line"><span class="comment">// 返回输入源中下一行的字符串</span></span><br><span class="line">String line = sc.nextLine();</span><br></pre></td></tr></table></figure>
 <h1 id="系统相关">系统相关</h1>
 <h2 id="System">System</h2>
-<ul>
-<li><code>void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)</code>：从源数组 src 的 srcPos 位置 复制元素到 目标数组 dest 的 destPos 位置，复制的数组元素的个数为 length</li>
-<li><code>long currentTimeMillis()</code>：获取系统当前时间（毫秒）（距离 1970 年 1 月 1 日 00:00:00 GMT）</li>
-<li><code>Properties getProperties()</code>：获取当前的系统属性</li>
-<li><code>String getProperty(String key)</code>：获取指定键指示的系统属性</li>
-<li><code>void exit(int status)</code>：终止 JVM（非 0 的状态码表示异常终止）（底层调用 Runtime 类中的方法）</li>
-<li><code>void gc()</code>：运行 GC（底层调用 Runtime 类中的方法）</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)</code></td>
+<td>从源数组 src 的 srcPos 位置复制元素到 目标数组 dest 的 destPos 位置，复制的数组元素的个数为 length</td>
+</tr>
+<tr>
+<td><code>long currentTimeMillis()</code></td>
+<td>获取系统当前时间（毫秒）（距离 1970 年 1 月 1 日 00:00:00 GMT）</td>
+</tr>
+<tr>
+<td><code>Properties getProperties()</code></td>
+<td>获取当前系统属性</td>
+</tr>
+<tr>
+<td><code>String getProperty(String key)</code></td>
+<td>获取指定键的系统属性</td>
+</tr>
+<tr>
+<td><code>void exit(int status)</code></td>
+<td>终止JVM，非 0 的状态码表示异常终止（底层调用 Runtime 类中的方法）</td>
+</tr>
+<tr>
+<td><code>void gc()</code></td>
+<td>运行 GC（底层调用 Runtime 类中的方法）</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从源数组src的srcPos位置复制元素到目标数组dest的destPos位,复制的数组元素的个数为 length</span></span><br><span class="line">		<span class="keyword">int</span>[] a = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">		<span class="keyword">int</span>[] b = &#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">		System.arraycopy(a, <span class="number">2</span>, b, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">var</span> i : b) &#123;</span><br><span class="line">			System.out.println(i);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(System.currentTimeMillis());<span class="comment">// 获取系统当前时间（毫秒）（距离 1970 年 1 月 1 日 00:00:00 GMT）</span></span><br><span class="line">		System.out.println(System.getProperties()); <span class="comment">//获取当前的系统属性</span></span><br><span class="line">		System.out.println(System.getProperty(<span class="string">&quot;java.version&quot;</span>)); <span class="comment">//获取指定键指示的系统属性</span></span><br><span class="line">		System.exit(<span class="number">100</span>);<span class="comment">//终止 JVM（非 0 的状态码表示异常终止）（底层调用 Runtime 类中的方法）</span></span><br><span class="line">		System.gc(); <span class="comment">//运行 GC（底层调用 Runtime 类中的方法）</span></span><br></pre></td></tr></table></figure>
 <h2 id="Runtime">Runtime</h2>
-<p><strong>类方法</strong>：</p>
-<p><code>Runtime getRuntime()</code>：获取与当前 Java 应用程序相关的运行时对象（单例模式）</p>
-<p><strong>实例方法</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Runtime getRuntime()</code></td>
+<td>获取与当前 Java 应用程序相关的运行时对象（单例模式）</td>
+</tr>
+<tr>
+<td><code>Process exec(String command)</code></td>
+<td>在单独的进程中执行指定的字符串命令，返回一个新的 Process 对象</td>
+</tr>
+<tr>
+<td><code>void exit(int status)</code></td>
+<td>终止 JVM（非 0 的状态码表示异常终止）</td>
+</tr>
+<tr>
+<td><code>void gc()</code></td>
+<td>运行 GC</td>
+</tr>
+</tbody>
+</table>
+<h1 id="Object">Object</h1>
+<blockquote>
+<p>Object 是所有类、数组、枚举类的父类，所有对象（包括数组）都实现这个类的方法</p>
+</blockquote>
+<p><strong>常见方法</strong>：</p>
+<ol>
+<li><code>protected void finalize()</code>：在对象被垃圾回收前调用此方法</li>
+<li><code>Class getClass()</code>：返回当前对象的运行时类型</li>
+<li><code>int hashCode()</code>：返回当前对象的 <code>hashCode</code> 值，<code>hashCode</code> 决定了对象在哈希表中的存储位置</li>
+<li><code>boolean equals(Object obj)</code>: 判断指定对象与该对象是否相等
 <ul>
-<li><code>Process exec(String command)</code>：在单独的进程中执行指定的字符串命令，返回一个新的 Process 对象</li>
-<li><code>void exit(int status)</code>：终止 JVM（非 0 的状态码表示异常终止）</li>
-<li><code>void gc()</code>：运行 GC</li>
-</ul>
-<h1 id="Object-类">Object 类</h1>
-<ul>
-<li>
-<p>Object 是所有类、数组、枚举类的父类，所有对象（包括<strong>数组</strong>）都实现这个类的方法</p>
-</li>
-<li>
-<p>Object 类的常见方法</p>
-</li>
-<li>
-<p><code>protected void finalize()</code>：在对象被垃圾收集前调用此方法</p>
-</li>
-<li>
-<p><code>Class getClass()</code>：返回当前对象的<strong>运行时类型</strong>（该方法使用了 final 修饰，不能被覆写）</p>
-</li>
-<li>
-<p><code>int hashCode()</code>：返回当前对象的 hashCode 值，hashCode 决定了对象在哈希表中的<strong>存储位置</strong></p>
-</li>
-<li>
-<pre><code>boolean equals(Object obj)
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  ：判断指定对象与该对象是否相等</span><br><span class="line"></span><br><span class="line">  - equals 方法，判断标准和 == 相同，都是比较对象的引用地址</span><br><span class="line">  - 如果需要比较对象的内容，子类应该**覆盖** equals 方法</span><br><span class="line">  - 基本数据类型只能使用 == 比较</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  String toString()</span><br></pre></td></tr></table></figure>
-
-：返回该对象的字符串表示
-
-- `System.out.println(obj);` // 等价于 `System.out.println(obj.toString());`
-- toString 方法，返回“运行时类名@十六进制 hashCode 值”字符串
-- 如果需要打印对象的内容，子类应该**覆盖** toString 方法
-
-</code></pre>
-</li>
-<li>
-<p><code>Object clone()</code>：创建并返回此对象的一个副本，使用此对象<strong>相应字段的内容</strong>初始化副本的所有字段（浅表复制）</p>
-</li>
-<li>
-<p><code>wait()</code>、<code>notify()</code>、<code>notifyAll()</code>（这些方法都使用了 final 修饰，不能被覆写）</p>
-</li>
-</ul>
-<h1 id="字符串">字符串</h1>
-<ul>
-<li>本质：<strong>char[] value</strong></li>
-<li>CharSequence 接口常用的三个实现类：String StringBuffer StringBuilder</li>
-<li>分类
-<ul>
-<li>String 类创建的、字符序列不可变的的字符串对象</li>
-<li>StringBuffer 类或 StringBuilder 类创建的、字符序列可变的字符串对象</li>
+<li>equals 判断标准和 == 相同，都是比较对象的引用地址</li>
+<li>如果需要比较对象的内容，子类应该重写 equals 方法</li>
+<li>基本数据类型只能使用 == 比较</li>
 </ul>
 </li>
+<li><code>String toString()</code>：返回该对象的字符串表示
+<ul>
+<li><code>System.out.println(obj)</code>： 等价于 <code>System.out.println(obj.toString())</code></li>
+<li><code>toString</code> ：返回 <code>运行时类名@十六进制 hashCode 值 </code>字符串</li>
+<li>如果需要打印对象的内容，子类应该重写 toString 方法​</li>
 </ul>
+</li>
+<li><code>Object clone()</code>：创建并返回此对象的副本，使用此对象相应字段的内容初始化副本的所有字段（浅表复制）</li>
+<li><code>wait()</code>、<code>notify()</code>、<code>notifyAll()</code>（这些方法都使用了 final 修饰，不能被覆写）</li>
+</ol>
+<h1 id="字符串相关">字符串相关</h1>
+<blockquote>
+<p>字符串本质上是：<code>char[] value</code>, CharSequence 接口常用的三个实现类：<code>String</code> <code>StringBuffer</code> <code>StringBuilder</code>，其中 String  类创建的是字符序列不可变的的字符串对象，StringBuffer 类或 StringBuilder 类创建的是字符序列可变的字符串对象</p>
+</blockquote>
 <h2 id="String">String</h2>
 <ul>
 <li>String 是最终类、不可变类，<code>final char[] value</code></li>
-<li>注意：String <strong>重写</strong>了 equals()、hashCode() 方法</li>
-<li>对象的创建</li>
+<li>String 重写了 equals()、hashCode()</li>
+<li>Java 7 开始，switch 也支持操作 String 类型的字符串对象底层使用了 hashCode() 来进行 switch，然后通过 equals() 方法进行验证</li>
+<li>Java 中，通过使用 <code>+</code> 符号来串联字符串时，实际上底层会转成通过 StringBuilder 实例的 append() 方法来实现</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// 1)：直接赋一个字符串直接量（包括可以在编译时不用访问普通变量或调用方法就可以计算出来的字符串值）：先在常量池创建 &quot;ABCD&quot;（若常量池已存在 &quot;ABCD&quot;，则不再创建），str1 再引用String str1 = &quot;ABCD&quot;;  // 等同于 String str1 = &quot;AB&quot; + &quot;CD&quot;; (编译器优化)// 2)：通过构造器创建：先在常量池创建 &quot;ABCD&quot;（若常量池已存在 &quot;ABCD&quot;，则不再创建），再调用 String 类的构造器在堆空间创建一个 String 对象并引用常量池中的 &quot;ABCD&quot;，str2 再引用 String 对象String str2 = new String(&quot;ABCD&quot;);</span><br></pre></td></tr></table></figure>
-<ul>
-<li>字符串非空：引用不能为空（null）且内容不能为空（“”）</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// 判断字符串非空  public static boolean hasLength(String str) &#123;      return str != null &amp;&amp; str.trim().length() &gt; 0;      // return str != null &amp;&amp; !&quot;&quot;.equals(str.trim());      // return str != null &amp;&amp; !str.trim().isEmpty();  &#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>从 Java 7 开始，switch 也支持操作 String 类型的字符串对象底层使用了 hashCode() 来进行 switch，然后通过 equals() 方法进行验证</li>
-<li>在 Java 中，通过使用 “+” 符号来串联字符串时，实际上底层会转成通过 StringBuilder 实例的 append() 方法来实现</li>
-</ul>
-<h3 id="常用方法">常用方法</h3>
-<ul>
-<li>常用构造器 String(byte[] bytes, int offset, int length, String charsetName)：使用指定的字符集将 byte[] 数组从 offset 开始、长度为 length 的子数组<strong>解码</strong>成字符串（构造器声明上抛出了异常） String(char[] value, int offset, int count)：将字符数组从 offset 开始、长度为 count 的字符元素<strong>连缀</strong>成字符串</li>
-<li>String 转数组 <code>byte[] getBytes()</code>：使用平台的默认字符集将此 String <strong>编码</strong>为 byte 数组 <code>byte[] getBytes(String charsetName)</code>：使用指定的字符集将此 String <strong>编码</strong>为 byte 数组（方法声明上抛出了异常） <code>char[] toCharArray()</code>：将字符串转换为 <strong>char 数组</strong></li>
-<li>获取字符串信息（StringBuilder 类中也有） <code>int length()</code>：返回该字符串的长度 <code>char charAt(int index)</code>：返回指定索引处的 char 值 <code>int indexOf(String str)</code>：返回子串在该字符串中第一次出现处的索引 <code>int lastIndexOf(String str)</code>：返回子串在该字符串中最后一次出现处的索引 <code>boolean isEmpty()</code>：当且仅当 length() 为 0 时返回 true</li>
-<li>字符串比较判断 <code>boolean equals(Object anObject)</code>：字符串比较，当指定对象<strong>不为 null</strong>，且<strong>类型为 String</strong>，字符序列相等时，结果才为 true <code>boolean equalsIgnoreCase(String anotherString)</code>：字符串比较，忽略大小写 <code>boolean contentEquals(CharSequence cs)</code>：字符串比较，当它们包含的<strong>字符序列相同</strong>时返回 true</li>
-<li>字符串大小写转换 <code>String toUpperCase()</code>：把当前字符串转换为大写 <code>String toLowerCase()</code>：把当前字符串转换为小写</li>
-<li>其它 <code>boolean startsWith(String prefix)</code>：判断此字符串是否以指定的前缀开始 <code>boolean endsWith(String suffix)</code>：判断此字符串是否以指定的后缀结束 <code>String substring(int start, int end)</code>：返回该字符串的一个子串 [start, end)（StringBuilder 类中也有） <code>String trim()</code>：返回移除了前导和尾部空白的子串 <code>String replace(CharSequence target, CharSequence replacement)</code>：将该字符串中所有的 target 子串替换成 replacement <code>intern()</code>：如果在常量池中已经包含一个等于此 String 对象的字符串，则返回在常量池中的引用；否则，将此 String 对象添加到常量池中，再返回在常量池中的引用（jdk1.7 将字符串常量池从方法区中移到了<strong>堆</strong>中，所以如果在常量池找不到对应的字符串，则不会再将字符串拷贝到常量池，而只是在常量池中生成一个对原字符串的<strong>引用</strong>） <code>IntStream chars()</code>：<code>List&lt;Character&gt; characterList = &quot;StringToList&quot;.chars().mapToObj(c -&gt; (char) c).collect(Collectors.toList());</code></li>
-<li>类方法 <code>String valueOf(X x)</code>：将基本类型值转换为字符串 <code>String valueOf(Object obj)</code>：返回 obj 对象的字符串表示形式（返回 obj.toString() 的值） <code>String format(String format, Object… args)</code>：使用指定的格式字符串（包含格式说明符，语法<code>%[argument_index$][flags][width][.precision]conversion</code>，如 <code>%s</code>，<code>%1$tY-%&lt;tm-%&lt;td %&lt;tH:%&lt;tM:%&lt;tS</code>）和参数返回一个格式化字符串 <code>String join(CharSequence delimiter, CharSequence… elements)</code>：用一个分隔符将多个字符串连接起来 <code>String join(CharSequence delimiter, Iterable&lt;? extends CharSequence&gt; elements)</code>：用一个分隔符将集合中的字符串元素连接起来</li>
-</ul>
+<p>对象的创建：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接赋一个字符串直接量（包括可以在编译时不用访问普通变量或调用方法就可以计算出来的字符串值）：先在常量池创建 &quot;ABCD&quot;（若常量池已存在 &quot;ABCD&quot;，则不再创建），str1 再引用</span></span><br><span class="line">String str1 = <span class="string">&quot;ABCD&quot;</span>;  <span class="comment">// 等同于 String str1 = &quot;AB&quot; + &quot;CD&quot;; (编译器优化)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过构造器创建：先在常量池创建 &quot;ABCD&quot;（若常量池已存在 &quot;ABCD&quot;，则不再创建），再调用 String 类的构造器在堆空间创建一个 String 对象并引用常量池中的 &quot;ABCD&quot;，str2 再引用 String 对象</span></span><br><span class="line">String str2 = <span class="keyword">new</span> String(<span class="string">&quot;ABCD&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>字符串非空：引用不能为空（null）且内容不能为空<code>&quot;&quot;</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 判断字符串非空</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">hasLength</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> str != <span class="keyword">null</span> &amp;&amp; str.trim().length() &gt; <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// return str != null &amp;&amp; !&quot;&quot;.equals(str.trim());</span></span><br><span class="line">    <span class="comment">// return str != null &amp;&amp; !str.trim().isEmpty();</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>String(byte[] bytes, int offset, int length, String charsetName)</code></td>
+<td>使用指定字符集将 byte[] 数组从 offset 开始、长度为 length 的子数组解码成字符串</td>
+</tr>
+<tr>
+<td><code>String(char[] value, int offset, int count)</code></td>
+<td>将字符数组从 offset 开始、长度为 count 的字符元素连接成字符串</td>
+</tr>
+<tr>
+<td><code>byte[] getBytes()</code></td>
+<td>使用平台默认字符集将 String 编码为 byte 数组</td>
+</tr>
+<tr>
+<td><code>byte[] getBytes(String charsetName)</code></td>
+<td>使用平台指定字符集将 String 编码为 byte 数组</td>
+</tr>
+<tr>
+<td><code>char[] toCharArray()</code></td>
+<td>将字符串转换为 char 数组</td>
+</tr>
+<tr>
+<td><code>int length()</code></td>
+<td>返回该字符串长度</td>
+</tr>
+<tr>
+<td><code>char charAt(int index)</code></td>
+<td>返回指定索引处的 char 值</td>
+</tr>
+<tr>
+<td><code>int indexOf(String str)</code></td>
+<td>返回子串在该字符串中第一次出现处的索引</td>
+</tr>
+<tr>
+<td><code>int lastIndexOf(String str)</code></td>
+<td>返回子串在该字符串中最后一次出现处的索引</td>
+</tr>
+<tr>
+<td><code>boolean isEmpty()</code></td>
+<td>当且仅当 length() 为 0 时返回 true</td>
+</tr>
+<tr>
+<td><code>boolean equals(Object anObject)</code></td>
+<td>字符串比较（指定对象不为 null且类型为 String字符序列相等时，结果才为 true</td>
+</tr>
+<tr>
+<td><code>boolean equalsIgnoreCase(String anotherString)</code></td>
+<td>字符串比较，忽略大小写</td>
+</tr>
+<tr>
+<td><code>boolean contentEquals(CharSequence cs)</code></td>
+<td>字符串比较，当它们包含的字符序列相同时返回 true</td>
+</tr>
+<tr>
+<td><code>String toUpperCase()</code></td>
+<td>字符串转换为大写</td>
+</tr>
+<tr>
+<td><code>String toLowerCase()</code></td>
+<td>字符串转换为小写</td>
+</tr>
+<tr>
+<td><code>boolean startsWith(String prefix)</code></td>
+<td>判断字符串是否以指定的前缀开始</td>
+</tr>
+<tr>
+<td><code>boolean endsWith(String suffix)</code></td>
+<td>判断字符串是否以指定的后缀结束</td>
+</tr>
+<tr>
+<td><code>String substring(int start, int end)</code></td>
+<td>返回字符串的一个子串 [start, end)（StringBuilder 类中也有）</td>
+</tr>
+<tr>
+<td><code>String trim()</code></td>
+<td>返回移除了前导和尾部空白的子串</td>
+</tr>
+<tr>
+<td><code>String replace(CharSequence target, CharSequence replacement)</code></td>
+<td>将该字符串中所有的 target 子串替换成 replacement</td>
+</tr>
+<tr>
+<td><code>intern()</code></td>
+<td>如果在常量池中已经包含一个等于此 String 对象的字符串，则返回在常量池中的引用。否则将此 String 对象添加到常量池中，再返回在常量池中的引用（jdk1.7 将字符串常量池从方法区中移到了<strong>堆</strong>中，所以如果在常量池找不到对应的字符串，则不会再将字符串拷贝到常量池，而只是在常量池中生成一个对原字符串的<strong>引用</strong>）</td>
+</tr>
+<tr>
+<td><code>String valueOf(X x)</code></td>
+<td>将基本类型值转换为字符串</td>
+</tr>
+<tr>
+<td><code>String valueOf(Object obj)</code></td>
+<td>返回 obj.toString() 的值</td>
+</tr>
+<tr>
+<td><code>String format(String format, Object… args)</code></td>
+<td>返回格式化字符串</td>
+</tr>
+<tr>
+<td><code>String join(CharSequence delimiter, CharSequence… elements)</code></td>
+<td>用一个分隔符将多个字符串连接</td>
+</tr>
+<tr>
+<td><code>String join(CharSequence delimiter, Iterable&lt;? extends CharSequence&gt; elements)</code></td>
+<td>用一个分隔符将集合中的字符串元素连接</td>
+</tr>
+</tbody>
+</table>
 <h2 id="StringBuffer-和-StringBuilder">StringBuffer 和 StringBuilder</h2>
 <ul>
-<li>StringBuffer 和 StringBuilder 都可以创建字符序列可变的字符串对象，功能方法相同的，都是最终类，但 value 没有使用 final 修饰</li>
-<li>StringBuffer 类使用了 synchronized 修饰符，线程安全；</li>
-<li>StringBuilder 类没有使用 synchronized 修饰符，性能更高，但线程不安全（建议使用 <strong>StringBuilder</strong>）</li>
-<li>两个属性：length（字符序列的长度）和 capacity（容量）</li>
-<li>注意：StringBuffer 和 StringBuilder 都<strong>没有重写</strong> equal() 方法、hashCode() 方法</li>
-<li>对象的创建 <code>new StringBuilder()</code>：创建一个不带字符，<strong>初始容量为 16 个字符</strong>的字符串缓冲区 <code>new char[16]</code> <code>new StringBuilder(int capacity)</code>：创建一个不带字符，指定初始容量的字符串缓冲区 <code>new StringBuilder(String str)</code>：构造一个字符串缓冲区，并将其内容初始化为指定的字符串内容</li>
-<li>常用方法 <code>StringBuilder append(Object obj)</code>：<strong>追加</strong>任意类型数据，<code>return this;</code> 追加 “null” <code>StringBuilder deleteCharAt(int index)</code>：<strong>删除</strong>字符串中指定位置的字符 <code>StringBuilder insert(int offset, Object obj)</code>：将 Object 参数的字符串表示形式插入此字符序列中 <code>StringBuilder reverse()</code>：字符序列<strong>反转</strong> <code>String toString()</code>：返回此序列中数据的字符串表示形式 <code>void setLength(int newLength)</code>：设置字符序列的长度（如果 newLength 参数小于当前长度，则长度将更改为指定的长度，如果 newLength 参数大于或等于当前长度，则将追加有效的 null 字符，使长度满足 newLength 参数）</li>
+<li>StringBuffer 和 StringBuilder 都可以创建字符序列可变的字符串对象，都是最终类，但 value 没有使用 final 修饰</li>
+<li>StringBuffer 类使用了 <code>synchronized</code> 修饰符，线程安全</li>
+<li>StringBuilder 类没有使用 <code>synchronized</code> 修饰符，性能更高，但线程不安全</li>
+<li>两个属性：<code>length</code>（字符序列的长度）和 <code>capacity</code>（容量）</li>
+<li>注意：StringBuffer 和 StringBuilder 都没有重写 equal() 方法、hashCode() 方法</li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new StringBuilder()</code></td>
+<td>创建不带字符，初始容量为 16 个字符的字符串缓冲区</td>
+</tr>
+<tr>
+<td><code>new char[16]</code> <code>new StringBuilder(int capacity)</code></td>
+<td>创建不带字符，指定初始容量的字符串缓冲区</td>
+</tr>
+<tr>
+<td><code>new StringBuilder(String str)</code></td>
+<td>构造一个字符串缓冲区，并将其内容初始化为指定的字符串内容</td>
+</tr>
+<tr>
+<td><code>StringBuilder append(Object obj)</code></td>
+<td>追加任意类型数据，<code>return this;</code></td>
+</tr>
+<tr>
+<td><code>StringBuilder deleteCharAt(int index)</code></td>
+<td>删除字符串中指定位置的字符</td>
+</tr>
+<tr>
+<td><code>StringBuilder insert(int offset, Object obj)</code></td>
+<td>将 Object 参数的字符串表示形式插入此字符序列中</td>
+</tr>
+<tr>
+<td><code>StringBuilder reverse()</code></td>
+<td>字符序列反转</td>
+</tr>
+<tr>
+<td><code>String toString()</code></td>
+<td>返回此序列中数据的字符串表示形式</td>
+</tr>
+<tr>
+<td><code>void setLength(int newLength)</code></td>
+<td>设置字符序列的长度（如果 newLength 参数小于当前长度，则长度将更改为指定的长度，如果 newLength 参数大于或等于当前长度，则将追加有效的 null 字符，使长度满足 newLength 参数）</td>
+</tr>
+</tbody>
+</table>
 <h1 id="数学">数学</h1>
 <h2 id="Math">Math</h2>
+<blockquote>
+<p>基本数学运算，如初等指数、对数、平方根和三角函数等，随机数（都是类方法）</p>
+</blockquote>
 <ul>
-<li>基本数学运算，如初等指数、对数、平方根和三角函数等，随机数（都是类方法）
-<ul>
-<li>常量字段：E、PI</li>
-<li><code>double random()</code>：返回带正号的 double 值（<strong>伪随机数</strong>），[0.0, 1.0)</li>
+<li>常量字段：<code>E</code>、<code>PI</code></li>
+<li><code>double random()</code>：返回带正号的 double 值（伪随机数)</li>
 <li><code>int min(int a, int b)</code>：返回两个数的较小值</li>
 <li><code>int max(int a, int b)</code>：返回两个数的较大值</li>
-<li><code>int toIntExact(long value)</code>：将 long 值转换为 int 值</li>
+<li><code>int toIntExact(long value)</code>：将 long 转换为 int</li>
 <li><code>long round(double a)</code>、<code>int round(float a)</code>：执行标准舍入，将数值四舍五入为最接近的整数</li>
 <li><code>double ceil(double a)</code>：执行向上舍入，将数值向上舍入为最接近的 double 值</li>
 <li><code>double floor(double a)</code>：执行向下舍入，将数值向下舍入为最接近的 double 值</li>
 </ul>
-</li>
-</ul>
 <h2 id="BigDecimal">BigDecimal</h2>
-<ul>
-<li>java.math 包中</li>
+<ol>
+<li>位于 <code>java.math</code> 包</li>
 <li>不可变的、任意精度的有符号十进制数，用于处理金钱和精度要求高的数据</li>
 <li>全局静态常量：ZERO、ONE、TEN、ROUND_HALF_UP（对应于 RoundingMode.HALF_UP）</li>
-<li>除法
+</ol>
 <ul>
-<li><code>BigDecimal divide(BigDecimal divisor)</code>：返回一个 BigDecimal，其值为 (this / divisor)，如果<strong>无法表示准确的商值</strong>，则抛出 ArithmeticException</li>
+<li><code>BigDecimal divide(BigDecimal divisor)</code>：返回一个 BigDecimal，其值为 (this / divisor)，如果无法表示准确的商值，则抛出 <code>ArithmeticException</code></li>
 <li><code>BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode)</code>：返回一个 BigDecimal，其值为 (this / divisor)，要保留的小数位数 scale，舍入模式 roundingMode（如 RoundingMode.HALF_UP 表示四舍五入）</li>
 <li><code>BigDecimal setScale(int newScale, RoundingMode roundingMode)</code>, <code>BigDecimal setScale(int newScale, int roundingMode)</code>：返回一个 BigDecimal，要保留的小数位数 newScale，舍入模式 roundingMode</li>
 </ul>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// double 准确转换 BigDecimalBigDecimal dividend1 = new BigDecimal(Double.toString(0.9));BigDecimal dividend2 = BigDecimal.valueOf(0.9);// BigDecimal dividend2 = BigDecimal.valueOf(0.9f); // 不能准确转换// 注意：val 不能为 float，否则 float 转 double 时会丢失精度public static BigDecimal valueOf(double val) &#123;    return new BigDecimal(Double.toString(val));&#125;// float 无法准确转换 BigDecimal// 比较大小dividend1.compareTo(dividend2); // 结果为 0 时表示相等  // String 准确转换 BigDecimal，可能会抛出 NumberFormatExceptionBigDecimal divisor = new BigDecimal(&quot;0.7&quot;);// 如果无法表示准确的商值，则抛出 ArithmeticException// BigDecimal result = dividend1.divide(divisor);BigDecimal result = dividend1.divide(divisor, 2, RoundingMode.HALF_UP); // 1.29</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// double 准确转换 BigDecimal</span></span><br><span class="line">BigDecimal dividend1 = <span class="keyword">new</span> BigDecimal(Double.toString(<span class="number">0.9</span>));</span><br><span class="line">BigDecimal dividend2 = BigDecimal.valueOf(<span class="number">0.9</span>);</span><br><span class="line"><span class="comment">// BigDecimal dividend2 = BigDecimal.valueOf(0.9f); // 不能准确转换</span></span><br><span class="line"><span class="comment">// 注意：val 不能为 float，否则 float 转 double 时会丢失精度</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BigDecimal <span class="title">valueOf</span><span class="params">(<span class="keyword">double</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> BigDecimal(Double.toString(val));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// float 无法准确转换 BigDecimal</span></span><br><span class="line"><span class="comment">// 比较大小</span></span><br><span class="line">dividend1.compareTo(dividend2); <span class="comment">// 结果为 0 时表示相等  </span></span><br><span class="line"><span class="comment">// String 准确转换 BigDecimal，可能会抛出 NumberFormatException</span></span><br><span class="line">BigDecimal divisor = <span class="keyword">new</span> BigDecimal(<span class="string">&quot;0.7&quot;</span>);</span><br><span class="line"><span class="comment">// 如果无法表示准确的商值，则抛出 ArithmeticException</span></span><br><span class="line"><span class="comment">// BigDecimal result = dividend1.divide(divisor);</span></span><br><span class="line">BigDecimal result = dividend1.divide(divisor, <span class="number">2</span>, RoundingMode.HALF_UP); <span class="comment">// 1.29</span></span><br></pre></td></tr></table></figure>
 <h2 id="BigInteger">BigInteger</h2>
-<ul>
-<li>java.math 包中</li>
+<ol>
+<li>位于 <code>java.math</code> 包中</li>
 <li>不可变的、任意精度的整数</li>
-</ul>
+</ol>
 <h1 id="随机数">随机数</h1>
 <h2 id="Random">Random</h2>
-<ul>
-<li>使用种子创建随机数生成器，生成<strong>下一个</strong>伪随机数</li>
-<li>构造器
+<blockquote>
+<p>使用种子创建随机数生成器，生成下一个伪随机数</p>
+</blockquote>
+<p><strong>构造器</strong>：</p>
 <ul>
 <li><code>Random()</code>：使用默认的种子创建一个随机数生成器对象（以当前系统时间作为种子）</li>
 <li><code>Random(long seed)</code></li>
 </ul>
-</li>
-<li>实例方法<code>int nextInt()</code>：返回一个伪随机整数，[0, int 最大值)，类似还有返回 long、float [0.0, 1.0)、double [0.0, 1.0)、boolean 的方法<code>int nextInt(int n)</code>：返回一个伪随机数，[0, n)<code>IntStream ints(long streamSize, int randomNumberOrigin, int randomNumberBound)</code>：返回一个流，生成 streamSize 个 [randomNumberOrigin, randomNumberBound) 范围内的 int 值</li>
+<p><strong>实例方法</strong>：</p>
+<ul>
+<li><code>int nextInt()</code>：返回一个伪随机整数，[0, int 最大值)，类似还有返回 long、float [0.0, 1.0)、double [0.0, 1.0)、boolean 的方法</li>
+<li><code>int nextInt(int n)</code>：返回一个伪随机数，[0, n)</li>
+<li><code>IntStream ints(long streamSize, int randomNumberOrigin, int randomNumberBound)</code>：返回一个流，生成 streamSize 个 [randomNumberOrigin, randomNumberBound) 范围内的 int 值</li>
 </ul>
 <h2 id="ThreadLocalRandom">ThreadLocalRandom</h2>
+<blockquote>
+<p>Java 7 新增的 Random 的子类，相对于 Random 可以减少多线程资源竞争，保证了<strong>线程的安全性</strong>，其构造器是缺省访问权限</p>
+</blockquote>
 <ul>
-<li>Java 7 新增的 Random 的子类，相对于 Random 可以减少多线程资源竞争，保证了<strong>线程的安全性</strong></li>
-<li>其构造器是<strong>缺省访问权限</strong></li>
-<li>类方法<code>ThreadLocalRandom current()</code>：<strong>获取</strong>当前类对象</li>
-<li>实例方法<code>int nextInt(int least, int bound)</code>：返回一个伪随机数，[least, bound)，类似还有返回 long、double 的方法</li>
+<li><code>ThreadLocalRandom current()</code>：获取当前类对象（类方法）</li>
+<li><code>int nextInt(int least, int bound)</code>：返回一个伪随机数（实例方法，类似还有返回 long、double）</li>
 </ul>
 <h2 id="UUID">UUID</h2>
+<blockquote>
+<p>UUID 是一个 128 位的值，一般用 16 进制表示。结合机器的网卡、当地时间、一个随即数来生成 UUID（通用唯一标识符），</p>
+</blockquote>
 <ul>
-<li>结合机器的网卡、当地时间、一个随即数来生成 UUID（通用唯一标识符），UUID 是一个 128 位的值，一般用 16 进制表示</li>
-<li>类方法<code>UUID randomUUID()</code>：<strong>获取</strong> UUID 对象</li>
-<li>实例方法<code>String toString()</code>：返回表示此 UUID 的 String 对象，格式为：（8 个字符）-（4 个字符）-（4 个字符）-（4 个字符）-（12 个字符），字符范围：0<sub>9，a</sub>f</li>
+<li><code>UUID randomUUID()</code>：获取 UUID 对象（类方法）</li>
+<li><code>String toString()</code>：返回表示此 UUID 的 String 对象。格式：（8 个字符)-(4 个字符)-(4 个字符)-(4 个字符)-(12 个字符)，字符范围：0<sub>9，a</sub>f</li>
 </ul>
-<h1 id="日期、时间">日期、时间</h1>
+<h1 id="日期-时间">日期/时间</h1>
 <h2 id="Date">Date</h2>
+<blockquote>
+<p>位于 <code>java.util</code> 包中，表示特定的瞬间，精确到毫秒</p>
+</blockquote>
+<p><strong>构造器</strong>：<code>Date()</code>、<code>Date(long date)</code><br>
+<strong>类方法</strong>：</p>
 <ul>
-<li><strong>java.util 包</strong>中，表示特定的瞬间，精确到毫秒</li>
-<li>构造器：Date()、Date(long date)</li>
-<li>类方法<code>Date from(Instant instant)</code>：从 Instant 对象获取一个 Date 的实例</li>
-<li>实例方法
+<li><code>Date from(Instant instant)</code>：从 Instant 对象获取一个 Date 的实例</li>
+</ul>
+<p><strong>实例方法</strong></p>
 <ul>
-<li><code>String toLocaleString()</code>：返回此日期的字符串表示形式（使用语言环境约定）（已过时）</li>
+<li><code>String toLocaleString()</code>：返回此日期的字符串表示形式（使用语言环境约定，已过时）</li>
 <li><code>long getTime()</code>：返回自 1970 年 1 月 1 日 00:00:00 GMT 以来此对象表示的毫秒数</li>
 <li><code>boolean equals(Object obj)</code>：比较两个日期的相等性</li>
 <li><code>boolean after(Date when)</code>：判断此日期是否在指定日期之后</li>
 <li><code>boolean before(Date when)</code>：判断此日期是否在指定日期之前</li>
-</ul>
-</li>
-<li>jdk 1.8 的应用可以使用 Instant（代表一个具体的时刻）代替 Date</li>
+<li><code>jdk 1.8</code>可以使用 Instant（代表一个具体的时刻）代替 Date</li>
 </ul>
 <h2 id="Calendar（抽象类）">Calendar（抽象类）</h2>
+<blockquote>
+<p>位于 <code>java.util</code> 包中，int 类型的静态常量：YEAR, MONTH（第一个月为 0）, DAY_OF_MONTH 或 DATE, DAY_OF_WEEK, HOUR_OF_DAY, MINUTE, SECOND</p>
+</blockquote>
+<p><strong>类方法</strong>：</p>
 <ul>
-<li><strong>java.util 包中</strong></li>
-<li>int 类型的静态常量：YEAR, MONTH（第一个月为 0）, DAY_OF_MONTH 或 DATE, DAY_OF_WEEK, HOUR_OF_DAY, MINUTE, SECOND</li>
-<li>类方法<code>Calendar getInstance()</code>：基于当前时间，使用默认时区和语言环境<strong>获取</strong>一个 Calendar 对象</li>
-<li>实例方法
+<li><code>Calendar getInstance()</code>：基于当前时间，使用默认时区和语言环境<strong>获取</strong>一个 Calendar 对象</li>
+</ul>
+<p><strong>实例方法</strong>：</p>
 <ul>
 <li><code>int get(int field)</code>：返回指定日历字段的值</li>
 <li><code>void set(int field, int value)</code>：将给定的日历字段设置为给定值</li>
-<li><code>void add(int field, int amount)</code>：根据日历的规则，为指定的日历字段添加或减去指定的时间量</li>
+<li><code>void add(int field, int amount)</code>：根据日历规则，为指定的日历字段添加或减去指定的时间量</li>
 <li><code>Date getTime()</code>：返回一个表示此 Calendar 时间值的 Date 对象</li>
 <li><code>void setTime(Date date)</code>：使用给定的 Date 设置此 Calendar 的时间</li>
 <li><code>boolean after(Object when)</code>：判断此 Calendar 表示的时间是否在指定 Object 表示的时间之后</li>
 <li><code>boolean before(Object when)</code>：判断此 Calendar 表示的时间是否在指定 Object 表示的时间之前</li>
 <li><code>boolean equals(Object obj)</code></li>
-</ul>
-</li>
-<li>jdk1.8 的应用可以使用 <strong>LocalDateTime</strong>（代表不带时区的日期、时间）代替 Calendar</li>
+<li><code>jdk1.8</code> 可以使用 <code>LocalDateTime</code>（代表不带时区的日期、时间）代替 Calendar</li>
 </ul>
 <h1 id="格式化">格式化</h1>
-<ul>
-<li><strong>java.text 包</strong>中</li>
-<li>Format，<strong>java.text 包</strong>中，一个用于格式化语言环境敏感的信息（如日期、消息和数字）的抽象基类</li>
-<li>已知子类：DateFormat、MessageFormat、NumberFormat</li>
-</ul>
+<blockquote>
+<p>位于 <code>java.text</code> 包中，<code>Format</code>：一个用于格式化语言环境敏感的信息（如日期、消息和数字）的抽象基类；已知子类：<code>DateFormat</code>、<code>MessageFormat</code>、<code>NumberFormat</code></p>
+</blockquote>
 <h2 id="MessageFormat">MessageFormat</h2>
 <ul>
 <li>线程安全</li>
-<li>类方法：<code>String format(String pattern , Object… arguments)</code>：返回后面的多个参数值填充前面的 pattern 字符串，其中 pattern 是一个带占位符的字符串</li>
+<li><code>String format(String pattern , Object… arguments)</code>：返回后面的多个参数值填充前面的 pattern 字符串，其中 pattern 是一个带占位符的字符串</li>
 </ul>
 <h2 id="NumberFormat（抽象类）">NumberFormat（抽象类）</h2>
 <ul>
 <li>格式化（format）和解析（parse）数值</li>
-<li><strong>线程不安全</strong></li>
+<li>线程不安全</li>
 </ul>
 <table>
 <thead>
@@ -525,74 +702,66 @@ function sidebar_toggle() {
 <blockquote>
 <p>默认获取的是当前默认语言环境的数字格式器，也可以在调用获取方法时传入指定的 Locale，如 Locale.CHINA</p>
 </blockquote>
+<p><strong>实例方法</strong>：</p>
 <ul>
-<li>实例方法：<code>String format(double number)</code>、String format(long number)：格式化数值<code>void setGroupingUsed(boolean newValue)</code>：设置此格式中是否使用分组<code>void setMaximumIntegerDigits(int newValue)</code>：设置数的整数部分所允许的最大位数<code>void setMinimumIntegerDigits(int newValue)</code>：设置数的整数部分所允许的最小位数<code>void setMaximumFractionDigits(int newValue)</code>：设置数的小数部分所允许的最大位数<code>void setMinimumFractionDigits(int newValue)</code>：设置数的小数部分所允许的最小位数<code>void setParseIntegerOnly(boolean value)</code>：设置数是否应该仅作为整数进行解析<code>void setRoundingMode(RoundingMode roundingMode)</code>：设置在此 NumberFormat 中使用的 RoundingMode<code>void setCurrency(Currency currency)</code>： 设置格式化货币值时此数值格式使用的货币</li>
+<li><code>String format(double number)</code>/<code>String format(long number)</code>：格式化数值 <code>void </code></li>
+<li><code>setGroupingUsed(boolean newValue)</code>：设置此格式中是否使用分组<code>void </code></li>
+<li><code>setMaximumIntegerDigits(int newValue)</code>：设置数的整数部分所允许的最大位数<code>void </code></li>
+<li><code>setMinimumIntegerDigits(int newValue)</code>：设置数的整数部分所允许的最小位数<code>void </code></li>
+<li><code>setMaximumFractionDigits(int newValue)</code>：设置数的小数部分所允许的最大位数<code>void </code></li>
+<li><code>setMinimumFractionDigits(int newValue)</code>：设置数的小数部分所允许的最小位数<code>void </code></li>
+<li><code>setParseIntegerOnly(boolean value)</code>：设置数是否应该仅作为整数进行解析<code>void </code></li>
+<li><code>setRoundingMode(RoundingMode roundingMode)</code>：设置在此 NumberFormat 中使用的</li>
+<li>RoundingMode<code>void setCurrency(Currency currency)</code>： 设置格式化货币值时此数值格式使用的货币</li>
 </ul>
 <h2 id="DateFormat-SimpleDateFormat">DateFormat / SimpleDateFormat</h2>
-<ul>
-<li>格式化（format）和解析（parse）日期或时间</li>
-<li>jdk 1.8 的应用可以使用 DateTimeFormatter（时间格式器）代替 DateFormat、SimpleDateFormat</li>
-</ul>
+<blockquote>
+<p>格式化（format）和解析（parse）日期或时间，<code>jdk 1.8</code> 可以使用 <code>DateTimeFormatter</code>（时间格式器）代替 <code>DateFormat</code>、<code>SimpleDateFormat</code></p>
+</blockquote>
 <h3 id="DateFormat（抽象类）">DateFormat（抽象类）</h3>
+<blockquote>
+<p>int 类型的全局静态常量：SHORT、MEDIUM、LONG、FULL（分别表示四种样式）</p>
+</blockquote>
+<p><strong>类方法</strong>：</p>
 <ul>
-<li>int 类型的全局静态常量：SHORT、MEDIUM、LONG、FULL（分别表示四种样式）</li>
-<li>类方法：
-<ul>
-<li><code>DateFormat getInstance()</code>：<strong>获取</strong>使用 SHORT 风格的默认日期<strong>格式器</strong></li>
-<li><code>DateFormat getDateTimeInstance(int dateStyle, int timeStyle)</code>：<strong>获取</strong>日期使用 dateStyle 风格、时间使用 timeStyle 风格的日期/时间<strong>格式器</strong></li>
+<li><code>DateFormat getInstance()</code>：获取使用 SHORT 风格的默认日期格式器</li>
+<li><code>DateFormat getDateTimeInstance(int dateStyle, int timeStyle)</code>：获取日期使用 dateStyle 风格、时间使用 timeStyle 风格的日期/时间格式器</li>
 </ul>
-</li>
-<li>实例方法
+<p><strong>实例方法</strong></p>
 <ul>
 <li><code>String format(Date date)</code>：将 Date 格式化为日期/时间字符串</li>
 <li><code>Date parse(String source)</code>：解析字符串的文本，生成 Date（该方法声明抛出了 ParseException 异常）</li>
 </ul>
-</li>
-</ul>
 <h3 id="SimpleDateFormat">SimpleDateFormat</h3>
 <ul>
-<li>
-<p>DateFormat 的子类，支持自定义日期-时间格式</p>
-</li>
-<li>
-<p>SimpleDateFormat、DateFormat 都是<strong>线程不安全</strong>的类</p>
-</li>
-<li>
-<p>SimpleDateFormat 继承 DateFormat 类，DateFormat 类中<strong>维护了一个 Calendar 实例</strong>，Calendar 实例被用来计算日期-时间字段和时间实例，既被用于 format 方法也被用于 parse 方法（The Calendar instance used for calculating the date-time fields and the instant of time. This field is used for both formatting and parsing.）</p>
-<p><a target="_blank" rel="noopener" href="https://sdky.gitee.io/img/%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4%E6%A8%A1%E5%BC%8F%E5%AD%97%E6%AF%8D.jpg"><img src="https://static.sitestack.cn/projects/sdky-java-note/bf9d8d61503eaa82bb49120a63071b84.jpeg" alt="日期和时间模式字母"></a><br>
-图 1 日期和时间模式字母</p>
-</li>
-<li>
-<p>构造器：SimpleDateFormat()、SimpleDateFormat(String pattern)</p>
-</li>
-<li>
-<p>实例方法</p>
+<li><code>DateFormat</code> 的子类，支持自定义日期-时间格式</li>
+<li><code>SimpleDateFormat</code>、<code>DateFormat</code> 都是<strong>线程不安全</strong>的类</li>
+<li><code>SimpleDateFormat</code> 继承 <code>DateFormat 类</code>，DateFormat 类中维护了一个 Calendar 实例，Calendar 实例被用来计算日期-时间字段和时间实例，既被用于 <code>format</code> 方法也被用于 <code>parse</code> 方法</li>
+<li>构造器：<code>SimpleDateFormat()</code>、<code>SimpleDateFormat(String pattern)</code></li>
+</ul>
+<p><strong>实例方法</strong>：</p>
 <ul>
 <li><code>void applyPattern(String pattern)</code>：将给定模式字符串应用于此日期格式，如 “yyyy-MM-dd E HH:mm:ss” 2017-10-07 星期六 17:55:54</li>
 <li>从类 DateFormat 继承的方法：<code>String format(Date date)</code>, <code>Date parse(String source)</code></li>
 </ul>
-</li>
-</ul>
 <h1 id="正则表达式">正则表达式</h1>
 <ul>
-<li>正则表达式（regex）是一个强大的<strong>字符串处理</strong>工具，主要用于匹配判断、分割操作、替换操作（网络爬虫）等</li>
-<li>在正则表达式中有<strong>特殊含义</strong>的符号 <input type="checkbox" id="checkbox0"><label for="checkbox0">{ }</label></li>
-<li>由于 Java 字符串中<strong>反斜杠</strong>本身需要转义，因此<strong>两个反斜杠</strong>（\）实际上相当于一个（前一个用于转义）</li>
+<li>正则表达式（regex）是一个强大的字符串处理工具，主要用于匹配判断、分割操作、替换操作（网络爬虫）等</li>
+<li>在正则表达式中有特殊含义的符号 <input type="checkbox" id="checkbox0"><label for="checkbox0">{ }</label></li>
+<li>由于 Java 字符串中反斜杠本身需要转义，因此两个反斜杠<code>\\</code>实际上相当于一个（前一个用于转义）</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// Java 的转义符包括\b  \t  \n  \f  \r  \&quot;  \&#x27;  \\</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://sdky.gitee.io/img/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.png"><img src="https://static.sitestack.cn/projects/sdky-java-note/24af54f24cfad0dc2e525fcf1c865a0e.png" alt="正则表达式"></a><br>
-图 2 正则表达式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 的转义符包括\b  \t  \n  \f  \r  \&quot;  \&#x27;  \\</span></span><br></pre></td></tr></table></figure>
 <h2 id="String-类中的相关方法">String 类中的相关方法</h2>
 <ul>
-<li><code>boolean matches(String regex)</code>：判断该字符串是否<strong>匹配</strong>给定的正则表达式，如手机号码：<code>&quot;^[1][3456789][0-9]&#123;9&#125;$&quot;</code> 或 <code>&quot;^1[3-9]\d&#123;9&#125;$&quot;</code>（第一个反斜线表示转义）</li>
-<li><code>String replaceAll(String regex, String replacement)</code>：将该字符串中所有匹配 regex 的子串<strong>替换</strong>成 replacement</li>
-<li><code>String[] split(String regex)</code>：以 regex 作为分隔符，把该<strong>字符串分割</strong>成多个子串</li>
+<li><code>boolean matches(String regex)</code>：判断该字符串是否匹配给定的正则表达式，如手机号码：<code>&quot;^[1][3456789][0-9]&#123;9&#125;$&quot;</code> 或 <code>&quot;^1[3-9]\d&#123;9&#125;$&quot;</code>（第一个反斜线表示转义）</li>
+<li><code>String replaceAll(String regex, String replacement)</code>：将该字符串中所有匹配 regex 的子串替换成 replacement</li>
+<li><code>String[] split(String regex)</code>：以 regex 作为分隔符，把该字符串分割成多个子串</li>
 </ul>
 <blockquote>
-<p>正则表达式匹配效率较低，尽量使用字符串匹配操作，即 <code>String#replace()</code>、<code>org.apache.commons.lang3.StringUtils#split()</code></p>
+<p>注意：正则表达式匹配效率较低，尽量使用字符串匹配操作，即 <code>String#replace()</code>、<code>org.apache.commons.lang3.StringUtils#split()</code></p>
 </blockquote>
 <h2 id="Pattern-和-Matcher">Pattern 和 Matcher</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">复制代码// 将一个正则表达式编译成 Pattern 对象（线程安全）Pattern p = Pattern.compile(&quot;a*b&quot;);// 使用 Pattern 对象执行匹配，创建 Matcher 对象（线程不安全）Matcher m = p.matcher(&quot;aaaaab&quot;);boolean b = m.matches(); // 返回 true// 等效于上面的三条语句boolean b = Pattern.matches(&quot;a*b&quot;, &quot;aaaaab&quot;);Pattern p = Pattern.compile(&quot;cat&quot;);Matcher m = p.matcher(&quot;one cat two cats in the yard&quot;);StringBuffer sb = new StringBuffer();while (m.find()) &#123;    m.appendReplacement(sb, &quot;dog&quot;);&#125;m.appendTail(sb);System.out.println(sb.toString()); // one dog two dogs in the yard</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 将一个正则表达式编译成 Pattern 对象（线程安全）</span></span><br><span class="line">Pattern p = Pattern.compile(<span class="string">&quot;a*b&quot;</span>);</span><br><span class="line"><span class="comment">// 使用 Pattern 对象执行匹配，创建 Matcher 对象（线程不安全）</span></span><br><span class="line">Matcher m = p.matcher(<span class="string">&quot;aaaaab&quot;</span>);</span><br><span class="line"><span class="keyword">boolean</span> b = m.matches(); <span class="comment">// 返回 true</span></span><br><span class="line"><span class="comment">// 等效于上面的三条语句</span></span><br><span class="line"><span class="keyword">boolean</span> b = Pattern.matches(<span class="string">&quot;a*b&quot;</span>, <span class="string">&quot;aaaaab&quot;</span>);</span><br><span class="line">Pattern p = Pattern.compile(<span class="string">&quot;cat&quot;</span>);</span><br><span class="line">Matcher m = p.matcher(<span class="string">&quot;one cat two cats in the yard&quot;</span>);</span><br><span class="line">StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line"><span class="keyword">while</span> (m.find()) &#123;</span><br><span class="line">    m.appendReplacement(sb, <span class="string">&quot;dog&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">m.appendTail(sb);</span><br><span class="line">System.out.println(sb.toString()); <span class="comment">// one dog two dogs in the yard</span></span><br></pre></td></tr></table></figure>
 </article>
 
 <div id="paginator">
@@ -625,7 +794,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-11-23</div>
+      <div>2021-11-25</div>
     </div>
   </div>
 
