@@ -86,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(1)">Java 基础知识整理（第一章）</a></li>
 <li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(2)">Java 基础知识整理（第二章）</a></li>
 <li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(3)">Java 基础知识整理（第三章）</a></li>
-<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86">Java 基础知识整理</a></li>
 <li><a href="/java/Java%E5%B8%B8%E7%94%A8%E7%B1%BB">Java 常用类记录</a></li>
 <li><a href="">泛型实现</a></li>
 <li><a href="">多线程开发</a></li>
@@ -228,53 +227,95 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="多线程">多线程</h1>
-<h2 id="进程的创建和启动">进程的创建和启动</h2>
-<ul>
-<li><code>Runtime</code> 类中的 <code>exec</code> 方法，如 <code>Runtime.getRuntime().exec(&quot;notepad&quot;);</code></li>
-<li><code>ProcessBuilder</code> 类中的 <code>start</code> 方法，如 <code>new ProcessBuilder(&quot;notepad&quot;).start();</code></li>
-</ul>
+  <h1 id="进程的创建和启动">进程的创建和启动</h1>
+<blockquote>
+<p><code>Runtime.getRuntime().exec(&quot;notepad&quot;);</code></p>
+</blockquote>
+<blockquote>
+<p><code>new ProcessBuilder(&quot;notepad&quot;).start();</code></p>
+</blockquote>
 <h1 id="Thread">Thread</h1>
 <ul>
 <li>实现了 <code>Runnable</code> 接口</li>
-<li>所有线程对象都必须是 <code>Thread</code> 类或其子类的实例</li>
+<li>所有线程对象都必须是 <strong><code>Thread</code> 类或其子类</strong>的实例</li>
 </ul>
 <h2 id="构造器">构造器</h2>
 <ul>
-<li><code>Thread()</code>、<code>Thread(Runnable target)</code>、<code>Thread(String name)</code>、<code>Thread(Runnable target, String name)</code></li>
+<li><code>Thread()</code>/<code>Thread(Runnable target)</code>/<code>Thread(String name)</code>/<code>Thread(Runnable target, String name)</code></li>
 <li><code>Thread(ThreadGroup group, Runnable target, String name)</code>：在指定线程组中创建线程</li>
 </ul>
 <h2 id="类方法">类方法</h2>
-<ul>
-<li><code>Thread currentThread()</code>：返回当前正在执行的线程对象</li>
-<li><code>void sleep(long millis)</code>：让当前正在执行的线程暂停 <code>millis</code> 毫秒，并进入阻塞状态（线程睡眠）（该方法声明抛出了 <code>InterruptedException</code> 异常）</li>
-<li><code>void yield()</code>：暂停当前正在执行的线程对象转入就绪状态（线程让步）</li>
-</ul>
-<h2 id="实例方法">实例方法</h2>
-<ul>
-<li><code>void start()</code>：Java 虚拟机调用该线程的 run 方法使线程开始执行，只能被处于新建状态的线程调用，否则会引发 <code>IllegalThreadStateException</code> 异常</li>
-<li><code>void run()</code>：如果该线程是使用独立的 <code>Runnable</code> 运行对象构造的，则调用该 <code>Runnable</code> 对象的 <code>run</code> 方法；否则该方法不执行任何操作并返回</li>
-<li><code>void setName(String name)</code>：为线程设置名字，默认情况下主线程的名字为 <code>main</code>，用户启动的多个线程的名字依次为 <code>Thread-0</code>、<code>Thread-1</code>、<code>Thread-2</code>、<code>Thread-n</code> 等</li>
-<li><code>String getName()</code>：返回调用该方法的线程名字</li>
-<li><code>void join()</code>：等待调用该方法的线程执行完成，而当前正在执行的线程进入阻塞状态（联合线程）（该方法声明抛出了 <code>InterruptedException</code> 异常）</li>
-<li><code>void setDaemon(boolean on)</code>：<code>on=true</code>时，将线程设置成守护线程，该方法必须在 <code>start()</code> 之前调用，否则会引发 <code>IllegalThreadStateException</code> 异常</li>
-<li><code>boolean isDaemon()</code>：判断线程是否为守护线程</li>
-<li><code>int getPriority()</code>：返回线程优先级</li>
-<li><code>void setPriority(int newPriority)</code>：更改线程的优先级（范围是 <code>1~10</code> 之间）</li>
-<li><code>boolean isAlive()</code>：测试线程是否处于活动状态</li>
-</ul>
-<h1 id="线程创建和启动">线程创建和启动</h1>
-<h2 id="继承-Thread-类创建线程类">继承 Thread 类创建线程类</h2>
 <blockquote>
-<p>使用继承 Thread 类的方法来创建线程类时，多个线程之间<strong>无法共享</strong>线程类的实例变量</p>
+<p><code>Thread currentThread()</code></p>
+<p>返回当前正在执行的线程对象</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义 Thread 类的子类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 重写 Thread 类中的 run() 方法，线程执行体</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;                </span><br><span class="line">        Thread t = <span class="keyword">new</span> MyThread(); <span class="comment">// 创建 Thread 子类的对象</span></span><br><span class="line">        t.start(); <span class="comment">// 调用线程对象的 start() 方法来启动该线程</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用匿名内部类的方式创建</span></span><br><span class="line"><span class="keyword">new</span> Thread() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;.start();</span><br></pre></td></tr></table></figure>
-<h2 id="实现-Runnable-接口创建多线程">实现 Runnable 接口创建多线程</h2>
-<ul>
-<li>采用 <code>Runnable</code> 接口方式创建的多个线程可以<strong>共享</strong>同一个 <code>target</code> 对象的<strong>实例变量</strong></li>
-<li><code>void run()</code>：使用实现接口 <code>Runnable</code> 的对象创建一个线程时，启动该线程将导致在独立执行的线程中调用对象的 <code>run</code> 方法</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义 Runnable 接口的实现类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 重写 Runnable 接口中的 run() 方法，线程执行体</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;                </span><br><span class="line">        Runnable target = <span class="keyword">new</span> MyRunnable(); <span class="comment">// 创建 Runnable 实现类的对象 target</span></span><br><span class="line">        Thread t = <span class="keyword">new</span> Thread(target, <span class="string">&quot;线程名&quot;</span>); <span class="comment">// 将 target 作为运行目标来创建创建 Thread 类的对象</span></span><br><span class="line">        t.start();; <span class="comment">// 调用线程对象的 start() 方法来启动该线程</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用匿名内部类的方式创建</span></span><br><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>void sleep(long millis)</code></p>
+<p>让当前正在执行的线程暂停 <code>millis</code> 毫秒，并进入阻塞状态（线程睡眠）（该方法声明抛出了 <code>InterruptedException</code> 异常）</p>
+</blockquote>
+<blockquote>
+<p><code>void yield()</code></p>
+<p>暂停当前正在执行的线程对象转入就绪状态（线程让步）</p>
+</blockquote>
+<h2 id="实例方法">实例方法</h2>
+<blockquote>
+<p><code>void start()</code></p>
+<p>Java 虚拟机调用该线程的 <code>run</code> 方法使线程开始执行（只能被处于新建状态的线程调用，否则会引发 <code>IllegalThreadStateException</code> 异常）</p>
+</blockquote>
+<blockquote>
+<p><code>void run()</code></p>
+<p>如果该线程是使用独立的 <code>Runnable</code> 运行对象构造的，则调用该 <code>Runnable</code> 对象的 <code>run</code> 方法；否则该方法不执行任何操作并返回</p>
+</blockquote>
+<blockquote>
+<p><code>void setName(String name)</code></p>
+<p>为线程设置名字，默认情况下主线程的名字为 <code>main</code>，用户启动的多个线程的名字依次为 <code>Thread-0</code>、<code>Thread-1</code>、<code>Thread-2</code>、<code>Thread-n</code> 等</p>
+</blockquote>
+<blockquote>
+<p><code>String getName()</code></p>
+<p>返回调用该方法的线程名字</p>
+</blockquote>
+<blockquote>
+<p><code>void join()</code></p>
+<p>等待调用该方法的线程执行完成，而当前正在执行的线程进入阻塞状态（联合线程）（该方法声明抛出了 <code>InterruptedException</code> 异常）</p>
+</blockquote>
+<blockquote>
+<p><code>void setDaemon(boolean on)</code></p>
+<p><code>on=true</code>时，将线程设置成守护线程（该方法必须在 <code>start()</code> 之前调用，否则会引发 <code>IllegalThreadStateException</code> 异常）</p>
+</blockquote>
+<blockquote>
+<p><code>boolean isDaemon()</code>：判断线程是否为守护线程</p>
+<p><code>int getPriority()</code>：返回线程优先级</p>
+<p><code>void setPriority(int newPriority)</code>：更改线程的优先级（范围是 <code>1~10</code> 之间）</p>
+<p><code>boolean isAlive()</code>：测试线程是否处于活动状态</p>
+</blockquote>
+<h1 id="线程创建和启动">线程创建和启动</h1>
+<h2 id="继承-Thread-类">继承 Thread 类</h2>
+<blockquote>
+<p>继承 <code>Thread</code>类重写 <code>run</code>方法是创建线程比较常用的一种方式方式</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 第一种：使用thread子类对象</span></span><br><span class="line">		Thread t = <span class="keyword">new</span> MyThread();  <span class="comment">// 创建 Thread 子类的对象</span></span><br><span class="line">		t.start();<span class="comment">// 调用线程对象的 start() 方法来启动该线程</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 定义Thread子类</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 重写Thread类run()方法，线程执行体</span></span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			System.out.println(<span class="string">&quot;myThread start...&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者使用<code> lambda</code> 语法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Thread t1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">			System.out.println(<span class="string">&quot;lambda thread start...&quot;</span>);</span><br><span class="line">		&#125;);</span><br><span class="line">	   t1.start();</span><br></pre></td></tr></table></figure>
+<p>再或者使用匿名内部类创建</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Thread t2 = <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				System.out.println(<span class="string">&quot;anonymityThread start...&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		t2.start();</span><br></pre></td></tr></table></figure>
+<h2 id="实现-Runnable-接口">实现 <code>Runnable</code> 接口</h2>
+<blockquote>
+<p>采用 <code>Runnable</code> 也是非常常见的一种，只需要重写 <code>run</code> 方法即可</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Thread t3 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				System.out.println(<span class="string">&quot;runnable thread start...&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">		t3.start();</span><br></pre></td></tr></table></figure>
+<h1 id="Thread-和-Runnable-区别">Thread 和 Runnable 区别</h1>
+<blockquote>
+<p>如果一个类继承 <code>Thread</code>不适合资源共享。因为：<strong>使用继承 Thread 类的方法创建线程类时，多个线程之间无法共享线程类的实例变量</strong>。</p>
+<p>如果实现了 <code>Runable</code> 接口的话，则很容易的实现资源共享。因为：<strong>采用 Runnable 接口的方式创建的多个线程可以共享同一个 target 对象的实例变量</strong>。</p>
+</blockquote>
+<p>实现 <code>Runnable</code> 接口比继承 <code>Thread</code> 类所具有的优势：</p>
+<p>1）：适合多线程去处理同一资源</p>
+<p>2）：可以避免java中的单继承的限制</p>
+<p>3）：增加程序健壮性代码可以被多个线程共享，代码和数据独立</p>
+<p>4）：线程池只能放入实现 <code>Runable</code> 或 <code>callable</code> 类线程，不能直接放入继承 <code>Thread</code>的类</p>
+<blockquote>
+<p>main方法也是一个线程。在java中所有的线程都是同时启动的，至于什么时候，哪个先执行，完全看谁先得到CPU的资源。java中每次程序运行至少启动2个线程。一个是 <code>main</code>线程，一个是<code>垃圾收集线程</code>。每当使用java命令执行一个类的时候，实际上都会启动一个JVM，每一个JVM就是在操作系统中启动了一个进程。</p>
+</blockquote>
 <h2 id="使用-Callable-和-FutureTask-创建线程">使用 Callable 和 FutureTask 创建线程</h2>
 <h3 id="Callable-V-接口">Callable<V> 接口</h3>
 <ul>
@@ -395,7 +436,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-11-26</div>
+      <div>2021-12-02</div>
     </div>
   </div>
 
