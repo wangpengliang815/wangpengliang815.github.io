@@ -316,6 +316,16 @@ function sidebar_toggle() {
 <blockquote>
 <p>main方法也是一个线程。在java中所有的线程都是同时启动的，至于什么时候，哪个先执行，完全看谁先得到CPU的资源。java中每次程序运行至少启动2个线程。一个是 <code>main</code>线程，一个是<code>垃圾收集线程</code>。每当使用java命令执行一个类的时候，实际上都会启动一个JVM，每一个JVM就是在操作系统中启动了一个进程。</p>
 </blockquote>
+<h1 id="线程状态转换">线程状态转换</h1>
+<p><img src="../images/2021-12-06-15-50-49.png" alt=""></p>
+<p>1、新建状态（New）：新创建了一个线程对象。<br>
+2、就绪状态（Runnable）：线程对象创建后，其他线程调用了该对象的start()方法。该状态的线程位于可运行线程池中，变得可运行，等待获取CPU的使用权。<br>
+3、运行状态（Running）：就绪状态的线程获取了CPU，执行程序代码。<br>
+4、阻塞状态（Blocked）：阻塞状态是线程因为某种原因放弃CPU使用权，暂时停止运行。直到线程进入就绪状态，才有机会转到运行状态。阻塞的情况分三种：<br>
+（一）、等待阻塞：运行的线程执行wait()方法，JVM会把该线程放入等待池中。(wait会释放持有的锁)<br>
+（二）、同步阻塞：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池中。<br>
+（三）、其他阻塞：运行的线程执行sleep()或join()方法，或者发出了I/O请求时，JVM会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者I/O处理完毕时，线程重新转入就绪状态。（注意,sleep是不会释放持有的锁）<br>
+5、死亡状态（Dead）：线程执行完了或者因异常退出了run()方法，该线程结束生命周期。</p>
 <h2 id="使用-Callable-和-FutureTask-创建线程">使用 Callable 和 FutureTask 创建线程</h2>
 <h3 id="Callable-V-接口">Callable<V> 接口</h3>
 <ul>
@@ -436,7 +446,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-12-02</div>
+      <div>2021-12-06</div>
     </div>
   </div>
 
