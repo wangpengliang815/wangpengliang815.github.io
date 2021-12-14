@@ -83,19 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="JAVA">JAVA</h2>
 <ul>
-<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(1)">Java 基础知识整理（第一章）</a></li>
-<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(2)">Java 基础知识整理（第二章）</a></li>
-<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(3)">Java 基础知识整理（第三章）</a></li>
-<li><a href="/java/Java%E5%B8%B8%E7%94%A8%E7%B1%BB">Java 常用类记录</a></li>
-<li><a href="">泛型实现</a></li>
-<li><a href="">多线程开发</a></li>
-<li><a href="">数据结构</a></li>
-<li><a href="">反射和注解</a></li>
-<li><a href="">IO操作</a></li>
-<li><a href="">网络编程</a></li>
-<li><a href="">常用工具类记录</a></li>
-<li><a href="">JVM</a></li>
-<li><a href="">设计模式</a></li>
+<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(1)">基础知识整理（第一章）</a></li>
+<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(2)">基础知识整理（第二章）</a></li>
+<li><a href="/java/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86(3)">基础知识整理（第三章）</a></li>
+<li><a href="/java/Java%E5%B8%B8%E7%94%A8%E7%B1%BB">常用类记录</a></li>
 </ul>
 <h2 id="Linux">Linux</h2>
 <ul>
@@ -227,7 +218,55 @@ function sidebar_toggle() {
                 
 <article id="page">
   <h1></h1>
-  <h1 id="进程的创建和启动">进程的创建和启动</h1>
+  <h1 id="数组与集合">数组与集合</h1>
+<blockquote>
+<p>按一定顺序排列的同类型数据的集合称为数组，<strong>引用类型</strong></p>
+</blockquote>
+<h2 id="数组常见算法">数组常见算法</h2>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Array</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Person person = <span class="keyword">new</span> Person();</span><br><span class="line">		person.PrintItem();</span><br><span class="line">		System.out.println(<span class="string">&quot;*****************************&quot;</span>);</span><br><span class="line">		<span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">45</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">2</span>&#125;;</span><br><span class="line">		person.bubbleSort(arr);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j : arr) &#123;</span><br><span class="line">			System.out.println(j);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 数组定义</span></span><br><span class="line">		<span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">45</span>, <span class="number">67</span>, <span class="number">8</span>, <span class="number">10</span>&#125;;</span><br><span class="line">		<span class="keyword">int</span>[] arr1 = &#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">65</span>, <span class="number">78</span>, <span class="number">98</span>&#125;;</span><br><span class="line">		<span class="keyword">int</span>[] arr2 = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">7</span>];</span><br><span class="line">		<span class="keyword">int</span>[] arr3 = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">void</span> <span class="title">PrintItem</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="comment">// 普通遍历</span></span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">				System.out.println(arr[i]);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 增强遍历</span></span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> j : arr) &#123;</span><br><span class="line">				System.out.println(j);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (arr == <span class="keyword">null</span>) &#123;</span><br><span class="line">				System.out.println(<span class="string">&quot;arr is null&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (arr.length == <span class="number">0</span>) &#123;</span><br><span class="line">				System.out.println(<span class="string">&quot;arr length ==0&quot;</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 冒泡排序，平均时间复杂度 O(n^2)，空间复杂度 O(1)</span></span><br><span class="line"><span class="comment">		 * 对未排序的各元素从头到尾依次比较相邻的两个元素 arr[i]、arr[i + 1],共要进行 arr.length -1 轮</span></span><br><span class="line"><span class="comment">		 * 第 times 轮还剩 arr.length - (time - 1) 个元素</span></span><br><span class="line"><span class="comment">		 * times [1, arr.length -1]    i [0, arr.length- (time - 1)  - 2]</span></span><br><span class="line"><span class="comment">		 * */</span></span><br><span class="line">		<span class="function"><span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> times = <span class="number">1</span>; times &lt;= arr.length - <span class="number">1</span>; times++) &#123;</span><br><span class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= arr.length - times - <span class="number">1</span>; i++) &#123;</span><br><span class="line">					<span class="keyword">if</span> (arr[i] &gt; arr[i + <span class="number">1</span>]) &#123;</span><br><span class="line">						<span class="comment">// 交换</span></span><br><span class="line">						arr[i] = arr[i] ^ arr[i + <span class="number">1</span>];</span><br><span class="line">						arr[i + <span class="number">1</span>] = arr[i] ^ arr[i + <span class="number">1</span>];</span><br><span class="line">						arr[i] = arr[i] ^ arr[i + <span class="number">1</span>];</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 选择排序，平均时间复杂度 O(n^2)，空间复杂度 O(1)</span></span><br><span class="line"><span class="comment">		 * 假定未排序序列的起始位置的元素 arr[i] 为最小值，依次去比较剩下的元素 arr[j]</span></span><br><span class="line"><span class="comment">		 * i [0, arr.length - 2]    j [i + 1, arr.length - 1]</span></span><br><span class="line"><span class="comment">		 * */</span></span><br><span class="line">		<span class="function"><span class="keyword">void</span> <span class="title">selectionSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= arr.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt;= arr.length - <span class="number">1</span>; j++) &#123;</span><br><span class="line">					<span class="keyword">if</span> (arr[i] &gt; arr[j]) &#123;</span><br><span class="line">						<span class="comment">// 交换</span></span><br><span class="line">						arr[i] = arr[i] ^ arr[j];</span><br><span class="line">						arr[j] = arr[i] ^ arr[j];</span><br><span class="line">						arr[i] = arr[i] ^ arr[j];</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 从有序数组中查找 key 第一次出现的位置</span></span><br><span class="line"><span class="comment">		 * 二分搜索法/二分查找法/折半查找</span></span><br><span class="line"><span class="comment">		 *  前提：数组的元素是有序排列的：区间位置：如果 arr[mid] != key，下一次是以 mid + 1 作为下一个起始位置，或者 mid - 1 作为下一个结束位置</span></span><br><span class="line"><span class="comment">		 * 退出循环的条件：low &gt; high</span></span><br><span class="line"><span class="comment">		 * */</span></span><br><span class="line">		<span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">int</span> high = arr.length - <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">while</span> (low &lt;= high) &#123;</span><br><span class="line">				<span class="keyword">int</span> mid = (low + high) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">				<span class="keyword">if</span> (arr[mid] &lt; key) &#123;</span><br><span class="line">					low = mid + <span class="number">1</span>;</span><br><span class="line">				&#125; <span class="keyword">else</span> <span class="keyword">if</span> (arr[mid] &gt; key) &#123;</span><br><span class="line">					high = mid - <span class="number">1</span>;</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="keyword">while</span> (mid - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; arr[mid - <span class="number">1</span>] == key) &#123;</span><br><span class="line">						mid--;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">return</span> mid;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="java-util-Arrays">java.util.Arrays</h2>
+<blockquote>
+<p><code>String toString(Object[] arr)</code></p>
+<p>将数组转换成一个字符串，括在方括号（“[]”）中，相邻元素用字符 &quot;, &quot;（逗号加空格）分隔</p>
+</blockquote>
+<blockquote>
+<p><code>void sort(Object[] a)</code></p>
+<p>根据元素的自然顺序对数组按<strong>升序</strong>进行排序，数组中的所有元素都必须实现 <code>Comparable</code> 接口。对于原始数据类型，使用所谓双轴快速排序（<code>Dual-Pivot QuickSort</code>），对于对象数据类型，使用 <code>TimSort</code></p>
+</blockquote>
+<blockquote>
+<p><code>void sort(T[] a, Comparator&lt;? super T&gt; c)</code></p>
+<p>根据指定比较器产生的顺序对数组进行排序</p>
+</blockquote>
+<blockquote>
+<p><code>void parallelSort(Object[] a)</code></p>
+<p>以并发的方式对数组元素进行排序</p>
+</blockquote>
+<blockquote>
+<p><code>void setAll(T[] array, IntFunction&lt;T&gt; generator)</code></p>
+<p>使用提供的函数计算每一个元素的值，对数组中的所有元素进行设置</p>
+</blockquote>
+<blockquote>
+<p><code>void parallelSetAll(T[] array, IntFunction&lt;T&gt; generator)</code></p>
+<p>以并发方式，使用提供的函数计算每一个元素的值，对数组中的所有元素进行设置</p>
+</blockquote>
+<blockquote>
+<p><code>type binarySearch(Object[] a, type key)</code></p>
+<p>使用二分法査询 key 元素值在数组中出现的索引，如果数组不包含 key 元素值，则返回 <code>-(low + 1)</code>（调用该方法时要求数组中元素已经按升序排列）</p>
+</blockquote>
+<blockquote>
+<p><code>boolean equals(Object[] a, Object[] a2)</code></p>
+<p>如果 a 数组和 a2 数组长度相等，且 a 数组和 a2 数组的数组元素也都相同，该方法将返回 <code>true</code></p>
+</blockquote>
+<blockquote>
+<p><code>Object[] copyOf(Object[] original, int newLength)</code></p>
+<p>复制 original 数组，截取或用 0（数值类型）、false（布尔类型）或者 null（引用类型）填充，以使新数组的长度为 newLength</p>
+</blockquote>
+<blockquote>
+<p><code>List&lt;T&gt; asList(T… a)</code></p>
+<p>把引用类型的数组或指定个数的对象转换成固定长度的 List（Arrays.ArrayList），只能遍历访问该集合里的元素，不可增加、删除该集合里的元素，否则会引发 <code>UnsupportedOperationException</code> 异常</p>
+</blockquote>
+<h1 id=""></h1>
+<h1 id="进程的创建和启动">进程的创建和启动</h1>
 <blockquote>
 <p><code>Runtime.getRuntime().exec(&quot;notepad&quot;);</code></p>
 </blockquote>
@@ -446,7 +485,7 @@ function sidebar_toggle() {
     <!-- Author title -->
     <div class="author-title">
       <div>Wang,PengLiang</div>
-      <div>2021-12-06</div>
+      <div>2021-12-14</div>
     </div>
   </div>
 
