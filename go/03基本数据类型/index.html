@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          CODE&#39;NOTE
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/spectre.css/0.5.9/spectre.min.css" rel="stylesheet">
+    <link href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/spectre.css/0.5.9/spectre-exp.min.css" rel="stylesheet">
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/spectre.css/0.5.9/spectre-icons.min.css" rel="stylesheet">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tocbot/4.18.2/tocbot.min.js"></script>
+    <link href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/tocbot/4.18.2/tocbot.css" rel="stylesheet">
+    
+    <!-- katex -->    
+    <link href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/KaTeX/0.15.2/katex.min.css" rel="stylesheet">
+
+    
+    
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/zooming/2.1.1/zooming.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>CODE&#39;NOTE</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="☘️-Home">☘️ <a href="/">Home</a></h2>
+<h2 id="🥙-Devops">🥙 Devops</h2>
+<ul>
+<li><a href="/devops/gitlab%E5%AE%89%E8%A3%85">GitLab安装(Centos7)</a></li>
+</ul>
+<h2 id="Go">Go</h2>
+<ul>
+<li><a href="/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">0.1 开发环境搭建</a></li>
+<li><a href="/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F">0.2 变量和常量</a></li>
+<li><a href="/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">0.3 基本数据类型</a></li>
+<li><a href="/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6">0.4 流程控制和运算符</a></li>
+<li><a href="/go/05%E6%95%B0%E7%BB%84">0.5 数组</a></li>
+<li><a href="/go/06%E5%88%87%E7%89%87">0.6 切片</a></li>
+<li><a href="/go/07map">0.7 map</a></li>
+<li><a href="/go/08%E5%87%BD%E6%95%B0">0.8 函数</a></li>
+<li><a href="/go/09%E6%8C%87%E9%92%88">0.9 指针</a></li>
+<li><a href="/go/10%E5%8F%8D%E5%B0%84">1.0 反射</a></li>
+<li><a href="/go/11%E7%BB%93%E6%9E%84%E4%BD%93">1.1 结构体</a></li>
+<li><a href="/go/12%E6%8E%A5%E5%8F%A3">1.2 接口</a></li>
+<li><a href="/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine">1.3 goroutine</a></li>
+<li><a href="/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel">1.4 channel</a></li>
+<li><a href="/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81">1.5 并发安全和锁</a></li>
+<li><a href="/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C">1.6 原子操作</a></li>
+<li><a href="/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/GPM%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6">1.7 GPM与调度分析</a></li>
+<li><a href="/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/CSP%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B">1.8 CSP并发模型</a></li>
+<li><a href="/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt">标准库fmt</a></li>
+<li><a href="/go/%E6%A0%87%E5%87%86%E5%BA%93/flag">标准库flag</a></li>
+<li><a href="/go/%E6%A0%87%E5%87%86%E5%BA%93/time">标准库time</a></li>
+<li><a href="/go/%E6%A0%87%E5%87%86%E5%BA%93/go_%E6%A0%87%E5%87%86%E5%BA%93log">标准库log</a></li>
+</ul>
+<h2 id="ELK-Stack">ELK Stack</h2>
+<ul>
+<li><a href="/elk/1.1ElastaticSearch%E5%85%A5%E9%97%A8">ElastaticSearch入门</a></li>
+<li><a href="/elk/1.2ElastaticSearch%E9%85%8D%E7%BD%AE">ElastaticSearch配置</a></li>
+<li><a href="/elk/1.3%E4%BD%BF%E7%94%A8Kibana%E6%93%8D%E4%BD%9CES">使用Kibana操作ES</a></li>
+</ul>
+<h2 id="Docker">Docker</h2>
+<ul>
+<li><a href="/docker/1.1Docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85">1.1 Docker概念及安装</a></li>
+<li><a href="/docker/1.2Docker%E9%95%9C%E5%83%8F">1.2 Docker镜像</a></li>
+<li><a href="/docker/1.3Docker%E5%AE%B9%E5%99%A8">1.3 Docker容器</a></li>
+<li><a href="/docker/1.4Docker%E4%BB%93%E5%BA%93">1.4 Docker仓库</a></li>
+<li><a href="/docker/1.5Docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86">1.5 Docker数据管理</a></li>
+<li><a href="/docker/1.6Docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F">1.6 Docker容器网络模式</a></li>
+<li><a href="/docker/1.7Docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">1.7 Docker高级网络配置</a></li>
+<li><a href="/docker/1.8Dockerfile">1.8 Dockerfile</a></li>
+<li><a href="/docker/1.9DockerCompose">1.9 DockerCompose</a></li>
+<li><a href="/docker/2.0DockerMachine">2.0 DockerMachine</a></li>
+<li><a href="/docker/2.1DockerSwarm">2.1 DockerSwarm</a></li>
+<li><a href="/docker/2.2Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">2.2 Docker常用命令</a></li>
+<li><a href="/docker/Portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF">Portainer可视化面板</a></li>
+</ul>
+<h2 id="Linux">Linux</h2>
+<ul>
+<li><a href="/linux/Centos%E5%AE%89%E8%A3%85">Centos安装</a></li>
+<li><a href="/linux/Linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E">Linux目录说明</a></li>
+<li><a href="/linux/Centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">Centos网络配置</a></li>
+<li><a href="/linux/Centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC">Centos7升级gcc版本</a></li>
+<li><a href="/linux/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">Linux常用命令</a></li>
+</ul>
+<h2 id="RabbitMQ">RabbitMQ</h2>
+<ul>
+<li><a href="/rabbitMq/1.1RabbitMQ%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85">1.1 RabbitMQ概念及安装</a></li>
+<li><a href="/rabbitMq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D">1.2 工作模式介绍</a></li>
+<li><a href="/rabbitMq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96">1.3 消息确认及持久化</a></li>
+<li><a href="/rabbitMq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8CQOS%E7%9A%84%E5%AE%9E%E7%8E%B0">1.4 两种消费模式和QOS</a></li>
+<li><a href="/rabbitMq/1.5Channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95">1.5 Channel常见方法</a></li>
+<li><a href="/rabbitMq/1.6RabbitMQ%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">1.6 RabbitMQ常用命令</a></li>
+<li><a href="/rabbitMq/1.7RabbitMQ%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5">1.7 RabbitMQ常见策略</a></li>
+<li><a href="/rabbitMq/1.8RabbitMQ%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.8 RabbitMQ常见问题</a></li>
+<li><a href="/rabbitMq/1.9RabbitMQ%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 RabbitMQ集群方案</a></li>
+<li><a href="/rabbitMq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5RabbitMQ">客户端连接RabbitMQ</a></li>
+</ul>
+<h2 id="Redis">Redis</h2>
+<ul>
+<li><a href="/redis/1.1NoSql%E6%A6%82%E8%BF%B0">1.1 NoSql概述</a></li>
+<li><a href="/redis/1.2Redis%E5%AE%89%E8%A3%85">1.2 Redis安装</a></li>
+<li><a href="/redis/1.3Redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">1.3 Redis基本数据类型</a></li>
+<li><a href="/redis/1.4Redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">1.4 Redis特殊数据类型</a></li>
+<li><a href="/redis/1.5Redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C">1.5 Redis事务操作</a></li>
+<li><a href="/redis/1.6Redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3">1.6 Redis配置文件详解</a></li>
+<li><a href="/redis/1.7Redis%E6%8C%81%E4%B9%85%E5%8C%96">1.7 Redis持久化</a></li>
+<li><a href="/redis/1.8Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">1.8 Redis发布订阅</a></li>
+<li><a href="/redis/1.9Redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88">1.9 Redis集群方案</a></li>
+<li><a href="/redis/1.10Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">1.10 Redis常见问题</a></li>
+<li><a href="/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5Redis">客户端连接Redis</a></li>
+<li><a href="/redis/%E4%BD%BF%E7%94%A8Docker%E6%90%AD%E5%BB%BARedis%E9%9B%86%E7%BE%A4">使用Docker搭建Redis集群</a></li>
+</ul>
+<h2 id="NET">.NET</h2>
+<ul>
+<li><a href="/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86">基础合集</a></li>
+<li><a href="/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">面向对象</a></li>
+<li><a href="/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a></li>
+<li><a href="/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF">泛型技术</a></li>
+<li><a href="/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF">反射技术</a></li>
+<li><a href="/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91">多线程开发</a></li>
+<li><a href="/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%8A%80%E6%9C%AF">多线程之线程同步技术</a></li>
+<li><a href="/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6%E8%AF%A6%E8%A7%A3">委托和事件详解</a></li>
+<li><a href="/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B">并行编程</a></li>
+<li><a href="/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B">异步编程</a></li>
+<li><a href="/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">值类型和引用类型内存分配</a></li>
+<li><a href="/dotnet/1.1DataProtection%E7%AE%80%E4%BB%8B">1.1 DataProtection简介</a></li>
+<li><a href="/dotnet/1.2DataProtection%E6%96%B9%E6%B3%95">1.2 DataProtection方法</a></li>
+<li><a href="/dotnet/1.3%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95">1.3 落地实践及多环境调试</a></li>
+<li><a href="/dotnet/1.4UserSecrets">1.4 UserSecrets</a></li>
+<li><a href="/dotnet/1.5%E5%9F%BA%E4%BA%8EDataProtection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88">1.5 数据保护方案</a></li>
+<li><a href="/dotnet/1.6%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90AzureDevops%E7%AE%A1%E9%81%93">1.6 集成AzureDevops</a></li>
+</ul>
+<h2 id="MicroService">MicroService</h2>
+<ul>
+<li><a href="/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA">1.1 微服务之项目搭建</a></li>
+<li><a href="/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0">1.2 微服务之服务注册发现</a></li>
+<li><a href="/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3">1.3 微服务之网关</a></li>
+<li><a href="/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF">1.4 微服务之事件总线</a></li>
+<li><a href="/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8BDockerCompose">1.5 微服务之DockerCompose</a></li>
+<li><a href="/microservice/Consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0">Consul服务注册发现</a></li>
+</ul>
+<h2 id="Test">Test</h2>
+<ul>
+<li><a href="/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
+<li><a href="/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95">集成测试</a></li>
+<li><a href="/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6">压力测试k6</a></li>
+<li><a href="/test/%E8%87%AA%E5%8A%A8%E5%8C%96UI%E6%B5%8B%E8%AF%95">自动化UI测试</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="布尔类型">布尔类型</h1>
+<p>Go语言中的布尔类型与其他语言基本一致，关键字也为 <code>bool</code> 。布尔型数据只有 <code>true</code> / <code>false</code> 两个值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a1 = <span class="literal">false</span></span><br><span class="line"><span class="keyword">var</span> a2 = <span class="literal">true</span></span><br><span class="line">fmt.Println(a1, a2)</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong></p>
+<ol>
+<li>布尔类型变量的默认值为 <code>false</code></li>
+<li>Go 语言中不允许将整型强制转换为布尔型</li>
+<li>布尔型无法参与数值运算，也无法与其他类型进行转换</li>
+</ol>
+<h1 id="复数">复数</h1>
+<p>复数有实部和虚部，<code>complex64</code> 的实部和虚部为32位，<code>complex128</code> 的实部和虚部为64位，用的比较少不做详细记录。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> c1 <span class="keyword">complex64</span></span><br><span class="line">c1 = <span class="number">1</span> + <span class="number">2i</span></span><br><span class="line"><span class="keyword">var</span> c2 <span class="keyword">complex128</span></span><br><span class="line">c2 = <span class="number">2</span> + <span class="number">3i</span></span><br><span class="line">fmt.Println(c1)</span><br><span class="line">fmt.Println(c2)</span><br></pre></td></tr></table></figure>
+<h1 id="整型-v2">整型</h1>
+<p>整型分为以下两个大类：有符号整形按长度分为：<code>int8</code>、<code>int16</code>、<code>int32</code>、<code>int64</code>，对应的无符号整型：<code>uint8</code>、<code>uint16</code>、<code>uint32</code>、<code>uint64</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:left">范围</th>
+<th style="text-align:center">占用空间(字节)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>int8</code></td>
+<td style="text-align:left">(-128 到 127) <code>-2^7 到 2^7-1</code></td>
+<td style="text-align:center">1 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>int16</code></td>
+<td style="text-align:left">(-32768 到 32767) <code>-2^15 到 2^15-1</code></td>
+<td style="text-align:center">2 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>int32</code></td>
+<td style="text-align:left">(-2147483648 到 2147483647) <code>-2^31 到 2^31-1</code></td>
+<td style="text-align:center">4 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>int64</code></td>
+<td style="text-align:left">(-9223372036854775808 到 9223372036854775807) <code>-2^63 到 2^63-1</code></td>
+<td style="text-align:center">8 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>uint8</code></td>
+<td style="text-align:left">(0 到 255) <code>0 到 2^8-1</code></td>
+<td style="text-align:center">1 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>uint16</code></td>
+<td style="text-align:left">(0 到 65535)<code> 0 到 2^16-1</code></td>
+<td style="text-align:center">2 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>uint32</code></td>
+<td style="text-align:left">(0 到 4294967295) <code>0 到 2^32-1</code></td>
+<td style="text-align:center">4 Byte</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>uint64</code></td>
+<td style="text-align:left">(0 到 18446744073709551615) <code>0 到 2^64-1</code></td>
+<td style="text-align:center">8 Byte</td>
+</tr>
+</tbody>
+</table>
+<h2 id="特殊整型">特殊整型</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>uint</code></td>
+<td style="text-align:left">32 位操作系统上就是 <code>uint32</code>，64 位操作系统上就是 <code>uint64</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>int</code></td>
+<td style="text-align:left">32 位操作系统上就是 <code>int32</code>，64 位操作系统上就是 <code>int64</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>uintptr</code></td>
+<td style="text-align:left">无符号整型，用于存放一个指针</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>： 在使用 <code>int</code> 和 <code>uint</code> 类型时，不能假定它是 32 位或 64 位的整型，而是考虑 <code>int</code> 和 <code>uint</code> 可能在不同平台上的差异</p>
+<h2 id="字节-Byte">字节(Byte)</h2>
+<p>字节也叫 <code>Byte</code>，是计算机数据的基本存储单位。1Byte(字节)=8bit(位) 1024Byte(字节)=1KB。中文字符在 <code>unicode</code> 下占2个字节，在 <code>utf-8</code> 编码下占3个字节，go 默认编码是 <code>utf-8</code>。</p>
+<p><code>unsafe.Sizeof(n1)</code> 是 <code>unsafe</code>包的一个函数，可以返回变量占用的字节数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main </span><br><span class="line"><span class="keyword">import</span> ( </span><br><span class="line">    <span class="string">&quot;fmt&quot;</span> </span><br><span class="line">    <span class="string">&quot;unsafe&quot;</span> </span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123; </span><br><span class="line">    <span class="keyword">var</span> a <span class="keyword">int8</span> = <span class="number">120</span> </span><br><span class="line">    fmt.Printf(<span class="string">&quot;%T\n&quot;</span>, a) </span><br><span class="line">    fmt.Println(unsafe.Sizeof(a)) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PS D:\GoProject&gt; go run .\test.go</span><br><span class="line">int8</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<h2 id="数字字面量语法">数字字面量语法</h2>
+<p>Go1.13 版本之后引入了数字字面量语法，便于以二进制、八进制或十六进制浮点数的格式定义数字，例如：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">numberLiteralsSyntax</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 代表二进制的 101101，相当于十进制的 45</span></span><br><span class="line">	v1 := <span class="number">0</span>b00101101</span><br><span class="line">	fmt.Printf(<span class="string">&quot;value:%v type:%T \n&quot;</span>, v1, v1)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 代表八进制的377，相当于十进制的 255</span></span><br><span class="line">	v2 := <span class="number">0</span>o377</span><br><span class="line">	fmt.Printf(<span class="string">&quot;value:%v type:%T \n&quot;</span>, v2, v2)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 代表十六进制的 1 除以 2²，也就是 0.25</span></span><br><span class="line">	v3 := <span class="number">0x1</span>p<span class="number">-2</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;value:%v type:%T \n&quot;</span>, v3, v3)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 使用“_”分隔数字</span></span><br><span class="line">	v4 := <span class="number">123</span>_456</span><br><span class="line">	fmt.Printf(<span class="string">&quot;value:%v type:%T \n&quot;</span>, v4, v4)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>借助 <code>fmt</code> 函数以不同进制形式显示整数</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">convertOutput</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 十进制</span></span><br><span class="line">	<span class="keyword">var</span> a <span class="keyword">int</span> = <span class="number">10</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;十进制:%d 二进制:%b \n&quot;</span>, a, a) <span class="comment">// %d表示十进制,%b表示二进制</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 八进制以0开头</span></span><br><span class="line">	<span class="keyword">var</span> b <span class="keyword">int</span> = <span class="number">077</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;八进制:%o 二进制:%d\n&quot;</span>, b, b) <span class="comment">// %o表示八进制,%d表示十进制</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 十六进制 以 0x 开头</span></span><br><span class="line">	<span class="keyword">var</span> c <span class="keyword">int</span> = <span class="number">0xff</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;十六进制:%x 十六进制大写:%X 十进制:%d 变量类型:%T \n&quot;</span>, c, c, c, c) <span class="comment">//%x 表示十六进制,%X 表示大写的十六进制,%d 表示十进制,%T 查看变量类型</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// int不同长度转换</span></span><br><span class="line">	<span class="keyword">var</span> num1 <span class="keyword">int8</span> = <span class="number">127</span></span><br><span class="line">	num2 := <span class="keyword">int32</span>(num1)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;value:%v type:%T \n&quot;</span>, num2, num2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="不同长度转换">不同长度转换</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main </span><br><span class="line"><span class="keyword">import</span> ( </span><br><span class="line">    <span class="string">&quot;fmt&quot;</span> </span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123; </span><br><span class="line">    <span class="keyword">var</span> num1 <span class="keyword">int8</span> </span><br><span class="line">    num1 = <span class="number">127</span> </span><br><span class="line">    num2 := <span class="keyword">int32</span>(num1) </span><br><span class="line">    fmt.Printf(<span class="string">&quot;值:%v 类型%T&quot;</span>, num2, num2) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="浮点型">浮点型</h1>
+<p>Go 语言支持两种浮点型数：<code>float32</code> 和 <code>float64</code>。</p>
+<p>这两种浮点型数据格式遵循 <code>IEEE 754</code> 标准</p>
+<ul>
+<li><code>float32</code> 最大范围约为 <code>3.4e38</code>，可以使用常量定义：<code>math.MaxFloat32</code></li>
+<li><code>float64</code> 最大范围约为 <code>1.8e308</code>，可以使用常量定义：<code>math.MaxFloat64</code></li>
+</ul>
+<p>打印浮点数时可以使用 <code>fmt</code> 包配合动词 <code>%f</code>，比如：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> f <span class="keyword">float64</span> = <span class="number">3.1415926</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;%f\n&quot;</span>, f)             <span class="comment">// 默认保留6位小数</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;%.2f\n&quot;</span>, f)           <span class="comment">// 保留2位小数</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;值:%v,类型:%T \n&quot;</span>, f, f) <span class="comment">// 浮点数默认类型是float64</span></span><br><span class="line"></span><br><span class="line">fmt.Println(math.MaxFloat32) <span class="comment">// 输出float32最大值</span></span><br><span class="line">fmt.Println(math.MaxFloat64) <span class="comment">// 输出float64最大值</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 科学计数法表示浮点类型</span></span><br><span class="line">n1 := <span class="number">5.1234e2</span></span><br><span class="line">n2 := <span class="number">5.1234e2</span></span><br><span class="line">n3 := <span class="number">5.1234e-2</span></span><br><span class="line">fmt.Println(<span class="string">&quot;n1=&quot;</span>, n1, <span class="string">&quot;n2=&quot;</span>, n2, <span class="string">&quot;n3=&quot;</span>, n3)	</span><br></pre></td></tr></table></figure>
+<h2 id="精度丢失问题">精度丢失问题</h2>
+<p>精度丢失是几乎所有的编程语言都有的问题，是典型的二进制浮点数精度损失问题。在定长条件下，二进制小数和十进制小数互转可能有精度丢失，Go也不例外，观察以下代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">floatPrecisionLossTest</span><span class="params">()</span></span> &#123;</span><br><span class="line">	d := <span class="number">1129.6</span></span><br><span class="line">	fmt.Println(d * <span class="number">100</span>) <span class="comment">// 此处结果应该是：112960，实际打印的却是：112959.99999999999</span></span><br><span class="line"></span><br><span class="line">	m1 := <span class="number">8.2</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;值:%v--类型:%T \n&quot;</span>, m1, m1)</span><br><span class="line">	m2 := <span class="number">3.8</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;值:%v--类型:%T \n&quot;</span>, m2, m2)</span><br><span class="line">	fmt.Println(m1 - m2) <span class="comment">// 此处结果应该是：4.4，实际打印：4.3999999999999995</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解决精度丢失问题">解决精度丢失问题</h2>
+<p>使用第三方包需要使用 <code>go mod </code>，关于 <code>go mod</code> 参考之前的章节。引入第三方包解决经度丢失问题：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PS D:\GoProject\src&gt; go get github.com/shopspring/decimal</span><br><span class="line">go: downloading github.com/shopspring/decimal v1.3.1</span><br><span class="line">go get: added github.com/shopspring/decimal v1.3.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;github.com/shopspring/decimal&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">使用第三方包解决float精度丢失问题：go get github.com/shopspring/decimal</span></span><br><span class="line"><span class="comment">文档：https://pkg.go.dev/github.com/shopspring/decimal#section-readme</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">floatPrecisionLossSolveTest</span><span class="params">()</span></span> &#123;</span><br><span class="line">	a := decimal.NewFromFloat(<span class="number">1129.6</span>)</span><br><span class="line">	b := decimal.NewFromInt(<span class="number">100</span>)</span><br><span class="line">	fmt.Println(a.Mul(b)) <span class="comment">// output:112960</span></span><br><span class="line"></span><br><span class="line">	c := decimal.NewFromFloat(<span class="number">8.2</span>)</span><br><span class="line">	d := decimal.NewFromFloat(<span class="number">3.8</span>)</span><br><span class="line">	fmt.Println(c.Sub(d)) <span class="comment">// output:4.4</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 初始化一个变量</span></span><br><span class="line">	d0 := decimal.NewFromFloat(<span class="number">0</span>)</span><br><span class="line">	<span class="comment">// 设置精度 为三位 四舍五入的精度</span></span><br><span class="line">	decimal.DivisionPrecision = <span class="number">3</span></span><br><span class="line">	fmt.Println(d0)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 加法 Add</span></span><br><span class="line">	<span class="keyword">var</span> f1 <span class="keyword">float64</span> = <span class="number">2.1</span></span><br><span class="line">	<span class="keyword">var</span> i1 <span class="keyword">int</span> = <span class="number">3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(f1).Add(decimal.NewFromFloat(<span class="keyword">float64</span>(i1)))) <span class="comment">// 2.1 + 3: float和int相加=&gt;output: &quot;5.1&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> f2 <span class="keyword">float64</span> = <span class="number">2.1</span></span><br><span class="line">	<span class="keyword">var</span> f3 <span class="keyword">float64</span> = <span class="number">3.1</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(f2).Add(decimal.NewFromFloat(f3))) <span class="comment">// 2.1 + 3.1 (float和float相加)=&gt;output: &quot;5.2&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> f4 <span class="keyword">float64</span> = <span class="number">2</span></span><br><span class="line">	<span class="keyword">var</span> f5 <span class="keyword">float64</span> = <span class="number">3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(f4).Add(decimal.NewFromFloat(f5))) <span class="comment">// 2 + 3 (int和int相加 可以直接相加 d1 = num1+num2)=&gt; output: &quot;5&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 	减法 Sub</span></span><br><span class="line">	<span class="keyword">var</span> f7 <span class="keyword">float64</span> = <span class="number">3.1</span></span><br><span class="line">	<span class="keyword">var</span> f8 <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line">	d1 := decimal.NewFromFloat(f7).Sub(decimal.NewFromFloat(<span class="keyword">float64</span>(f8))) <span class="comment">// 3.1 - 2 float和int相减 =&gt; output: &quot;1.1&quot;</span></span><br><span class="line">	fmt.Println(d1)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> n1 <span class="keyword">float64</span> = <span class="number">2.1</span></span><br><span class="line">	<span class="keyword">var</span> n2 <span class="keyword">float64</span> = <span class="number">3.1</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(n1).Sub(decimal.NewFromFloat(n2))) <span class="comment">// 2.1 - 3.1 (float和float相减)=&gt;output: &quot;-1&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> n3 <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line">	<span class="keyword">var</span> n4 <span class="keyword">int</span> = <span class="number">3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(<span class="keyword">float64</span>(n3)).Sub(decimal.NewFromFloat(<span class="keyword">float64</span>(n4)))) <span class="comment">// 2 - 3 (int和int相减 d1 = num1 - num2) =&gt; output: &quot;-1&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 	乘法 Mul</span></span><br><span class="line">	<span class="keyword">var</span> n5 <span class="keyword">float64</span> = <span class="number">3.1</span></span><br><span class="line">	<span class="keyword">var</span> n6 <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(n5).Mul(decimal.NewFromFloat(<span class="keyword">float64</span>(n6)))) <span class="comment">// 3.1 * 2 float和int相乘 =&gt; output: &quot;6.2&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> n7 <span class="keyword">float64</span> = <span class="number">2.1</span></span><br><span class="line">	<span class="keyword">var</span> n8 <span class="keyword">float64</span> = <span class="number">3.1</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(n7).Mul(decimal.NewFromFloat(n8))) <span class="comment">// 2.1 * 3.1 (float和float相乘) =&gt; output: &quot;6.51&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> n9 <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line">	<span class="keyword">var</span> n10 <span class="keyword">int</span> = <span class="number">3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(<span class="keyword">float64</span>(n9)).Mul(decimal.NewFromFloat(<span class="keyword">float64</span>(n10)))) <span class="comment">// 2 * 3 int和int相乘(d1 = num1 * num2) =&gt;  output: &quot;6&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 	除法 Div</span></span><br><span class="line">	<span class="keyword">var</span> n11 <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line">	<span class="keyword">var</span> n12 <span class="keyword">int</span> = <span class="number">3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(<span class="keyword">float64</span>(n11)).Div(decimal.NewFromFloat(<span class="keyword">float64</span>(n12)))) <span class="comment">// 2 / 3 = 0.6666666666666667  =&gt;  output: &quot;0.6666666666666667&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 	float64 和 int 相除</span></span><br><span class="line">	<span class="keyword">var</span> num13 <span class="keyword">float64</span> = <span class="number">2.1</span></span><br><span class="line">	<span class="keyword">var</span> num14 <span class="keyword">int</span> = <span class="number">3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(num13).Div(decimal.NewFromFloat(<span class="keyword">float64</span>(num14)))) <span class="comment">// output: &quot;0.7&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 	float64 和 float64 相除</span></span><br><span class="line">	<span class="keyword">var</span> num15 <span class="keyword">float64</span> = <span class="number">2.1</span></span><br><span class="line">	<span class="keyword">var</span> num16 <span class="keyword">float64</span> = <span class="number">0.3</span></span><br><span class="line">	fmt.Println(decimal.NewFromFloat(num15).Div(decimal.NewFromFloat(num16))) <span class="comment">// output: &quot;7&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// int 和 int 相除 并保持3位精度</span></span><br><span class="line">	<span class="keyword">var</span> num17 <span class="keyword">int</span> = <span class="number">2</span></span><br><span class="line">	<span class="keyword">var</span> num18 <span class="keyword">int</span> = <span class="number">3</span></span><br><span class="line">	decimal.DivisionPrecision = <span class="number">3</span></span><br><span class="line">	result := decimal.NewFromFloat(<span class="keyword">float64</span>(num17)).Div(decimal.NewFromFloat(<span class="keyword">float64</span>(num18))) <span class="comment">// 2/3 = 0.667 =&gt;  output: &quot;0.667&quot;</span></span><br><span class="line">	fmt.Println(result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="科学计数法表示">科学计数法表示</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">n1 := <span class="number">5.1234e2</span></span><br><span class="line">n2 := <span class="number">5.1234e2</span></span><br><span class="line">n3 := <span class="number">5.1234e-2</span></span><br><span class="line">fmt.Println(<span class="string">&quot;n1=&quot;</span>, n1, <span class="string">&quot;n2=&quot;</span>, n2, <span class="string">&quot;n3=&quot;</span>, n3)</span><br></pre></td></tr></table></figure>
+<h1 id="字符串">字符串</h1>
+<p>Go 语言中，一个字符串是一个不可改变的字节序列。字符串可以包含任意的数据，包括byte值0，但是通常用来保存人类可读的文本。</p>
+<p>Go的字符串是由 <code>Utf-8</code> 编码之后的字节序列，所以不能修改。</p>
+<ul>
+<li>1个汉字占用3个字节</li>
+<li>1个英文字母占用1个字节</li>
+</ul>
+<p>Go使用 <code>rune</code>（1个int32类型的数字） 表示中文字符，使用 <code>byte</code>（1个uint8类型的数字）表示英文。Go语言中组成字符串的最小单位是字符，存储的最小单位是字节，字符串本身不支持修改。字节是数据存储的最小单元，每个字节的数据都可以用整数表示，例如一个字节储存的字符 <code>a</code>，实际存储的是 <code>97</code> 而非字符的字形，将这个实际存储的内容用数字表示的类型，称之为 <code>byte</code>。</p>
+<h2 id="len">len</h2>
+<p>内置的 <code>len</code> 函数用于返回一个字符串中的字节数目（不是 <code>rune</code> 字符数目），索引操作 <code>s[i]</code> 返回第 <code>i</code> 个字节的字节值，<code>i</code> 必须满足 <code>0 ≤ i&lt; len(s)</code> 条件约束。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="string">&quot;hello, world&quot;</span></span><br><span class="line">fmt.Println(<span class="built_in">len</span>(s))     <span class="comment">// &quot;12&quot;</span></span><br><span class="line">fmt.Println(s[<span class="number">0</span>], s[<span class="number">7</span>]) <span class="comment">// &quot;104 119&quot; (&#x27;h&#x27; and &#x27;w&#x27;)</span></span><br></pre></td></tr></table></figure>
+<p>如果试图访问超出字符串索引范围的字节将会导致 <code>panic</code> 异常：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c := s[<span class="built_in">len</span>(s)] <span class="comment">// panic: index out of range</span></span><br></pre></td></tr></table></figure>
+<p>第 <code>i</code> 个字节并不一定是字符串的第 <code>i</code> 个字符，因为对于非 <code>ASCII</code> 字符的 <code>UTF8</code> 编码会要两个或多个字节。</p>
+<p>比如：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="string">&quot;abc北京&quot;</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;字节长度：%d \n&quot;</span>, <span class="built_in">len</span>(s)) <span class="comment">//output:9</span></span><br><span class="line"><span class="comment">// 返回字符串每个字节的值</span></span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(s); i++ &#123;</span><br><span class="line">	fmt.Println(s[i])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">字节长度：9 </span><br><span class="line">97        // a  </span><br><span class="line">98        // b</span><br><span class="line">99        // c  </span><br><span class="line">229       // 北  </span><br><span class="line">140       // 北  </span><br><span class="line">151       // 北</span><br><span class="line">228       // 京 </span><br><span class="line">186       // 京</span><br><span class="line">172       // 京</span><br></pre></td></tr></table></figure>
+<p>英文字母占用一个字节：<code>97：a</code>/<code>98：b</code>/<code>99：c</code>，汉字占用三个字节：<code>229/140/151</code>组成<code>北</code>，<code>228/186/172</code>组成<code>京</code></p>
+<p>如果要获取字符串中字符的个数，需要先把字符串转换成 <code>[]rune</code> 类型，然后用 <code>len()</code> 函数获取字符个数：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">r := []<span class="keyword">rune</span>(s)</span><br><span class="line">fmt.Print(<span class="built_in">len</span>(r)) <span class="comment">// output:5</span></span><br></pre></td></tr></table></figure>
+<h2 id="字符串不可变性">字符串不可变性</h2>
+<p>字符串的值是不可变的：一个字符串包含的字节序列永远不会被改变，当然也可以给一个字符串变量分配一个新字符串值。可以像下面这样将一个字符串追加到另一个字符串：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="string">&quot;left foot&quot;</span></span><br><span class="line">t := s</span><br><span class="line">s += <span class="string">&quot;, right foot&quot;</span></span><br></pre></td></tr></table></figure>
+<p>这并不会导致原始的字符串值被改变，但是变量 <code>s</code> 将因为 <code>+=</code> 语句持有一个新的字符串值，但是 <code>t</code> 依然是包含原先的字符串值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(s) <span class="comment">// &quot;left foot, right foot&quot;</span></span><br><span class="line">fmt.Println(t) <span class="comment">// &quot;left foot&quot;</span></span><br></pre></td></tr></table></figure>
+<p>因为字符串是不可修改的，因此尝试修改字符串内部数据的操作也是被禁止的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s[<span class="number">0</span>] = <span class="string">&#x27;L&#x27;</span> <span class="comment">// compile error: cannot assign to s[0]</span></span><br></pre></td></tr></table></figure>
+<p>或者使用 <code>Sprintf</code> ：不会直接打印而是生成一个新的字符串</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = fmt.Sprintf(<span class="string">&quot;%s%s&quot;</span>, q1, q2)</span><br><span class="line">fmt.Println(result)</span><br></pre></td></tr></table></figure>
+<h2 id="字符串字面量">字符串字面量</h2>
+<p>Golang 支持两种类型的字符串字面量：</p>
+<ul>
+<li>非解释型表示法，需用用反引号&quot;`&quot;把字符序列包起来</li>
+<li>解释型表示法，需要用双引号&quot;&quot;包裹字符序列</li>
+</ul>
+<p>区别在于：前者表示所见即所得的(除了回车符)。后者所表示的值中转义符会起作用</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">// 字符串字面量语法：可以定义一个多行字符串</span></span><br><span class="line">	<span class="keyword">var</span> s1 <span class="keyword">string</span> = <span class="string">&quot;hello&quot;</span></span><br><span class="line">	<span class="keyword">var</span> s2 <span class="keyword">string</span> = <span class="string">`hello</span></span><br><span class="line"><span class="string">				     world`</span></span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<h2 id="字符串转义符">字符串转义符</h2>
+<p>所谓的解释型字符串就是用双引号括起来的字符串(“”)，其中的转义字符会被替换掉，这些转义字符包括：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">\a    <span class="comment">// 响铃     </span></span><br><span class="line">\b    <span class="comment">// 退格</span></span><br><span class="line">\f    <span class="comment">// 换页</span></span><br><span class="line">\n    <span class="comment">// 换行</span></span><br><span class="line">\r    <span class="comment">// 回车</span></span><br><span class="line">\t    <span class="comment">// 制表符</span></span><br><span class="line">\u    <span class="comment">// Unicode 字符</span></span><br><span class="line">\v    <span class="comment">// 垂直制表符</span></span><br><span class="line">\<span class="string">&quot;    // 双引号</span></span><br><span class="line"><span class="string">\\    // 反斜杠</span></span><br></pre></td></tr></table></figure>
+<h2 id="Go语言字符编码">Go语言字符编码</h2>
+<p>Go 语言采用的字符编码方案从属于 <code>Unicode</code> 编码规范。Go 语言的代码正是由 <code>Unicode</code> 字符组成的，且源码文件必须使用 <code>UTF-8</code> 编码格式进行存储。如果源码文件中出现了非 <code>UTF-8</code> 编码的字符，那么在构建、安装以及运行的时候，go 命令会报错  <code>illegal UTF-8 encoding </code>。当一个 <code>string</code> 类型的值被转换为 <code>[]rune</code> 类型值的时候，其中的字符串会被拆分成一个个的 <code>Unicode</code> 字符。</p>
+<h2 id="截取字符串">截取字符串</h2>
+<p>可以通过下面的语法截取字符串中的内容：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">str := <span class="string">&quot;abcdefg&quot;</span>	</span><br><span class="line">t1 := str[<span class="number">1</span>:<span class="number">4</span>] <span class="comment">//startIndex=1,endIndex=4</span></span><br></pre></td></tr></table></figure>
+<p>此时 t1 的内容为  <code>bcd</code>，该语法通过下标索引的方式截取字符串中的内容，特点是 “左含右不含”。也就是说新的子串包含源串索引为 1 的字符，而不包含源串索引为 4 的字符。</p>
+<p>如果要从源串的开始处截取可以省略第一个索引：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t2 := str[:<span class="number">4</span>]  <span class="comment">//省略第一个索引从0开始，startIndex=0,endIndex=4</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>t2 的内容为 “abcd”。</p>
+</blockquote>
+<p>如果要从源串的某个位置开始一直截取到末尾，可以省略第二个索引：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t3 := str[<span class="number">1</span>:]  <span class="comment">//省略第二个索引，从1开始截取到末尾</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>t3 的内容为 “cdef”</p>
+</blockquote>
+<p>访问越界问题：如果试图访问超出字符串索引范围的字节将会在运行时导致 panic 异常：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t4 := str[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>runtime error: slice bounds out of range [:10] with length 7 数组越界</p>
+</blockquote>
+<h2 id="遍历字符串">遍历字符串</h2>
+<p>可以通过下标索引字符串中的字节，所以可以用这种方式遍历字符串：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p := <span class="string">&quot;abc你好&quot;</span></span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(p); i++ &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%c&quot;</span>, p[i])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abcä% å¥%</span><br></pre></td></tr></table></figure>
+<p>可见在字符串中含有非单字节的字符时这种方法是不正确的。<code>range</code> 函数解决这个问题：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _, v := <span class="keyword">range</span> s &#123;</span><br><span class="line">    fmt.Printf(<span class="string">&quot;%c&quot;</span>, v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abc你好</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>带有 range 子句的 for 语句会先把被遍历的字符串值拆成一个字节序列，然后再试图找出这个字节序列中包含的每一个 UTF-8 编码值，或者说每一个 Unicode 字符。因此在 range for 语句中，赋给第二个变量的值是UTF-8 编码值代表的那个 Unicode 字符，类型是 rune</p>
+</blockquote>
+<h2 id="字符串分割">字符串分割</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">url := <span class="string">&quot;www.baidu.com&quot;</span></span><br><span class="line">strArray := strings.Split(url, <span class="string">&quot;.&quot;</span>)</span><br><span class="line">fmt.Println(strArray)</span><br></pre></td></tr></table></figure>
+<h2 id="字符串-Join">字符串 Join</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(strings.Join(strArray, <span class="string">&quot;.&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="前缀判断">前缀判断</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(strings.HasPrefix(url, <span class="string">&quot;www&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="后缀判断">后缀判断</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(strings.HasSuffix(url, <span class="string">&quot;com&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="修改字符串">修改字符串</h2>
+<p>Golang 中不能修改字符串的内容，就是说不能通过 <code>s[i]</code> 这种方式修改字符串中的字符。要修改字符串的内容，可以先将字符串的内容复制到一个可写的变量中，一般是 <code>[]byte</code> 或 <code>[]rune</code> 类型的变量，然后再进行修改。</p>
+<p><strong>注意</strong>：如果要对字符串中的字节进行修改，就转换为 <code>[]byte</code> 类型，如果要对字符串中的字符修改，就转换为 <code>[]rune</code> 类型，转换类型的过程中会自动复制数据</p>
+<p><strong>修改字符串中的字节(<code>[]byte</code>)</strong><br>
+对于单字节字符来说可以用这种方式进行修改：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ss := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">value := []<span class="keyword">byte</span>(ss) <span class="comment">// 转换为[]byte</span></span><br><span class="line">value[<span class="number">5</span>] = <span class="string">&#x27;,&#x27;</span>      <span class="comment">// 将空格替换为“,”</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;%s\n&quot;</span>, ss)</span><br><span class="line">fmt.Printf(<span class="string">&quot;%s\n&quot;</span>, value)</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br><span class="line">hello,world</span><br></pre></td></tr></table></figure>
+<p><strong>修改字符串中的字符(<code>[]rune</code>)</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sss := <span class="string">&quot;一梦三两年&quot;</span></span><br><span class="line">value2 := []<span class="keyword">rune</span>(sss) <span class="comment">// 转换为[]rune</span></span><br><span class="line">value2[<span class="number">2</span>] = <span class="string">&#x27;四&#x27;</span></span><br><span class="line">value2[<span class="number">3</span>] = <span class="string">&#x27;五&#x27;</span></span><br><span class="line">fmt.Println(sss)</span><br><span class="line">fmt.Println(<span class="keyword">string</span>(value2))</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">一梦三两年</span><br><span class="line">一梦四五年</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：string 类型的 0 值是长度为 0 的字符串，即空字符串 “”</p>
+</blockquote>
+<h2 id="strconv-包">strconv 包</h2>
+<p>除了字符串、字符、字节之间的转换，字符串和数值之间的转换也比较常见。由 <code>strconv</code> 包提供这类转换功能。</p>
+<p>将一个整数转为字符串，一种方法是用 <code>fmt.Sprintf</code> 返回一个格式化的字符串；另一个方法是用<code>strconv.Itoa()</code> ：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x := <span class="number">123</span></span><br><span class="line">y := fmt.Sprintf(<span class="string">&quot;%d&quot;</span>, x)</span><br><span class="line">fmt.Println(y, strconv.Itoa(x)) <span class="comment">// &quot;123 123&quot; “整数到ASCII”</span></span><br></pre></td></tr></table></figure>
+<p><code>FormatInt</code> 和 <code>FormatUint</code> 函数可以用不同的进制来格式化数字：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(strconv.FormatInt(<span class="keyword">int64</span>(x), <span class="number">2</span>)) <span class="comment">// &quot;1111011&quot;</span></span><br></pre></td></tr></table></figure>
+<p><code>fmt.Printf</code> 函数的 <code>%b</code> 、<code>%d</code>、<code>%o</code> 和<code>%x</code> 等参数提供功能往往比 <code>strconv</code> 包的 <code>Format</code> 函数方便很多，特别是在需要包含有附加额外信息的时候：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s := fmt.Sprintf(<span class="string">&quot;x=%b&quot;</span>, x) <span class="comment">// &quot;x=1111011&quot;</span></span><br></pre></td></tr></table></figure>
+<p>如果要将一个字符串解析为整数，可以使用 <code>strconv</code> 包的<code>Atoi</code>或<code>ParseInt</code>函数，还有用于解析无符号整数的<code>ParseUint</code> 函数：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x, err := strconv.Atoi(<span class="string">&quot;123&quot;</span>)             <span class="comment">// x is an int</span></span><br><span class="line">y, err := strconv.ParseInt(<span class="string">&quot;123&quot;</span>, <span class="number">10</span>, <span class="number">64</span>) <span class="comment">// base 10, up to 64 bits</span></span><br></pre></td></tr></table></figure>
+<p><code>ParseInt</code> 函数的第三个参数是用于指定整型数的大小；例如16表示int16，0则表示int。在任何情况下，返回的结果y总是int64类型，可以通过强制类型转换将它转为更小的整数类型。</p>
+<p>有时候也会使用 <code>fmt.Scanf</code> 来解析输入的字符串和数字，特别是当字符串和数字混合在一行的时候，它可以灵活处理不完整或不规则的输入。</p>
+<h2 id="字符类型">字符类型</h2>
+<p>在Go语言中支持两个字符类型，一个是byte（实际上是uint8的别名），代表UTF-8字符串的单个字节的值；另一个是rune，代表单个Unicode字符。</p>
+<p>一个 <code>string</code> 类型的值既可以被拆分为<strong>一个包含多个字符的序列</strong>，也可以被拆分为<strong>一个包含多个字节的序列</strong>。</p>
+<ul>
+<li>前者由以 <code>rune</code> 为元素类型的切片表示</li>
+<li>后者由以 <code>byte</code> 为元素类型的切片代表</li>
+</ul>
+<blockquote>
+<p><code>rune</code> 是Go语言特有的一个基本数据类型，它的一个值就代表一个字符，即：一个Unicode 字符(就是一个中文字符，占3个字节)</p>
+</blockquote>
+<p>看以下代码:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="string">&quot;helloworld 世界你好&quot;</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;string:%q\n&quot;</span>, s)              <span class="comment">// 原文格式输出</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;rune(char):%q\n&quot;</span>, []<span class="keyword">rune</span>(s))  <span class="comment">// 输出[]rune切片</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;rune(hex):%x\n&quot;</span>, []<span class="keyword">rune</span>(s))   <span class="comment">// 采用16进制数表示</span></span><br><span class="line">fmt.Printf(<span class="string">&quot;bytes(hex):% x\n&quot;</span>, []<span class="keyword">byte</span>(s)) <span class="comment">// 输出[]byte切片</span></span><br></pre></td></tr></table></figure>
+<p>输出:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string:&quot;helloworld 世界你好&quot;</span><br><span class="line">rune(char):[&#x27;h&#x27; &#x27;e&#x27; &#x27;l&#x27; &#x27;l&#x27; &#x27;o&#x27; &#x27;w&#x27; &#x27;o&#x27; &#x27;r&#x27; &#x27;l&#x27; &#x27;d&#x27; &#x27; &#x27; &#x27;世&#x27; &#x27;界&#x27; &#x27;你&#x27; &#x27;好&#x27;]</span><br><span class="line">rune(hex):[68 65 6c 6c 6f 77 6f 72 6c 64 20 4e16 754c 4f60 597d]</span><br><span class="line">bytes(hex):68 65 6c 6c 6f 77 6f 72 6c 64 20 e4 b8 96 e7 95 8c e4 bd a0 e5 a5 bd</span><br></pre></td></tr></table></figure>
+<p>结果分析：</p>
+<ol>
+<li>第二行输出说明：字符串在被转换为 <code>[]rune</code> 类型的值时每个字符都会成为一个独立的 <code>rune</code> 类型的元素值。</li>
+<li>由于每个 <code>rune</code> 底层的值都是采用 <code>UTF-8</code> 编码值来表达的，所以第三行采用 <code>16进制数</code> 来表示上述字符串，每一个16进制的字符分别表示一个字符，可以看到，当遇到中文字符时，由于底层存储需要更大的空间，所以使用的16进制数字也比较大，比如 <code>4e16</code> 和 <code>754c</code> 分别代表世和界。</li>
+<li>如果将整个字符的 <code>UTF-8</code> 编码值都拆成字节序列时，就变成了第四行的输出，可以看到一个中文字符底层占用了三个byte，比如<code>e4 b8 96 </code>/ <code>e7 95 8c</code>分别对应UFT-8编码值的 <code>4e16</code> 和 <code>754c</code>，也就是中文字符中的世和界。</li>
+</ol>
+<p>总结： string 类型的值会由若干个 Unicode 字符组成，每个 Unicode 字符都可以由一个 rune 类型的值来承载。这些字符在底层都会被转换为 UTF-8 编码值，而这些 UTF-8 编码值又会以字节序列的形式表达和存储。所以：一个 string 类型的值在底层就是一个能够表达若干个 UTF-8 编码值的字节序列。</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+ <!--
+  <div class="author">
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="W"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <div class="author-title">
+      <div>WangPengLiang</div>
+      <!-- <div>2022-04-09</div> 
+    </div>
+  </div>
+-->
+
+  
+
+  <div class="divider"></div>
+</div>
+
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
