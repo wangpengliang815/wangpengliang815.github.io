@@ -73,11 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B">异步编程</a></li>
 <li><a href="/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">值类型和引用类型内存分配</a></li>
 <li><a href="/dotnet/1.1DataProtection%E7%AE%80%E4%BB%8B">1.1 DataProtection简介</a></li>
-<li><a href="/dotnet/1.2DataProtection%E6%96%B9%E6%B3%95">1.2 DataProtection方法</a></li>
-<li><a href="/dotnet/1.3%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95">1.3 落地实践及多环境调试</a></li>
-<li><a href="/dotnet/1.4UserSecrets">1.4 UserSecrets</a></li>
-<li><a href="/dotnet/1.5%E5%9F%BA%E4%BA%8EDataProtection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88">1.5 数据保护方案</a></li>
-<li><a href="/dotnet/1.6%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90AzureDevops%E7%AE%A1%E9%81%93">1.6 集成AzureDevops</a></li>
+<li><a href="/dotnet/1.2%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95">1.2 实践及多环境调试</a></li>
+<li><a href="/dotnet/1.3%E5%9F%BA%E4%BA%8EDataProtection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88">1.3 数据保护方案</a></li>
+<li><a href="/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90AzureDevops%E7%AE%A1%E9%81%93">1.4 AzureDevops集成</a></li>
 </ul>
 <h2 id="🐹-Golang">🐹 Golang</h2>
 <ul>
@@ -245,14 +243,13 @@ function sidebar_toggle() {
 <li>值类型 <code>ValueType</code></li>
 <li>引用类型 <code>ReferenceType</code></li>
 </ul>
-<p>值类型和引用类型都继承自<code>System.Object</code>类。不同的是几乎所有的引用类型都直接从<code>System.Object</code>继承，而值类型则继承<code>System.ValueType</code>。<code>System.ValueType</code>直接派生于<code>System.Object</code>。即<code>System.ValueType</code>本身是一个类类型，而不是值类型。关键在于<code>ValueType</code>重写了<code>Equals()</code>方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。</p>
-<span id="more"></span>
+<p>值类型和引用类型都继承自 <code>System.Object</code> 类。不同的是几乎所有的引用类型都直接从 <code>System.Object</code> 继承，而值类型则继承 <code>System.ValueType </code>。<code>System.ValueType</code>直接派生于<code>System.Object</code>。即<code>System.ValueType</code>本身是一个类类型，而不是值类型。关键在于<code>ValueType</code>重写了<code>Equals()</code>方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。</p>
 <h1 id="区别">区别</h1>
 <ul>
 <li>引用类型变量的赋值只复制对对象的引用而不复制对象本身。而将一个值类型变量赋给另一个值类型变量时，将复制包含的值</li>
 <li>引用类型可以派生出新的类型，而值类型不能</li>
-<li>引用类型可以包含<code>null</code>值，值类型不能（<strong>可空类型功能允许将 null 赋给值类型</strong>）</li>
-<li>引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方**(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。**</li>
+<li>引用类型可以包含 <code>null</code> 值，值类型不能（<strong>可空类型功能允许将 null 赋给值类型</strong>）</li>
+<li>引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。</li>
 </ul>
 <blockquote>
 <p>误区：“引用类型存储在堆上，值类型保存在栈上”，这句话前半部分是正确的，引用类型的实例总是在堆上创建的。但是变量的值是在声明的位置存储的，所以假定一个类中有一个<code>int</code>类型的实例变量，那么这个变量的值是跟对象中的其他数据在一起也就是堆上。只有局部变量（方法内部声明的变量）和方法参数在栈上。</p>
@@ -270,7 +267,7 @@ function sidebar_toggle() {
 </ul>
 <h2 id="栈的特征">栈的特征</h2>
 <ul>
-<li>栈空间比较小（每个线程只有一个栈占用<code>1MB</code>，栈内存溢出抛出<code>StackOverflowException</code>但是读取速度快</li>
+<li>栈空间比较小（每个线程只有一个栈占用 <code>1MB</code>，栈内存溢出抛出 <code>StackOverflowException</code> 但是读取速度快</li>
 <li>数据只能从栈的顶端插入或删除，是连续存储的，<strong>把数据放到栈顶称为入栈</strong>，<strong>从栈顶删除数据称为出栈</strong>​</li>
 <li>存放方法的参数、局部变量、返回地址等值，当一个方法执行完毕后立刻自动清除</li>
 </ul>
@@ -281,7 +278,7 @@ function sidebar_toggle() {
 </blockquote>
 <h2 id="堆的特征">堆的特征</h2>
 <ul>
-<li>堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出<code>OutOfMemoryException</code>，但是读取速度慢</li>
+<li>堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出 <code>OutOfMemoryException</code> ，但是读取速度慢</li>
 <li>数据存储不连续，与栈不同：堆里的内存能够以任意顺序存入和移除</li>
 <li>存放引用类型的对象，通过<code>GC</code>清理</li>
 </ul>
@@ -292,8 +289,8 @@ function sidebar_toggle() {
 <h2 id="变量和对象在内存中的分配">变量和对象在内存中的分配</h2>
 <p><strong>示例代码</strong>：</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">TestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> x;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Test1</span>(<span class="params"></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">var</span> a=<span class="number">1</span>; </span><br><span class="line">  <span class="keyword">var</span> b=<span class="keyword">new</span> TestClass();</span><br><span class="line">  <span class="keyword">var</span> c=a;</span><br><span class="line">  <span class="keyword">var</span> d=b;</span><br><span class="line">  <span class="keyword">var</span> e=d.x;</span><br><span class="line">  <span class="keyword">var</span> f=TestClass.y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>内存分配情况</strong><br>
-<img src="/images/2021-09-02-22-42-10.png" alt=""></p>
+<p><strong>内存分配情况</strong>：</p>
+<p><img src="/images/2021-09-02-22-42-10.png" alt=""></p>
 <ol>
 <li><code>Test1()</code>方法被调用：系统为该方法创建一个栈桢，用于存储该方法使用到的值类型的变量、指针、调用其他方法的返回地址等</li>
 <li>方法执行到 <code>var a=1</code>：变量<code>a</code>的值<code>1</code>首先入栈存储，栈的起始地址为<code>0x000000671b77e5a4</code></li>
@@ -306,8 +303,8 @@ function sidebar_toggle() {
 <h2 id="方法参数在栈中的分配">方法参数在栈中的分配</h2>
 <p><strong>示例代码：</strong></p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">TestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> x;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">sum</span>(<span class="params"><span class="built_in">int</span> i,<span class="built_in">int</span> j</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> i+j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Test1</span>(<span class="params"></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">var</span> a=<span class="keyword">new</span> TestClass();</span><br><span class="line">  <span class="built_in">int</span> b = <span class="number">0</span>;</span><br><span class="line">  b=a.sum(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>内存分配情况：</strong><br>
-<img src="/images/2021-09-02-22-42-35.png" alt=""><br>
+<p><strong>内存分配情况：</strong></p>
+<p><img src="/images/2021-09-02-22-42-35.png" alt=""><br>
 ​</p>
 <ol>
 <li>方法执行到 <code>var a=new TestClass()</code> : 在堆中开辟一块内存用于存储<code>TestClass</code>实例对象，然后变量<code>a</code>入栈，变量<code>a</code>的值为<code>TestClass</code>实例对象的引用（实际上存储的是<code>TestClass</code>实例在堆上的内存地址，也就是指针）</li>

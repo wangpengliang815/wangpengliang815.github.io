@@ -73,11 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B">异步编程</a></li>
 <li><a href="/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">值类型和引用类型内存分配</a></li>
 <li><a href="/dotnet/1.1DataProtection%E7%AE%80%E4%BB%8B">1.1 DataProtection简介</a></li>
-<li><a href="/dotnet/1.2DataProtection%E6%96%B9%E6%B3%95">1.2 DataProtection方法</a></li>
-<li><a href="/dotnet/1.3%E8%90%BD%E5%9C%B0%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95">1.3 落地实践及多环境调试</a></li>
-<li><a href="/dotnet/1.4UserSecrets">1.4 UserSecrets</a></li>
-<li><a href="/dotnet/1.5%E5%9F%BA%E4%BA%8EDataProtection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88">1.5 数据保护方案</a></li>
-<li><a href="/dotnet/1.6%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90AzureDevops%E7%AE%A1%E9%81%93">1.6 集成AzureDevops</a></li>
+<li><a href="/dotnet/1.2%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95">1.2 实践及多环境调试</a></li>
+<li><a href="/dotnet/1.3%E5%9F%BA%E4%BA%8EDataProtection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88">1.3 数据保护方案</a></li>
+<li><a href="/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90AzureDevops%E7%AE%A1%E9%81%93">1.4 AzureDevops集成</a></li>
 </ul>
 <h2 id="🐹-Golang">🐹 Golang</h2>
 <ul>
@@ -239,9 +237,9 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <p>对于多线程，经常使用的是<code>Thread</code>。在了解<code>Task</code>之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在<code>.net 4.0</code>之后被一种称为<code>基于“任务的编程模型”</code>所冲击，这就是<code>Task</code>。</p>
-<p><code>Task</code>会比<code>Thread</code>具有更小的性能开销，<code>Task</code>是架构在<code>Thread</code>之上的就是说<code>Task</code>最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。<code>Task</code>类的表示单个操作不返回一个值，通常以异步方式执行，<code>Task</code> 对象是<code>&quot;基于任务的异步模式&quot;</code>首次引入<code>.NET Framework 4</code> 中。</p>
-<p>因为由执行工作 <code>Task</code>对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用<code>Status</code>属性，以及 <code>IsCanceled</code>,<code>IsCompleted</code>, 和 <code>IsFaulted</code>属性，以确定任务的状态</p>
+  <p>对于多线程，经常使用的是 <code>Thread</code>。在了解 <code>Task</code> 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 <code>.net 4.0</code> 之后被一种称为 <code>基于“任务的编程模型”</code> 所冲击，这就是 <code>Task</code>。</p>
+<p><code>Task </code>会比 <code>Thread</code> 具有更小的性能开销，<code>Task </code>是架构在 <code>Thread</code> 之上的就是说 <code>Task</code> 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。<code>Task</code> 类的表示单个操作不返回一个值，通常以异步方式执行，<code>Task</code>  对象是 <code>&quot;基于任务的异步模式“</code> 首次引入 <code>.NET Framework 4</code>  中。</p>
+<p>因为由执行工作  <code>Task</code> 对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用<code>Status </code>属性，以及 <code>IsCanceled</code>,<code>IsCompleted</code>, 和 <code>IsFaulted</code>属性，以确定任务的状态。</p>
 <h1 id="相关概念理解">相关概念理解</h1>
 <ul>
 <li>同步（Synchronous）</li>
@@ -461,7 +459,7 @@ function sidebar_toggle() {
 <li>在 UI 线程，如果使用了<code>async/await</code>，就尽量不要再使用<code>Task.Wait()/Task.Result</code>了，就一直异步一条路走到黑好了（微软称其为<code>Async All the Way</code>）</li>
 <li>如果可能，尽量在异步任务后添加<code>.ConfigureAwait(false);</code>这样，异步任务后面继续执行的代码就不会回到原<code>UI</code>线程了，而是直接从线程池中再取出一个线程执行；这样，即便<code>UI</code>线程后续可能有别的原因造成阻塞，也不会产生死锁了；把原来的代码改成这样，就不会死锁了</li>
 </ul>
-<p>只能是一路<code>async/await</code>。微软将其描述为：<code>async/await 会像病毒一样在你的代码中传播</code>。</p>
+<p>只能是一路 <code>async/await</code>。微软将其描述为：<code>async/await 会像病毒一样在你的代码中传播</code>。</p>
 <blockquote>
 <p>Others have also noticed the spreading behavior of asynchronous programming and have called it “contagious” or compared it to a zombie virus.</p>
 </blockquote>
@@ -469,33 +467,39 @@ function sidebar_toggle() {
 <p>如果你是类库提供者，因为不确定调用者程序是<code>WPF</code>/<code>Winform</code>…，为了防止代码调用者在同步方法中使用<code>Wait()/Result</code>调用异步方法，还需要考虑添加<code>.ConfigureAwait(false);</code></p>
 <figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">async</span> Task <span class="title">DoAsync</span>(<span class="params"></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">await</span> Task.Run(() =&gt; &#123; &#125;).ConfigureAwait(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这一句的目的是防止执行上下文切换回 UI 线程。</p>
-<p>这样，即便真的使用 DoAsync().Wait() 也不会发生死锁。注意，整个方法调用链都需要使用<code>.ConfigureAwait(false)</code>才能够防止线程切换，在调用方的 Wait() 方法中发生死锁。</p>
+<p>这样，即便真的使用 DoAsync().Wait() 也不会发生死锁。注意，整个方法调用链都需要使用 <code>.ConfigureAwait(false)</code> 才能够防止线程切换，在调用方的 Wait() 方法中发生死锁。</p>
 <h2 id="更多死锁相关">更多死锁相关</h2>
-<p><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/deadlock-in-task-wait.html">https://blog.walterlv.com/post/deadlock-in-task-wait.html</a><br>
-<a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html">https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html</a><br>
-<a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html">https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html</a><br>
-<a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html">https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html</a></p>
-<p><strong>解决方法</strong><br>
-<a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html">https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html</a><br>
-<a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/convert-async-to-sync-by-push-frame.html">https://blog.walterlv.com/post/convert-async-to-sync-by-push-frame.html</a></p>
-<p><strong>参考</strong><br>
-<a target="_blank" rel="noopener" href="https://blog.csdn.net/WPwalter/article/details/78370706">https://blog.csdn.net/WPwalter/article/details/78370706</a><br>
-<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming">https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/qingfenglin/p/12058267.html">https://www.cnblogs.com/qingfenglin/p/12058267.html</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/liqingwen/p/5844095.html">https://www.cnblogs.com/liqingwen/p/5844095.html</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhaoshujie/p/11082753.html">https://www.cnblogs.com/zhaoshujie/p/11082753.html</a><br>
-<a target="_blank" rel="noopener" href="https://q.cnblogs.com/q/107005/">https://q.cnblogs.com/q/107005/</a><br>
-<a target="_blank" rel="noopener" href="https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/">https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/</a><br>
-<a target="_blank" rel="noopener" href="https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/">https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html">https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ittranslator/p/13703279.html">https://www.cnblogs.com/ittranslator/p/13703279.html</a><br>
-<a target="_blank" rel="noopener" href="https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/">https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wcrBlog/p/11690460.html">https://www.cnblogs.com/wcrBlog/p/11690460.html</a><br>
-<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult">https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult</a><br>
-<a target="_blank" rel="noopener" href="https://q.cnblogs.com/q/124633/">https://q.cnblogs.com/q/124633/</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/dudu/p/9860959.html#!comments">https://www.cnblogs.com/dudu/p/9860959.html#!comments</a><br>
-<a target="_blank" rel="noopener" href="http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/">http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html">https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/deadlock-in-task-wait.html">https://blog.walterlv.com/post/deadlock-in-task-wait.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html">https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html">https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html">https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html</a></li>
+</ul>
+<p><strong>解决方法</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html">https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.walterlv.com/post/convert-async-to-sync-by-push-frame.html">https://blog.walterlv.com/post/convert-async-to-sync-by-push-frame.html</a></li>
+</ul>
+<p><strong>参考</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/WPwalter/article/details/78370706">https://blog.csdn.net/WPwalter/article/details/78370706</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming">https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qingfenglin/p/12058267.html">https://www.cnblogs.com/qingfenglin/p/12058267.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/liqingwen/p/5844095.html">https://www.cnblogs.com/liqingwen/p/5844095.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhaoshujie/p/11082753.html">https://www.cnblogs.com/zhaoshujie/p/11082753.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://q.cnblogs.com/q/107005/">https://q.cnblogs.com/q/107005/</a></li>
+<li><a target="_blank" rel="noopener" href="https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/">https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/">https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html">https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ittranslator/p/13703279.html">https://www.cnblogs.com/ittranslator/p/13703279.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/">https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wcrBlog/p/11690460.html">https://www.cnblogs.com/wcrBlog/p/11690460.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult">https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult</a></li>
+<li><a target="_blank" rel="noopener" href="https://q.cnblogs.com/q/124633/">https://q.cnblogs.com/q/124633/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dudu/p/9860959.html#!comments">https://www.cnblogs.com/dudu/p/9860959.html#!comments</a></li>
+<li><a target="_blank" rel="noopener" href="http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/">http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html">https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html</a></li>
+</ul>
 
 </div>
 
