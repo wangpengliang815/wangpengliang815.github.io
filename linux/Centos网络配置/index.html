@@ -130,9 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="🖥️-Linux">🖥️ Linux</h2>
 <ul>
-<li><a href="/linux/Centos%E5%AE%89%E8%A3%85">Centos安装</a></li>
-<li><a href="/linux/Linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E">Linux目录说明</a></li>
-<li><a href="/linux/Centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">Centos网络配置</a></li>
+<li><a href="/linux/VMware%E5%AE%89%E8%A3%85Centos">VMware 安装Centos</a></li>
+<li><a href="/linux/Linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E">Linux 目录说明</a></li>
+<li><a href="/linux/Centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">Centos 网络配置</a></li>
 <li><a href="/linux/Centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC">Centos7升级gcc版本</a></li>
 <li><a href="/linux/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">Linux常用命令</a></li>
 </ul>
@@ -239,32 +239,31 @@ function sidebar_toggle() {
           <div class="book-post">
   <h1 id="网络模式">网络模式</h1>
 <ul>
-<li>VMnet0（桥接模式）</li>
-<li>VMnet1（仅主机模式）</li>
-<li>VMnet8（NAT模式）</li>
+<li><code>VMnet0</code>（桥接模式）</li>
+<li><code>VMnet1</code>（仅主机模式）</li>
+<li><code>VMnet8</code>（NAT模式）</li>
 </ul>
-<span id="more"></span>
-<h2 id="NAT-地址转换-VMnet8">NAT(地址转换)-VMnet8</h2>
-<p>虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
+<h2 id="NAT-VMnet8">NAT-VMnet8</h2>
+<p>NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
 <p><code>NAT</code> 模式下的虚拟系统的 <code>TCP/IP</code> 配置信息是由 <code>VMnet8(NAT)</code> 虚拟网络的 <code>DHCP</code> 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。</p>
 <p><img src="/images/2021-09-03-15-22-27.png" alt=""></p>
 <blockquote>
 <p>虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机</p>
 </blockquote>
-<h2 id="Bridged-桥接-VMnet0">Bridged(桥接)-VMnet0</h2>
-<p>虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。</p>
+<h2 id="Bridged-VMnet0">Bridged-VMnet0</h2>
+<p>Bridged(桥接)-VMnet0：虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。</p>
 <p>需要手工为虚拟系统配置<code>IP地址</code>、<code>子网掩码</code>，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。</p>
 <p><img src="/images/2021-09-03-15-23-07.png" alt=""></p>
 <blockquote>
 <p>这个模式里，虚拟机和宿主机可以互相ping通</p>
 </blockquote>
-<h1 id="查看本机IP及网卡信息">查看本机IP及网卡信息</h1>
+<h1 id="查看IP及网卡信息">查看IP及网卡信息</h1>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr</span><br></pre></td></tr></table></figure>
 <p><img src="/images/2021-09-03-15-23-43.png" alt=""></p>
-<h1 id="使用VI模式编辑网卡信息">使用<code>VI</code>模式编辑网卡信息</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet</span><br><span class="line">BOOTPROTO=static #修改成static</span><br><span class="line">DEFROUTE=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">NAME=eno16777736</span><br><span class="line">UUID=bf5337ab-c044-4af7-9143-12da0d493b89</span><br><span class="line">DEVICE=eno16777736</span><br><span class="line">ONBOOT=yes #修改成yes</span><br><span class="line">PEERDNS=yes</span><br><span class="line">PEERROUTES=yes</span><br><span class="line">IPV6_PEERDNS=yes</span><br><span class="line">IPV6_PEERROUTES=yes</span><br><span class="line">IPADDR=192.168.31.32  # 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段</span><br><span class="line">NETMASK=255.255.255.0 # 设置子网掩码，跟宿主一样</span><br><span class="line">GATEWAY=192.168.31.1  # 默认网关，跟宿主一样</span><br><span class="line">DNS1=192.168.31.1 # DNS，跟宿主一样</span><br></pre></td></tr></table></figure>
-<h1 id="重启network">重启network</h1>
+<h1 id="编辑网卡信息">编辑网卡信息</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet</span><br><span class="line">BOOTPROTO=static <span class="comment">#修改成static</span></span><br><span class="line">DEFROUTE=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">NAME=eno16777736</span><br><span class="line">UUID=bf5337ab-c044-4af7-9143-12da0d493b89</span><br><span class="line">DEVICE=eno16777736</span><br><span class="line">ONBOOT=yes <span class="comment">#修改成yes</span></span><br><span class="line">PEERDNS=yes</span><br><span class="line">PEERROUTES=yes</span><br><span class="line">IPV6_PEERDNS=yes</span><br><span class="line">IPV6_PEERROUTES=yes</span><br><span class="line">IPADDR=192.168.31.32  <span class="comment"># 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段</span></span><br><span class="line">NETMASK=255.255.255.0 <span class="comment"># 设置子网掩码，跟宿主一样</span></span><br><span class="line">GATEWAY=192.168.31.1  <span class="comment"># 默认网关，跟宿主一样</span></span><br><span class="line">DNS1=192.168.31.1 <span class="comment"># DNS，跟宿主一样</span></span><br></pre></td></tr></table></figure>
+<h1 id="重启-network">重启 network</h1>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
 
 </div>
