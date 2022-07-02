@@ -238,34 +238,57 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <h1 id="网络模式">网络模式</h1>
+  <h1 id="安装-jdk-git">安装 jdk/git</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y install java-1.8.0-openjdk* <span class="comment">#安装jdk</span></span><br><span class="line">yum install git <span class="comment">#安装git</span></span><br></pre></td></tr></table></figure>
+<h1 id="安装-ca-certificates">安装 ca-certificates</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release</span><br><span class="line">yum install -y ca-certificates</span><br></pre></td></tr></table></figure>
+<h1 id="导入公钥">导入公钥</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key</span><br></pre></td></tr></table></figure>
+<h1 id="安装-Jenkins">安装 Jenkins</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirrors.bfsu.edu.cn/jenkins/redhat-stable/jenkins-2.319.3-1.1.noarch.rpm</span><br><span class="line">rpm -ivh jenkins-2.319.3-1.1.noarch.rpm</span><br></pre></td></tr></table></figure>
+<h1 id="配置修改">配置修改</h1>
+<p>主要修改两个地方：</p>
+<p><strong>账户</strong>：因为 <code>Jenkins</code> 默认的账户是 <code>jenkins</code>，这个账户我们没有，而且为了不因为权限出现各种问题，这里直接使用 <code>root</code>，也可以创建一个名叫 <code>jenkins</code> 的账户</p>
+<p><strong>端口</strong>：Jenkins的默认端口是 <code>8080</code>，为了避免端口冲突，可以修改为其他端口</p>
+<p>配置文件地址：<code>vi /etc/sysconfig/jenkins</code></p>
+<h1 id="防火墙添加端口">防火墙添加端口</h1>
+<p>查看开放端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
+<p>添加 <code>Jenkins</code> 端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone=public --add-port=8080/tcp --permanent </span><br></pre></td></tr></table></figure>
+<p>防火墙配置立即生效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<h1 id="目录权限修改">目录权限修改</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chown -R root:root /var/lib/jenkins</span><br><span class="line">chown -R root:root /var/cache/jenkins</span><br><span class="line">chown -R root:root /var/<span class="built_in">log</span>/jenkins</span><br></pre></td></tr></table></figure>
+<h1 id="启动">启动</h1>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start jenkins</span><br></pre></td></tr></table></figure>
+<p>如果报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Job <span class="keyword">for</span> jenkins.service failed because the control process exited with error code. See <span class="string">&quot;systemctl status jenkins.service&quot;</span> and <span class="string">&quot;journalctl -xe&quot;</span> <span class="keyword">for</span> details.</span><br></pre></td></tr></table></figure>
+<p>解决方案：</p>
+<ol>
+<li>查看当前Java的环境变量  <code>echo $JAVA_HOME</code></li>
+<li>复制Java的环境变量地址, 编辑 <code>/etc/init.d/jenkins</code> 文件, 指定位置添加该地址, 后缀附上 <code>/bin/java</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/init.d/jenkins</span><br><span class="line"></span><br><span class="line">candidates=<span class="string">&quot;</span></span><br><span class="line"><span class="string">/etc/alternatives/java</span></span><br><span class="line"><span class="string">/usr/lib/jvm/java-1.8.0/bin/java</span></span><br><span class="line"><span class="string">/usr/lib/jvm/jre-1.8.0/bin/java</span></span><br><span class="line"><span class="string">/usr/lib/jvm/java-11.0/bin/java</span></span><br><span class="line"><span class="string">/usr/lib/jvm/jre-11.0/bin/java</span></span><br><span class="line"><span class="string">/usr/lib/jvm/java-11-openjdk-amd64</span></span><br><span class="line"><span class="string">/usr/bin/java</span></span><br><span class="line"><span class="string">/usr/jdk/jdk-18.0.1.1/bin/java # 新增jdk地址</span></span><br><span class="line"><span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+<p>修改完重新加载一下配置文件，使其生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+<p>然后启动，将刚才修改的端口放开或者直接关闭防火墙，这里直接关闭防火墙：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+<p>重启 Jenkins</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart jenkins</span><br></pre></td></tr></table></figure>
+<h1 id="Jenkins-插件安装">Jenkins 插件安装</h1>
+<p><strong>步骤</strong>：添加插件：系统管理 - 插件管理</p>
+<p>需要添加的插件：</p>
 <ul>
-<li><code>VMnet0</code>（桥接模式）</li>
-<li><code>VMnet1</code>（仅主机模式）</li>
-<li><code>VMnet8</code>（NAT模式）</li>
+<li><code>Gitlab Hook</code></li>
+<li><code>Build Authorization Token Root</code></li>
+<li><code>Publish Over SSH</code></li>
+<li><code>Gitlab Authentication</code></li>
+<li><code>Gitlab</code></li>
+<li><code>Git Parameter</code></li>
 </ul>
-<h2 id="NAT-VMnet8">NAT-VMnet8</h2>
-<p>NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
-<p><code>NAT</code> 模式下的虚拟系统的 <code>TCP/IP</code> 配置信息是由 <code>VMnet8(NAT)</code> 虚拟网络的 <code>DHCP</code> 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。</p>
-<p><img src="/images/2021-09-03-15-22-27.png" alt=""></p>
-<blockquote>
-<p>虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机</p>
-</blockquote>
-<h2 id="Bridged-VMnet0">Bridged-VMnet0</h2>
-<p>Bridged(桥接)-VMnet0：虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。</p>
-<p>需要手工为虚拟系统配置<code>IP地址</code>、<code>子网掩码</code>，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。</p>
-<p><img src="/images/2021-09-03-15-23-07.png" alt=""></p>
-<blockquote>
-<p>这个模式里，虚拟机和宿主机可以互相ping通</p>
-</blockquote>
-<h1 id="查看IP及网卡信息">查看IP及网卡信息</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2021-09-03-15-23-43.png" alt=""></p>
-<h1 id="编辑网卡信息">编辑网卡信息</h1>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">TYPE=Ethernet</span><br><span class="line">BOOTPROTO=static <span class="comment">#修改成static</span></span><br><span class="line">DEFROUTE=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">NAME=eno16777736</span><br><span class="line">UUID=bf5337ab-c044-4af7-9143-12da0d493b89</span><br><span class="line">DEVICE=eno16777736</span><br><span class="line">ONBOOT=yes <span class="comment">#修改成yes</span></span><br><span class="line">PEERDNS=yes</span><br><span class="line">PEERROUTES=yes</span><br><span class="line">IPV6_PEERDNS=yes</span><br><span class="line">IPV6_PEERROUTES=yes</span><br><span class="line">IPADDR=192.168.31.32  <span class="comment"># 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段</span></span><br><span class="line">NETMASK=255.255.255.0 <span class="comment"># 设置子网掩码，跟宿主一样</span></span><br><span class="line">GATEWAY=192.168.31.1  <span class="comment"># 默认网关，跟宿主一样</span></span><br><span class="line">DNS1=192.168.31.1 <span class="comment"># DNS，跟宿主一样</span></span><br></pre></td></tr></table></figure>
-<h1 id="重启-network">重启 network</h1>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
+<p>在centos7中 <code>ssh</code> 服务默认是已经被安装了的。通过命令 <code>rpm -qa | grep openssh</code> 查看是否安装了ssh服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa | grep openssh</span><br></pre></td></tr></table></figure>
 
 </div>
 
@@ -302,7 +325,7 @@ function sidebar_toggle() {
 
     <div class="author-title">
       <div>WangPengLiang</div>
-      <!-- <div>2022-04-09</div> 
+      <!-- <div>2022-07-02</div> 
     </div>
   </div>
 -->
