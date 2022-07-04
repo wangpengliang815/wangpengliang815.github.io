@@ -111,6 +111,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <ul>
 <li><a href="/prometheus/Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85">Prometheus 简介及安装 </a></li>
 <li><a href="/prometheus/NodeExporter">NodeExporter</a></li>
+<li><a href="/prometheus/Prometheus%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">Prometheus 核心组件</a></li>
+<li><a href="/prometheus/Alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86">Alertmanager 告警处理</a></li>
 </ul>
 <h2 id="🔎-ELK-Stack">🔎 ELK Stack</h2>
 <ul>
@@ -285,6 +287,17 @@ function sidebar_toggle() {
 <blockquote>
 <p>其中“1”表示正常，“0”则为异常。</p>
 </blockquote>
+<h1 id="任务和实例">任务和实例</h1>
+<p>上面通过在 <code>prometheus.yml</code> 配置文件中，添加如下配置让 Prometheus 可以从 node exporter 暴露的服务中获取监控指标数据。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>当需要采集不同的监控指标(例如：主机、MySQL、Nginx)时，只需要运行相应的监控采集程序，并且让 Prometheus Server 知道这些 Exporter 实例的访问地址。在 Prometheus 中，每一个暴露监控样本数据的HTTP服务称为一个实例。例如在当前主机上运行的 node exporter 可以被称为一个实例( <code>Instance</code> )。</p>
+<p>而一组用于相同采集目的的实例，或者同一个采集进程的多个副本则通过一个一个任务(Job)进行管理。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* job: node</span><br><span class="line">    * instance 2: 1.2.3.4:9100</span><br><span class="line">    * instance 4: 5.6.7.8:9100</span><br></pre></td></tr></table></figure>
+<p>当前在每一个 Job 中主要使用了静态配置( <code>static_configs</code> )的方式定义监控目标。除了静态配置每一个Job的采集Instance地址以外，Prometheus 还支持与 <code>DNS</code>、<code>Consul</code>、<code>E2C</code>、<code>Kubernetes</code> 等进行集成实现自动发现Instance实例，并从这些 Instance上获取监控数据。</p>
+<p>除了通过使用“up”表达式查询当前所有Instance的状态以外，还可以通过Prometheus UI中的Targets页面查看当前所有的监控采集任务，以及各个任务下所有实例的状态:</p>
+<p><img src="https://www.prometheus.wang/quickstart/static/prometheus_ui_targets.png" alt=""></p>
+<p>也可以访问 <a target="_blank" rel="noopener" href="http://localhost:9090/targets">http://localhost:9090/targets</a> 直接从 Prometheus 的UI中查看当前所有任务以及每个任务对应的实例信息。</p>
+<p><img src="https://www.prometheus.wang/quickstart/static/prometheus_ui_targets_status.png" alt="">Targets状态</p>
 
 </div>
 
