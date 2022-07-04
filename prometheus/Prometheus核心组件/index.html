@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="⛷️-Prometheus">⛷️ Prometheus</h2>
 <ul>
-<li><a href="/prometheus/Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85">Prometheus 简介及安装 </a></li>
+<li><a href="/prometheus/Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%851">Prometheus 简介及安装 </a></li>
 <li><a href="/prometheus/NodeExporter">NodeExporter</a></li>
 <li><a href="/prometheus/Prometheus%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">Prometheus 核心组件</a></li>
 <li><a href="/prometheus/Alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86">Alertmanager 告警处理</a></li>
@@ -245,19 +245,20 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <p>从 Prometheus 的架构角度详细学习 Prometheus 生态中的各个组件，下图展示 Prometheus 的基本架构：</p>
+  <p>本节从 Prometheus 的架构角度详细学习 Prometheus 生态中的各个组件，下图展示 Prometheus 的基本架构：</p>
 <p><img src="/images/2022-07-04-16-38-34.png" alt=""></p>
 <h2 id="Prometheus-Server">Prometheus Server</h2>
 <p>Prometheus Server 是 Prometheus 组件中的核心部分，负责实现对监控数据的获取，存储以及查询。</p>
 <p>Prometheus Server 可以通过静态配置管理监控目标，也可以配合使用 <code>Service Discovery</code> 的方式动态管理监控目标，并从这些监控目标中获取数据。</p>
-<p>Prometheus Server 需要对采集到的监控数据进行存储，Prometheus Server 本身就是一个时序数据库，将采集到的监控数据按照时间序列的方式存储在本地磁盘当中。最后 Prometheus Server 对外提供了自定义的 <code>PromQL</code> 语言，实现对数据的查询以及分析。 内置的 <code>Express Browser UI</code>，通过这个UI可以直接通过 PromQL 实现数据的查询以及可视化。</p>
+<p>Prometheus Server 需要对采集到的监控数据进行存储，Prometheus Server 本身就是一个时序数据库，将采集到的监控数据按照时间序列的方式存储在本地磁盘当中。</p>
+<p>Prometheus Server 对外提供了自定义的 <code>PromQL</code> 语言，实现对数据的查询以及分析。 内置的 <code>Express Browser UI</code>，通过这个UI可以直接通过 PromQL 实现数据的查询以及可视化。</p>
 <p>Prometheus Server 的联邦集群能力可以使其从其他的 Prometheus Server 实例中获取数据，因此在大规模监控的情况下，可以通过联邦集群以及功能分区的方式对 Prometheus Server 进行扩展。</p>
 <h2 id="Exporters">Exporters</h2>
-<p>Exporter 将监控数据采集的端点通过HTTP服务的形式暴露给 Prometheus Server，Prometheus Server 通过访问该Exporter提供的 Endpoint 端点，即可获取到需要采集的监控数据。</p>
-<p>一般来说可以将 Exporter 分为两类：</p>
+<p>Exporter 将监控数据采集的端点通过HTTP服务的形式暴露给 Prometheus Server，Prometheus Server 通过访问该Exporter 提供的 Endpoint 端点，即可获取到需要采集的监控数据。</p>
+<p>一般可以将 Exporter 分为两类：</p>
 <ul>
-<li>直接采集：这一类 Exporter 直接内置了对 Prometheus 监控的支持，比如 <code>cAdvisor</code>，<code>Kubernetes</code>，<code>Etcd</code>，<code>Gokit</code>等，都直接内置了用于向 Prometheus 暴露监控数据的端点。</li>
-<li>间接采集：间接采集，原有监控目标并不直接支持 Prometheus，需要通过 Prometheus 提供的 <code>Client Library</code> 编写该监控目标的监控采集程序。例如： <code>Mysql Exporter</code>，<code>JMX Exporter</code>，<code>Consul Exporter</code> 等。</li>
+<li>直接采集：这一类 Exporter 直接内置了对 Prometheus 监控的支持，比如 <code>cAdvisor</code>，<code>Kubernetes</code>，<code>Etcd</code>，<code>Gokit</code>等，都直接内置了用于向 Prometheus 暴露监控数据的端点</li>
+<li>间接采集：原有监控目标并不直接支持 Prometheus，需要通过 Prometheus 提供的 <code>Client Library</code> 编写该监控目标的监控采集程序。例如： <code>Mysql Exporter</code>，<code>JMX Exporter</code>，<code>Consul Exporter</code> 等</li>
 </ul>
 <h2 id="AlertManager">AlertManager</h2>
 <p>在 Prometheus Server 中支持基于 <code>PromQL</code> 创建告警规则，如果满足 PromQL 定义的规则，则会产生一条告警，而告警的后续处理流程则由 <code>AlertManager</code> 进行管理。在 AlertManager 中可以与邮件，Slack等等内置的通知方式进行集成，也可以通过 <code>Webhook</code> 自定义告警处理方式。AlertManager 是 Prometheus 体系中的告警处理中心。</p>

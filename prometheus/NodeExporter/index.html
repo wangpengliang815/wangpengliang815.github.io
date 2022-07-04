@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="⛷️-Prometheus">⛷️ Prometheus</h2>
 <ul>
-<li><a href="/prometheus/Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85">Prometheus 简介及安装 </a></li>
+<li><a href="/prometheus/Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%851">Prometheus 简介及安装 </a></li>
 <li><a href="/prometheus/NodeExporter">NodeExporter</a></li>
 <li><a href="/prometheus/Prometheus%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">Prometheus 核心组件</a></li>
 <li><a href="/prometheus/Alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86">Alertmanager 告警处理</a></li>
@@ -245,26 +245,34 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <p>在 Prometheus 的架构设计中，Prometheus Server 并不直接服务监控特定的目标，其主要任务负责数据的收集，存储并且对外提供数据查询支持。因此为了能够能够监控到某些东西，如主机的CPU使用率，需要使用到 Exporter。Prometheus 周期性的从 Exporter 暴露的 HTTP 服务地址（通常是 <code>/metrics</code>）拉取监控样本数据。</p>
+  <p>上一节学习了如何部署 Prometheus Server，这节学习如何使用 Node Exporter 收集主机数据。在 Prometheus 的架构设计中，Prometheus Server 并不直接服务监控特定的目标，其主要任务负责数据的收集，存储并且对外提供数据查询支持。因此为了能够能够监控到某些东西，如主机的CPU使用率，需要使用到 Exporter。Prometheus 周期性的从 Exporter 暴露的 HTTP 服务地址（通常是 <code>/metrics</code>）拉取监控样本数据。</p>
 <blockquote>
-<p>Exporter可以是一个相对开放的概念，其可以是一个独立运行的程序独立于监控目标以外，也可以是直接内置在监控目标中。只要能够向 Prometheus 提供标准格式的监控样本数据即可。</p>
+<p>Exporter是一个相对开放的概念，其可以是一个独立运行的程序独立于监控目标以外，也可以是直接内置在监控目标中。只要能够向 Prometheus 提供标准格式的监控样本数据即可</p>
 </blockquote>
 <p>这里为了能够采集到主机的运行指标如CPU, 内存，磁盘等信息。可以使用 <a target="_blank" rel="noopener" href="https://github.com/prometheus/node_exporter">Node Exporter</a>。</p>
 <h1 id="Node-Exporter-安装">Node Exporter 安装</h1>
-<p>Node Exporter 同样采用 Golang 编写，并且不存在任何的第三方依赖，只需要下载，解压即可运行。可以从 <a target="_blank" rel="noopener" href="https://prometheus.io/download/">https://prometheus.io/download/</a> 获取最新的 node exporter 版本的二进制包。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -OL https://github.com/prometheus/node_exporter/releases/download/v0.17.0/node_exporter-0.17.0.linux-amd64.tar.gz</span><br><span class="line">tar -xzf node_exporter-0.17.0.linux-amd64.tar.gz</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Node Exporter 同样采用 Golang 编写，并且不存在任何的第三方依赖，只需要下载，解压即可运行。可以从 <a target="_blank" rel="noopener" href="https://prometheus.io/download/">https://prometheus.io/download/</a> 获取最新的 Node Exporter 版本的二进制包。</p>
+<p>在 <code>usr</code> 目录下创建 <code>exporter</code> 目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang101ecs ~]<span class="comment"># cd /usr/</span></span><br><span class="line">[root@wangpengliang101ecs usr]<span class="comment"># ls</span></span><br><span class="line">bin  etc  games  include  lib  lib64  libexec  <span class="built_in">local</span>  sbin  share  src  tmp</span><br><span class="line">[root@wangpengliang101ecs usr]<span class="comment"># mkdir exporter</span></span><br><span class="line">[root@wangpengliang101ecs usr]<span class="comment"># cd exporter</span></span><br></pre></td></tr></table></figure>
+<p>下载 Node Exporter.tar.gz 并解压到当前目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz</span><br><span class="line"></span><br><span class="line">[root@wangpengliang101ecs exporter]<span class="comment"># tar -xzf node_exporter-1.3.1.linux-amd64.tar.gz</span></span><br><span class="line">[root@wangpengliang101ecs exporter]<span class="comment"># ls</span></span><br><span class="line">node_exporter-1.3.1.linux-amd64  node_exporter-1.3.1.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
 <p>运行 <code>node exporter</code></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> node_exporter-0.17.0.linux-amd64/</span><br><span class="line">nohup ./node_exporter --web.listen-address=:9100 &amp; <span class="comment"># 后台运行并指定端口,默认9100不指定也可以</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang101ecs exporter]<span class="comment"># cd node_exporter-1.3.1.linux-amd64/</span></span><br><span class="line">nohup ./node_exporter &amp; <span class="comment"># 后台运行,端口默认9100</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里使用 <code>nohup</code> 后台运行 node_exporter，默认端口为 <code>9100</code>，如果端口有冲突可以通过 <code>--web.listen-address=:xxx</code> 进行修改</p>
+</blockquote>
 <p>启动成功后，查看端口</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -anplt|grep 9100</span><br></pre></td></tr></table></figure>
-<p>访问 <a target="_blank" rel="noopener" href="http://localhost:9100/">http://localhost:9100/</a> 可以看到以下页面：</p>
-<p><img src="/images/2022-07-04-16-15-57.png" alt=""></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang101ecs node_exporter-1.3.1.linux-amd64]<span class="comment"># netstat -anplt|grep 9100</span></span><br><span class="line">tcp6       0      0 :::9100                 :::*                    LISTEN     2443/./node_exporte</span><br><span class="line">tcp6       0      0 172.17.135.171:9100     222.174.189.42:52597    ESTABLISHED 2443/./node_exporte</span><br></pre></td></tr></table></figure>
 <h1 id="Node-Exporter-监控指标">Node Exporter 监控指标</h1>
-<p>访问 <a target="_blank" rel="noopener" href="http://localhost:9100/metrics">http://localhost:9100/metrics</a> ，可以看到当前 <code>node exporter</code> 获取到的当前主机的所有监控数据，如下所示：</p>
+<p>访问 <a target="_blank" rel="noopener" href="http://ipaddress:9100/metrics">http://ipaddress:9100/metrics</a> ，可以看到当前 <code>node exporter</code> 获取到的主机监控数据，如下所示：</p>
 <p><img src="/images/2022-07-04-16-17-52.png" alt=""></p>
 <p>每一个监控指标之前都会有一段类似于如下形式的信息：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># HELP node_cpu Seconds the cpus spent in each mode.</span><br><span class="line"># TYPE node_cpu counter</span><br><span class="line">node_cpu&#123;cpu=&quot;cpu0&quot;,mode=&quot;idle&quot;&#125; 362812.7890625</span><br><span class="line"># HELP node_load1 1m load average.</span><br><span class="line"># TYPE node_load1 gauge</span><br><span class="line">node_load1 3.0703125</span><br></pre></td></tr></table></figure>
-<p>其中 <code>HELP</code> 用于解释当前指标的含义，<code>TYPE</code> 则说明当前指标的数据类型。在上面的例子中node_cpu的注释表明当前指标是 cpu0 上 idle 进程占用CPU的总时间，CPU占用时间是一个只增不减的度量指标，从类型中也可以看出node_cpu的数据类型是计数器(counter)，与该指标的实际含义一致。又例如node_load1该指标反映了当前主机在最近一分钟以内的负载情况，系统的负载情况会随系统资源的使用而变化，因此node_load1反映的是当前状态，数据可能增加也可能减少，从注释中可以看出当前指标类型为仪表盘(gauge)，与指标反映的实际含义一致。</p>
+<p>其中 <code>HELP</code> 用于解释当前指标的含义，<code>TYPE</code> 则说明当前指标的数据类型。在上面的例子中:</p>
+<ol>
+<li>node_cpu 的注释表明当前指标是 cpu0 上 idle 进程占用CPU的总时间，CPU占用时间是一个只增不减的度量指标，从类型中也可以看出node_cpu的数据类型是计数器(counter)，与该指标的实际含义一致</li>
+<li>node_load1 该指标反映了当前主机在最近一分钟以内的负载情况，系统的负载情况会随系统资源的使用而变化，因此node_load1反映的是当前状态，数据可能增加也可能减少，从注释中可以看出当前指标类型为仪表盘(gauge)，与指标反映的实际含义一致。</li>
+</ol>
 <p>除了这些以外，在当前页面中根据物理主机系统的不同，还可能看到如下监控指标：</p>
 <ul>
 <li><code>node_boot_time</code>：系统启动时间</li>
@@ -279,25 +287,25 @@ function sidebar_toggle() {
 <li><code>process_*</code>：node exporter自身进程相关运行指标</li>
 </ul>
 <h1 id="Node-Exporter-数据集成">Node Exporter 数据集成</h1>
-<p>为了能够让 Prometheus Server 能够从当前 node exporter 获取到监控数据，这里需要修改 Prometheus 配置文件。编辑 <code>prometheus.yml</code> 并在 <code>scrape_configs</code> 节点下添加以下内容:</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line">  <span class="comment"># 采集node exporter监控数据</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
-<p>重新启动 Prometheus Server</p>
-<p>如果 Prometheus 能够正常从 <code>node exporter</code> 获取数据，则会看到以下结果：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">up&#123;instance=&quot;localhost:9090&quot;,job=&quot;prometheus&quot;&#125;    1</span><br><span class="line">up&#123;instance=&quot;localhost:9100&quot;,job=&quot;node&quot;&#125;    1</span><br></pre></td></tr></table></figure>
+<p>为了能够让 Prometheus Server 能够从当前 Node Exporter 获取到监控数据，需要修改 Prometheus 配置文件。编辑 <code>prometheus.yml</code> 在 <code>scrape_configs</code> 节点下添加以下内容:</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line">  <span class="comment"># 采集node exporter监控数据</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;123.56.222.108&#x27;</span> <span class="comment"># 这里jobname是自定义的</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;123.56.222.108:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>重新启动 Prometheus Server，如果 Prometheus 能够正常从 Node Exporter 获取数据，则会看到以下结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">up&#123;instance=<span class="string">&quot;123.56.222.108:9100&quot;</span>, job=<span class="string">&quot;123.56.222.108:9100&quot;</span>&#125;    1</span><br><span class="line">up&#123;instance=<span class="string">&quot;localhost:9090&quot;</span>, job=<span class="string">&quot;prometheus&quot;</span>&#125;       1</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>其中“1”表示正常，“0”则为异常。</p>
 </blockquote>
 <h1 id="任务和实例">任务和实例</h1>
-<p>上面通过在 <code>prometheus.yml</code> 配置文件中，添加如下配置让 Prometheus 可以从 node exporter 暴露的服务中获取监控指标数据。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;node&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
-<p>当需要采集不同的监控指标(例如：主机、MySQL、Nginx)时，只需要运行相应的监控采集程序，并且让 Prometheus Server 知道这些 Exporter 实例的访问地址。在 Prometheus 中，每一个暴露监控样本数据的HTTP服务称为一个实例。例如在当前主机上运行的 node exporter 可以被称为一个实例( <code>Instance</code> )。</p>
+<p>上面通过在 <code>prometheus.yml</code> 配置文件中，添加如下配置让 Prometheus 可以从 Node Exporter 暴露的服务中获取监控指标数据。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;123.56.222.108&#x27;</span> </span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;123.56.222.108:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>当需要采集不同的监控指标(例如：主机、MySQL、Nginx)时，只需要运行相应的监控采集程序，并且让 Prometheus Server 知道这些 Exporter 实例的访问地址。在 Prometheus 中，每一个暴露监控样本数据的HTTP服务称为一个实例。例如在当前主机上运行的 Node Exporter 可以被称为一个实例( <code>Instance</code> )。</p>
 <p>而一组用于相同采集目的的实例，或者同一个采集进程的多个副本则通过一个一个任务(Job)进行管理。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* job: node</span><br><span class="line">    * instance 2: 1.2.3.4:9100</span><br><span class="line">    * instance 4: 5.6.7.8:9100</span><br></pre></td></tr></table></figure>
 <p>当前在每一个 Job 中主要使用了静态配置( <code>static_configs</code> )的方式定义监控目标。除了静态配置每一个Job的采集Instance地址以外，Prometheus 还支持与 <code>DNS</code>、<code>Consul</code>、<code>E2C</code>、<code>Kubernetes</code> 等进行集成实现自动发现Instance实例，并从这些 Instance上获取监控数据。</p>
-<p>除了通过使用“up”表达式查询当前所有Instance的状态以外，还可以通过Prometheus UI中的Targets页面查看当前所有的监控采集任务，以及各个任务下所有实例的状态:</p>
-<p><img src="https://www.prometheus.wang/quickstart/static/prometheus_ui_targets.png" alt=""></p>
-<p>也可以访问 <a target="_blank" rel="noopener" href="http://localhost:9090/targets">http://localhost:9090/targets</a> 直接从 Prometheus 的UI中查看当前所有任务以及每个任务对应的实例信息。</p>
-<p><img src="https://www.prometheus.wang/quickstart/static/prometheus_ui_targets_status.png" alt="">Targets状态</p>
+<p>除了通过使用“up”表达式查询当前所有Instance的状态以外，还可以通过Prometheus UI中的Targets页面查看当前所有的监控采集任务，以及各个任务下所有实例的状态：</p>
+<p><img src="/images/2022-07-04-21-04-40.png" alt=""></p>
+<p>所以这里配置文件 <code>scrape_configs</code> 内容可以调整为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">scrape_configs:</span><br><span class="line">  # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span><br><span class="line">  - job_name: &#x27;prometheus&#x27;</span><br><span class="line"></span><br><span class="line">    # metrics_path defaults to &#x27;/metrics&#x27;</span><br><span class="line">    # scheme defaults to &#x27;http&#x27;.</span><br><span class="line"></span><br><span class="line">    static_configs:</span><br><span class="line">    - targets: [&#x27;localhost:9090&#x27;,&#x27;123.56.222.108:9100&#x27;]</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2022-07-04-21-06-50.png" alt=""></p>
 
 </div>
 
