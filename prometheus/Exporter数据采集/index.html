@@ -250,12 +250,10 @@ function sidebar_toggle() {
 <blockquote>
 <p>Exporter是一个相对开放的概念，其可以是一个独立运行的程序独立于监控目标以外，也可以是直接内置在监控目标中。只要能够向 Prometheus 提供标准格式的监控样本数据即可</p>
 </blockquote>
-<p>这里为了能够采集到主机的运行指标如CPU、内存、磁盘等信息，在主机上安装一个Node Exporter 程序，该程序对外暴露了一个用于获取当前监控样本数据的HTTP访问地址。这样的一个程序称为 Exporter，Exporter 的实例称为一个 Target。Prometheus 通过轮询的方式定时从这些 Target 中获取监控数据样本，并且存储在数据库中。</p>
 <h1 id="Exporter-概念">Exporter 概念</h1>
 <p>广义上所有可以向 Prometheus 提供监控样本数据的程序都可以被称为一个 Exporter 。而 Exporter 的一个实例称为Target，Prometheus 通过轮询的方式定期从这些 Target 中获取样本数据。</p>
 <p><img src="/images/2022-07-05-16-12-19.png" alt=""></p>
 <h1 id="Exporter来源">Exporter来源</h1>
-<p>Exporter的来源主要分为两类：</p>
 <h2 id="社区提供">社区提供</h2>
 <p>Prometheus 社区提供了丰富的 Exporter 实现，涵盖了从基础设施，中间件以及网络等各个方面的监控功能。这些Exporter 可以实现大部分通用的监控需求。列举社区中常用的 Exporter：</p>
 <table>
@@ -304,12 +302,11 @@ function sidebar_toggle() {
 </tr>
 </tbody>
 </table>
-<h2 id="用户自定义">用户自定义</h2>
-<p>除了直接使用社区提供的 Exporter 程序以外，用户还可以基于 Prometheus 提供的 Client Library 创建自己的Exporter 程序，目前 Promthues 社区官方提供了对以下编程语言的支持：Go、Java/Scala、Python、Ruby。同时还有第三方实现的如：Bash、C++、Common Lisp、Erlang,、Haskeel、Lua、Node.js、PHP、Rust等。</p>
+<h2 id="自定义">自定义</h2>
+<p>除了直接使用社区提供的 Exporter 程序以外，还可以基于 Prometheus 提供的 Client Library 创建自己的Exporter 程序，目前 Promthues 社区官方提供了对以下编程语言的支持：Go、Java/Scala、Python、Ruby。同时还有第三方实现的如：Bash、C++、Common Lisp、Erlang,、Haskeel、Lua、Node.js、PHP、Rust 等。</p>
 <h1 id="Exporter-运行方式">Exporter 运行方式</h1>
-<p>Exporter的运行方式可以分为：</p>
 <h2 id="独立使用">独立使用</h2>
-<p>以 Node Exporter 为例，由于操作系统本身并不直接支持 Prometheus ，同时用户也无法通过直接从操作系统层面上提供对 Prometheus 的支持。因此用户只能通过独立运行一个程序的方式，通过操作系统提供的相关接口，将系统的运行状态数据转换为可供 Prometheus 读取的监控数据。 除了 Node Exporter 以外，比如MySQL Exporter、Redis Exporter 等都是通过这种方式实现。 这些 Exporter 程序扮演了一个中间代理人的角色。</p>
+<p>以 Node Exporter 为例，由于操作系统本身并不直接支持 Prometheus ，同时用户也无法通过直接从操作系统层面上提供对 Prometheus 的支持。因此只能通过独立运行一个程序的方式，通过操作系统提供的相关接口，将系统的运行状态数据转换为可供 Prometheus 读取的监控数据。 除了 Node Exporter 以外，比如 MySQL Exporter、Redis Exporter 等都是通过这种方式实现。 这些 Exporter 程序扮演了一个中间代理人的角色。</p>
 <h2 id="应用中集成">应用中集成</h2>
 <p>为了能够更好的监控系统的内部运行状态，有些开源项目如 <code>Kubernetes</code>，<code>ETCD</code> 等直接在代码中使用了Prometheus 的 Client Library，提供了对 Prometheus 的直接支持。这种方式打破的监控的界限，让应用程序可以直接将内部的运行状态暴露给 Prometheus，适合于一些需要更多自定义监控指标需求的项目。</p>
 <h1 id="Exporter-规范">Exporter 规范</h1>
@@ -317,20 +314,20 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HELP node_cpu Seconds the cpus spent in each mode.</span></span><br><span class="line"><span class="comment"># TYPE node_cpu counter</span></span><br><span class="line">node_cpu&#123;cpu=<span class="string">&quot;cpu0&quot;</span>,mode=<span class="string">&quot;idle&quot;</span>&#125; 362812.7890625</span><br><span class="line"><span class="comment"># HELP node_load1 1m load average.</span></span><br><span class="line"><span class="comment"># TYPE node_load1 gauge</span></span><br><span class="line">node_load1 3.0703125</span><br></pre></td></tr></table></figure>
 <p>这是一种基于文本的格式规范，相比于 Protocol buffer 文本具有更好的可读性，以及跨平台性。</p>
 <blockquote>
-<p>Prometheus 2.0 之前的版本支持 Protocol buffer 规范，Prometheus 2.0 的版本不再支持 Protocol buffer</p>
+<p>Prometheus 2.0 之前的版本支持 Protocol buffer 规范，2.0 及之后的版本不再支持 Protocol buffer</p>
 </blockquote>
 <p>Exporter 返回的样本数据，主要由三个部分组成：样本的一般由 <code>注释信息（HELP）</code>，<code>样本的类型注释信息（TYPE）</code>和 <code>样本</code>。Prometheus 会对 Exporter 响应的内容逐行解析：</p>
 <ol>
-<li>如果当前行以 <code># HELP </code>开始，Prometheus 将会按照以下规则对内容进行解析，得到当前的指标名称以及相应的说明信息：</li>
+<li>如果当前行以 <code># HELP </code>开始，Prometheus 将按照以下规则对内容进行解析，得到当前的指标名称以及相应的说明信息：</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HELP &lt;metrics_name&gt; &lt;doc_string&gt;</span></span><br></pre></td></tr></table></figure>
 <ol start="2">
-<li>如果当前行以 <code># TYPE</code> 开始，Prometheus 会按照以下规则对内容进行解析，得到当前的指标名称以及指标类型:</li>
+<li>如果当前行以 <code># TYPE</code> 开始，Prometheus 将按照以下规则对内容进行解析，得到当前的指标名称以及指标类型：</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TYPE &lt;metrics_name&gt; &lt;metrics_type&gt;</span></span><br></pre></td></tr></table></figure>
-<p><code>TYPE</code> 注释行必须出现在指标的第一个样本之前。如果没有明确的指标类型需要返回为 <code>untyped</code> 。 除了# 开头的所有行都会被视为是监控样本数据。 每一行样本需要满足以下格式规范：</p>
+<p><code>TYPE</code> 注释行必须出现在指标的第一个样本之前。如果没有明确的指标类型需要返回为 <code>untyped</code> 。 除了 <code>#</code>  开头的所有行都会被视为是监控样本数据。 每一行样本需要满足以下格式规范：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">metric_name [&#123;label_name=<span class="string">&quot;label_value&quot;</span>&#125; ] value [ timestamp ]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例</span></span><br><span class="line">node_cpu_seconds_total&#123;cpu=<span class="string">&quot;1&quot;</span>,mode=<span class="string">&quot;system&quot;</span>&#125; 2.2</span><br></pre></td></tr></table></figure>
-<p>其中 <code>metric_name</code> 和 <code>label_name</code> 必须遵循 PromQL 的格式规范要求。value 是一个 float 格式的数据，timestamp 的类型为 int64（从1970-01-01 00:00:00以来的毫秒数），timestamp为可选默认为当前时间。具有相同metric_name 的样本必须按照一个组的形式排列，并且每一行必须是唯一的指标名称和标签键值对组合。</p>
+<p>其中 <code>metric_name</code> 和 <code>label_name</code> 必须遵循 PromQL 的格式规范要求。value 是一个 float 格式的数据，timestamp 类型为 int64（从1970-01-01 00:00:00以来的毫秒数），timestamp 可选，默认为当前时间。具有相同metric_name 的样本必须按照一个组的形式排列，并且每一行必须是唯一的指标名称和标签键值对组合。</p>
 <blockquote>
 <p>需要注意：对于 istogram 和 summary 类型的样本。按照以下约定返回样本数据：</p>
 <ul>
@@ -349,6 +346,7 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Encoding: gzip</span><br><span class="line">Content-Length: 2906</span><br><span class="line">Content-Type: text/plain; version=0.0.4</span><br><span class="line">Date: Sat, 17 Mar 2018 08:47:06 GMT</span><br></pre></td></tr></table></figure>
 <p>其中 version 用于指定 Text-based 的格式版本，当没有指定版本的时候，默认使用最新格式规范的版本。同时 HTTP响应头还需要指定压缩格式为 gzip。</p>
 <h1 id="Node-Exporter">Node Exporter</h1>
+<p>为了能够采集到主机的运行指标如CPU、内存、磁盘等信息，在主机上安装一个 Node Exporter 程序，该程序对外暴露了一个用于获取当前监控样本数据的HTTP访问地址。这样的一个程序称为 Exporter，Exporter 的实例称为一个 Target。Prometheus 通过轮询的方式定时从这些 Target 中获取监控数据样本，并且存储在数据库中。</p>
 <h2 id="安装">安装</h2>
 <p>Node Exporter 同样采用 Golang 编写，并且不存在任何的第三方依赖，只需要下载，解压即可运行。可以从 <a target="_blank" rel="noopener" href="https://prometheus.io/download/">https://prometheus.io/download/</a> 获取最新的 Node Exporter 版本的二进制包。</p>
 <p>在 <code>usr</code> 目录下创建 <code>exporter</code> 目录：</p>
@@ -385,7 +383,7 @@ function sidebar_toggle() {
 <li><code>go_*</code>：node exporter中go相关指标</li>
 <li><code>process_*</code>：node exporter自身进程相关运行指标</li>
 </ul>
-<h2 id="数据集成">数据集成</h2>
+<h2 id="集成">集成</h2>
 <p>为了能够让 Prometheus Server 能够从当前 Node Exporter 获取到监控数据，需要修改 Prometheus 配置文件。编辑 <code>prometheus.yml</code> 在 <code>scrape_configs</code> 节点下添加以下内容:</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;prometheus&#x27;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9090&#x27;</span>]</span><br><span class="line">  <span class="comment"># 采集node exporter监控数据</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;123.56.222.108&#x27;</span> <span class="comment"># 这里jobname是自定义的</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;123.56.222.108:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
 <p>重新启动 Prometheus Server，如果 Prometheus 能够正常从 Node Exporter 获取数据，则会看到以下结果：</p>
