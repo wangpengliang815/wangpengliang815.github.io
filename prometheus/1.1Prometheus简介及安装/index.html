@@ -228,7 +228,7 @@ function sidebar_toggle() {
 }
 </script>
 
-  <div class="off-canvas-content">
+  <div class="off-canvas-content" style="margin-left:10rem;">
     <div class="columns">
       <div class="column col-10 col-lg-12">
         <div class="book-navbar">
@@ -251,11 +251,10 @@ function sidebar_toggle() {
 <p>Prometheus 核心部分只有一个单独的二进制文件，不存在任何的第三方依赖(数据库，缓存等等)。唯一需要的就是本地磁盘，因此不会有潜在级联故障的风险。</p>
 <p>Prometheus 基于 <code>Pull</code> 模型的架构方式，可以在任何地方（本地电脑，开发环境，测试环境）搭建监控系统。对于一些复杂的情况，还可以使用服务发现( <code>Service Discovery</code> )的能力动态管理监控目标。</p>
 <h1 id="监控服务内部状态">监控服务内部状态</h1>
-<p>Pometheus 鼓励用户监控服务的内部状态，基于 Prometheus 丰富的 Client 库，用户可以轻松的在应用程序中添加对 Prometheus 的支持，从而让用户可以获取服务和应用内部真正的运行状态。</p>
+<p>Pometheus 鼓励用户监控服务的内部状态，基于 Prometheus 丰富的 Client 库，可以轻松的在应用程序中添加对 Prometheus 的支持，从而可以获取服务和应用内部真正的运行状态。</p>
 <p><img src="https://www.prometheus.wang/quickstart/static/monitor-internal.png" alt="监控服务内部运行状态"></p>
 <h1 id="强大的数据模型">强大的数据模型</h1>
-<p>所有采集的监控数据均以指标( <code>metric</code>  )的形式保存在内置的时间序列数据库当中( <code>TSDB</code> )。所有的样本除了基本的指标名称以外，还包含一组用于描述该样本特征的标签。</p>
-<p>如下所示：</p>
+<p>所有采集的监控数据均以指标 <code>metric</code> 的形式保存在内置的时间序列数据库当中( <code>TSDB</code> )。所有样本除了基本的指标名称以外，还包含一组用于描述该样本特征的标签。如下所示：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http_request_status&#123;code=<span class="string">&#x27;200&#x27;</span>,content_path=<span class="string">&#x27;/api/path&#x27;</span>, environment=<span class="string">&#x27;produment&#x27;</span>&#125; =&gt; [value1@timestamp1,value2@timestamp2...]</span><br><span class="line"></span><br><span class="line">http_request_status&#123;code=<span class="string">&#x27;200&#x27;</span>,content_path=<span class="string">&#x27;/api/path2&#x27;</span>, environment=<span class="string">&#x27;produment&#x27;</span>&#125; =&gt; [value1@timestamp1,value2@timestamp2...]</span><br></pre></td></tr></table></figure>
 <p>每一条时间序列由指标名称( <code>Metrics Name</code> )以及一组标签( <code>Labels</code> )唯一标识。每条时间序列按照时间的先后顺序存储一系列的样本值。</p>
 <p>表示维度的标签可能来源于监控对象的状态，比如 <code>code=404</code> 或者 <code>content_path=/api/path</code> 。也可能来源于的环境定义，比如 <code>environment=produment</code> 。基于这些 <code>Labels</code> 可以方便地对监控数据进行聚合，过滤，裁剪。</p>
@@ -276,15 +275,15 @@ function sidebar_toggle() {
 <h1 id="可扩展">可扩展</h1>
 <p>Prometheus 非常简单，因此可以在每个数据中心、每个团队运行独立的 Prometheus Sevrer。Prometheus 对于联邦集群的支持，可以让多个 Prometheus 实例产生一个逻辑集群，当单实例 Prometheus Server 处理的任务量过大时，通过使用功能分区( sharding )+联邦集群( federation )对其进行扩展。</p>
 <h1 id="易于集成">易于集成</h1>
-<p>使用 Prometheus 可以快速搭建监控服务，并且可以非常方便地在应用程序中进行集成。目前支持： <code>Java</code>， <code>JMX</code>， <code>Python</code>， <code>Go</code>，<code>Ruby</code>， <code>.Net</code>， <code>Node.js</code>等等语言的客户端SDK，基于这些SDK可以快速让应用程序纳入到 Prometheus 的监控当中，或者开发自己的监控数据收集程序。同时这些客户端收集的监控数据，不仅仅支持Prometheus，还能支持 Graphite 这些其他的监控工具。</p>
+<p>使用 Prometheus 可以快速搭建监控服务，并且可以非常方便地在应用程序中进行集成。目前支持： <code>Java</code>， <code>JMX</code>， <code>Python</code>， <code>Go</code>，<code>Ruby</code>， <code>.Net</code>， <code>Node.js</code> 等语言的客户端SDK，基于这些SDK可以快速让应用程序纳入到 Prometheus 的监控当中，或者开发自己的监控数据收集程序。同时这些客户端收集的监控数据，不仅仅支持Prometheus，还能支持 Graphite 这些其他的监控工具。</p>
 <blockquote>
 <p>Prometheus还支持与其他的监控系统进行集成：Graphite， Statsd， Collected， Scollector， muini， Nagios 等。</p>
 </blockquote>
 <p>Prometheus 社区还提供了大量第三方实现的监控数据采集支持：JMX， CloudWatch， EC2， MySQL， PostgresSQL， Haskell， Bash， SNMP， Consul， Haproxy， Mesos， Bind， CouchDB， Django， Memcached， RabbitMQ， Redis， RethinkDB， Rsyslog 等等。</p>
 <h1 id="可视化">可视化</h1>
-<p>Prometheus Server 中自带了一个 <code>Prometheus UI</code> ，通过这个UI可以方便地直接对数据进行查询，并且支持直接以图形化的形式展示数据。同时 Prometheus 还提供了一个独立的基于 <code>Ruby On Rails</code> 的 Dashboard 解决方案<code>Promdash</code>。最新的 <code>Grafana</code> 可视化工具也已经提供了完整的 Prometheus 支持，基于 Grafana 可以创建更加精美的监控图标。基于 Prometheus 提供的API还可以实现自己的监控可视化UI。</p>
+<p>Prometheus Server 中自带了一个 <code>Prometheus UI</code> ，通过这个UI可以方便地直接对数据进行查询，并且支持直接以图形化的形式展示数据。同时 Prometheus 还提供了一个独立的基于 <code>Ruby On Rails</code> 的 Dashboard 解决方案<code>Promdash</code>。最新的 <code>Grafana</code> 可视化工具也已经提供了完整的 Prometheus 支持，基于 Grafana 可以创建更加精美的监控图标。基于 Prometheus 提供的API还可以实现自己的监控可视化UI。r</p>
 <h1 id="开放性">开放性</h1>
-<p>通常来说当需要监控一个应用程序时，一般需要该应用程序提供对相应监控系统协议的支持。因此应用程序会与所选择的监控系统进行绑定。为了减少这种绑定所带来的限制。对于决策者而言要么你就直接在应用中集成该监控系统的支持，要么就在外部创建单独的服务来适配不同的监控系统。</p>
+<p>通常来说当需要监控一个应用程序时，一般需要该应用程序提供对相应监控系统协议的支持。因此应用程序会与所选择的监控系统进行绑定。为了减少这种绑定所带来的限制。对于决策者而言要么直接在应用中集成该监控系统的支持，要么就在外部创建单独的服务来适配不同的监控系统。</p>
 <p>而对于 Prometheus 来说，使用 Prometheus 的 client library 的输出格式不止支持 Prometheus 的格式化数据，也可以输出支持其它监控系统的格式化数据，比如Graphite。</p>
 <blockquote>
 <p>甚至可以在不使用 Prometheus 的情况下，采用Prometheus的 client library 来让应用程序支持监控数据采集</p>
