@@ -109,11 +109,10 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="⛷️-Prometheus">⛷️ Prometheus</h2>
 <ul>
-<li><a href="/prometheus/Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85">Prometheus 简介及安装 </a></li>
-<li><a href="/prometheus/Exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86">Exporter 数据采集</a></li>
-<li><a href="/prometheus/Prometheus%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">Prometheus 核心组件</a></li>
-<li><a href="/prometheus/Alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86">Alertmanager 告警处理</a></li>
-<li><a href="/prometheus/PromQL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80">PromQL 查询语言</a></li>
+<li><a href="/prometheus/1.1Prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85">第一章 简介及安装 </a></li>
+<li><a href="/prometheus/1.2Exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86">第二章 Exporter 数据采集</a></li>
+<li><a href="/prometheus/1.3PromQL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80">第三章 PromQL 查询语言</a></li>
+<li><a href="/prometheus/1.4Alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86">第四章 Alertmanager 告警</a></li>
 </ul>
 <h2 id="🔎-ELK-Stack">🔎 ELK Stack</h2>
 <ul>
@@ -251,7 +250,7 @@ function sidebar_toggle() {
 <h1 id="易于管理">易于管理</h1>
 <p>Prometheus 核心部分只有一个单独的二进制文件，不存在任何的第三方依赖(数据库，缓存等等)。唯一需要的就是本地磁盘，因此不会有潜在级联故障的风险。</p>
 <p>Prometheus 基于 <code>Pull</code> 模型的架构方式，可以在任何地方（本地电脑，开发环境，测试环境）搭建监控系统。对于一些复杂的情况，还可以使用服务发现( <code>Service Discovery</code> )的能力动态管理监控目标。</p>
-<h1 id="监控服务内部运行状态">监控服务内部运行状态</h1>
+<h1 id="监控服务内部状态">监控服务内部状态</h1>
 <p>Pometheus 鼓励用户监控服务的内部状态，基于 Prometheus 丰富的 Client 库，用户可以轻松的在应用程序中添加对 Prometheus 的支持，从而让用户可以获取服务和应用内部真正的运行状态。</p>
 <p><img src="https://www.prometheus.wang/quickstart/static/monitor-internal.png" alt="监控服务内部运行状态"></p>
 <h1 id="强大的数据模型">强大的数据模型</h1>
@@ -260,7 +259,7 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http_request_status&#123;code=<span class="string">&#x27;200&#x27;</span>,content_path=<span class="string">&#x27;/api/path&#x27;</span>, environment=<span class="string">&#x27;produment&#x27;</span>&#125; =&gt; [value1@timestamp1,value2@timestamp2...]</span><br><span class="line"></span><br><span class="line">http_request_status&#123;code=<span class="string">&#x27;200&#x27;</span>,content_path=<span class="string">&#x27;/api/path2&#x27;</span>, environment=<span class="string">&#x27;produment&#x27;</span>&#125; =&gt; [value1@timestamp1,value2@timestamp2...]</span><br></pre></td></tr></table></figure>
 <p>每一条时间序列由指标名称( <code>Metrics Name</code> )以及一组标签( <code>Labels</code> )唯一标识。每条时间序列按照时间的先后顺序存储一系列的样本值。</p>
 <p>表示维度的标签可能来源于监控对象的状态，比如 <code>code=404</code> 或者 <code>content_path=/api/path</code> 。也可能来源于的环境定义，比如 <code>environment=produment</code> 。基于这些 <code>Labels</code> 可以方便地对监控数据进行聚合，过滤，裁剪。</p>
-<h1 id="强大的查询语言PromQL">强大的查询语言PromQL</h1>
+<h1 id="PromQL-查询">PromQL 查询</h1>
 <p>Prometheus 内置了一个强大的数据查询语言 <code>PromQL</code> 。 通过 PromQL 可以实现对监控数据的查询、聚合。同时PromQL 也被应用于数据可视化(如Grafana)以及告警当中。</p>
 <p>通过 PromQL 可以轻松回答类似于以下问题：</p>
 <ul>
@@ -290,7 +289,27 @@ function sidebar_toggle() {
 <blockquote>
 <p>甚至可以在不使用 Prometheus 的情况下，采用Prometheus的 client library 来让应用程序支持监控数据采集</p>
 </blockquote>
-<h1 id="Prometheus-Server-安装">Prometheus Server 安装</h1>
+<h1 id="Prometheus-架构">Prometheus 架构</h1>
+<p>这里从 Prometheus 的架构角度了解一下 Prometheus 生态中的各个组件，下图展示 Prometheus 的基本架构：</p>
+<p><img src="/images/2022-07-04-16-38-34.png" alt=""></p>
+<h2 id="Prometheus-Server">Prometheus Server</h2>
+<p>Prometheus Server 是 Prometheus 组件中的核心部分，负责实现对监控数据的获取，存储以及查询。</p>
+<p>Prometheus Server 可以通过静态配置管理监控目标，也可以配合使用 <code>Service Discovery</code> 的方式动态管理监控目标，并从这些监控目标中获取数据。</p>
+<p>Prometheus Server 需要对采集到的监控数据进行存储，Prometheus Server 本身就是一个时序数据库，将采集到的监控数据按照时间序列的方式存储在本地磁盘当中。</p>
+<p>Prometheus Server 对外提供了自定义的 <code>PromQL</code> 语言，实现对数据的查询以及分析。 内置的 <code>Express Browser UI</code>，通过这个UI可以直接通过 PromQL 实现数据的查询以及可视化。</p>
+<p>Prometheus Server 的联邦集群能力可以使其从其他的 Prometheus Server 实例中获取数据，因此在大规模监控的情况下，可以通过联邦集群以及功能分区的方式对 Prometheus Server 进行扩展。</p>
+<h2 id="Exporters">Exporters</h2>
+<p>Exporter 将监控数据采集的端点通过HTTP服务的形式暴露给 Prometheus Server，Prometheus Server 通过访问该Exporter 提供的 Endpoint 端点，即可获取到需要采集的监控数据。</p>
+<p>一般可以将 Exporter 分为两类：</p>
+<ul>
+<li>直接采集：这一类 Exporter 直接内置了对 Prometheus 监控的支持，比如 <code>cAdvisor</code>，<code>Kubernetes</code>，<code>Etcd</code>，<code>Gokit</code>等，都直接内置了用于向 Prometheus 暴露监控数据的端点</li>
+<li>间接采集：原有监控目标并不直接支持 Prometheus，需要通过 Prometheus 提供的 <code>Client Library</code> 编写该监控目标的监控采集程序。例如： <code>Mysql Exporter</code>，<code>JMX Exporter</code>，<code>Consul Exporter</code> 等</li>
+</ul>
+<h2 id="AlertManager">AlertManager</h2>
+<p>在 Prometheus Server 中支持基于 <code>PromQL</code> 创建告警规则，如果满足 PromQL 定义的规则，则会产生一条告警，而告警的后续处理流程则由 <code>AlertManager</code> 进行管理。在 AlertManager 中可以与邮件，Slack等等内置的通知方式进行集成，也可以通过 <code>Webhook</code> 自定义告警处理方式。AlertManager 是 Prometheus 体系中的告警处理中心。</p>
+<h2 id="PushGateway">PushGateway</h2>
+<p>由于 Prometheus 数据采集基于 <code>Pull</code> 模型进行设计，因此在网络环境的配置上必须要让 Prometheus Server 能够直接与 Exporter 进行通信。 当这种网络需求无法直接满足时，就可以利用 <code>PushGateway</code> 来进行中转。可以通过PushGateway 将内部网络的监控数据主动 <code>Push</code> 到 Gateway 当中。而 Prometheus Server 则可以采用同样 Pull 的方式从 PushGateway 中获取到监控数据。</p>
+<h1 id="Prometheus-安装">Prometheus  安装</h1>
 <p>Prometheus 基于 <code>Golang</code> 编写，编译后的软件包，不依赖于任何的第三方依赖。用户只需要下载对应平台的二进制包，解压并且添加基本的配置即可正常启动 Prometheus Server。</p>
 <h2 id="二进制包安装">二进制包安装</h2>
 <p>对于非 Docker 用户，可以从 <a target="_blank" rel="noopener" href="https://prometheus.io/download/">https://prometheus.io/download/</a> 找到最新版本的 Prometheus Sevrer 软件包：</p>
