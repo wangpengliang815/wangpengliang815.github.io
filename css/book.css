@@ -339,7 +339,8 @@ img {
       color: #8959a8; }
   .off-canvas-content .book-post-info {
     position: fixed;
-    font-size: 0.7rem; }
+    font-size: 0.7rem;
+    margin-right: 35px; }
     @media all and (min-width: 1280px) {
       .off-canvas-content .book-post-info {
         max-width: 10rem; } }
@@ -375,7 +376,7 @@ img {
         max-height: 0;
         transition: max-height 0.15s ease-out; }
     .off-canvas-content .book-post-info .book-tocbot {
-      overflow: auto;
+      overflow: hidden;
       position: relative;
       padding-right: 0.875rem;
       transition: max-height 0.15s ease-in-out; }
@@ -390,7 +391,7 @@ img {
       .off-canvas-content .book-post-info .book-tocbot .is-active-link::before {
         background-color: #004ed0 !important; }
     .off-canvas-content .book-post-info .book-tocbot-menu {
-      margin: 1rem 0.75rem; }
+      margin: 3rem 0.75rem; }
       .off-canvas-content .book-post-info .book-tocbot-menu a {
         display: block;
         margin: 0.375rem 0;
@@ -402,7 +403,7 @@ img {
     margin-left: 0; }
   @media all and (min-width: 1280px) {
     .off-canvas-content {
-      margin-left: 12rem;
+      margin-left: 14rem;
       padding: 2.2rem 2.2rem; } }
   @media all and (min-width: 960px) and (max-width: 1279px) {
     .off-canvas-content {
@@ -431,7 +432,7 @@ img {
 
 .book-sidebar {
   position: fixed;
-  width: 12rem;
+  width: 14rem;
   height: 100%;
   z-index: 500;
   background-color: #f7f8f9;
@@ -471,7 +472,7 @@ img {
     position: fixed;
     top: 3.25rem;
     bottom: 0rem;
-    width: 12rem;
+    width: 14rem;
     overflow-x: hidden;
     overflow-y: auto;
     font-size: 0.7rem; }
@@ -532,7 +533,7 @@ img {
 .sidebar-toggle {
   position: fixed;
   bottom: 0.6rem;
-  left: 12.7rem;
+  left: 14.7rem;
   transition: left 200ms;
   display: flex;
   justify-content: center;
