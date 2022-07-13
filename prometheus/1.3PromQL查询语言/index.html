@@ -250,7 +250,8 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <h1 id="时间序列">时间序列</h1>
+  <p><a target="_blank" rel="noopener" href="https://prometheus.io/docs/introduction">Prometheus 官方文档地址</a></p>
+<h1 id="监控样本">监控样本</h1>
 <p>通过 Node Exporter 暴露的 HTTP 服务，Prometheus 可以采集到当前主机所有监控指标的样本数据。比如：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HELP node_cpu_guest_seconds_total Seconds the CPUs spent in guests (VMs) for each mode.</span></span><br><span class="line"><span class="comment"># TYPE node_cpu_guest_seconds_total counter</span></span><br><span class="line">node_cpu_guest_seconds_total&#123;cpu=<span class="string">&quot;0&quot;</span>,mode=<span class="string">&quot;nice&quot;</span>&#125; 0</span><br><span class="line">node_cpu_guest_seconds_total&#123;cpu=<span class="string">&quot;0&quot;</span>,mode=<span class="string">&quot;user&quot;</span>&#125; 0</span><br><span class="line">node_cpu_guest_seconds_total&#123;cpu=<span class="string">&quot;1&quot;</span>,mode=<span class="string">&quot;nice&quot;</span>&#125; 0</span><br><span class="line">node_cpu_guest_seconds_total&#123;cpu=<span class="string">&quot;1&quot;</span>,mode=<span class="string">&quot;user&quot;</span>&#125; 0</span><br><span class="line"></span><br><span class="line"><span class="comment"># HELP node_cpu_seconds_total Seconds the CPUs spent in each mode.</span></span><br><span class="line"><span class="comment"># TYPE node_cpu_seconds_total counter</span></span><br><span class="line">node_cpu_seconds_total&#123;cpu=<span class="string">&quot;0&quot;</span>,mode=<span class="string">&quot;idle&quot;</span>&#125; 996.7</span><br><span class="line">node_cpu_seconds_total&#123;cpu=<span class="string">&quot;0&quot;</span>,mode=<span class="string">&quot;iowait&quot;</span>&#125; 0.52</span><br></pre></td></tr></table></figure>
 <p>其中非 <code>#</code> 开头的每一行表示当前 Node Exporter 采集到的一个监控样本：</p>
@@ -259,14 +260,12 @@ function sidebar_toggle() {
 <li>大括号中的标签：表示当前样本的一些特征和维度</li>
 <li>浮点数：表示该监控样本的具体值</li>
 </ul>
-<h1 id="样本（time-series）">样本（time-series）</h1>
+<h1 id="时间序列（time-series）">时间序列（time-series）</h1>
 <p>Prometheus 会将所有采集到的样本数据以时间序列（time-series）的方式保存在内存数据库中，定时保存到硬盘上。</p>
 <blockquote>
 <p>time-series 是按照时间戳和值的序列顺序存放的，称之为向量(vector)</p>
 </blockquote>
-<p>每条 time-series 通过指标名称(metrics name)和一组标签集(labelset)命名。如下所示可以将 time-series 理解为一个以时间为Y轴的数字矩阵：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">^</span><br><span class="line">│   . . . . . . . . . . . . . . . . .   . .   node_cpu&#123;cpu=<span class="string">&quot;cpu0&quot;</span>,mode=<span class="string">&quot;idle&quot;</span>&#125;</span><br><span class="line">│     . . . . . . . . . . . . . . . . . . .   node_cpu&#123;cpu=<span class="string">&quot;cpu0&quot;</span>,mode=<span class="string">&quot;system&quot;</span>&#125;</span><br><span class="line">│     . . . . . . . . . .   . . . . . . . .   node_load1&#123;&#125;</span><br><span class="line">│     . . . . . . . . . . . . . . . .   . .  </span><br><span class="line">v</span><br><span class="line">  &lt;------------------ 时间 ----------------&gt;</span><br></pre></td></tr></table></figure>
-<p>time-series 中每一个点称为一个样本（sample），样本由以下三部分组成：</p>
+<p>每条 time-series 通过指标名称(metrics name)和一组标签集(labelset)命名。其中每一个点称为一个样本(sample)。样本由以下三部分组成：</p>
 <ul>
 <li>指标（metric）：metric name 和描述当前样本特征的 labelsets</li>
 <li>时间戳（timestamp）：一个精确到毫秒的时间戳</li>
@@ -283,8 +282,10 @@ function sidebar_toggle() {
 <p>其中以 <code>__</code> 作为前缀的标签是系统保留的关键字，只能在系统内部使用。标签的值可以包含任何 Unicode 编码的字符。</p>
 <p>在 Prometheus 的底层实现中指标名称实际上是以 <code>__name__=&lt;metric name&gt;</code> 的形式保存在数据库中的，因此以下两种方式均表示的同一条 time-series：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">api_http_requests_total&#123;method=<span class="string">&quot;POST&quot;</span>, handler=<span class="string">&quot;/messages&quot;</span>&#125;</span><br><span class="line">等同于：</span><br><span class="line">&#123;__name__=<span class="string">&quot;api_http_requests_total&quot;</span>，method=<span class="string">&quot;POST&quot;</span>, handler=<span class="string">&quot;/messages&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
 <p>在 Prometheus 源码中也可以指标(Metric)对应的数据结构，如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">type Metric LabelSet</span><br><span class="line"></span><br><span class="line">type LabelSet map[LabelName]LabelValue</span><br><span class="line"></span><br><span class="line">type LabelName string</span><br><span class="line"></span><br><span class="line">type LabelValue string</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> Metric LabelSet</span><br><span class="line"><span class="built_in">type</span> LabelSet map[LabelName]LabelValue</span><br><span class="line"><span class="built_in">type</span> LabelName string</span><br><span class="line"><span class="built_in">type</span> LabelValue string</span><br></pre></td></tr></table></figure>
+</blockquote>
 <h1 id="Metric-类型">Metric 类型</h1>
 <p>为了能够理解和区分不同监控指标之间的差异，Prometheus 定义了4中不同的指标类型（metric type）：</p>
 <ol>
@@ -303,9 +304,7 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">topk(10, http_requests_total)</span><br></pre></td></tr></table></figure>
 <h2 id="Gauge-可增可减">Gauge-&gt;可增可减</h2>
 <p>Gauge 类型的指标侧重于反应系统的当前状态。因此这类指标的样本数据可增可减。如：<code>node_memory_MemFree（主机当前空闲的内容大小）</code>、<code>node_memory_MemAvailable</code>（可用内存大小）都是 Gauge 类型的监控指标。</p>
-<p>通过 Gauge 指标，可以直接查看系统的当前状态：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node_memory_MemFree</span><br></pre></td></tr></table></figure>
-<p>对于 Gauge 类型的监控指标，通过 PromQL 内置函数 <code>delta()</code> 可以获取样本在一段时间的变化情况。例如，计算CPU温度在两个小时内的差异：</p>
+<p>通过 Gauge 指标，可以直接查看系统的当前状态。对于 Gauge 类型的监控指标，通过 PromQL 内置函数 <code>delta()</code> 可以获取样本在一段时间的变化情况。例如，计算CPU温度在两个小时内的差异：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delta(cpu_temp_celsius&#123;host=<span class="string">&quot;zeus&quot;</span>&#125;[2h])</span><br></pre></td></tr></table></figure>
 <p>还可以使用 <code>deriv()</code> 计算样本的线性回归模型，甚至直接使用 <code>predict_linear()</code> 对数据的变化趋势进行预测。例如：预测系统磁盘空间在4个小时之后的剩余情况：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">predict_linear(node_filesystem_free&#123;job=<span class="string">&quot;node&quot;</span>&#125;[1h], 4 * 3600)</span><br></pre></td></tr></table></figure>
@@ -377,7 +376,7 @@ function sidebar_toggle() {
 <h2 id="时间位移">时间位移</h2>
 <p>在瞬时向量表达式或者区间向量表达式中，都是以当前时间为基准：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http_request_total&#123;&#125; <span class="comment"># 瞬时向量表达式，选择当前最新的数据</span></span><br><span class="line">http_request_total&#123;&#125;[5m] <span class="comment"># 区间向量表达式，选择以当前时间为基准，5分钟内的数据</span></span><br></pre></td></tr></table></figure>
-<p>如果想查询5分钟前的瞬时样本数据，或昨天一天的区间内的样本数据可以使用位移操作，位移操作的关键字为 <code>offset</code>。可以使用 <code>offset</code> 执行时间位移操作：</p>
+<p>如果想查询5分钟前的瞬时样本数据，或昨天一天区间内的样本数据可以使用位移操作，位移操作的关键字为 <code>offset</code>。可以使用 <code>offset</code> 执行时间位移操作：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http_request_total&#123;&#125; offset 5m</span><br><span class="line">http_request_total&#123;&#125;[1d] offset 1d</span><br></pre></td></tr></table></figure>
 <h2 id="聚合操作">聚合操作</h2>
 <p>一般如果描述样本特征的标签(label)在并非唯一的情况下，通过 PromQL 查询数据，会返回多条满足这些特征维度的时间序列。PromQL 提供的聚合操作可以用来对这些时间序列进行处理，形成一条新的时间序列：</p>
@@ -386,15 +385,12 @@ function sidebar_toggle() {
 <h3 id="数学运算">数学运算</h3>
 <p>例如：通过指标  <code>node_memory_free_bytes_total</code>  获取到当前主机可用的内存空间大小，样本单位为 Bytes。如果要求使用 <code>MB</code> 作为单位响应数据，只需要将查询到的时间序列的样本值进行单位换算即可：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node_memory_free_bytes_total / (1024 * 1024)</span><br></pre></td></tr></table></figure>
-<p><code>node_memory_free_bytes_total</code> 表达式会查询出所有满足表达式条件的时间序列，称该表达式为瞬时向量表达式，返回的结果称为瞬时向量。</p>
 <blockquote>
-<p>瞬时向量与标量之间进行数学运算时，数学运算符会依次作用于瞬时向量中的每一个样本值，从而得到一组新的时间序列。</p>
+<p>瞬时向量与标量之间进行数学运算时：数学运算符会依次作用于瞬时向量中的每一个样本值，从而得到一组新的时间序列</p>
 </blockquote>
-<blockquote>
 <p>瞬时向量与瞬时向量之间进行数学运算时，过程会相对复杂一点。 例如，如果想根据 <code>node_disk_bytes_written</code> 和  <code>node_disk_bytes_read</code> 获取主机磁盘IO的总量，可以使用如下表达式：</p>
-</blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node_disk_bytes_written + node_disk_bytes_read</span><br></pre></td></tr></table></figure>
-<p>表达式工作原理是：依次找到与左边向量元素匹配（标签完全一致）的右边向量元素进行运算，如果没找到匹配元素，则直接丢弃。同时新的时间序列将不会包含指标名称。 该表达式返回结果的示例如下所示：</p>
+<p>工作原理是：依次找到与左边向量元素匹配（标签完全一致）的右边向量元素进行运算，如果没找到匹配元素，则直接丢弃。同时新的时间序列将不会包含指标名称。 该表达式返回结果的示例如下所示：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;device=<span class="string">&quot;sda&quot;</span>,instance=<span class="string">&quot;localhost:9100&quot;</span>,job=<span class="string">&quot;node_exporter&quot;</span>&#125;=&gt;1634967552@1518146427.807 + 864551424@1518146427.807</span><br><span class="line">&#123;device=<span class="string">&quot;sdb&quot;</span>,instance=<span class="string">&quot;localhost:9100&quot;</span>,job=<span class="string">&quot;node_exporter&quot;</span>&#125;=&gt;0@1518146427.807 + 1744384@1518146427.807</span><br></pre></td></tr></table></figure>
 <p>PromQL 支持的数学运算符如下所示：</p>
 <ul>
@@ -411,8 +407,8 @@ function sidebar_toggle() {
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(node_memory_bytes_total - node_memory_free_bytes_total) / node_memory_bytes_total</span><br></pre></td></tr></table></figure>
 <p>而如果只想知道当前内存使用率超过95%的主机通过使用布尔运算符可以方便的获取到该结果：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(node_memory_bytes_total - node_memory_free_bytes_total) / node_memory_bytes_total &gt; 0.95</span><br></pre></td></tr></table></figure>
-<p>瞬时向量与标量进行布尔运算时，PromQL 依次比较向量中的所有时间序列样本的值，如果比较结果为 true 则保留，反之丢弃。</p>
-<p>瞬时向量与瞬时向量直接进行布尔运算时，同样遵循默认的匹配模式：依次找到与左边向量元素匹配（标签完全一致）的右边向量元素进行相应的操作，如果没找到匹配元素，则直接丢弃。</p>
+<p>瞬时向量与标量进行布尔运算时：PromQL 依次比较向量中的所有时间序列样本的值，如果比较结果为 true 则保留，反之丢弃。</p>
+<p>瞬时向量与瞬时向量直接进行布尔运算时：同样遵循默认的匹配模式：依次找到与左边向量元素匹配（标签完全一致）的右边向量元素进行相应的操作，如果没找到匹配元素，则直接丢弃。</p>
 <p>目前，Prometheus支持以下布尔运算符如下：</p>
 <ul>
 <li><code>==</code> (相等)</li>
@@ -423,9 +419,9 @@ function sidebar_toggle() {
 <li><code>&lt;=</code> (小于等于)</li>
 </ul>
 <h3 id="bool-修饰符">bool 修饰符</h3>
-<p>布尔运算符的默认行为是对时序数据进行过滤。而在其它的情况下可能需要的是真正的布尔结果。例如，只需要知道当前模块的 HTTP 请求量是否&gt;=1000，如果大于等于1000则返回1（true）否则返回0（false）。这时可以使用 bool修饰符改变布尔运算的默认行为。 例如：</p>
+<p>布尔运算符的默认行为是对时序数据进行过滤。而在其它的情况下可能需要的是真正的布尔结果。例如，只需要知道当前模块的 HTTP 请求量是否 &gt;=1000，如果大于等于1000则返回1（true）否则返回0（false）。这时可以使用  bool 修饰符改变布尔运算的默认行为。 例如：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http_requests_total &gt; bool 1000</span><br></pre></td></tr></table></figure>
-<p>使用 bool 修改符后，布尔运算不会对时间序列进行过滤，而是直接依次瞬时向量中的各个样本数据与标量的比较结果0或者1。从而形成一条新的时间序列。</p>
+<p>使用 bool 修改符后，布尔运算不会对时间序列进行过滤，而是直接依次瞬时向量中的各个样本数据与标量的比较结果0或者1，从而形成一条新的时间序列。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http_requests_total&#123;code=&quot;200&quot;,handler=&quot;query&quot;,instance=&quot;localhost:9090&quot;,job=&quot;prometheus&quot;,method=&quot;get&quot;&#125;  1</span><br><span class="line">http_requests_total&#123;code=&quot;200&quot;,handler=&quot;query_range&quot;,instance=&quot;localhost:9090&quot;,job=&quot;prometheus&quot;,method=&quot;get&quot;&#125;  0</span><br></pre></td></tr></table></figure>
 <p>同时需要注意的是，如果是在两个标量之间使用布尔运算，则必须使用 bool 修饰符</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2 == bool 2 # 结果为1</span><br></pre></td></tr></table></figure>
@@ -455,7 +451,7 @@ function sidebar_toggle() {
 <h3 id="一对一匹配">一对一匹配</h3>
 <p>一对一匹配模式会从操作符两边表达式获取的瞬时向量依次比较并找到唯一匹配(标签完全一致)的样本值。默认情况下，使用表达式：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vector1 &lt;operator&gt; vector2</span><br></pre></td></tr></table></figure>
-<p>在操作符两边表达式标签不一致的情况下，可以使用 <code>on(label list)</code> 或者 <code>ignoring(label list）</code>修改便签的匹配行为。使用 <code>ignoreing</code> 可以在匹配时忽略某些便签。而 <code>on</code> 则用于将匹配行为限定在某些便签之内。</p>
+<p>在操作符两边表达式标签不一致的情况下，可以使用 <code>on(label list)</code> 或者 <code>ignoring(label list）</code>修改便签的匹配行为。使用 <code>ignoreing</code> 可以在匹配时忽略某些标签。而 <code>on</code> 则用于将匹配行为限定在某些标签之内。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;vector expr&gt; &lt;bin-op&gt; ignoring(&lt;label list&gt;) &lt;vector expr&gt;</span><br><span class="line">&lt;vector expr&gt; &lt;bin-op&gt; on(&lt;label list&gt;) &lt;vector expr&gt;</span><br></pre></td></tr></table></figure>
 <p>例如当存在样本：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">method_code:http_errors:rate5m&#123;method=&quot;get&quot;, code=&quot;500&quot;&#125;  24</span><br><span class="line">method_code:http_errors:rate5m&#123;method=&quot;get&quot;, code=&quot;404&quot;&#125;  30</span><br><span class="line">method_code:http_errors:rate5m&#123;method=&quot;put&quot;, code=&quot;501&quot;&#125;  3</span><br><span class="line">method_code:http_errors:rate5m&#123;method=&quot;post&quot;, code=&quot;500&quot;&#125; 6</span><br><span class="line">method_code:http_errors:rate5m&#123;method=&quot;post&quot;, code=&quot;404&quot;&#125; 21</span><br><span class="line"></span><br><span class="line">method:http_requests:rate5m&#123;method=&quot;get&quot;&#125;  600</span><br><span class="line">method:http_requests:rate5m&#123;method=&quot;del&quot;&#125;  34</span><br><span class="line">method:http_requests:rate5m&#123;method=&quot;post&quot;&#125; 120</span><br></pre></td></tr></table></figure>
@@ -502,9 +498,7 @@ function sidebar_toggle() {
 </ul>
 <p>通过 <code>without</code> 和 <code>by</code> 可以按照样本的问题对数据进行聚合。</p>
 <p>例如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum(http_requests_total) without (instance)</span><br></pre></td></tr></table></figure>
-<p>等价于：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum(http_requests_total) by (code,handler,job,method)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sum(http_requests_total) without (instance)</span><br><span class="line">等价于：</span><br><span class="line">sum(http_requests_total) by (code,handler,job,method)</span><br></pre></td></tr></table></figure>
 <p>如果只需要计算整个应用的HTTP请求总量，可以直接使用表达式：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum(http_requests_total)</span><br></pre></td></tr></table></figure>
 <h2 id="count-values">count_values</h2>
@@ -519,6 +513,9 @@ function sidebar_toggle() {
 <p><code>quantile</code> 用于计算当前样本数据值的分布情况 <code>quantile(φ, express)</code> 其中 <code>0 ≤ φ ≤ 1</code>。</p>
 <p>例如：当φ为0.5时，即表示找到当前样本数据中的中位数：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">quantile(0.5, http_requests_total)</span><br></pre></td></tr></table></figure>
+<h1 id="常见内置函数">常见内置函数</h1>
+<p><a target="_blank" rel="noopener" href="https://www.prometheus.wang/promql/prometheus-promql-functions.html">内置函数相关参考</a></p>
+
 </div>
 
 
