@@ -273,10 +273,10 @@ function sidebar_toggle() {
 </ol>
 <ul>
 <li>
-<p><code>Passphrase</code> 是密码方式登录服务器</p>
+<p><code>Passphrase</code> 密码方式登录服务器</p>
 </li>
 <li>
-<p><code>Key</code> 是免密方式登录服务器。具体步骤：（将 Jenkins 所在主机的 <code>public_key</code> 添加到目标服务器的 <code>~/.ssh/authorized_keys</code> 即可）：</p>
+<p><code>Key</code> 免密方式登录服务器。具体步骤：（将 Jenkins 所在主机的 <code>public_key</code> 添加到目标服务器的 <code>~/.ssh/authorized_keys</code> 即可）：</p>
 </li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat id_rsa.pub &gt;&gt; authorized_keys <span class="comment"># 生成authorized_keys</span></span><br><span class="line">scp authorized_keys root@10.80.188.130:/root/.ssh <span class="comment"># 将authorized_keys拷贝到目标服务器 root/.ssh</span></span><br></pre></td></tr></table></figure>
