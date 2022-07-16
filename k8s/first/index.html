@@ -251,28 +251,7 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <p>Docker的可视化管理工具有DockerUI、Shipyard、Rancher、Portainer等，具体的功能差异查看 <a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.cnblogs.com%2Ffengli9998%2Fp%2F10386945.html">Docker的可视化管理工具对比</a>，Portainer是一个轻量级的docker环境管理UI，可以用来管理<a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.kubernetes.org.cn%2Ftags%2Fdocker">docker</a>宿主机和docker swarm集群。</p>
-<p><strong>Portainer主要功能</strong></p>
-<ol>
-<li>提供状态显示面板：显示主机或者swarm集群上有多少镜像，容器、网络、数据卷等</li>
-<li>应用模板快速部署：可以使用预存的模板或者自己定制的模板快速部署</li>
-<li>镜像网络数据卷管理：通过页面进行管理和操作，例如构建镜像，增删数据卷等</li>
-<li>事件日志显示：对任何操作有记录，并且有页面可以显示审计日志</li>
-<li>容器控制台操作：查看容器，启停容器，查看容器占用的性能(内存，cpu等)</li>
-<li>Swarm集群管理：可以管理swarm集群，是最大的优点</li>
-<li>登录用户管理：有完备的用户系统，权限控制（高级功能需付费）</li>
-</ol>
-<p><strong>部署Portiner容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 9000:9000 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock --privileged=<span class="literal">true</span> portainer/portainer</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>-v /var/run/docker.sock:/var/run/docker.sock</code>：挂载本地  <code>/var/run/docker.socker</code> 与容器的 <code>/var/run/docker.socker</code> 连接</li>
-<li><code>-v portainer_data:/data</code>：数据持久化</li>
-</ul>
-<p><img src="/images/2021-09-09-15-53-13.png" alt=""><br>
-<strong>参考：</strong><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Yogile/p/12624404.html">https://www.cnblogs.com/Yogile/p/12624404.html</a><br>
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/hellxz/p/install_portainer.html">https://www.cnblogs.com/hellxz/p/install_portainer.html</a></p>
-
+  
 </div>
 
 
@@ -308,7 +287,7 @@ function sidebar_toggle() {
 
     <div class="author-title">
       <div>WangPengLiang</div>
-      <!-- <div>2022-04-09</div> 
+      <!-- <div>2022-07-16</div> 
     </div>
   </div>
 -->
