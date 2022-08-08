@@ -172,11 +172,12 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <h2 id="🖥️-Linux">🖥️ Linux</h2>
 <ul>
-<li><a href="/linux/VMware%E5%AE%89%E8%A3%85Centos">VMware 安装Centos</a></li>
-<li><a href="/linux/Linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E">Linux 目录说明</a></li>
-<li><a href="/linux/Centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">Centos 网络配置</a></li>
+<li><a href="/linux/VMware%E5%AE%89%E8%A3%85Centos">VMware安装Centos</a></li>
+<li><a href="/linux/Linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E">Linux目录说明</a></li>
+<li><a href="/linux/Centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">Centos网络配置</a></li>
 <li><a href="/linux/Centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC">Centos7升级gcc版本</a></li>
 <li><a href="/linux/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">Linux常用命令</a></li>
+<li><a href="/linux/Centos%E5%AE%89%E8%A3%85Hexo">Centos安装Hexo</a></li>
 </ul>
 <h2 id="📚-NET">📚  .NET</h2>
 <ul>
@@ -399,6 +400,20 @@ function sidebar_toggle() {
 <blockquote>
 <p>其中“1”表示正常，“0”则为异常。</p>
 </blockquote>
+<h3 id="自动重启">自动重启</h3>
+<p>添加 <code>node_exporter.service</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/systemd/system/node_exporter.service</span><br></pre></td></tr></table></figure>
+<p>内容如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=node_exporter Monitoring System</span><br><span class="line">Documentation=node_exporter Monitoring System</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/projects/node_exporter/node_exporter-1.3.1.linux-amd64/node_exporter --web.listen-address=:6060  <span class="comment"># 这里ExecStart地址为node_exporter安装地址</span></span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>设置自动重启</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start node_exporter.service</span><br><span class="line">systemctl status node_exporter.service</span><br><span class="line">systemctl <span class="built_in">enable</span> node_exporter.service</span><br></pre></td></tr></table></figure>
+<h2 id="Cadvisor-Exporter">Cadvisor  Exporter</h2>
+<p>安装镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull google/cadvisor:latest</span><br></pre></td></tr></table></figure>
+<p>运行容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">  --volume=/:/rootfs:ro \</span><br><span class="line">  --volume=/var/run:/var/run:rw \</span><br><span class="line">  --volume=/sys:/sys:ro \</span><br><span class="line">  --volume=/var/lib/docker/:/var/lib/docker:ro \</span><br><span class="line">  --volume=/dev/disk/:/dev/disk:ro \</span><br><span class="line">  --publish=8080:8080 \</span><br><span class="line">  --detach=<span class="literal">true</span> \</span><br><span class="line">  --name=cadvisor \</span><br><span class="line">  --privileged=<span class="literal">true</span> \</span><br><span class="line">  google/cadvisor:latest</span><br></pre></td></tr></table></figure>
+<p>开放端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --add-port=8080/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
 <h1 id="任务和实例">任务和实例</h1>
 <p>上面通过在 <code>prometheus.yml</code> 配置文件中，添加如下配置让 Prometheus 可以从 Node Exporter 暴露的服务中获取监控指标数据。</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;123.56.222.108&#x27;</span> </span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;123.56.222.108:9100&#x27;</span>]</span><br></pre></td></tr></table></figure>
