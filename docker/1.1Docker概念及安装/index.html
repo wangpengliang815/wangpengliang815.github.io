@@ -197,6 +197,11 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/dotnet/1.3%E5%9F%BA%E4%BA%8EDataProtection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88">1.3 数据保护方案</a></li>
 <li><a href="/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90AzureDevops%E7%AE%A1%E9%81%93">1.4 AzureDevops集成</a></li>
 </ul>
+<h2 id="🎭-PMI-ACP">🎭  PMI-ACP</h2>
+<ul>
+<li><a href="/acp/PMI-ACP%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3">PMI-ACP 基础了解</a></li>
+<li><a href="/acp/PMI-ACP%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001">PMI-ACP 备考笔记01</a></li>
+</ul>
 
 </div>
 
@@ -342,7 +347,7 @@ function sidebar_toggle() {
 <blockquote>
 <p>✨ Docker Hub是Docker公司提供的一个注册服务器（Register）来保存多个仓库，每个仓库又可以包含多个具备不同tag的镜像</p>
 </blockquote>
-<h1 id="Docker安装（Centos）">Docker安装（Centos）</h1>
+<h1 id="Docker安装">Docker安装</h1>
 <p>Docker 是一个开源的商业产品，有两个版本：社区版（Community Edition，缩写为 CE）和企业版（Enterprise Edition，缩写为 EE）。企业版包含了一些收费服务，个人开发者一般用不到。</p>
 <h2 id="环境准备">环境准备</h2>
 <p>官方建议 <code>Centos7 Linux</code> 内核需要<code>3.10</code>以上</p>
@@ -351,22 +356,6 @@ function sidebar_toggle() {
 </blockquote>
 <h2 id="查看内核版本">查看内核版本</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@wangpengliang ~]<span class="comment"># uname -r</span></span><br><span class="line">3.10.0-1160.25.1.el7.x86_64</span><br></pre></td></tr></table></figure>
-<h2 id="卸载旧版本">卸载旧版本</h2>
-<blockquote>
-<p>如果之前安装过才需要</p>
-</blockquote>
-<p><strong>1)：查看当前docker状态，如果是运行状态则停掉</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl status docker</span><br><span class="line">systemctl stop docker</span><br></pre></td></tr></table></figure>
-<p><strong>2)：查看yum安装的docker文件包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list installed |grep docker</span><br></pre></td></tr></table></figure>
-<p><strong>3)：查看docker相关的rpm源文件</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa |grep docker</span><br></pre></td></tr></table></figure>
-<p><strong>4)：删除所有安装的docker文件包</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y remove docker.x86_64</span><br></pre></td></tr></table></figure>
-<p><strong>其他docker相关的安装包同样删除，删完之后再查看下docker rpm源</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa |grep docker</span><br></pre></td></tr></table></figure>
-<p><strong>5)：删除docker的镜像文件，默认在</strong><code>**/var/lib/docker**</code><strong>目录下</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /var/lib/docker</span><br></pre></td></tr></table></figure>
 <h2 id="Yum安装">Yum安装</h2>
 <ol>
 <li>更新 yum 包。可选项：如之后出现不兼容的情况的话就必须执行</li>
@@ -425,7 +414,19 @@ function sidebar_toggle() {
 <li>测试运行</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
-
+<h1 id="Docker-卸载">Docker 卸载</h1>
+<p><strong>1)：查看当前docker状态，如果是运行状态则停掉</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl status docker</span><br><span class="line">systemctl stop docker</span><br></pre></td></tr></table></figure>
+<p><strong>2)：查看yum安装的docker文件包</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list installed |grep docker</span><br></pre></td></tr></table></figure>
+<p><strong>3)：查看docker相关的rpm源文件</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa |grep docker</span><br></pre></td></tr></table></figure>
+<p><strong>4)：删除所有安装的docker文件包</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y remove docker.x86_64</span><br></pre></td></tr></table></figure>
+<p><strong>其他docker相关的安装包同样删除，删完之后再查看下docker rpm源</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa |grep docker</span><br></pre></td></tr></table></figure>
+<p><strong>5)：删除docker的镜像文件，默认在</strong><code>**/var/lib/docker**</code><strong>目录下</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /var/lib/docker</span><br></pre></td></tr></table></figure>
 </div>
 
 
