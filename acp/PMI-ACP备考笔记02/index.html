@@ -202,6 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <li><a href="/acp/PMI-ACP%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3">PMI-ACP 基础了解</a></li>
 <li><a href="/acp/PMI-ACP%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001">PMI-ACP 备考笔记01</a></li>
 <li><a href="/acp/PMI-ACP%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002">PMI-ACP 备考笔记02</a></li>
+<li><a href="/acp/PMI-ACP%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003">PMI-ACP 备考笔记03</a></li>
 </ul>
 
 </div>
@@ -267,25 +268,227 @@ function sidebar_toggle() {
 <h1 id="Backlog-简介">Backlog 简介</h1>
 <p>Backlog 是一个按照商业价值排序的需求列表，列表条目的体现方式通常为用户故事。</p>
 <h1 id="Scrum的334-5-5原则">Scrum的334(5)5原则</h1>
-<h2 id="3-Roles">3-Roles</h2>
+<h2 id="3-Roles（角色）">3-Roles（角色）</h2>
+<p><img src="/images/2023-07-08-16-01-33.png" alt=""></p>
 <ol>
 <li>Product Owner (产品负责人)</li>
 <li>Scrum Master（团队负责人）</li>
 <li>Dev-Team（开发团队）</li>
 </ol>
-<h2 id="3-Artifacts">3-Artifacts</h2>
+<h2 id="3-Artifacts（工件）">3-Artifacts（工件）</h2>
 <ol>
 <li>Product Backlog（产品功能列表）</li>
-<li>Sprint Backlog（迭代功能列表）</li>
+<li>Sprint Backlog（迭代冲刺列表）</li>
 <li>Burn-Down Chat（燃尽图）</li>
 </ol>
-<h2 id="4-Ceremonies">4-Ceremonies</h2>
+<h2 id="4-Ceremonies（仪式）">4-Ceremonies（仪式）</h2>
 <ol>
 <li>Sprint Planning Meeting（迭代计划会议）</li>
 <li>Daily Scrum Meeting（每日站会）</li>
 <li>Sprint Review Meeting（迭代评审会议）</li>
 <li>Sprint Retrospective Meeting（迭代回顾会议）</li>
+<li><s>Sprint（最新的Scrum会把Sprint也当做一个仪式）</s></li>
 </ol>
+<h2 id="5-Values（价值观）">5-Values（价值观）</h2>
+<ul>
+<li><strong>开放</strong></li>
+<li><strong>勇气</strong></li>
+<li><strong>尊重</strong></li>
+<li><strong>专注</strong></li>
+<li><strong>承诺</strong></li>
+</ul>
+<h1 id="Scrum-相关会议">Scrum 相关会议</h1>
+<p><img src="/images/2023-07-08-14-15-00.png" alt=""></p>
+<h1 id="Scrum-项目阶段">Scrum 项目阶段</h1>
+<p><img src="/images/2023-07-08-14-20-17.png" alt=""></p>
+<p><img src="/images/2023-07-08-14-21-44.png" alt=""></p>
+<h1 id="敏捷角色与职责">敏捷角色与职责</h1>
+<h2 id="PO">PO</h2>
+<p>PO是有授权的产品领导力核心，是Scrum团队的三大角色之一。</p>
+<p><strong>产品负责人需要面对2个方向</strong>：</p>
+<ol>
+<li>PO必须很好地理解组中利益干系人、客户和用户的需求和优先级。从这个角度而言，PO担任产品经理的角色，确保能开发出正确的解决方案。</li>
+<li>PO必须保证已经有明确的接收标准，标准满足后续测试验证的标准。从这个角度而言，PO做的是业务分析师和测试人员的工作。</li>
+</ol>
+<p><strong>职责</strong></p>
+<ol>
+<li>
+<p>管理经济效益</p>
+<blockquote>
+<p>PO要负责确保在版本、Sprint和产品列表层面都能够持续做出良好的经济决策。</p>
+</blockquote>
+</li>
+<li>
+<p>参与规划活动</p>
+<blockquote>
+<p>PO是组合规划、产品规划、版本规划、冲刺规划的重要参与者。</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>
+<p>组合规划时，PO负责人与内部利益干系人一起把产品放到组合列表中正确的位置并确定产品开发工作的起止日期</p>
+</li>
+<li>
+<p>产品规划时，PO与利益干系人一起制定产品愿景</p>
+</li>
+<li>
+<p>版本规划时，PO与利益干系人以及Team一起确定下一个版本的内容</p>
+</li>
+<li>
+<p>冲刺规划时，PO与Dev Team一起确定Sprint目标</p>
+</li>
+</ul>
+<p><strong>梳理产品列表</strong></p>
+<blockquote>
+<p>PO负责管理产品列表的梳理活动，包括US的建立、细化、估算和排列优先级顺序。并不是所有的梳理工作都需要PO自己执行，但是在执行期间，PO负责解答问题，澄清疑问</p>
+</blockquote>
+<p><strong>定义接收标准并验证这些标准是否满足</strong></p>
+<ul>
+<li>PO负责为每一个US定义接收标准。还可能会写对应接收标准的测试用例，可以找他人协助完成</li>
+<li>PO最终负责确认US是否满足接收标准，做产品验收测试</li>
+<li>PO要在Sprint执行的过程中验证接收标准，而不是Sprint Review时，这一点很重要</li>
+</ul>
+<p><strong>与开发团队合作</strong></p>
+<blockquote>
+<p>PO必须与Dev Team紧密合作，每天参与Team活动。若是参与不足，不能及时给出必要的反馈，而等到最后反馈时，他产生的价值已经大大降低。参与不足，会给Team带来产品返工的人力资源等损失，项目被迫延期等风险。</p>
+</blockquote>
+<p><strong>与利益干系人合作</strong></p>
+<blockquote>
+<p>PO是内外部利益干系人团队的唯一代言人。</p>
+</blockquote>
+<p><strong>日常工作内容</strong></p>
+<ul>
+<li>PO参与组合规划</li>
+<li>PO参与产品规划，与利益干系人一起构思新产品</li>
+<li>Sprint前，PO负责制定Sprint计划</li>
+<li>Sprint内，PO要参加Daily Meeting。例会上听取情况，了解进展，提供协助</li>
+<li>PO必须每天能够解答问题，并进行验收测试</li>
+<li>Sprint内，PO还要确定下个Sprint的计划及优先级顺序</li>
+<li>PO参与Sprint Plan，对产品列表进行梳理</li>
+<li>Sprint结束时，PO要参与show case 和 Sprint RetroSpect</li>
+</ul>
+<h2 id="Scrum-Master">Scrum Master</h2>
+<p>作为 Scrum 流程的捍卫者和布道者，ScrumMaster在Scrum团队中起到至关重要的作用，他们确保团队使用正确的流程，确保团队正确地召开各种会议，帮助每个人理解Scrum 理论、实践、规则和价值。</p>
+<p>Scrum Master 对 Scrum 团队而言，他/她是一位服务型领导。Scrum Master 帮助Scrum 团队之外的人了解他/她如何与Scrum 团队交互是有益的，通过改变他/她们与Scrum 团队的互动方式来最大化Scrum 团队所创造的价值。</p>
+<p><strong>Scrum Master服务于产品负责人</strong></p>
+<p>Scrum Master以各种方式服务于产品负责人，包括：</p>
+<ul>
+<li>尽可能确保Scrum 团队中的每个人都能理解目标、范围和产品域</li>
+<li>找到有效管理产品待办列表的技巧</li>
+<li>帮助Scrum 团队理解为何需要清晰且简明的产品待办列表项</li>
+<li>理解在经验主义的环境中的产品规划</li>
+<li>确保产品负责人懂得如何来安排产品待办列表使其达到最大化价值</li>
+<li>理解并实践敏捷性</li>
+<li>按要求或需要引导Scrum 事件</li>
+</ul>
+<p><strong>Scrum Master服务于开发团队</strong></p>
+<p>Scrum Master以各种方式服务于开发团队，包括：</p>
+<ul>
+<li>在自组织和跨职能方面给予开发团队指导</li>
+<li>帮助开发团队创造高价值的产品</li>
+<li>移除开发团队工作进展中的障碍</li>
+<li>按要求或需要引导Scrum 事件</li>
+<li>在Scrum 还未完全采纳和理解的组织环境中指导开发团队</li>
+</ul>
+<p><strong>Scrum Master服务于组织</strong></p>
+<p>Scrum Master以各种方式服务于组织，包括：</p>
+<ul>
+<li>带领并指导组织采纳Scrum</li>
+<li>在组织范围内规划Scrum 的实施</li>
+<li>帮助员工和利益攸关者理解并实施Scrum 和经验产品开发</li>
+<li>引发能够提升Scrum 团队生产率的改变</li>
+<li>与其他Scrum Master 一起工作，增加组织中Scrum 应用的有效性</li>
+</ul>
+<h1 id="用户故事">用户故事</h1>
+<h2 id="简介">简介</h2>
+<p>角色：谁要使用</p>
+<p>功能：需要完成什么样的功能</p>
+<p>价值：为什么要完成这个功能，这个功能有什么价值</p>
+<h2 id="格式">格式</h2>
+<p>作为 <code>&lt;用户角色 who&gt;</code>，我需要 <code>&lt;功能 how&gt;</code>，以实现 <code>&lt;业务价值 why&gt;</code></p>
+<p>注意：用户故事不能使用技术语言描述，要使用用户可以理解的业务语言描述</p>
+<h2 id="3C-法则">3C 法则</h2>
+<p>Card（卡片）</p>
+<p>Conversation（会话）</p>
+<p>Confirmation（确认）</p>
+<h2 id="IVNEST-原则">IVNEST 原则</h2>
+<h3 id="Independent（独立性）">Independent（独立性）</h3>
+<ul>
+<li>要尽可能让一个用户故事独立于其他的用户故事</li>
+<li>依赖太强会导致制定计划、确定优先级、工作量估算都变得很困难</li>
+</ul>
+<h3 id="Valuable-有价值">Valuable 有价值</h3>
+<ul>
+<li>每个故事必须要对客户具有价值</li>
+</ul>
+<h3 id="Negotiable（可协商性）">Negotiable（可协商性）</h3>
+<ul>
+<li>内容要是可以协商的，用户故事不是合同</li>
+<li>对用户故事的一个简短描述，不包括太多细节</li>
+</ul>
+<h3 id="Estimable-可估算性">Estimable 可估算性</h3>
+<ul>
+<li>开发团队需要估计一个用户故事以便确定优先级，工作量，安排计划</li>
+</ul>
+<h3 id="Small-短小">Small 短小</h3>
+<ul>
+<li>要确保在一个迭代或Sprint 中能够完成</li>
+</ul>
+<h3 id="Testable-可测试性">Testable 可测试性</h3>
+<ul>
+<li>一个用户故事要是可以测试的，要有验收标准</li>
+</ul>
+<h1 id="如何写好用户故事">如何写好用户故事</h1>
+<ol>
+<li>聚焦用户</li>
+<li>功能≠价值</li>
+<li>使用场景</li>
+<li>从Epic开始</li>
+<li>明确验收标准</li>
+</ol>
+<h2 id="验收标准-AC（Acceptance-Criteria）">验收标准 AC（Acceptance Criteria）</h2>
+<ul>
+<li>敏捷测试中 user story 的重要组成部分</li>
+<li>Ac是根据 user story 的阐述制定的验收标准</li>
+<li>Ac初稿由BA根据客户的需求来编写，需User、BA（业务分析师）、QA、和Dev共同Review</li>
+<li>每条Ac都应体现业务价值，是story的功能集，是story 交付时必须满足的一组条件</li>
+</ul>
+<h2 id="测试用例-Tc（Test-Cases）">测试用例 Tc（Test Cases）</h2>
+<ul>
+<li>TC主要由测试人员根据AC编写，BA、QA、和测试一起Review</li>
+<li>从开发流程讲，TC应该是story交付前必须执行的测试</li>
+<li>从内容上讲，TC是AC的具体实现，应该比AC更详细</li>
+<li>TC还应包括很多异常测试永猎</li>
+</ul>
+<h1 id="Product-Backlog">Product Backlog</h1>
+<p>PB是条目化/量化的用户需求，将需求文档中需要实际开发的需求（包括功能性和非功能性）条目化的表达出来。</p>
+<h1 id="用户故事拆分方法">用户故事拆分方法</h1>
+<h2 id="基于业务流程步骤拆分">基于业务流程步骤拆分</h2>
+<blockquote>
+<p>基于用户流程。将整个故事拆分多个环节，将每个环节还原成具体的用户场景</p>
+</blockquote>
+<h2 id="推迟性能实现">推迟性能实现</h2>
+<blockquote>
+<p>先让用户基本故事跑起来，再满足性能要求</p>
+</blockquote>
+<h2 id="化繁为简">化繁为简</h2>
+<blockquote>
+<p>先完成最核心的版本，再通过其他用户故事完善功能</p>
+</blockquote>
+<h2 id="主要投入">主要投入</h2>
+<blockquote>
+<p>根据主要投入或工作量来拆分</p>
+</blockquote>
+<h2 id="界面入口多样性">界面入口多样性</h2>
+<blockquote>
+<p>是否考虑先试用简单界面入口获取同样数据</p>
+</blockquote>
+<h2 id="业务规则多样性">业务规则多样性</h2>
+<blockquote>
+<p>先满足一种规则，后续完善其他规则</p>
+</blockquote>
+<h1 id=""></h1>
 
 </div>
 
