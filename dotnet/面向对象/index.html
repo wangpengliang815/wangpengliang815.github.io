@@ -313,6 +313,14 @@ function sidebar_toggle() {
 <p><strong>注意</strong>：</p>
 <p>两个方法不能仅在返回类型上有区别</p>
 <p>两个方法不能仅根据参数是声明为 <code>ref</code> 还是 <code>out</code> 来区分</p>
+<h2 id="局部函数">局部函数</h2>
+<p>局部函数只能在声明该局部函数的方法内部调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void LocalMethod()</span><br><span class="line">&#123;</span><br><span class="line">    static int Add(int x, int y) =&gt; x + y;</span><br><span class="line"></span><br><span class="line">    int result = Add(1, 2);</span><br><span class="line">    Console.WriteLine(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="扩展方法">扩展方法</h2>
+<p>扩展方法允许创建扩展其他类型的方法。<strong>扩展方法需要是静态方法，并且在静态类中声明</strong>。</p>
+<h1 id="枚举-v2">枚举</h1>
+<p>枚举是值类型，包含一组命名的常量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public enum Colors</span><br><span class="line">&#123;</span><br><span class="line">    Red = 1,</span><br><span class="line">    Green = 2,</span><br><span class="line">    Blue = 3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="属性（Property）">属性（Property）</h1>
 <p>它是一个方法或一对方法，在客户端代码看来，它(们)是一个字段。</p>
 <h2 id="属性定义">属性定义</h2>
@@ -328,7 +336,7 @@ function sidebar_toggle() {
 <h1 id="构造函数">构造函数</h1>
 <p>声明基本构造函数的语法就是声明一个与包含的类同名的方法，但该方法没有返回类型。</p>
 <h2 id="构造函数声明">构造函数声明</h2>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">   Person()</span><br><span class="line">   &#123;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">   Person()&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>注意</strong>：没有必要给类显式提供构造函数，原因在于：如果没有在类中没有提供任何构造函数，编译器会在后台创建一个默认的无参构造函数用来把所有的成员字段初始化为标准的默认值。</p>
 <h2 id="构造函数重载">构造函数重载</h2>
 <p>构造函数重载遵循与其他方法相同的规则，就是说允许为构造函数提供任意多的重载。</p>
@@ -513,7 +521,7 @@ B类无参构造函数调用父类带参构造函数</p>
 
     <div class="author-title">
       <div>WangPengLiang</div>
-      <!-- <div>2022-04-09</div> 
+      <!-- <div>2023-07-06</div> 
     </div>
   </div>
 -->
