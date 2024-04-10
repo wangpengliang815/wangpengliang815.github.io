@@ -262,7 +262,7 @@ function sidebar_toggle() {
         </div>
         <div class="book-content">
           <div class="book-post">
-  <p>委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得可以将方法当作另一个方法的参数来进行传递</p>
+  <p>委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得<strong>可以将方法当作另一个方法的参数来进行传递</strong></p>
 <blockquote>
 <p><strong>不管什么函数只要返回值类型和参数能匹配委托所指定的，那么这个函数就能存储为一个委托变量的引用。</strong></p>
 </blockquote>
@@ -287,7 +287,7 @@ function sidebar_toggle() {
 <p>至此，一个委托就完成了。</p>
 <h1 id="匿名方法">匿名方法</h1>
 <p>上面说到完成一个委托要分三步走缺一步都不行，但是微软可能感觉这么实现比较麻烦，非要把三步做成两步来走！所以就用匿名方法来简化上边的三个步骤。</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// step01：首先用delegate定义一个委托 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">Sum</span>(<span class="params"><span class="built_in">int</span> x， <span class="built_in">int</span> y</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// step02：使用匿名方法的写法把一个方法赋值给委托</span></span><br><span class="line">    Sum sum = <span class="built_in">delegate</span> (<span class="built_in">int</span> x， <span class="built_in">int</span> y) &#123; <span class="keyword">return</span> x + y; &#125;;</span><br><span class="line">    <span class="built_in">int</span> result = sum.Invoke(<span class="number">1</span>， <span class="number">2</span>);</span><br><span class="line">    Console.WriteLine(result);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// step01：首先用delegate定义一个委托 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">Sum</span>(<span class="params"><span class="built_in">int</span> x， <span class="built_in">int</span> y</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// step02：使用匿名方法的写法把一个方法赋值给委托</span></span><br><span class="line">    Sum sum = <span class="built_in">delegate</span> (<span class="built_in">int</span> x， <span class="built_in">int</span> y) &#123; <span class="keyword">return</span> x + y; &#125;;</span><br><span class="line">    <span class="built_in">int</span> result = sum.Invoke(<span class="number">1</span>， <span class="number">2</span>);</span><br><span class="line">    Console.WriteLine(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>step01</strong>：使用 <code>delegate</code> 关键字定义委托<br>
 <strong>step02</strong>：使用匿名方法的写法把一个方法赋值给委托</p>
 <p>这时会发现这里省略了定义方法这一步，将三步简化成了两步。</p>
@@ -315,7 +315,7 @@ function sidebar_toggle() {
 <p>表示引用一个 <code>void</code> 返回类型的方法，可以传递最多<strong>16种不同的参数类型</strong>，没有泛型参数的 <code>Action</code> 类可调用没有参数的方法。</p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Action：无参数</span></span><br><span class="line">Action action1 = () =&gt; &#123; Console.WriteLine(<span class="string">&quot;啦啦啦啦&quot;</span>); &#125;;</span><br><span class="line">action1();</span><br><span class="line"><span class="comment">// Action：一个参数</span></span><br><span class="line">Action&lt;<span class="built_in">string</span>&gt; action2 = p =&gt; &#123; Console.WriteLine(<span class="string">&quot;啦啦啦啦，name:&#123;0&#125;&quot;</span>,p); &#125;;</span><br><span class="line">action2(<span class="string">&quot;wang&quot;</span>);</span><br><span class="line"><span class="comment">// Action：多个参数</span></span><br><span class="line">Action&lt;<span class="built_in">string</span>, <span class="built_in">int</span>&gt; action3 = (name,age) =&gt; &#123; Console.WriteLine(<span class="string">&quot;啦，name:&#123;0&#125;，age:&#123;1&#125;&quot;</span>, name,age); &#125;;</span><br><span class="line">action3(<span class="string">&quot;wang&quot;</span>,<span class="number">25</span>);</span><br></pre></td></tr></table></figure>
 <h2 id="Func">Func</h2>
-<p><code>Func&lt;T&gt;</code> 允许调用带返回类型的方法，可以传递**<code>16种不同类型的参数和一个返回类型</code>**，<code>Func&lt;out TResult&gt;</code> 委托类型可以调用带返回值且无参数的方法。</p>
+<p><code>Func&lt;T&gt;</code> 允许调用带返回类型的方法，可以传递 <strong>16种不同类型的参数和一个返回类型</strong>，<code>Func&lt;out TResult&gt;</code> 委托类型可以调用带返回值且无参数的方法。</p>
 <p><strong>总结</strong></p>
 <ul>
 <li><code>Action&lt;T&gt;</code> 用于没有返回值的方法（参数根据自己情况进行传递）</li>
@@ -425,7 +425,7 @@ function sidebar_toggle() {
 
     <div class="author-title">
       <div>WangPengLiang</div>
-      <!-- <div>2022-04-09</div> 
+      <!-- <div>2023-07-06</div> 
     </div>
   </div>
 -->
