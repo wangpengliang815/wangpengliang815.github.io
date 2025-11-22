@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>⌛ 软件测试 on CODE'NOTE</title><link>https://wangpengliang815.github.io/docs/test/</link><description>Recent content in ⌛ 软件测试 on CODE'NOTE</description><generator>Hugo</generator><language>zh-cn</language><atom:link href="https://wangpengliang815.github.io/docs/test/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</guid><description>&lt;h1 id="常见测试类型"&gt;常见测试类型&lt;a class="anchor" href="#%e5%b8%b8%e8%a7%81%e6%b5%8b%e8%af%95%e7%b1%bb%e5%9e%8b"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;单元测试&lt;/li&gt;
+&lt;li&gt;集成测试&lt;/li&gt;
+&lt;li&gt;Web测试&lt;/li&gt;
+&lt;li&gt;负载测试&lt;/li&gt;
+&lt;li&gt;其他&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="依赖倒置原则dip"&gt;依赖倒置原则(DIP）&lt;a class="anchor" href="#%e4%be%9d%e8%b5%96%e5%80%92%e7%bd%ae%e5%8e%9f%e5%88%99dip"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;很多情况下,一个类或者是方法它会依赖一些外部组件，如其他开发写的代码、第三方类库、数据库、网络等，当被测试的代码与这些组件紧耦合时，这段代码将可能是不可测的。如一个方法中依赖一个数据库组件去访问数据库，那么在执行这个方法时，必然要与数据库交互，如果没有数据库，那么该方法就无法运行。所以单元测试不仅是对代码逻辑进行检查，同时还对整个代码结构有所限制，面向对象编程时应当遵循“依赖倒置”原则，模块应该依赖抽象，抽象不应该依赖实现。并且所依赖的抽象，应该显示的通过构造或者方法参数进行暴露，让组件的使用者对组件的依赖一目了然,在单元测试时为了屏蔽这些抽象依赖，不同测试框架中提供了&lt;code&gt;stub&lt;/code&gt;、&lt;code&gt;mock&lt;/code&gt;、&lt;code&gt;fake&lt;/code&gt; 等方式对抽象进行模拟，以便于代码能够正常执行。&lt;/p&gt;
+&lt;h1 id="单元测试"&gt;单元测试&lt;a class="anchor" href="#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;软件应用程序有多种类型的测试。 其中包括集成测试、Web 测试、负载测试和其他测试。 “单元测试”用于对软件中的最小可测试单元进行检查和验证。 单元测试仅测试开发人员控件内的代码。 它们不测试基础结构问题。 基础结构问题包括数据库、文件系统和网络资源。&lt;/p&gt;
+&lt;p&gt;编写单元测试时，尽量不要引入基础结构依赖项。这些依赖项会降低测试速度，使测试更加脆弱，应将其保留供集成测试使用。 可以通过遵循&lt;code&gt;Explicit Dependencies Principle&lt;/code&gt;（显式依赖项原则）和使用&lt;code&gt;Dependency Injection&lt;/code&gt;（依赖项注入）避免应用程序中的这些依赖项。还可以将单元测试保留在单独的项目中，与集成测试相分隔。 这可确保单元测试项目没有引用或依赖于基础结构包。&lt;/p&gt;
+&lt;h1 id="单元测试的好处"&gt;单元测试的好处&lt;a class="anchor" href="#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95%e7%9a%84%e5%a5%bd%e5%a4%84"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;比执行功能测试节省时间&lt;/li&gt;
+&lt;li&gt;防止回归：新功能上线时可通过单元测试来确保之前存在的功能正常运行不会破坏现有功能&lt;/li&gt;
+&lt;li&gt;减少耦合：当代码紧密耦合时，可能很难进行单元测试，如果不为代码编写单元测试，耦合可能就不太明显了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="优质单元测试的特征"&gt;优质单元测试的特征&lt;a class="anchor" href="#%e4%bc%98%e8%b4%a8%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95%e7%9a%84%e7%89%b9%e5%be%81"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;快速： 对成熟项目进行数千次单元测试，这很常见。 应花非常少的时间来运行单元测试&lt;/li&gt;
+&lt;li&gt;独立： 单元测试是独立的，可以单独运行，并且不依赖文件系统或数据库等任何外部因素&lt;/li&gt;
+&lt;li&gt;可重复：运行单元测试的结果应该保持一致，也就是说，如果在运行期间不更改任何内容，总是返回相同结果&lt;/li&gt;
+&lt;li&gt;自检查： 测试应该能够在没有任何人工交互的情况下，自动检测测试是否通过&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="代码覆盖率"&gt;代码覆盖率&lt;a class="anchor" href="#%e4%bb%a3%e7%a0%81%e8%a6%86%e7%9b%96%e7%8e%87"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;高代码覆盖率百分比通常与较高的代码质量相关联，但该度量值本身无法确定代码的质量。 设置过高的代码覆盖率百分比目标可能会适得其反，高代码覆盖率百分比不代表代码质量就高， 它仅仅表示单元测试所涵盖的代码量。&lt;/p&gt;
+&lt;p&gt;代码覆盖率工具有两种类型&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据收集器： 数据收集器监视测试执行并收集有关测试运行的信息。 它们以各种输出格式（例如 &lt;code&gt;XML&lt;/code&gt;和 &lt;code&gt;JSON&lt;/code&gt;）报告收集的信息&lt;/li&gt;
+&lt;li&gt;报表生成器： 使用从测试运行收集的数据生成报表，通常为带样式的 &lt;code&gt;HTML&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;若要通过 Coverlet 获得代码覆盖率，现有单元测试项目必须具有相应的包依赖项，或者依赖于全局工具和对应的 &lt;code&gt;coverlet.console NuGet&lt;/code&gt; 包，代码覆盖率是单元测试运行的代码量（行、分支或方法）的度量值，企业版的VS自带了代码覆盖率分析工具，参考：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://docs.microsoft.com/en-us/visualstudio/test/using-code-coverage-to-determine-how-much-code-is-being-tested"&gt;https://docs.microsoft.com/en-us/visualstudio/test/using-code-coverage-to-determine-how-much-code-is-being-tested&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/Microsoft/vstest-docs/blob/master/docs/analyze.md#coverage"&gt;https://github.com/Microsoft/vstest-docs/blob/master/docs/analyze.md#coverage&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;.dotnet Core&lt;/code&gt;（暂不支持&lt;code&gt;.NetFramework&lt;/code&gt;）获取代码覆盖率的大致步骤：&lt;code&gt;coverlet(数据收集器)&lt;/code&gt;=&amp;gt;&lt;code&gt;ReportGenerator(报表生成器)&lt;/code&gt;=&amp;gt;代码覆盖率报告。&lt;/p&gt;
+&lt;h1 id="单元测试框架"&gt;单元测试框架&lt;a class="anchor" href="#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95%e6%a1%86%e6%9e%b6"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;dotnet core &lt;/code&gt;中常用的单元测试的框架有&lt;code&gt;MSTest&lt;/code&gt;、&lt;code&gt;NUnit&lt;/code&gt;和&lt;code&gt;xUnit.net&lt;/code&gt;，使用方法都非常相似，都是通过特性标记的方式声明测试方法，然后在方法中使用断言&lt;code&gt;Assertions&lt;/code&gt;来判别方法执行结果是否达到预期。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://docs.microsoft.com/zh-cn/dotnet/core/testing/?pivots=mstest"&gt;dotnet 平台下单元测试各框架介绍&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://https://xunit.github.io/docs/comparisons"&gt;框架特性及断言比较参考&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id="msbuild"&gt;MSBuild&lt;a class="anchor" href="#msbuild"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;使用 &lt;code&gt;MSBuild&lt;/code&gt; 方式运行测试并生成指定名称的测试结果文件，输出到指定目录：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/</guid><description>&lt;p&gt;&lt;code&gt;k6&lt;/code&gt; 是GitHub上提供的开源负载测试工具，使用Go编写。测试脚本使用JavaScript编写。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="先决条件"&gt;先决条件&lt;a class="anchor" href="#%e5%85%88%e5%86%b3%e6%9d%a1%e4%bb%b6"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;安装K6 &lt;a href="https://k6.io/docs/getting-started/installation"&gt;https://k6.io/docs/getting-started/installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;环境变量配置；&lt;code&gt;cd&lt;/code&gt; 到压测脚本目录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="概念"&gt;概念&lt;a class="anchor" href="#%e6%a6%82%e5%bf%b5"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;vu：虚拟用户&lt;/li&gt;
+&lt;li&gt;duration:持续时长&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="入门"&gt;入门&lt;a class="anchor" href="#%e5%85%a5%e9%97%a8"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;http&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;k6/http&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;sleep&lt;/span&gt; } &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;k6&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;export&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;function&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;http&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;http://localhost:5000/api/values&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;k6 run ValuesApiK6.js&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="多vu和指定时长"&gt;多Vu和指定时长&lt;a class="anchor" href="#%e5%a4%9avu%e5%92%8c%e6%8c%87%e5%ae%9a%e6%97%b6%e9%95%bf"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;k6 run --vus &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; --duration 10s ValuesApiK6.js&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="使用配置选项"&gt;使用配置选项&lt;a class="anchor" href="#%e4%bd%bf%e7%94%a8%e9%85%8d%e7%bd%ae%e9%80%89%e9%a1%b9"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;http&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;k6/http&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;sleep&lt;/span&gt;,&lt;span style="color:#a6e22e"&gt;check&lt;/span&gt; } &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;k6&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;export&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;options&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;vus&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;duration&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;10s&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 脚本至少必须包含一个default函数,这定义了VU的入口点，类似于许多其他语言中的main()函数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;export&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;function&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;http&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;http://localhost:5000/api/values&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;check&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;, { &lt;span style="color:#e6db74"&gt;&amp;#39;status was 200&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;r&lt;/span&gt; =&amp;gt; &lt;span style="color:#a6e22e"&gt;r&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;status&lt;/span&gt; &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;200&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;sleep&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="阶段负载"&gt;阶段负载&lt;a class="anchor" href="#%e9%98%b6%e6%ae%b5%e8%b4%9f%e8%bd%bd"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;http&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;k6/http&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;sleep&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;check&lt;/span&gt; } &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;k6&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;export&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;options&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 阶段负载
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;stages&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;duration&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;3s&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;target&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;duration&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;5s&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;target&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;duration&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;6s&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;target&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 脚本至少必须包含一个default函数,这定义了VU的入口点，类似于许多其他语言中的main()函数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;export&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; () {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;http&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;http://localhost:5000/api/values&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;check&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;, { &lt;span style="color:#e6db74"&gt;&amp;#34;status was 200&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;r&lt;/span&gt;) =&amp;gt; &lt;span style="color:#a6e22e"&gt;r&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;status&lt;/span&gt; &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;200&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;sleep&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可能出现的异常：&lt;code&gt;using multiple execution config shortcuts (&lt;/code&gt;duration&lt;code&gt;and&lt;/code&gt;stages&lt;code&gt;) simultaneously is not allowed&lt;/code&gt;  不允许同时使用多个执行配置快捷方式(“duration”和“stages”)。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/</guid><description>&lt;p&gt;&lt;code&gt;Selenium&lt;/code&gt;可以用来做&lt;code&gt;自动化UI测试&lt;/code&gt;，支持多语言，这里使用&lt;code&gt;C#&lt;/code&gt;编写测试脚本。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="netframework"&gt;.NetFramework&lt;a class="anchor" href="#netframework"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;Selenium.Support&lt;/code&gt;，&lt;code&gt;Selenium.WebDriver&lt;/code&gt;,&lt;code&gt;Selenium.RC&lt;/code&gt;&lt;/p&gt;
+&lt;h1 id="dotnet-core"&gt;Dotnet core&lt;a class="anchor" href="#dotnet-core"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;核心库：&lt;code&gt;Selenium.Support&lt;/code&gt;，&lt;code&gt;Selenium.WebDriver&lt;/code&gt;,&lt;code&gt;Selenium.Chrome.WebDriver&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;注意：Selenium.RC包在dotnetcore会存在不兼容的问题，无法正常找到&lt;code&gt;chromedriver.exe&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exception&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;The chromedriver.exe file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at &lt;a href="http://chromedriver.storage.googleapis.com/index.html"&gt;http://chromedriver.storage.googleapis.com/index.html&lt;/a&gt;.”&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;&lt;strong&gt;解决方法&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;nuget Selenium.Chrome.WebDriver。将ChromeDriver.exe放入构建目录中&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：.netcore2.1中引入了&lt;code&gt;Selenium.Chrome.WebDriver&lt;/code&gt;包依旧会出现上面的异常&lt;/p&gt;
+&lt;h1 id="浏览器驱动下载"&gt;浏览器驱动下载&lt;a class="anchor" href="#%e6%b5%8f%e8%a7%88%e5%99%a8%e9%a9%b1%e5%8a%a8%e4%b8%8b%e8%bd%bd"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;需下载本机对应版本，不区分32/64&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://npm.taobao.org/mirrors/chromedriver/"&gt;https://npm.taobao.org/mirrors/chromedriver/&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id="pageobject"&gt;PageObject&lt;a class="anchor" href="#pageobject"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;解决的问题：版本迭代太快，UI层元素的属性经常变换，导致维护人员需要花大把的时间去维护代码，为了节省维护成本及时间，就可以利用PageObject 这种设计模式，它就大大的减少了维护时间。&lt;/p&gt;
+&lt;p&gt;创建对应浏览器配置，创建WebDriver对象：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;abstract&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestBase&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;protected&lt;/span&gt; IWebDriver driver;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; WebDriverInit(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; url)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ChromeOptions options = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ChromeOptions();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 窗口最大化&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; options.AddArgument(&lt;span style="color:#e6db74"&gt;&amp;#34;start-maximized&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; driver = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ChromeDriver(options);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; driver.Navigate().GoToUrl(url);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread.Sleep(&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;ClockInPage，页面模型，封装页面标签属性以及对应操作：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/</guid><description>&lt;p&gt;学习一下C#中集成测试&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="集成测试"&gt;集成测试&lt;a class="anchor" href="#%e9%9b%86%e6%88%90%e6%b5%8b%e8%af%95"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;集成测试可在包含应用支持基础结构（如数据库、文件系统和网络）的级别上确保应用组件功能正常。&lt;/p&gt;
+&lt;p&gt;单元测试关注是的软件最小可执行单元是否能够正常执行，但软件是由一个个最小执行单元组成的集合体，单元与单元之间存在着种种依赖或联系，所以在开发时仅仅确保最小单元的正确往往不够，为了保证软件能够正确运行，单元与单元之间的集成测试是非常必要。&lt;/p&gt;
+&lt;p&gt;与单元测试相比，集成测试可在更广泛的级别上评估应用的组件。 单元测试用于测试独立软件组件，如单独的类方法。 集成测试确认两个或更多应用组件一起工作以生成预期结果，可能包括完整处理请求所需的每个组件。&lt;/p&gt;
+&lt;h1 id="testserver"&gt;TestServer&lt;a class="anchor" href="#testserver"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;使用 &lt;code&gt;TestServer&lt;/code&gt; 测试API接口&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;protected&lt;/span&gt; TestServer CreateSingleTestServer()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (testServer == &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;lock&lt;/span&gt; (singleton_Lock)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (testServer == &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; path = Assembly.GetAssembly(&lt;span style="color:#66d9ef"&gt;typeof&lt;/span&gt;(TestBase)).Location;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; IWebHostBuilder hostBuilder =
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; WebHostBuilder()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .UseContentRoot(Path.GetDirectoryName(path))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .ConfigureAppConfiguration(cb =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cb.AddJsonFile(&lt;span style="color:#e6db74"&gt;&amp;#34;appsettings.test.json&amp;#34;&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; })
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .UseEnvironment(&lt;span style="color:#e6db74"&gt;&amp;#34;Development&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .UseStartup&amp;lt;TestStartup&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; testServer = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; TestServer(hostBuilder);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; testServer;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestStartup&lt;/span&gt; : Startup
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; TestStartup(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; IConfiguration configuration,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; IHostingEnvironment env) : &lt;span style="color:#66d9ef"&gt;base&lt;/span&gt;(configuration, env)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; debug
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; connectionString =
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Configuration.GetSection(&lt;span style="color:#e6db74"&gt;&amp;#34;Database:ConnectString&amp;#34;&lt;/span&gt;).Value;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; testDbContext =
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ApplicationDbContext(&lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; DbContextOptionsBuilder&amp;lt;ApplicationDbContext&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .UseSqlServer(connectionString)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .Options);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;endif
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [TestClass]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [TestCategory(&amp;#34;integration&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ApiTest&lt;/span&gt; : TestBase
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; HttpClient client;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [TestInitialize]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Init()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; client = testServer.CreateClient();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [TestCleanup]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Cleanup()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; client.Dispose();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [TestMethod]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;async&lt;/span&gt; Task GetAsync()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; response =
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; client.GetAsync(&lt;span style="color:#e6db74"&gt;$&amp;#34;/api/values&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;参考：&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/">1.1微服务入门之项目搭建</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>此系列旨在复习微服务的相关知识，示例代码中不会出现聚合、聚合根、服务拆分等相关概念（不会涉及到领域驱动相关知识），只使用最简单的<code>.Net Core Web</code>程序，主要关注点在于：</p>
+<ul>
+<li>如何使用 Docker 部署 <code>.NetCore</code> 应用</li>
+<li>应用程序的 DockerFile 编写</li>
+<li>服务注册和服务发现是什么？解决了什么问题？</li>
+<li>网关用来做什么？服务治理相关（熔断/限流/降级/链路追踪/缓存&hellip;）</li>
+</ul>
+<!-- more -->
+<h1 id="微服务概念">微服务概念<a class="anchor" href="#%e5%be%ae%e6%9c%8d%e5%8a%a1%e6%a6%82%e5%bf%b5">#</a></h1>
+<p>关于微服务的概念解释网上有很多，每个人的理解都不同。至于为什么要使用微服务？微服务的优 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/">1.2微服务入门之服务注册与发现</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇说到要做到服务的灵活伸缩需要有一种机制来实现，这个机制就是服务注册与发现。这并不是必须的，如果服务实例很少并且很稳定，就没有必要使用。</p>
+<!-- more -->
+<h1 id="概念">概念<a class="anchor" href="#%e6%a6%82%e5%bf%b5">#</a></h1>
+<ul>
+<li>服务注册：简单理解就是有一个注册中心，每个服务实例启动时都去注册中心注册，告诉注册中心地址，端口等信息。同样删除时，也需要去注册中心删除，注册中心负责维护这些服务实例的信息</li>
+<li>服务发现：既然注册中心维护了各个服务实例的信息，那么客户端通过注册中心就很容易能发现服务的变化。有了服务注册与发现，客户端就不用再去配置各个服务实例的地址，改为从注册中心统一获 …</li></ul></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/">1.3微服务入门之网关</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇使用 Consul 完成了服务的注册与发现，实际中光有服务注册与发现往往是不够的，需要一个统一的入口来连接客户端与服务。</p>
+<!-- more -->
+<h1 id="ocelot">Ocelot<a class="anchor" href="#ocelot">#</a></h1>
+<p>官网：https://ocelot.readthedocs.io ，Ocelot 正是为.Net微服务体系提供一个统一的入口点，称为：Gateway（网关）。</p>
+<p>首先创建一个空的 <code>asp.net core web</code> 项目：</p>
+<p><img src="/images/2021-09-19-04-33-35.png" alt="" /></p>
+<blockquote class='book-hint '>
+<p>注意：<code>ocelot.json</code> 是Ocelot的配置文件，设置生成时需要复制到输出目录。<code>ocelot.json</code> 文件名不是固定的可以自己 …</p></blockquote></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/">1.4微服务入门之事件总线</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇中已经完成了 Ocelot + Consul 的搭建，这篇简单说一下事件总线（<code>EventBus</code>)。</p>
+<!-- more -->
+<h1 id="事件总线">事件总线<a class="anchor" href="#%e4%ba%8b%e4%bb%b6%e6%80%bb%e7%ba%bf">#</a></h1>
+<p>什么是事件总线？</p>
+<blockquote class='book-hint '>
+<p>事件总线是对观察者（发布-订阅）模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到解耦的目的</p>
+</blockquote><p>为什么要使用事件总线？</p>
+<blockquote class='book-hint '>
+<ol>
+<li>以当前项目举例，假设有一个订单服务，一个产品服务。客户端有一个下单功能，下单时调用订单服务的下单接口，下单接口需要调用产品服务的减库存接口，这涉及到服务与服务之间的调用。服务之间调用可以选择 …</li></ol></blockquote></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/">1.5微服务入门之 Docker Compose</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇中使用 CAP 完成了一个简单的 <code>Eventbus</code>，实现了服务之间的解耦和异步调用，并且做到数据的最终一致性。搞到这里系统环境已经比较复杂了，想把整个系统运行起来会非常繁琐：要运行 Consul、订单服务、产品服务、网关、<del>鉴权中心</del>、RabbitMQ，本篇将使用 <code>Docker Compose</code> 来解决以上问题，仅需一个简单的命令，即可启动整个环境。</p>
+<!-- more -->
+<h1 id="docker-compose">Docker Compose<a class="anchor" href="#docker-compose">#</a></h1>
+<p>什么是Docker Compose？</p>
+<blockquote class='book-hint '>
+<p>Compose 是用于定义和运行多容器 Docker 应用程序的工具。通过 …</p></blockquote></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/">Consul服务注册发现</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>官网地址：https://www.consul.io</p>
+<h1 id="简介">简介<a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a></h1>
+<p>Consul 是一个支持多数据中心分布式高可用的服务发现和配置共享的服务软件，由 HashiCorp 公司用 Go 语言开发, 基于 Mozilla Public License 2.0 的协议进行开源。 Consul 支持 健康检查，并允许 HTTP 、GRPC 和 DNS 协议调用 API 存储键值对。 一致性协议采用 Raft 算法,用来保证服务的高可用。使用 GOSSIP 协议管理成员和广播消息，并且支持 ACL 访问控制。</p>
+<p>Consul …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/">1.1 Prometheus简介及安装</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="简介">简介<a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a></h1>
+<p>Prometheus 是一个开源的完整监控解决方案，基于中央化的规则计算、统一分析和告警的新模型。 相比于传统监控系统具有以下优点：</p>
+<h1 id="易于管理">易于管理<a class="anchor" href="#%e6%98%93%e4%ba%8e%e7%ae%a1%e7%90%86">#</a></h1>
+<p>Prometheus 核心部分只有一个单独的二进制文件，不存在任何的第三方依赖(数据库，缓存等等)。唯一需要的就是本地磁盘，因此不会有潜在级联故障的风险。</p>
+<p><strong>Prometheus 基于 <code>Pull</code> 模型的架构方式，可以在任何地方（本地电脑，开发环境，测试环境）搭建监控系统</strong>。对于一些复杂的情况，还可以使用服务发现( <code>Service Discovery</code> )的能力动 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/">1.2 Exporter数据采集</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>上一节学习了如何部署 Prometheus Server，这节学习如何使用 Exporter 收集主机数据。在 Prometheus 的架构设计中，Prometheus Server 并不直接服务监控特定的目标，其主要任务负责数据的收集，存储并且对外提供数据查询支持。因此为了能够能够监控到某些东西，如主机的CPU使用率，需要使用到 Exporter。Prometheus 周期性的从 Exporter 暴露的 HTTP 服务地址（通常是 <code>/metrics</code>）拉取监控样本数据。</p>
+<blockquote class='book-hint '>
+<p>Exporter 是一个相对开放 …</p></blockquote></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/">1.3 Prom Ql查询语言</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p><a href="https://prometheus.io/docs/introduction">Prometheus 官方文档地址</a></p>
+<h1 id="监控样本">监控样本<a class="anchor" href="#%e7%9b%91%e6%8e%a7%e6%a0%b7%e6%9c%ac">#</a></h1>
+<p>通过 Node Exporter 暴露的 HTTP 服务，Prometheus 可以采集到当前主机所有监控指标的样本数据。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># HELP node_cpu_guest_seconds_total Seconds the CPUs spent in guests (VMs) for each mode.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># TYPE node_cpu_guest_seconds_total counter</span>
+</span></span><span style="display:flex;"><span>node_cpu_guest_seconds_total<span style="color:#f92672">{</span>cpu<span style="color:#f92672">= …</span></span></span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/">1.4 Alertmanager告警处理</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="告警简介">告警简介<a class="anchor" href="#%e5%91%8a%e8%ad%a6%e7%ae%80%e4%bb%8b">#</a></h1>
+<p>告警能力在 Prometheus 的架构中被划分为两个部分：</p>
+<ol>
+<li>
+<p>在 Prometheus Server 中定义告警规则以及产生告警</p>
+</li>
+<li>
+<p>Alertmanager 组件用于处理由 Prometheus 产生的告警</p>
+</li>
+</ol>
+<p><strong>Alertmanager 是 Prometheus 体系中告警的统一处理中心</strong>。Alertmanager 提供了多种内置第三方告警通知方式，同时还提供对 Webhook 通知的支持，通过 Webhook 可以完成对告警更多个性化的扩展。</p>
+<blockquote class='book-hint '>
+<p>Prometheus会周期性的对告警规则进行 …</p></blockquote></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/7/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/6/">6</a><a href="/posts/page/7/">7</a><a >8</a><a href="/posts/page/9/">9</a><a href="/posts/page/10/">10</a></span>
+  
+  <span>
+    <a href="/posts/page/9/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

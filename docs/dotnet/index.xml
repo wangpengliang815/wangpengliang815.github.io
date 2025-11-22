@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>📚 .NET on CODE'NOTE</title><link>https://wangpengliang815.github.io/docs/dotnet/</link><description>Recent content in 📚 .NET on CODE'NOTE</description><generator>Hugo</generator><language>zh-cn</language><atom:link href="https://wangpengliang815.github.io/docs/dotnet/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/</guid><description>&lt;h1 id="值类型和引用类型"&gt;值类型和引用类型&lt;a class="anchor" href="#%e5%80%bc%e7%b1%bb%e5%9e%8b%e5%92%8c%e5%bc%95%e7%94%a8%e7%b1%bb%e5%9e%8b"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;C#的类型一共分为两类&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;值类型 &lt;code&gt;ValueType&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;引用类型 &lt;code&gt;ReferenceType&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;值类型和引用类型都继承自 &lt;code&gt;System.Object&lt;/code&gt; 类。不同的是几乎所有的引用类型都直接从 &lt;code&gt;System.Object&lt;/code&gt; 继承，而值类型则继承 &lt;code&gt;System.ValueType &lt;/code&gt;。&lt;code&gt;System.ValueType&lt;/code&gt;直接派生于&lt;code&gt;System.Object&lt;/code&gt;。即&lt;code&gt;System.ValueType&lt;/code&gt;本身是一个类类型，而不是值类型。关键在于&lt;code&gt;ValueType&lt;/code&gt;重写了&lt;code&gt;Equals()&lt;/code&gt;方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。&lt;/p&gt;
+&lt;h1 id="区别"&gt;区别&lt;a class="anchor" href="#%e5%8c%ba%e5%88%ab"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;引用类型变量的赋值只复制对对象的引用而不复制对象本身。而将一个值类型变量赋给另一个值类型变量时，将复制包含的值&lt;/li&gt;
+&lt;li&gt;引用类型可以派生出新的类型，而值类型不能&lt;/li&gt;
+&lt;li&gt;引用类型可以包含 &lt;code&gt;null&lt;/code&gt; 值，值类型不能（&lt;strong&gt;可空类型功能允许将 null 赋给值类型&lt;/strong&gt;）&lt;/li&gt;
+&lt;li&gt;引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;误区：&amp;ldquo;引用类型存储在堆上，值类型保存在栈上&amp;rdquo;，这句话前半部分是正确的，引用类型的实例总是在堆上创建的。但是变量的值是在声明的位置存储的，所以假定一个类中有一个&lt;code&gt;int&lt;/code&gt;类型的实例变量，那么这个变量的值是跟对象中的其他数据在一起也就是堆上。只有局部变量（方法内部声明的变量）和方法参数在栈上。&lt;/p&gt;
+&lt;/blockquote&gt;&lt;h1 id="使用场合"&gt;使用场合&lt;a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e5%90%88"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;值类型：在内存管理方面具有更好的效率，但不支持多态不能派生新的类型，适合用做存储数据的载体&lt;/li&gt;
+&lt;li&gt;引用类型：支持多态可以派生新的类型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="内存的逻辑划分之栈和堆"&gt;内存的逻辑划分之栈和堆&lt;a class="anchor" href="#%e5%86%85%e5%ad%98%e7%9a%84%e9%80%bb%e8%be%91%e5%88%92%e5%88%86%e4%b9%8b%e6%a0%88%e5%92%8c%e5%a0%86"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;C#程序在CLR上运行时，内存从逻辑上划分两大块：栈、堆，这两个基本元素组成了C#程序的运行环境。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;栈：在程序运行的时候，每个线程(&lt;code&gt;Thread&lt;/code&gt;)都会维护一个自己的专属线程堆栈&lt;/li&gt;
+&lt;li&gt;堆：是程序在运行的时候请求操作系统分配给自己的内存空间，储存着使用的各种对象等信息，跟栈不同的是它们被调用完毕不会立即被清理掉&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="栈的特征"&gt;栈的特征&lt;a class="anchor" href="#%e6%a0%88%e7%9a%84%e7%89%b9%e5%be%81"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;栈空间比较小（每个线程只有一个栈占用 &lt;code&gt;1MB&lt;/code&gt;，栈内存溢出抛出 &lt;code&gt;StackOverflowException&lt;/code&gt; 但是读取速度快&lt;/li&gt;
+&lt;li&gt;数据只能从栈的顶端插入或删除，是连续存储的，&lt;strong&gt;把数据放到栈顶称为入栈&lt;/strong&gt;，&lt;strong&gt;从栈顶删除数据称为出栈&lt;/strong&gt;​&lt;/li&gt;
+&lt;li&gt;存放方法的参数、局部变量、返回地址等值，当一个方法执行完毕后立刻自动清除&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="栈的结构"&gt;栈的结构&lt;a class="anchor" href="#%e6%a0%88%e7%9a%84%e7%bb%93%e6%9e%84"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;img src="https://wangpengliang815.github.io/images/2021-09-02-22-41-17.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;栈帧：每个方法执行都会分配一块独立的内存空间来存储方法运行需要的数据，按&lt;strong&gt;后入先出&lt;/strong&gt;的方式进入和弹出线程栈。&lt;/p&gt;
+&lt;/blockquote&gt;&lt;h2 id="堆的特征"&gt;堆的特征&lt;a class="anchor" href="#%e5%a0%86%e7%9a%84%e7%89%b9%e5%be%81"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出 &lt;code&gt;OutOfMemoryException&lt;/code&gt; ，但是读取速度慢&lt;/li&gt;
+&lt;li&gt;数据存储不连续，与栈不同：堆里的内存能够以任意顺序存入和移除&lt;/li&gt;
+&lt;li&gt;存放引用类型的对象，通过&lt;code&gt;GC&lt;/code&gt;清理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="堆的结构"&gt;堆的结构&lt;a class="anchor" href="#%e5%a0%86%e7%9a%84%e7%bb%93%e6%9e%84"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;参考：&lt;a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2005/may/net-framework-internals-how-the-clr-creates-runtime-objects"&gt;Drill Into .NET Framework Internals to See How the CLR Creates Runtime Objects&lt;/a&gt;
+​&lt;/p&gt;
+&lt;h1 id="代码运行时内存分配情况"&gt;代码运行时内存分配情况&lt;a class="anchor" href="#%e4%bb%a3%e7%a0%81%e8%bf%90%e8%a1%8c%e6%97%b6%e5%86%85%e5%ad%98%e5%88%86%e9%85%8d%e6%83%85%e5%86%b5"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="变量和对象在内存中的分配"&gt;变量和对象在内存中的分配&lt;a class="anchor" href="#%e5%8f%98%e9%87%8f%e5%92%8c%e5%af%b9%e8%b1%a1%e5%9c%a8%e5%86%85%e5%ad%98%e4%b8%ad%e7%9a%84%e5%88%86%e9%85%8d"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;示例代码&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestClass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; x;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; y;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Test1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; a=&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; b=&lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; TestClass();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; c=a;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; d=b;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; e=d.x;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; f=TestClass.y;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;内存分配情况&lt;/strong&gt;：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/</guid><description>&lt;p&gt;反射提供了封装程序集、模块和类型的对象(Type类型)。可以使用反射动态创建类型的实例，将类型绑定到现有对象，或从现有对象获取类型并调用其方法或访问其字段和属性。&lt;/p&gt;
+&lt;h1 id="使用场景"&gt;使用场景&lt;a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;需要访问程序元数据的特性&lt;/li&gt;
+&lt;li&gt;检查和实例化程序集中的类型&lt;/li&gt;
+&lt;li&gt;在运行时构建新类型。使用 &lt;code&gt;System.Reflection.Emit&lt;/code&gt; 中的类&lt;/li&gt;
+&lt;li&gt;执行后期绑定，访问在运行时创建的类型的方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="反射用途"&gt;反射用途&lt;a class="anchor" href="#%e5%8f%8d%e5%b0%84%e7%94%a8%e9%80%94"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;&lt;strong&gt;类型&lt;/strong&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;&lt;strong&gt;作用&lt;/strong&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;Assembly&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;定义和加载程序集，加载程序集清单中列出的模块，以及从此程序集中查找类型并创建该类型的实例&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;Module&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解包含模块的程序集以及模块中的类等，还可以获取在模块上定义的所有全局方法或其他特定的非全局方法&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;ConstructorInfo&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解构造器的名称、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetConstructors或GetConstructor方法来调用特定的构造函数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;MethodInfo&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解方法的名称、返回类型、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetMethods或GetMethod方法来调用特定的方法&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;FieldInfo&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解字段的名称、访问修饰符（如public或private）和实现详细信息（如static）等，并获取或设置字段值&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;EventInfo&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解事件的名称、事件处理程序数据类型、自定义特性、声明类型和反射类型等，并添加或移除事件处理程序&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;PropertyInfo&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解属性的名称、数据类型、声明类型、反射类型和只读或可写状态等，并获取或设置属性值&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;ParameterInfo&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;了解参数的名称、数据类型、参数是输入参数还是输出参数等，以及参数在方法签名中的位置等&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id="反射用到的命名空间"&gt;反射用到的命名空间&lt;a class="anchor" href="#%e5%8f%8d%e5%b0%84%e7%94%a8%e5%88%b0%e7%9a%84%e5%91%bd%e5%90%8d%e7%a9%ba%e9%97%b4"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;System.Reflection&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;System.Type&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;System.Reflection.Assembly&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="反射用到的主要类"&gt;反射用到的主要类&lt;a class="anchor" href="#%e5%8f%8d%e5%b0%84%e7%94%a8%e5%88%b0%e7%9a%84%e4%b8%bb%e8%a6%81%e7%b1%bb"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;System.Type&lt;/code&gt; ：通过这个类可以访问任何给定数据类型的信息&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;System.Reflection.Assembly&lt;/code&gt;：  可以用于访问给定程序集的信息，或者把这个程序集加载到程序中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="systemtype"&gt;System.Type&lt;a class="anchor" href="#systemtype"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;一个抽象的基类。&lt;code&gt;Type&lt;/code&gt; 有与每种数据类型对应的派生类，使用这个派生类的对象的方法、字段、属性来查找有关该类型的所有信息。&lt;/p&gt;
+&lt;h2 id="获取给定类型-type-值"&gt;获取给定类型 Type 值&lt;a class="anchor" href="#%e8%8e%b7%e5%8f%96%e7%bb%99%e5%ae%9a%e7%b1%bb%e5%9e%8b-type-%e5%80%bc"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;typeof 运算符&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Type t = &lt;span style="color:#66d9ef"&gt;typeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;对象的GetType()方法&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; s = &lt;span style="color:#e6db74"&gt;&amp;#34;guo&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Type t = s.GetType();&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Type类的静态方法GetType()&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Type t = Type.GetType(&lt;span style="color:#e6db74"&gt;&amp;#34;System.String&amp;#34;&lt;/span&gt;);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="type-属性"&gt;Type 属性&lt;a class="anchor" href="#type-%e5%b1%9e%e6%80%a7"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;&lt;strong&gt;属性&lt;/strong&gt;&lt;/th&gt;
+ &lt;th&gt;&lt;strong&gt;描述&lt;/strong&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Name&lt;/td&gt;
+ &lt;td&gt;数据类型名&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;FullName&lt;/td&gt;
+ &lt;td&gt;数据类型的完全限定名(包括命名空间名)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Namespace&lt;/td&gt;
+ &lt;td&gt;定义数据类型的命名空间名&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsAbstract&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是抽象类型&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsArray&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是数组&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsClass&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是类&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsEnum&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是枚举&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsInterface&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是接口&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsPublic&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是公有的&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsSealed&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是密封类&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;IsValueType&lt;/td&gt;
+ &lt;td&gt;指示该类型是否是值类型&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="type-方法"&gt;Type 方法&lt;a class="anchor" href="#type-%e6%96%b9%e6%b3%95"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;&lt;strong&gt;方法名称&lt;/strong&gt;&lt;/th&gt;
+ &lt;th&gt;&lt;strong&gt;描述&lt;/strong&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetConstructor(), GetConstructors()&lt;/td&gt;
+ &lt;td&gt;返回ConstructorInfo类型，用于取得该类的构造函数的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetEvent(), GetEvents()&lt;/td&gt;
+ &lt;td&gt;返回EventInfo类型，用于取得该类的事件的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetField(), GetFields()&lt;/td&gt;
+ &lt;td&gt;返回FieldInfo类型，用于取得该类的字段（成员变量）的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetInterface(), GetInterfaces()&lt;/td&gt;
+ &lt;td&gt;返回InterfaceInfo类型，用于取得该类实现的接口的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetMember(), GetMembers()&lt;/td&gt;
+ &lt;td&gt;返回MemberInfo类型，用于取得该类的所有成员的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetMethod(), GetMethods()&lt;/td&gt;
+ &lt;td&gt;返回MethodInfo类型，用于取得该类的方法的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;GetProperty(), GetProperties()&lt;/td&gt;
+ &lt;td&gt;返回PropertyInfo类型，用于取得该类的属性的信息&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;可以调用这些成员，其方式是调用 &lt;code&gt;Type&lt;/code&gt; 的 &lt;code&gt;InvokeMember()&lt;/code&gt; 方法，或者调用 &lt;code&gt;MethodInfo&lt;/code&gt; , &lt;code&gt;PropertyInfo&lt;/code&gt; 和其他类的 &lt;code&gt;Invoke()&lt;/code&gt; 方法。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/</guid><description>&lt;p&gt;C# 是面向对象的强类型高级语言，内置用于存储不同类型数据的内置数据类型。每种数据类型包含特定的取值范围，使用这些数据类型来表示在应用程序中存储的数据。数据类型进一步又被分为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;值类型 &lt;code&gt;Value types&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;引用类型 &lt;code&gt;Reference types&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;指针类型 &lt;code&gt;Pointer types&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="基础概念"&gt;基础概念&lt;a class="anchor" href="#%e5%9f%ba%e7%a1%80%e6%a6%82%e5%bf%b5"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="值类型"&gt;值类型&lt;a class="anchor" href="#%e5%80%bc%e7%b1%bb%e5%9e%8b"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;值类型特点：&lt;strong&gt;变量直接存储其值，派生于 &lt;code&gt;System.ValueType&lt;/code&gt;&lt;/strong&gt;。值类型又细分为简单类型、枚举类型、结构类型、可以为 &lt;code&gt;null&lt;/code&gt; 的值类型。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;简单类型：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有符号的整型：&lt;code&gt;sbyte&lt;/code&gt;、&lt;code&gt;short&lt;/code&gt;、&lt;code&gt;int&lt;/code&gt;、&lt;code&gt;long&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;无符号的整型：&lt;code&gt;byte&lt;/code&gt;、&lt;code&gt;ushort&lt;/code&gt;、&lt;code&gt;uint&lt;/code&gt;、&lt;code&gt;ulong&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Unicode 字符：&lt;code&gt;char&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;IEEE 二进制浮点：&lt;code&gt;float&lt;/code&gt;、&lt;code&gt;double&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;高精度十进制浮点数：&lt;code&gt;decimal&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;布尔：&lt;code&gt;bool&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="引用类型"&gt;引用类型&lt;a class="anchor" href="#%e5%bc%95%e7%94%a8%e7%b1%bb%e5%9e%8b"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;引用类型特点：&lt;strong&gt;引用类型不直接存储其值，派生于 &lt;code&gt;System.Object&lt;/code&gt;&lt;/strong&gt;，它存储值的引用内存地址。多个变量指向一个内存位置时，如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;类类型描述&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有类型的最终基类：&lt;code&gt;object&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Unicode 字符串：&lt;code&gt;string&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;格式为：&lt;code&gt;class C {…}&lt;/code&gt; 的用户定义类型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;接口类型、数组类型、委托类型，有关数值类型的详细信息。参考：&lt;a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/integral-numeric-types"&gt;整型类型&lt;/a&gt; / &lt;a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types"&gt;浮点类型表&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="变量"&gt;变量&lt;a class="anchor" href="#%e5%8f%98%e9%87%8f"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;编译器需要用某个初始值对变量进行初始化之后才能在操作中使用该变量。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 语法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;datatype&amp;gt;&amp;lt;variablename&amp;gt;=&amp;lt;&lt;span style="color:#66d9ef"&gt;value&lt;/span&gt;&amp;gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 示例&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; name = &lt;span style="color:#e6db74"&gt;&amp;#34;wang&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 同时声明多个&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; name1,name2 = &lt;span style="color:#e6db74"&gt;&amp;#34;wang&amp;#34;&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，默认值就是类型默认值&lt;/li&gt;
+&lt;li&gt;方法的局部变量必须在代码中显式初始化才能在语句中使用&lt;/li&gt;
+&lt;li&gt;在C#中实例化一个引用对象需要使用 &lt;code&gt;new&lt;/code&gt; 关键字把该引用指向存储在堆上的一个对象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="变量作用域"&gt;变量作用域&lt;a class="anchor" href="#%e5%8f%98%e9%87%8f%e4%bd%9c%e7%94%a8%e5%9f%9f"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;变量作用域指：可以访问该变量的代码区域&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内&lt;/li&gt;
+&lt;li&gt;局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内&lt;/li&gt;
+&lt;li&gt;在 &lt;code&gt;for&lt;/code&gt;、 &lt;code&gt;while&lt;/code&gt; 或类似语句中声明的局部变量存在于该循环体内&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="类型推断"&gt;类型推断&lt;a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e6%8e%a8%e6%96%ad"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;使用 &lt;code&gt;var&lt;/code&gt; 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</guid><description>&lt;p&gt;使用多线程可以充分利用 &lt;code&gt;CPU&lt;/code&gt; 资源。提高 &lt;code&gt;CPU&lt;/code&gt; 的使用率，采用多线程的方式去同时完成几件事情而不互相干扰。在处理大量的 &lt;code&gt;IO&lt;/code&gt; 操作或处理的情况需要花费大量的时间时(如:读写文件，视频图像的采集，处理，显示，保存等)有较大优势。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;多线程可以把占据时间长的程序中的任务放到后台去处理而不影响主程序的运行&lt;/li&gt;
+&lt;li&gt;程序的运行效率可能会提高&lt;/li&gt;
+&lt;li&gt;在一些等待的任务实现上如用户输入，文件读取和网络收发数据等，线程比较有用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;不足&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果有大量的线程，会影响性能，因为操作系统需要在它们之间切换&lt;/li&gt;
+&lt;li&gt;更多的线程需要更多的内存空间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="概念了解"&gt;概念了解&lt;a class="anchor" href="#%e6%a6%82%e5%bf%b5%e4%ba%86%e8%a7%a3"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="并发concurrency"&gt;并发(Concurrency)&lt;a class="anchor" href="#%e5%b9%b6%e5%8f%91concurrency"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;逻辑上的同时发生，一个处理器（在不同时刻或者说在同一时间间隔内）&amp;ldquo;同时&amp;quot;处理多个任务。宏观上是并发的，微观上是按排队等待、唤醒、执行的步骤序列执行。并发性是对有限物理资源强制行使多用户共享（多路复用）以提高效率。&lt;/p&gt;
+&lt;h2 id="并行parallel"&gt;并行(Parallel)&lt;a class="anchor" href="#%e5%b9%b6%e8%a1%8cparallel"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;物理上的同时发生，多核处理器或多个处理器（在同一时刻）同时处理多个任务。并行性允许多个程序同一时刻可在不同 CPU 上同时执行。&lt;/p&gt;
+&lt;h2 id="进程process"&gt;进程(Process)&lt;a class="anchor" href="#%e8%bf%9b%e7%a8%8bprocess"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;程序在计算机上的一次执行活动。运行一个程序、启动一个进程.程序是死的（静态的），进程是活的（动态的）。Windows 系统利用进程把工作划分为多个独立的区域，每个应用程序实例对应一个进程。进程是操作系统分配和使用系统资源的基本单位.进程包含一个运行-ing 应用程序的所有资源、进程（占用的资源）间相互独立。&lt;/p&gt;
+&lt;h2 id="线程thread"&gt;线程(Thread)&lt;a class="anchor" href="#%e7%ba%bf%e7%a8%8bthread"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;轻量级进程，是进程的一个实体（线程本质上是进程中一段并发运行的代码），执行线程、体现程序的真实执行情况，是处理器上系统独立调度和时间分配的最基本的执行单元。同一进程的所有线程共享相同的资源和内存（共享代码，全局变量，环境字符串等），使得线程间上下文切换更快、可以在同一地址空间内访问内存。&lt;/p&gt;
+&lt;h2 id="同步"&gt;同步&lt;a class="anchor" href="#%e5%90%8c%e6%ad%a5"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;如果一个程序调用某个方法，等待其执行所有处理后才继续执行，这样的方法是同步的。&lt;/p&gt;
+&lt;h2 id="异步"&gt;异步&lt;a class="anchor" href="#%e5%bc%82%e6%ad%a5"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;如果一个程序调用某个方法，在该方法处理完成之前就返回到调用方法，则这个方法是异步的。&lt;/p&gt;
+&lt;h1 id="线程创建"&gt;线程创建&lt;a class="anchor" href="#%e7%ba%bf%e7%a8%8b%e5%88%9b%e5%bb%ba"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="默认创建"&gt;默认创建&lt;a class="anchor" href="#%e9%bb%98%e8%ae%a4%e5%88%9b%e5%bb%ba"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;C#中使用 &lt;code&gt;Thread&lt;/code&gt; 类创建和控制线程，该类允许创建线程，以及设置线程的优先级。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/// 线程创建&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; ThreadCreate_Basic()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; ThreadMethod()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread.Sleep(&lt;span style="color:#ae81ff"&gt;2000&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;子线程结束&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;程序在启动时创建一个线程，称为主线程&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;//创建线程&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread t = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Thread(ThreadMethod);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;//启动线程&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; t.Start();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;主线程结束&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;Thread&lt;/code&gt; 构造函数接收 &lt;code&gt;ParameterrizeThreadStart&lt;/code&gt; 和 &lt;code&gt;ThreadStart&lt;/code&gt; 委托参数，所以也可以这么写：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/</guid><description>&lt;h1 id="委托"&gt;委托&lt;a class="anchor" href="#%e5%a7%94%e6%89%98"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得&lt;strong&gt;可以将方法当作另一个方法的参数来进行传递&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;&lt;strong&gt;不管什么函数只要返回值类型和参数能匹配委托所指定的返回值类型和参数能匹配上，那么这个函数就能存储为一个委托变量的引用。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;&lt;h2 id="为什么需要委托"&gt;为什么需要委托&lt;a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%a7%94%e6%89%98"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;委托可以将方法作为参数&lt;/li&gt;
+&lt;li&gt;逻辑解耦，保持稳定&lt;/li&gt;
+&lt;li&gt;代码复用，保证项目规范&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="委托使用步骤"&gt;委托使用步骤&lt;a class="anchor" href="#%e5%a7%94%e6%89%98%e4%bd%bf%e7%94%a8%e6%ad%a5%e9%aa%a4"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;delegate&lt;/code&gt; 关键字定义委托&lt;/li&gt;
+&lt;li&gt;声明委托对应的方法&lt;/li&gt;
+&lt;li&gt;实例化委托将方法作为参数传入&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;DelegateTest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;//step01：使用delegate关键字定义委托&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; Sum(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; x&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; y);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Main(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;[] args)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// step03：实例化委托将方法作为参数传入&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Sum sum = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Sum(&lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; DelegateTest().Add);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; result = sum.Invoke(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.ReadKey();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// step02：声明委托对应的方法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; Add(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; x&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; y)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; x + y;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;使用 &lt;code&gt;delegate&lt;/code&gt; 关键字定义委托&lt;/li&gt;
+&lt;li&gt;声明委托对应的方法&lt;/li&gt;
+&lt;li&gt;实例化委托将方法作为参数传入&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;至此，一个委托就完成了。&lt;/p&gt;
+&lt;h2 id="匿名方法定义委托"&gt;匿名方法定义委托&lt;a class="anchor" href="#%e5%8c%bf%e5%90%8d%e6%96%b9%e6%b3%95%e5%ae%9a%e4%b9%89%e5%a7%94%e6%89%98"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;上面说到完成一个委托要分三步走缺一步都不行，但是微软可能感觉这么实现比较麻烦，非要把三步做成两步来走！所以就用匿名方法来简化上边的三个步骤。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/</guid><description>&lt;p&gt;并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速，传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程。&lt;/p&gt;
+&lt;h1 id="parallel"&gt;Parallel&lt;a class="anchor" href="#parallel"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;Parallel&lt;/code&gt; 类是对线程的抽象，位于 &lt;code&gt;System.Threading.Tasks&lt;/code&gt; 名称空间下,提供了 &lt;code&gt;任务和数据并行性&lt;/code&gt; .在&lt;code&gt;Parallel&lt;/code&gt; 下有三个常用的方法 &lt;code&gt;Invoke&lt;/code&gt; 、 &lt;code&gt;For&lt;/code&gt; 、&lt;code&gt;ForEach&lt;/code&gt;，其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Parallel&lt;/code&gt;.&lt;code&gt;Invoke&lt;/code&gt; 用于任务并行性&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Parallel.ForEach&lt;/code&gt;/&lt;code&gt;Parallel.For&lt;/code&gt; 用于数据并行性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="任务并行性"&gt;任务并行性&lt;a class="anchor" href="#%e4%bb%bb%e5%8a%a1%e5%b9%b6%e8%a1%8c%e6%80%a7"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="parallelinvoke"&gt;Parallel.Invoke&lt;a class="anchor" href="#parallelinvoke"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;如果多个任务应并行运行，就可以使用 &lt;code&gt;Parallel.Invoke()&lt;/code&gt; 方法将串行的代码并行化。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Parallel_Example_01()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; watch = Stopwatch.StartNew();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; watch.Start();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Run1();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Run2();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Run3();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; watch.Stop();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;串行开发,总耗时{0}&amp;#34;&lt;/span&gt;, watch.ElapsedMilliseconds);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; watch.Restart();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Parallel.Invoke(Run1, Run2, Run3);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; watch.Stop();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;并行开发,总耗时{0}&amp;#34;&lt;/span&gt;, watch.ElapsedMilliseconds);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Run1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;Run1,我需要1s&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread.Sleep(&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Run2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;Run2,我需要2s&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread.Sleep(&lt;span style="color:#ae81ff"&gt;2000&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Run3()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;Run3,我需要3s&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread.Sleep(&lt;span style="color:#ae81ff"&gt;3000&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Assert.IsTrue(&lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src="https://wangpengliang815.github.io/images/2021-09-02-22-45-44.png" alt="" /&gt;
+主程序启动时，先顺序调用&lt;code&gt;Run1()&lt;/code&gt;,&lt;code&gt;Run()2&lt;/code&gt;,&lt;code&gt;Run3()&lt;/code&gt;方法，这是串行的。而后使用&lt;code&gt;Parallel.Invoke()&lt;/code&gt;将三个方法并行调用。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</guid><description>&lt;p&gt;对于多线程，经常使用的是 &lt;code&gt;Thread&lt;/code&gt;。在了解 &lt;code&gt;Task&lt;/code&gt; 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 &lt;code&gt;.net 4.0&lt;/code&gt; 之后被一种称为 &lt;code&gt;基于“任务的编程模型”&lt;/code&gt; 所冲击，这就是 &lt;code&gt;Task&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Task &lt;/code&gt;会比 &lt;code&gt;Thread&lt;/code&gt; 具有更小的性能开销，&lt;code&gt;Task &lt;/code&gt;是架构在 &lt;code&gt;Thread&lt;/code&gt; 之上的就是说 &lt;code&gt;Task&lt;/code&gt; 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。&lt;code&gt;Task&lt;/code&gt; 类的表示单个操作不返回一个值，通常以异步方式执行，&lt;code&gt;Task&lt;/code&gt; 对象是 &lt;code&gt;&amp;quot;基于任务的异步模式“&lt;/code&gt; 首次引入 &lt;code&gt;.NET Framework 4&lt;/code&gt; 中。&lt;/p&gt;
+&lt;p&gt;因为由执行工作 &lt;code&gt;Task&lt;/code&gt; 对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用&lt;code&gt;Status &lt;/code&gt;属性，以及 &lt;code&gt;IsCanceled&lt;/code&gt;,&lt;code&gt;IsCompleted&lt;/code&gt;, 和 &lt;code&gt;IsFaulted&lt;/code&gt;属性，以确定任务的状态。&lt;/p&gt;
+&lt;h1 id="相关概念理解"&gt;相关概念理解&lt;a class="anchor" href="#%e7%9b%b8%e5%85%b3%e6%a6%82%e5%bf%b5%e7%90%86%e8%a7%a3"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;同步（Synchronous）&lt;/li&gt;
+&lt;li&gt;异步 (Asynchronous)&lt;/li&gt;
+&lt;li&gt;阻塞 (Blocking)&lt;/li&gt;
+&lt;li&gt;非阻塞(Nonblocking)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;同步/异步指的是在客户端&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;同步意味着：客户端提出了一个请求以后，在回应之前只能等待
+异步意味着：客户端提出一个请求以后，还可以继续提其他请求&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;阻塞/非阻塞指的是服务器端&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;阻塞意味着：服务器接受一个请求后，在返回结果以前不能接受其他请求
+非阻塞意味着：服务器接受一个请求后，尽管没有返回结果，还是可以继续接受其他请求&lt;/p&gt;
+&lt;/blockquote&gt;&lt;h1 id="同步与异步"&gt;同步与异步&lt;a class="anchor" href="#%e5%90%8c%e6%ad%a5%e4%b8%8e%e5%bc%82%e6%ad%a5"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)&lt;/p&gt;
+&lt;p&gt;所谓同步，就是在发出一个&lt;strong&gt;调用&lt;/strong&gt;时，在没有得到结果之前，该&lt;strong&gt;调用&lt;/strong&gt;就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由&lt;strong&gt;调用者&lt;/strong&gt;主动等待这个&lt;strong&gt;调用&lt;/strong&gt;的结果。&lt;/p&gt;
+&lt;p&gt;而异步则是相反，&lt;strong&gt;调用&lt;/strong&gt;在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在&lt;strong&gt;调用&lt;/strong&gt;发出后，&lt;strong&gt;被调用者&lt;/strong&gt;通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;同步通信机制&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，&amp;ldquo;我查一下&amp;rdquo;，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;&lt;strong&gt;异步通信机制&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&amp;quot;回电&amp;quot;这种方式来回调&lt;/p&gt;
+&lt;/blockquote&gt;&lt;h1 id="阻塞与非阻塞"&gt;阻塞与非阻塞&lt;a class="anchor" href="#%e9%98%bb%e5%a1%9e%e4%b8%8e%e9%9d%9e%e9%98%bb%e5%a1%9e"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态，阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程&lt;/p&gt;
+&lt;p&gt;Example&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid><description>&lt;h1 id="c数组"&gt;C数组&lt;a class="anchor" href="#c%e6%95%b0%e7%bb%84"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;数组是一种特殊类型的数据类型，它可以使用特殊语法 &lt;strong&gt;顺序存储固定数量的值。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="http://www.tutorialsteacher.com/Content/images/csharp/array.png#align=left&amp;amp;display=inline&amp;amp;height=147&amp;amp;margin=%5Bobject%20Object%5D&amp;amp;originHeight=147&amp;amp;originWidth=404&amp;amp;status=done&amp;amp;style=none&amp;amp;width=404" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;数组声明：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; [] intArr;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;数组初始化：使用&lt;code&gt;new&lt;/code&gt;关键字同时声明和初始化数组，下面三种方式等价&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[] intArr = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;]; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[] intArr = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;]{&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[] intArr = {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;};&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;延迟初始化：可以先声明后再初始化数组&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;[] strArr&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; strArr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;strArr = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;]{ &lt;span style="color:#e6db74"&gt;&amp;#34;1st Element&amp;#34;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;2nd Element&amp;#34;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;3rd Element&amp;#34;&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;strArr = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;[]{ &lt;span style="color:#e6db74"&gt;&amp;#34;1st Element&amp;#34;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;2nd Element&amp;#34;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;3rd Element&amp;#34;&lt;/span&gt;};&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;索引访问数组中元素：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;intArr[&lt;span style="color:#960050;background-color:#1e0010"&gt;索引位置&lt;/span&gt;];&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;常用方法和属性：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;strong&gt;方法名称&lt;/strong&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;&lt;strong&gt;描述&lt;/strong&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;GetLength(int维度)&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;返回指定维度中的元素数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;GetLowerBound(int维度)&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;返回指定维度的最低索引&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;GetUpperBound(int维度)&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;返回指定维度的最高索引&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;GetValue(int index)&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;返回指定索引处的值&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;&lt;strong&gt;属性&lt;/strong&gt;&lt;/th&gt;
+ &lt;th&gt;&lt;strong&gt;描述&lt;/strong&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Length&lt;/td&gt;
+ &lt;td&gt;返回数组中元素的总数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[TestMethod]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; ArrayDefinition()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 数组可以先声明后赋值,也可以声明同时赋值,下面的方式是等价的,数组中必须存储同一类型数据,这在数组被定义时就已经确定&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 第一种&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[] intArr = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; intArr[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;] = &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; intArr[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;] = &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; intArr[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;] = &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; intArr[&lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;] = &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; intArr[&lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;] = &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 第二种&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[] intArr2 = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;] { &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 第三种&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[] intArr3 = { &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 注意这里是维度不是索引&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;GetLength(int维度):返回指定维度中的元素数,值为：{0}&amp;#34;&lt;/span&gt;, intArr.GetLength(&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;GetLowerBound(int维度):返回指定维度的最低索引,值为：{0}&amp;#34;&lt;/span&gt;, intArr.GetLowerBound(&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;GetUpperBound(int维度):返回指定维度的最高索引,值为：{0}&amp;#34;&lt;/span&gt;, intArr.GetUpperBound(&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;GetValue(int index):	返回指定索引处的值,值为：{0}&amp;#34;&lt;/span&gt;, intArr.GetValue(&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;属性:Length:返回数组中元素的总数,值为：{0}&amp;#34;&lt;/span&gt;, intArr.Length);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 使用索引来访问数组元素&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;使用索引访问数组元素,索引为2的值为：{0}&amp;#34;&lt;/span&gt;, intArr[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 试图访问数组中不存在的索引元素,会发生数组越界&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Assert.ThrowsException&amp;lt;IndexOutOfRangeException&amp;gt;(() =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;使用索引访问数组元素,索引为10的值为：{0}&amp;#34;&lt;/span&gt;, intArr[&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; i = &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;; i &amp;lt; intArr.Length; i++)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(intArr[i]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; item &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; intArr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(item);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Person p1 = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt;() { Address = &lt;span style="color:#e6db74"&gt;&amp;#34;wang&amp;#34;&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Person p2 = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt;() { Address = &lt;span style="color:#e6db74"&gt;&amp;#34;li&amp;#34;&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Person[] persons = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Person[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;] { p1, p2 };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Assert.AreEqual(&lt;span style="color:#e6db74"&gt;&amp;#34;wang&amp;#34;&lt;/span&gt;, persons[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;].Address);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Assert.AreEqual(&lt;span style="color:#e6db74"&gt;&amp;#34;li&amp;#34;&lt;/span&gt;, persons[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;].Address);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="多维数组"&gt;多维数组&lt;a class="anchor" href="#%e5%a4%9a%e7%bb%b4%e6%95%b0%e7%bb%84"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;多维数组是行和列的二维系列。多维数组又称为矩形数组；在本质上，是个一维数组的列表。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/</guid><description>&lt;p&gt;.Net 从2.0版开始支持泛型。泛型允许在编译时实现类型安全。允许创建一个数据结构而不限于特定的数据类型。当使用该数据结构时，编译器保证它使用的类型与类型安全是相一致的。泛型提供了类型安全，但是没有造成任何性能损失和代码臃肿。泛型不仅限于类，还可用于接口、方法、委托&amp;hellip;。&lt;/p&gt;
+&lt;h1 id="为什么使用泛型"&gt;为什么使用泛型&lt;a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8%e6%b3%9b%e5%9e%8b"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;泛型主要具有以下优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;类型安全&lt;/li&gt;
+&lt;li&gt;避免装箱拆箱带来的性能损耗&lt;/li&gt;
+&lt;li&gt;二进制代码重用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ArrayList arrs = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ArrayList
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;wang&amp;#34;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;，&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;问题一：这里如果将 &lt;code&gt;item&lt;/code&gt; 设置为 &lt;code&gt;int&lt;/code&gt; 类型遍历集合，会抛出异常，因为集合项中存在&lt;code&gt;string&lt;/code&gt; 类型&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; item &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; arrs)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(item);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;问题二：遍历时不可避免装箱/拆箱操作&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; item &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; arrs)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(item);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;非泛型集合&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; arr1 = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ArrayList();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;arr1.Add(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;);&lt;span style="color:#75715e"&gt;//Add方法参数值是object类型，这里将int-&amp;gt;object&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;arr1.Add(&lt;span style="color:#e6db74"&gt;&amp;#34;wang&amp;#34;&lt;/span&gt;);&lt;span style="color:#75715e"&gt;//Add方法参数值是object类型，这里将int-&amp;gt;object&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; item &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; arr1)&lt;span style="color:#75715e"&gt;//这里如果用int类型遍历集合，就挂掉了&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(item);&lt;span style="color:#75715e"&gt;//读取时要进行拆箱&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;泛型集合&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/*泛型集合在使用时定义好类型，之后就不存在装箱拆箱;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * 因为已经定义当前集合只能存入int类型，也就不能存入其他类型
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * 编译时就会报错，错误应及早发现
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; arr2 = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; List&amp;lt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;arr2.Add(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; item &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; arr2)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(item);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;通过参数化类型来实现在同一份代码上操作多种数据类型，利用“参数化类型”将类型抽象化，从而实现灵活的复用。每个集合的详细规范可以在 &lt;code&gt;System.Collection.Generic&lt;/code&gt; 名称空间下找到。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/</guid><description>&lt;p&gt;当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作。直到该线程完成操作，其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，这种时候很容易出现问题。&lt;/p&gt;
+&lt;h1 id="争用条件"&gt;争用条件&lt;a class="anchor" href="#%e4%ba%89%e7%94%a8%e6%9d%a1%e4%bb%b6"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;如果两个或多个线程访问相同的对象。并且对共享状态的访问没有同步，就会出现争用条件。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;StateObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; state = &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; ChangeState()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; state++;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (state == &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;value=5&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; state = &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; ThreadSync_Lock_Example_01()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StateObject m = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; StateObject();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Thread t1 = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Thread(ChangeState);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; t1.Start(m);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.ReadKey();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; ChangeState(&lt;span style="color:#66d9ef"&gt;object&lt;/span&gt; o)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StateObject m = o &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; StateObject;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; m.ChangeState();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此时运行程序是没有输出的，因为 &lt;code&gt;StateObject&lt;/code&gt; 类中 &lt;code&gt;state&lt;/code&gt; 初始值是5，&lt;code&gt;if&lt;/code&gt; 条件不会进入,随后又将 &lt;code&gt;state&lt;/code&gt; 重新初始化为5。&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</guid><description>&lt;h1 id="类class"&gt;类（Class）&lt;a class="anchor" href="#%e7%b1%bbclass"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;类中的数据和函数称为类的成员，除了这些成员外，类还可以包含嵌套的类型(如其它类)，成员的可访问性有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;protected&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internalprotected&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;private&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="数据成员"&gt;数据成员&lt;a class="anchor" href="#%e6%95%b0%e6%8d%ae%e6%88%90%e5%91%98"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;数据成员指包含类的数据：字段、常量和事件的成员，数据成员可以是静态成员，类成员总是实例成员，除非用 &lt;code&gt;static&lt;/code&gt; 进行显式声明。&lt;/p&gt;
+&lt;h2 id="函数成员"&gt;函数成员&lt;a class="anchor" href="#%e5%87%bd%e6%95%b0%e6%88%90%e5%91%98"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;函数成员提供了操作类中数据的某些功能，包括方法、属性、构造函数和终结器、运算符以及索引器&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;方法是与某个类相关的函数，与数据成员一样，函数成员默认为实例成员，使用 &lt;code&gt;static&lt;/code&gt; 修饰符可以把方法定义为静态方法&lt;/li&gt;
+&lt;li&gt;属性是可以从客户端访问的函数组，访问方式与访问类的公共字段类似，&lt;code&gt;C#&lt;/code&gt; 为读写类中的属性提供了专用语法，所以不必使用名称中嵌有 &lt;code&gt;Get&lt;/code&gt; 或 &lt;code&gt;set&lt;/code&gt; 的方法&lt;/li&gt;
+&lt;li&gt;构造函数是在实例化对象时自动调用的特殊函数，必须与所属的类同名，且不能有返回类型，构造函数用于初始化字段的值&lt;/li&gt;
+&lt;li&gt;终结器类似于构造函数，在&lt;code&gt;CLR&lt;/code&gt; 检测到不再需要某个对象时调用它，它们名称与类相同，但前面有一个 &lt;code&gt;~&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;运算符执行的最简单的操作就是加法和减法。 两个整数相加时严格地说是对整数使用 &lt;code&gt;+&lt;/code&gt; 运算符，C#允许指定把已有的运算符应用于自己的类（&lt;strong&gt;运算符重载&lt;/strong&gt;）&lt;/li&gt;
+&lt;li&gt;索引器允许对象以数组或集合的方式进行索引&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="方法method"&gt;方法（Method）&lt;a class="anchor" href="#%e6%96%b9%e6%b3%95method"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="方法声明"&gt;方法声明&lt;a class="anchor" href="#%e6%96%b9%e6%b3%95%e5%a3%b0%e6%98%8e"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;C#中方法的定义包括：任意方法修饰符(如方法的可访问性)、返回值的类型，然后依次是方法名和输入参数的列表和方法体。每个参数都包括参数的类型名和在方法体中的引用名称。 如果方法有返回值， &lt;code&gt;return&lt;/code&gt; 语句就必须与返回值一起使用。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[modifiers]&lt;/span&gt; return_type MethodName([parameters])
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Method body&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 实例方法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Show()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;Test下实例方法&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 静态方法属于类本身&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Show2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;Test下静态方法&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="方法调用"&gt;方法调用&lt;a class="anchor" href="#%e6%96%b9%e6%b3%95%e8%b0%83%e7%94%a8"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;在实例化类得到类的对象后，即可通过 &lt;code&gt;对象.方法名称&lt;/code&gt; 进行方法调用。&lt;/p&gt;</description></item></channel></rss>

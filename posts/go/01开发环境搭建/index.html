@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="🚩 人生苦短，Let’s go ，本系列所有测试代码均托管在：代码地址
+参考：
+李文周的博客
+跟煎鱼学 Go
+《Go语言编程》
+《Go入门指南》
+《Go语言圣经》
+Go 语言环境安装# 学习之前需要先安装GO语言的环境
+官网下载地址：https://golang.org/dl/ 官方镜像：https://golang.google.cn/dl/ Windows 平台和 Mac 平台推荐下载可执行文件版，Linux 平台下载压缩文件版。本机操作系统是 Windows，在下载地址中找到 .msi 后缀的安装包：
+下载到本地并安装，建议安装到指定目录下：
+通过 go version 测试是否安装成功：
+C:\Users\Administrator&gt;go version go version go1.17.5 windows/amd64Go 支持以下操作系统：
+Linux FreeBSD MacOS Windows 针对其它平台的安装需要的话自行查找相关资料。
+GOPATH# GOPATH 是一个环境变量，用来指定工作目录。所有的 go 文件，都需要放在 GoPath 下的 src 目录下才能够编译运行。但是这么做存在几个问题：
+在项目中使用第三方类库时 通过 go get 命令拉取下来的包会直接下载到 GoPath 目录下的 src 包下，这就导致自己写的代码和第三方的文件混在一起，对于管理 Golang 项目的包是非常麻烦的。而且每个如果项目都需要同样的依赖，那么就会在不同的 GoPath 的 src 中下载大量重复的第三方依赖包，同样会占用大量的磁盘空间。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="🚩 人生苦短，Let’s go ，本系列所有测试代码均托管在：代码地址
+参考：
+李文周的博客
+跟煎鱼学 Go
+《Go语言编程》
+《Go入门指南》
+《Go语言圣经》
+Go 语言环境安装# 学习之前需要先安装GO语言的环境
+官网下载地址：https://golang.org/dl/ 官方镜像：https://golang.google.cn/dl/ Windows 平台和 Mac 平台推荐下载可执行文件版，Linux 平台下载压缩文件版。本机操作系统是 Windows，在下载地址中找到 .msi 后缀的安装包：
+下载到本地并安装，建议安装到指定目录下：
+通过 go version 测试是否安装成功：
+C:\Users\Administrator&gt;go version go version go1.17.5 windows/amd64Go 支持以下操作系统：
+Linux FreeBSD MacOS Windows 针对其它平台的安装需要的话自行查找相关资料。
+GOPATH# GOPATH 是一个环境变量，用来指定工作目录。所有的 go 文件，都需要放在 GoPath 下的 src 目录下才能够编译运行。但是这么做存在几个问题：
+在项目中使用第三方类库时 通过 go get 命令拉取下来的包会直接下载到 GoPath 目录下的 src 包下，这就导致自己写的代码和第三方的文件混在一起，对于管理 Golang 项目的包是非常麻烦的。而且每个如果项目都需要同样的依赖，那么就会在不同的 GoPath 的 src 中下载大量重复的第三方依赖包，同样会占用大量的磁盘空间。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="🚩 人生苦短，Let’s go ，本系列所有测试代码均托管在：代码地址
+参考：
+李文周的博客
+跟煎鱼学 Go
+《Go语言编程》
+《Go入门指南》
+《Go语言圣经》
+Go 语言环境安装# 学习之前需要先安装GO语言的环境
+官网下载地址：https://golang.org/dl/ 官方镜像：https://golang.google.cn/dl/ Windows 平台和 Mac 平台推荐下载可执行文件版，Linux 平台下载压缩文件版。本机操作系统是 Windows，在下载地址中找到 .msi 后缀的安装包：
+下载到本地并安装，建议安装到指定目录下：
+通过 go version 测试是否安装成功：
+C:\Users\Administrator&gt;go version go version go1.17.5 windows/amd64Go 支持以下操作系统：
+Linux FreeBSD MacOS Windows 针对其它平台的安装需要的话自行查找相关资料。
+GOPATH# GOPATH 是一个环境变量，用来指定工作目录。所有的 go 文件，都需要放在 GoPath 下的 src 目录下才能够编译运行。但是这么做存在几个问题：
+在项目中使用第三方类库时 通过 go get 命令拉取下来的包会直接下载到 GoPath 目录下的 src 包下，这就导致自己写的代码和第三方的文件混在一起，对于管理 Golang 项目的包是非常麻烦的。而且每个如果项目都需要同样的依赖，那么就会在不同的 GoPath 的 src 中下载大量重复的第三方依赖包，同样会占用大量的磁盘空间。">
+  <meta itemprop="wordCount" content="579">
+
+<title>01开发环境搭建 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>01开发环境搭建</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#go-mod-init">go mod init</a></li>
+    <li><a href="#编写代码">编写代码</a></li>
+    <li><a href="#go-build">go build</a></li>
+    <li><a href="#go-run">go run</a></li>
+    <li><a href="#跨平台编译">跨平台编译</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    01开发环境搭建
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>🚩    人生苦短，Let&rsquo;s  go ，本系列所有测试代码均托管在：<a href="https://gitee.com/wangpengliang815/go_study">代码地址</a></p>
+<p><strong>参考</strong>：</p>
+<ul>
+<li>
+<p><a href="https://liwenzhou.com/">李文周的博客</a></p>
+</li>
+<li>
+<p><a href="https://eddycjy.com/go-categories/">跟煎鱼学 Go</a></p>
+</li>
+<li>
+<p><a href="">《Go语言编程》</a></p>
+</li>
+<li>
+<p><a href="https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/directory.md">《Go入门指南》</a></p>
+</li>
+<li>
+<p><a href="https://books.studygolang.com/gopl-zh/">《Go语言圣经》</a></p>
+</li>
+</ul>
+<h1 id="go-语言环境安装">Go 语言环境安装<a class="anchor" href="#go-%e8%af%ad%e8%a8%80%e7%8e%af%e5%a2%83%e5%ae%89%e8%a3%85">#</a></h1>
+<p>学习之前需要先安装GO语言的环境</p>
+<ul>
+<li>官网下载地址：https://golang.org/dl/</li>
+<li>官方镜像：https://golang.google.cn/dl/</li>
+</ul>
+<p><code>Windows</code> 平台和 <code>Mac</code> 平台推荐下载可执行文件版，<code>Linux</code> 平台下载压缩文件版。本机操作系统是 <code>Windows</code>，在下载地址中找到 <code>.msi</code> 后缀的安装包：</p>
+<p><img src="/images/2022-01-04-11-23-11.png" alt="" /></p>
+<p>下载到本地并安装，建议安装到指定目录下：</p>
+<p><img src="/images/2022-01-04-11-26-44.png" alt="" /></p>
+<p><img src="/images/2022-01-04-11-27-56.png" alt="" /></p>
+<p>通过 <code>go version</code> 测试是否安装成功：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\A</span>dministrator&gt;go version
+</span></span><span style="display:flex;"><span>go version go1.17.5 windows/amd64</span></span></code></pre></div><p>Go 支持以下操作系统：</p>
+<ul>
+<li><code>Linux</code></li>
+<li><code>FreeBSD</code></li>
+<li><code>MacOS</code></li>
+<li><code>Windows</code></li>
+</ul>
+<p>针对其它平台的安装需要的话自行查找相关资料。</p>
+<h1 id="gopath">GOPATH<a class="anchor" href="#gopath">#</a></h1>
+<p><code>GOPATH </code> 是一个环境变量，用来指定工作目录。所有的 <code>go</code> 文件，都需要放在 <code>GoPath</code> 下的 <code>src</code> 目录下才能够编译运行。但是这么做存在几个问题：</p>
+<p>在项目中使用第三方类库时 通过 <code>go get</code> 命令拉取下来的包会直接下载到 <code>GoPath</code> 目录下的 <code>src</code> 包下，这就导致自己写的代码和第三方的文件混在一起，对于管理 Golang 项目的包是非常麻烦的。而且每个如果项目都需要同样的依赖，那么就会在不同的 <code>GoPath</code> 的 <code>src</code> 中下载大量重复的第三方依赖包，同样会占用大量的磁盘空间。</p>
+<p><strong>能否通过给不同的项目设置不同的 <code>GoPath</code> 来解决依赖项目结构混乱问题？</strong></p>
+<p>这么做便于管理项目，每个项目都是不同的 <code>GoPath</code> ，对于管理多个项目而言，能够非常清晰的处理项目结构。否则如果把所有项目都放在同一个 <code>GoPath</code> 的 <code>src</code> 包下，项目的结构就会变得非常混乱，难以管理。</p>
+<p><strong>但是当需要依赖第三方的包的时候，上面的方式解决不了依赖重复的问题</strong></p>
+<p>第三方依赖的包和自己的包混在一起，会给项目文件管理带来一定的麻烦。不同的 <code>GoPath</code> 都需要下载依赖，那么磁盘中重复的依赖就会非常多，会占用大量的磁盘空间。</p>
+<p>所以，究竟是设置一个GoPath目录，解决依赖重复的问题；还是设置不同的GoPath目录，解决Golang项目结构混乱的问题，这是一个有争议性的问题。为了解决这所有的问题，Golang 最终引入了 <code>GoModule</code> 的概念。</p>
+<h1 id="go-module">Go Module<a class="anchor" href="#go-module">#</a></h1>
+<p>在 <code>go version&lt;1.11</code>前，使用 <code>GOPATH</code> 来构建应用，但在Go1.11版本之后不再推荐。<code>go module</code> 是Go语言从 1.11 版本之后官方推出的版本管理工具。</p>
+<p>Modules 官方定义为：</p>
+<blockquote class='book-hint '>
+<p>Modules 是相关 Go 包的集合，是源代码交换和版本控制的单元。Go语言命令直接支持使用 Modules，包括记录和解析对其他模块的依赖性，Modules 替换旧的基于 GOPATH 的方法，来指定使用哪些源文件</p>
+</blockquote><p><strong>注意</strong>：<code>Golang1.11和1.12</code> 版本虽然已经引入了 <code>GoModule</code> 的概念，但是默认是不开启的，如果需要开启，需要配置环境变量：<code>GO111MODULE=on</code>，默认是 <code>off</code>。而在 <code>Golang1.13</code> 及以上的版本中，<code>GoModule</code> 的默认配置为 <code>auto</code> ，即 <code>GoModule</code> 会通过目录下是否有 <code>go.mod</code> 文件来判断是否开启 <code>GoModule</code> 。所以<code>Golang1.13+</code> 的版本中就不再需要额外配置 <code>GO111MODULE</code> 属性。</p>
+<ul>
+<li><code>GO111MODULE=off </code>：禁用 go module，编译时会从 <code>GOPATH</code> 和 <code>vendor</code> 文件夹中查找包</li>
+<li><code>GO111MODULE=on</code>： 启用 go module，编译时会忽略 <code>GOPATH</code> 和 <code>vendor</code> 文件夹只根据 <code>go.mod</code> 下载依赖</li>
+<li><code>GO111MODULE=auto</code>：默认值，当项目在 <code>GOPATH/src</code> 目录之外，并且项目根目录有 <code>go.mod</code> 文件时，开启  <code>go module</code></li>
+</ul>
+<p>Windows 下手动开启 <code>GO111MODULE</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>set GO111MODULE<span style="color:#f92672">=</span>on 或者 set GO111MODULE<span style="color:#f92672">=</span>auto</span></span></code></pre></div><p>MacOS 或者 Linux 下手动开启 <code>GO111MODULE</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export GO111MODULE<span style="color:#f92672">=</span>on 或者 export GO111MODULE<span style="color:#f92672">=</span>auto</span></span></code></pre></div><p><strong>有了 <code>GoModule</code> 之后，<code>GoPath</code> 是不是就可以被舍弃了？</strong></p>
+<p>不是的！之前说过 <code>GoPath</code> 所引出的问题，就是因为第三方类库的包所导致的，所以在有了 <code>GoModule</code> 之后，<code>GoPath</code> 和 <code>GoModule</code> 就分别负责不同的职责，共同为项目服务。</p>
+<ul>
+<li><code>GoPath</code> 用来存放从网上拉取的第三方依赖包</li>
+<li><code>GoModule</code> 用来存放自己的Golang项目文件，当项目需要依赖第三方的包时通过 <code>GoModule</code> 目录下的 <code>go.mod</code> 文件来引用 <code>GoPath</code> 目录 <code>src</code> 包下的第三方依赖即可</li>
+</ul>
+<p>这样既解决了原来只能局限在  <code>GoPath/src</code> 包下编程的问题，也解决了第三方依赖包难以管理和重复依赖占用磁盘空间的问题。在引入 <code>GoModule</code> 之后，不会直接在 <code>GoPath</code> 目录进行编程，而是把 <code>GoPath</code> 作为一个第三方依赖包的仓库，真正的工作空间在 <code>GoModule</code> 目录下。</p>
+<h1 id="go-module设置">Go Module设置<a class="anchor" href="#go-module%e8%ae%be%e7%bd%ae">#</a></h1>
+<p>使用 <code>go mod init 模块名称</code> 命令对目录进行初始化操作，即可将这个目录设置为 <code>GoModule</code> 目录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>D:<span style="color:#ae81ff">\G</span>oProject&gt;go mod init goProject</span></span></code></pre></div><p>初始化命令执行完毕之后，会在 <code>D:\GoProject&gt;</code> 目录下生成一个 <code>go.mod</code> 文件，该文件就是用来引入 <code>GoPath</code> 目录下的第三方依赖的文件。</p>
+<p>初始化之后的 <code>go.mod</code> 文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>module goProject
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>go 1.17</span></span></code></pre></div><p>当需要引入 <code>GoPath</code> 目录下的第三方依赖包的时候，只需要在 <code>go.mod</code> 目录下添加依赖名称，<code>GoModule</code> 就会自动把第三方依赖包下载到 <code>GoPath</code> 目录下。例如下面的 <code>go.mod</code> 文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>module go_module_demo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>go 1.17
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>require <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>	github.com/astaxie/beego v1.12.1
+</span></span><span style="display:flex;"><span>	github.com/go-sql-driver/mysql v1.5.0
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span></span></span></code></pre></div><p>在这个 <code>go.mod</code> 文件中引入了两个依赖，分别是：<code>beego框架 v1.12.1版本</code> 和 <code>mysql驱动 v1.5.0版本</code> 。</p>
+<p><strong>常用命令如下</strong>：</p>
+<table>
+  <thead>
+      <tr>
+          <th>命令</th>
+          <th>作用</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>go mod download</code></td>
+          <td>下载依赖包到本地（默认为 GOPATH/pkg/mod 目录）</td>
+      </tr>
+      <tr>
+          <td><code>go mod edit</code></td>
+          <td>编辑 go.mod 文件</td>
+      </tr>
+      <tr>
+          <td><code>go mod graph</code></td>
+          <td>打印模块依赖图</td>
+      </tr>
+      <tr>
+          <td><code>go mod init</code></td>
+          <td>初始化当前文件夹，创建 go.mod 文件</td>
+      </tr>
+      <tr>
+          <td><code>go mod tidy</code></td>
+          <td>增加缺少的包，删除无用的包</td>
+      </tr>
+      <tr>
+          <td><code>go mod vendor</code></td>
+          <td>将依赖复制到 vendor 目录下</td>
+      </tr>
+      <tr>
+          <td><code>go mod verify</code></td>
+          <td>校验依赖</td>
+      </tr>
+      <tr>
+          <td><code>go mod why</code></td>
+          <td>解释为什么需要依赖</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="go-proxy">GO PROXY<a class="anchor" href="#go-proxy">#</a></h1>
+<p>国内的网络因为防火墙的存在导致有些Go语言的第三方包无法直接通过 <code>go get</code> 命令获取。<code>GOPROXY </code>是Go官方提供的一种通过中间代理商来为用户提供包下载服务的方式。要使用  <code>GOPROXY</code>  只需要设置环境变量  <code>GOPROXY</code> 即可。</p>
+<p>目前公开的代理服务器的地址有：</p>
+<ul>
+<li>goproxy.io</li>
+<li>goproxy.cn：（推荐）由国内的七牛云提供</li>
+</ul>
+<p>Windows 下设置 <code>GOPROXY</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go env -w GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn,direct</span></span></code></pre></div><p>MacOS 或 Linux 下设置 <code>GOPROXY</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>export GOPROXY<span style="color:#f92672">=</span>https://goproxy.cn</span></span></code></pre></div><blockquote class='book-hint '>
+<p>Go 在 1.13 版本之后 GOPROXY 默认值为 <a href="https://proxy.golang.org">https://proxy.golang.org</a>，在国内可能会存在下载慢或者无法访问的情况，所以建议将 GOPROXY 设置为国内的 goproxy.cn</p>
+</blockquote><p><strong>下载指定版本</strong>：</p>
+<p>执行 <code>go get </code>命令，在下载依赖包的同时还可以指定依赖包的版本。</p>
+<ul>
+<li>运行 <code>go get -u</code> 命令会将项目中的包升级到最新的次要版本或者修订版本</li>
+<li>运行 <code>go get -u=patch</code> 命令会将项目中的包升级到最新的修订版本</li>
+<li>运行 <code>go get [包名]@[版本号] </code>命令会下载对应包的指定版本或者将对应包升级到指定的版本</li>
+</ul>
+<blockquote class='book-hint '>
+<p>注意：<code>go get [包名]@[版本号]</code>命令中版本号可以是 x.y.z 的形式，例如 go get <a href="mailto:foo@v1.2.3">foo@v1.2.3</a>，也可以是 git 上的分支或 tag，例如 go get foo@master，还可以是 git 提交时的哈希值，例如 go get foo@e3702bed2</p>
+</blockquote><h1 id="hello-world">Hello, World<a class="anchor" href="#hello-world">#</a></h1>
+<p>老规矩先搞一个 <code>hello world</code> 看看，创建 <code>GoProject</code> 目录，目录格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>D:<span style="color:#ae81ff">\G</span>oProject&gt;tree
+</span></span><span style="display:flex;"><span>卷 Data 的文件夹 PATH 列表
+</span></span><span style="display:flex;"><span>卷序列号为 189B-A748
+</span></span><span style="display:flex;"><span>D:.
+</span></span><span style="display:flex;"><span>└─src</span></span></code></pre></div><h2 id="go-mod-init">go mod init<a class="anchor" href="#go-mod-init">#</a></h2>
+<p>使用 <code>go module</code> 模式新建项目时，需要通过 <code>go mod init 项目名</code> 命令对项目进行初始化，该命令会在项目根目录下生成 <code>go.mod</code> 文件。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>D:<span style="color:#ae81ff">\G</span>oProject<span style="color:#ae81ff">\s</span>rc&gt;go mod init goProject</span></span></code></pre></div><h2 id="编写代码">编写代码<a class="anchor" href="#%e7%bc%96%e5%86%99%e4%bb%a3%e7%a0%81">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">/* go 语言的hello world */</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hello, World!&#34;</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>第一行：<code>package main</code>，定义包名，必须在源文件中非注释的第一行指明这个文件属于哪个包，比如：<code>package main </code>表示一个可独立执行的程序，每个 Go 应用程序都包含一个名为 main 的包。类似于 C# 中的 <code>namespace</code>，表示处于哪个命名空间下。</p>
+<p>第二行：<code>import &quot;fmt&quot;</code>，告诉 Go 编译器这个程序需要使用 fmt 包的函数或其他元素，fmt 包实现了格式化 IO（输入/输出）的函数。类似于在 C# 中需要引用其他 <code>namespace</code> 中的函数时需要使用 <code>using</code>。</p>
+<p>第三行：<code>func main()</code>，表示程序开始执行的函数。main 函数是每一个可执行程序所必须包含的，一般来说都是在启动后第一个执行的函数（如果有 <code>init()</code> 函数则会先执行该函数）。类似于C#中作为入口方法的Main()方法。</p>
+<p>第四行：<code>/*...*/</code>： 注释，单行使用<code>//</code>，多行使用<code>/**/</code> 这没什么好说的。</p>
+<p>第五行：<code>fmt.Println(...)</code>: 用于将字符串输出到控制台，并在最后自动增加换行字符<code> \n</code>。类似于 C# 中的 <code>Console.WriteLine()</code> /<code>Console.Write()</code>。</p>
+<h2 id="go-build">go build<a class="anchor" href="#go-build">#</a></h2>
+<p><code>go build</code> 命令表示将源代码编译成可执行文件。在 <code>D:\GoProject\src&gt;</code> 目录下执行：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>D:<span style="color:#ae81ff">\G</span>oProject<span style="color:#ae81ff">\s</span>rc&gt;go build test.go
+</span></span><span style="display:flex;"><span>D:<span style="color:#ae81ff">\G</span>oProject<span style="color:#ae81ff">\s</span>rc&gt;dir
+</span></span><span style="display:flex;"><span> 驱动器 D 中的卷是 Data
+</span></span><span style="display:flex;"><span> 卷的序列号是 189B-A748
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> D:<span style="color:#ae81ff">\G</span>oProject<span style="color:#ae81ff">\s</span>rc 的目录
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2022/01/04 周二  16:12         1,924,096 test.exe
+</span></span><span style="display:flex;"><span>2022/01/04 周二  15:57               <span style="color:#ae81ff">111</span> test.go</span></span></code></pre></div><p>编译得到的可执行文件会保存在执行编译命令的当前目录下，如果是windows平台会在当前目录下找到  <code>test.exe</code> 可执行文件。</p>
+<p>可在终端直接执行该 <code>test.exe</code> 文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>D:<span style="color:#ae81ff">\G</span>oProject<span style="color:#ae81ff">\s</span>rc&gt;test.exe
+</span></span><span style="display:flex;"><span>Hello, World!</span></span></code></pre></div><h2 id="go-run">go run<a class="anchor" href="#go-run">#</a></h2>
+<p><img src="/images/2021-12-16-22-55-19.png" alt="" /></p>
+<p>Go 是一门编译型语言，Go 语言的工具链将源代码及其依赖转换成计算机的机器指令（静态编译）。Go语言提供的工具都通过一个单独的命令 <code>go</code> 调用，<code>go</code> 命令有一系列子命令。最简单的一个子命令就是 <code>run</code>。这个命令编译一个或多个以 <code>.go</code> 结尾的源文件，链接库文件，并运行最终生成的可执行文件。</p>
+<h2 id="跨平台编译">跨平台编译<a class="anchor" href="#%e8%b7%a8%e5%b9%b3%e5%8f%b0%e7%bc%96%e8%af%91">#</a></h2>
+<p>默认 <code>go build</code> 的可执行文件都是当前操作系统可执行的文件，如果想在 <code>windows</code> 下编译一个 <code>linux</code> 下可执行文件，可以这么做：</p>
+<p>指定目标操作系统的平台和处理器架构：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>SET CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>  // 禁用CGO
+</span></span><span style="display:flex;"><span>SET GOOS<span style="color:#f92672">=</span>linux  // 目标平台是linux
+</span></span><span style="display:flex;"><span>SET GOARCH<span style="color:#f92672">=</span>amd64  // 目标处理器架构是amd64</span></span></code></pre></div><p><em>使用了cgo的代码是不支持跨平台编译的</em></p>
+<p>然后再执行 <code>go build</code> 命令，得到的就是能够在 <code>linux</code> 平台运行的可执行文件了。</p>
+<p>Mac 下编译 Linux 和 Windows平台 64位 可执行程序：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> GOOS<span style="color:#f92672">=</span>linux GOARCH<span style="color:#f92672">=</span>amd64 go build
+</span></span><span style="display:flex;"><span>CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> GOOS<span style="color:#f92672">=</span>windows GOARCH<span style="color:#f92672">=</span>amd64 go build</span></span></code></pre></div><p>Linux 下编译 Mac 和 Windows 平台64位可执行程序：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> GOOS<span style="color:#f92672">=</span>darwin GOARCH<span style="color:#f92672">=</span>amd64 go build
+</span></span><span style="display:flex;"><span>CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> GOOS<span style="color:#f92672">=</span>windows GOARCH<span style="color:#f92672">=</span>amd64 go build</span></span></code></pre></div><p>Windows下编译Mac平台64位可执行程序：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>SET CGO_ENABLED<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>SET GOOS<span style="color:#f92672">=</span>darwin
+</span></span><span style="display:flex;"><span>SET GOARCH<span style="color:#f92672">=</span>amd64
+</span></span><span style="display:flex;"><span>go build</span></span></code></pre></div><p>现在，开启 <code>Go</code> 语言学习之旅。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.3使用 Kibana操作 Es</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="flex align-center">
+      <span>02变量和常量</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#go-mod-init">go mod init</a></li>
+    <li><a href="#编写代码">编写代码</a></li>
+    <li><a href="#go-build">go build</a></li>
+    <li><a href="#go-run">go run</a></li>
+    <li><a href="#跨平台编译">跨平台编译</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

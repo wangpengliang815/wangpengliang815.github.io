@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="安装 jdk/git# yum -y install java-1.8.0-openjdk* #安装jdk yum install git #安装git安装 ca-certificates# yum install epel-release yum install -y ca-certificates导入公钥# sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key安装 Jenkins# wget https://mirrors.bfsu.edu.cn/jenkins/redhat-stable/jenkins-2.319.3-1.1.noarch.rpm rpm -ivh jenkins-2.319.3-1.1.noarch.rpm配置修改# 主要修改两个地方：
+账户：因为 Jenkins 默认账户是 jenkins，这个账户我们没有，而且为了不因为权限出现各种问题，这里直接使用 root，也可以创建一个名叫 jenkins 的账户
+端口：Jenkins的默认端口是 8080，为了避免端口冲突，可以修改为其他端口
+配置文件地址：vi /etc/sysconfig/jenkins
+防火墙添加端口# 查看开放端口：
+firewall-cmd --zone=public --list-ports添加 Jenkins 端口
+firewall-cmd --zone=public --add-port=8080/tcp --permanent 防火墙配置立即生效
+firewall-cmd --reload目录权限修改# chown -R root:root /var/lib/jenkins chown -R root:root /var/cache/jenkins chown -R root:root /var/log/jenkins启动 Jenkins# systemctl start jenkins如果报错：
+Job for jenkins.service failed because the control process exited with error code. See &#34;systemctl status jenkins.service&#34; and &#34;journalctl -xe&#34; for details.解决方案：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/devops/jenkins%E5%AE%89%E8%A3%85/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="安装 jdk/git# yum -y install java-1.8.0-openjdk* #安装jdk yum install git #安装git安装 ca-certificates# yum install epel-release yum install -y ca-certificates导入公钥# sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key安装 Jenkins# wget https://mirrors.bfsu.edu.cn/jenkins/redhat-stable/jenkins-2.319.3-1.1.noarch.rpm rpm -ivh jenkins-2.319.3-1.1.noarch.rpm配置修改# 主要修改两个地方：
+账户：因为 Jenkins 默认账户是 jenkins，这个账户我们没有，而且为了不因为权限出现各种问题，这里直接使用 root，也可以创建一个名叫 jenkins 的账户
+端口：Jenkins的默认端口是 8080，为了避免端口冲突，可以修改为其他端口
+配置文件地址：vi /etc/sysconfig/jenkins
+防火墙添加端口# 查看开放端口：
+firewall-cmd --zone=public --list-ports添加 Jenkins 端口
+firewall-cmd --zone=public --add-port=8080/tcp --permanent 防火墙配置立即生效
+firewall-cmd --reload目录权限修改# chown -R root:root /var/lib/jenkins chown -R root:root /var/cache/jenkins chown -R root:root /var/log/jenkins启动 Jenkins# systemctl start jenkins如果报错：
+Job for jenkins.service failed because the control process exited with error code. See &#34;systemctl status jenkins.service&#34; and &#34;journalctl -xe&#34; for details.解决方案：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="安装 jdk/git# yum -y install java-1.8.0-openjdk* #安装jdk yum install git #安装git安装 ca-certificates# yum install epel-release yum install -y ca-certificates导入公钥# sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key安装 Jenkins# wget https://mirrors.bfsu.edu.cn/jenkins/redhat-stable/jenkins-2.319.3-1.1.noarch.rpm rpm -ivh jenkins-2.319.3-1.1.noarch.rpm配置修改# 主要修改两个地方：
+账户：因为 Jenkins 默认账户是 jenkins，这个账户我们没有，而且为了不因为权限出现各种问题，这里直接使用 root，也可以创建一个名叫 jenkins 的账户
+端口：Jenkins的默认端口是 8080，为了避免端口冲突，可以修改为其他端口
+配置文件地址：vi /etc/sysconfig/jenkins
+防火墙添加端口# 查看开放端口：
+firewall-cmd --zone=public --list-ports添加 Jenkins 端口
+firewall-cmd --zone=public --add-port=8080/tcp --permanent 防火墙配置立即生效
+firewall-cmd --reload目录权限修改# chown -R root:root /var/lib/jenkins chown -R root:root /var/cache/jenkins chown -R root:root /var/log/jenkins启动 Jenkins# systemctl start jenkins如果报错：
+Job for jenkins.service failed because the control process exited with error code. See &#34;systemctl status jenkins.service&#34; and &#34;journalctl -xe&#34; for details.解决方案：">
+  <meta itemprop="wordCount" content="160">
+
+<title>Jenkins安装 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/devops/jenkins%E5%AE%89%E8%A3%85/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Jenkins安装</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Jenkins安装
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="安装-jdkgit">安装 jdk/git<a class="anchor" href="#%e5%ae%89%e8%a3%85-jdkgit">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum -y install java-1.8.0-openjdk* <span style="color:#75715e">#安装jdk</span>
+</span></span><span style="display:flex;"><span>yum install git <span style="color:#75715e">#安装git</span></span></span></code></pre></div><h1 id="安装-ca-certificates">安装 ca-certificates<a class="anchor" href="#%e5%ae%89%e8%a3%85-ca-certificates">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum install epel-release
+</span></span><span style="display:flex;"><span>yum install -y ca-certificates</span></span></code></pre></div><h1 id="导入公钥">导入公钥<a class="anchor" href="#%e5%af%bc%e5%85%a5%e5%85%ac%e9%92%a5">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key</span></span></code></pre></div><h1 id="安装-jenkins">安装 Jenkins<a class="anchor" href="#%e5%ae%89%e8%a3%85-jenkins">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://mirrors.bfsu.edu.cn/jenkins/redhat-stable/jenkins-2.319.3-1.1.noarch.rpm
+</span></span><span style="display:flex;"><span>rpm -ivh jenkins-2.319.3-1.1.noarch.rpm</span></span></code></pre></div><h1 id="配置修改">配置修改<a class="anchor" href="#%e9%85%8d%e7%bd%ae%e4%bf%ae%e6%94%b9">#</a></h1>
+<p>主要修改两个地方：</p>
+<p><strong>账户</strong>：因为 <code>Jenkins</code> 默认账户是 <code>jenkins</code>，这个账户我们没有，而且为了不因为权限出现各种问题，这里直接使用 <code>root</code>，也可以创建一个名叫 <code>jenkins</code> 的账户</p>
+<p><strong>端口</strong>：Jenkins的默认端口是 <code>8080</code>，为了避免端口冲突，可以修改为其他端口</p>
+<p>配置文件地址：<code>vi /etc/sysconfig/jenkins</code></p>
+<h1 id="防火墙添加端口">防火墙添加端口<a class="anchor" href="#%e9%98%b2%e7%81%ab%e5%a2%99%e6%b7%bb%e5%8a%a0%e7%ab%af%e5%8f%a3">#</a></h1>
+<p>查看开放端口：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>firewall-cmd --zone<span style="color:#f92672">=</span>public --list-ports</span></span></code></pre></div><p>添加 <code>Jenkins</code> 端口</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>firewall-cmd --zone<span style="color:#f92672">=</span>public --add-port<span style="color:#f92672">=</span>8080/tcp --permanent </span></span></code></pre></div><p>防火墙配置立即生效</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>firewall-cmd --reload</span></span></code></pre></div><h1 id="目录权限修改">目录权限修改<a class="anchor" href="#%e7%9b%ae%e5%bd%95%e6%9d%83%e9%99%90%e4%bf%ae%e6%94%b9">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chown -R root:root /var/lib/jenkins
+</span></span><span style="display:flex;"><span>chown -R root:root /var/cache/jenkins
+</span></span><span style="display:flex;"><span>chown -R root:root /var/log/jenkins</span></span></code></pre></div><h1 id="启动-jenkins">启动 Jenkins<a class="anchor" href="#%e5%90%af%e5%8a%a8-jenkins">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl start jenkins</span></span></code></pre></div><p>如果报错：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Job <span style="color:#66d9ef">for</span> jenkins.service failed because the control process exited with error code. See <span style="color:#e6db74">&#34;systemctl status jenkins.service&#34;</span> and <span style="color:#e6db74">&#34;journalctl -xe&#34;</span> <span style="color:#66d9ef">for</span> details.</span></span></code></pre></div><p>解决方案：</p>
+<ol>
+<li>查看当前Java的环境变量  <code>echo $JAVA_HOME</code></li>
+<li>复制Java的环境变量地址, 编辑 <code>/etc/init.d/jenkins</code> 文件, 指定位置添加该地址, 后缀附上 <code>/bin/java</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vim /etc/init.d/jenkins
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>candidates<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/etc/alternatives/java
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/lib/jvm/java-1.8.0/bin/java
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/lib/jvm/jre-1.8.0/bin/java
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/lib/jvm/java-11.0/bin/java
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/lib/jvm/jre-11.0/bin/java
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/lib/jvm/java-11-openjdk-amd64
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/bin/java
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/usr/jdk/jdk-18.0.1.1/bin/java # 新增jdk地址
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span></span></span></code></pre></div><p>修改完重新加载一下配置文件，使其生效：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl daemon-reload</span></span></code></pre></div><p>然后启动，将刚才修改的端口放开或者直接关闭防火墙，这里直接关闭防火墙：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl stop firewalld</span></span></code></pre></div><p>重启 Jenkins</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl restart jenkins</span></span></code></pre></div><h1 id="jenkins-插件安装">Jenkins 插件安装<a class="anchor" href="#jenkins-%e6%8f%92%e4%bb%b6%e5%ae%89%e8%a3%85">#</a></h1>
+<p><strong>步骤</strong>：添加插件 =&gt; 系统管理 =&gt; 插件管理</p>
+<p>需要添加的插件：</p>
+<ul>
+<li><code>Gitlab Hook</code></li>
+<li><code>Build Authorization Token Root</code></li>
+<li><code>Publish Over SSH</code></li>
+<li><code>Gitlab Authentication</code></li>
+<li><code>Gitlab</code></li>
+<li><code>Git Parameter</code></li>
+</ul>
+<p>在centos7中 <code>ssh</code> 服务默认是已经被安装了的。通过命令 <code>rpm -qa | grep openssh</code> 查看是否安装了ssh服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rpm -qa | grep openssh</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/devops/gitlab%E5%AE%89%E8%A3%85/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Gitlab安装</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="flex align-center">
+      <span>Jenkins常见操作</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

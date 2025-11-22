@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="反射提供了封装程序集、模块和类型的对象(Type类型)。可以使用反射动态创建类型的实例，将类型绑定到现有对象，或从现有对象获取类型并调用其方法或访问其字段和属性。
+使用场景# 需要访问程序元数据的特性 检查和实例化程序集中的类型 在运行时构建新类型。使用 System.Reflection.Emit 中的类 执行后期绑定，访问在运行时创建的类型的方法 反射用途# 类型 作用 Assembly 定义和加载程序集，加载程序集清单中列出的模块，以及从此程序集中查找类型并创建该类型的实例 Module 了解包含模块的程序集以及模块中的类等，还可以获取在模块上定义的所有全局方法或其他特定的非全局方法 ConstructorInfo 了解构造器的名称、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetConstructors或GetConstructor方法来调用特定的构造函数 MethodInfo 了解方法的名称、返回类型、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetMethods或GetMethod方法来调用特定的方法 FieldInfo 了解字段的名称、访问修饰符（如public或private）和实现详细信息（如static）等，并获取或设置字段值 EventInfo 了解事件的名称、事件处理程序数据类型、自定义特性、声明类型和反射类型等，并添加或移除事件处理程序 PropertyInfo 了解属性的名称、数据类型、声明类型、反射类型和只读或可写状态等，并获取或设置属性值 ParameterInfo 了解参数的名称、数据类型、参数是输入参数还是输出参数等，以及参数在方法签名中的位置等 反射用到的命名空间# System.Reflection System.Type System.Reflection.Assembly 反射用到的主要类# System.Type ：通过这个类可以访问任何给定数据类型的信息 System.Reflection.Assembly： 可以用于访问给定程序集的信息，或者把这个程序集加载到程序中 System.Type# 一个抽象的基类。Type 有与每种数据类型对应的派生类，使用这个派生类的对象的方法、字段、属性来查找有关该类型的所有信息。
+获取给定类型 Type 值# typeof 运算符
+Type t = typeof(string);对象的GetType()方法
+string s = &#34;guo&#34;; Type t = s.GetType();Type类的静态方法GetType()
+Type t = Type.GetType(&#34;System.String&#34;);Type 属性# 属性 描述 Name 数据类型名 FullName 数据类型的完全限定名(包括命名空间名) Namespace 定义数据类型的命名空间名 IsAbstract 指示该类型是否是抽象类型 IsArray 指示该类型是否是数组 IsClass 指示该类型是否是类 IsEnum 指示该类型是否是枚举 IsInterface 指示该类型是否是接口 IsPublic 指示该类型是否是公有的 IsSealed 指示该类型是否是密封类 IsValueType 指示该类型是否是值类型 Type 方法# 方法名称 描述 GetConstructor(), GetConstructors() 返回ConstructorInfo类型，用于取得该类的构造函数的信息 GetEvent(), GetEvents() 返回EventInfo类型，用于取得该类的事件的信息 GetField(), GetFields() 返回FieldInfo类型，用于取得该类的字段（成员变量）的信息 GetInterface(), GetInterfaces() 返回InterfaceInfo类型，用于取得该类实现的接口的信息 GetMember(), GetMembers() 返回MemberInfo类型，用于取得该类的所有成员的信息 GetMethod(), GetMethods() 返回MethodInfo类型，用于取得该类的方法的信息 GetProperty(), GetProperties() 返回PropertyInfo类型，用于取得该类的属性的信息 可以调用这些成员，其方式是调用 Type 的 InvokeMember() 方法，或者调用 MethodInfo , PropertyInfo 和其他类的 Invoke() 方法。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="反射提供了封装程序集、模块和类型的对象(Type类型)。可以使用反射动态创建类型的实例，将类型绑定到现有对象，或从现有对象获取类型并调用其方法或访问其字段和属性。
+使用场景# 需要访问程序元数据的特性 检查和实例化程序集中的类型 在运行时构建新类型。使用 System.Reflection.Emit 中的类 执行后期绑定，访问在运行时创建的类型的方法 反射用途# 类型 作用 Assembly 定义和加载程序集，加载程序集清单中列出的模块，以及从此程序集中查找类型并创建该类型的实例 Module 了解包含模块的程序集以及模块中的类等，还可以获取在模块上定义的所有全局方法或其他特定的非全局方法 ConstructorInfo 了解构造器的名称、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetConstructors或GetConstructor方法来调用特定的构造函数 MethodInfo 了解方法的名称、返回类型、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetMethods或GetMethod方法来调用特定的方法 FieldInfo 了解字段的名称、访问修饰符（如public或private）和实现详细信息（如static）等，并获取或设置字段值 EventInfo 了解事件的名称、事件处理程序数据类型、自定义特性、声明类型和反射类型等，并添加或移除事件处理程序 PropertyInfo 了解属性的名称、数据类型、声明类型、反射类型和只读或可写状态等，并获取或设置属性值 ParameterInfo 了解参数的名称、数据类型、参数是输入参数还是输出参数等，以及参数在方法签名中的位置等 反射用到的命名空间# System.Reflection System.Type System.Reflection.Assembly 反射用到的主要类# System.Type ：通过这个类可以访问任何给定数据类型的信息 System.Reflection.Assembly： 可以用于访问给定程序集的信息，或者把这个程序集加载到程序中 System.Type# 一个抽象的基类。Type 有与每种数据类型对应的派生类，使用这个派生类的对象的方法、字段、属性来查找有关该类型的所有信息。
+获取给定类型 Type 值# typeof 运算符
+Type t = typeof(string);对象的GetType()方法
+string s = &#34;guo&#34;; Type t = s.GetType();Type类的静态方法GetType()
+Type t = Type.GetType(&#34;System.String&#34;);Type 属性# 属性 描述 Name 数据类型名 FullName 数据类型的完全限定名(包括命名空间名) Namespace 定义数据类型的命名空间名 IsAbstract 指示该类型是否是抽象类型 IsArray 指示该类型是否是数组 IsClass 指示该类型是否是类 IsEnum 指示该类型是否是枚举 IsInterface 指示该类型是否是接口 IsPublic 指示该类型是否是公有的 IsSealed 指示该类型是否是密封类 IsValueType 指示该类型是否是值类型 Type 方法# 方法名称 描述 GetConstructor(), GetConstructors() 返回ConstructorInfo类型，用于取得该类的构造函数的信息 GetEvent(), GetEvents() 返回EventInfo类型，用于取得该类的事件的信息 GetField(), GetFields() 返回FieldInfo类型，用于取得该类的字段（成员变量）的信息 GetInterface(), GetInterfaces() 返回InterfaceInfo类型，用于取得该类实现的接口的信息 GetMember(), GetMembers() 返回MemberInfo类型，用于取得该类的所有成员的信息 GetMethod(), GetMethods() 返回MethodInfo类型，用于取得该类的方法的信息 GetProperty(), GetProperties() 返回PropertyInfo类型，用于取得该类的属性的信息 可以调用这些成员，其方式是调用 Type 的 InvokeMember() 方法，或者调用 MethodInfo , PropertyInfo 和其他类的 Invoke() 方法。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="反射提供了封装程序集、模块和类型的对象(Type类型)。可以使用反射动态创建类型的实例，将类型绑定到现有对象，或从现有对象获取类型并调用其方法或访问其字段和属性。
+使用场景# 需要访问程序元数据的特性 检查和实例化程序集中的类型 在运行时构建新类型。使用 System.Reflection.Emit 中的类 执行后期绑定，访问在运行时创建的类型的方法 反射用途# 类型 作用 Assembly 定义和加载程序集，加载程序集清单中列出的模块，以及从此程序集中查找类型并创建该类型的实例 Module 了解包含模块的程序集以及模块中的类等，还可以获取在模块上定义的所有全局方法或其他特定的非全局方法 ConstructorInfo 了解构造器的名称、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetConstructors或GetConstructor方法来调用特定的构造函数 MethodInfo 了解方法的名称、返回类型、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetMethods或GetMethod方法来调用特定的方法 FieldInfo 了解字段的名称、访问修饰符（如public或private）和实现详细信息（如static）等，并获取或设置字段值 EventInfo 了解事件的名称、事件处理程序数据类型、自定义特性、声明类型和反射类型等，并添加或移除事件处理程序 PropertyInfo 了解属性的名称、数据类型、声明类型、反射类型和只读或可写状态等，并获取或设置属性值 ParameterInfo 了解参数的名称、数据类型、参数是输入参数还是输出参数等，以及参数在方法签名中的位置等 反射用到的命名空间# System.Reflection System.Type System.Reflection.Assembly 反射用到的主要类# System.Type ：通过这个类可以访问任何给定数据类型的信息 System.Reflection.Assembly： 可以用于访问给定程序集的信息，或者把这个程序集加载到程序中 System.Type# 一个抽象的基类。Type 有与每种数据类型对应的派生类，使用这个派生类的对象的方法、字段、属性来查找有关该类型的所有信息。
+获取给定类型 Type 值# typeof 运算符
+Type t = typeof(string);对象的GetType()方法
+string s = &#34;guo&#34;; Type t = s.GetType();Type类的静态方法GetType()
+Type t = Type.GetType(&#34;System.String&#34;);Type 属性# 属性 描述 Name 数据类型名 FullName 数据类型的完全限定名(包括命名空间名) Namespace 定义数据类型的命名空间名 IsAbstract 指示该类型是否是抽象类型 IsArray 指示该类型是否是数组 IsClass 指示该类型是否是类 IsEnum 指示该类型是否是枚举 IsInterface 指示该类型是否是接口 IsPublic 指示该类型是否是公有的 IsSealed 指示该类型是否是密封类 IsValueType 指示该类型是否是值类型 Type 方法# 方法名称 描述 GetConstructor(), GetConstructors() 返回ConstructorInfo类型，用于取得该类的构造函数的信息 GetEvent(), GetEvents() 返回EventInfo类型，用于取得该类的事件的信息 GetField(), GetFields() 返回FieldInfo类型，用于取得该类的字段（成员变量）的信息 GetInterface(), GetInterfaces() 返回InterfaceInfo类型，用于取得该类实现的接口的信息 GetMember(), GetMembers() 返回MemberInfo类型，用于取得该类的所有成员的信息 GetMethod(), GetMethods() 返回MethodInfo类型，用于取得该类的方法的信息 GetProperty(), GetProperties() 返回PropertyInfo类型，用于取得该类的属性的信息 可以调用这些成员，其方式是调用 Type 的 InvokeMember() 方法，或者调用 MethodInfo , PropertyInfo 和其他类的 Invoke() 方法。">
+  <meta itemprop="wordCount" content="604">
+
+<title>反射技术 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>反射技术</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#获取给定类型-type-值">获取给定类型 Type 值</a></li>
+    <li><a href="#type-属性">Type 属性</a></li>
+    <li><a href="#type-方法">Type 方法</a></li>
+    <li><a href="#获取所有构造函数">获取所有构造函数</a></li>
+    <li><a href="#动态创建对象">动态创建对象</a></li>
+    <li><a href="#activator-动态创建对象">Activator 动态创建对象</a></li>
+    <li><a href="#获取类中-public-属性">获取类中 Public 属性</a></li>
+    <li><a href="#获取类-public-方法">获取类 Public 方法</a></li>
+    <li><a href="#获取类中-public-字段">获取类中 Public 字段</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#getassembly">GetAssembly</a></li>
+    <li><a href="#通过程序集名称反射">通过程序集名称反射</a></li>
+    <li><a href="#通过dll文件反射类型">通过DLL文件反射类型</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    反射技术
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>反射提供了封装程序集、模块和类型的对象(Type类型)。可以使用反射动态创建类型的实例，将类型绑定到现有对象，或从现有对象获取类型并调用其方法或访问其字段和属性。</p>
+<h1 id="使用场景">使用场景<a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">#</a></h1>
+<ul>
+<li>需要访问程序元数据的特性</li>
+<li>检查和实例化程序集中的类型</li>
+<li>在运行时构建新类型。使用  <code>System.Reflection.Emit</code>  中的类</li>
+<li>执行后期绑定，访问在运行时创建的类型的方法</li>
+</ul>
+<h1 id="反射用途">反射用途<a class="anchor" href="#%e5%8f%8d%e5%b0%84%e7%94%a8%e9%80%94">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th><strong>类型</strong></th>
+          <th style="text-align: left"><strong>作用</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Assembly</code></td>
+          <td style="text-align: left">定义和加载程序集，加载程序集清单中列出的模块，以及从此程序集中查找类型并创建该类型的实例</td>
+      </tr>
+      <tr>
+          <td><code>Module</code></td>
+          <td style="text-align: left">了解包含模块的程序集以及模块中的类等，还可以获取在模块上定义的所有全局方法或其他特定的非全局方法</td>
+      </tr>
+      <tr>
+          <td><code>ConstructorInfo</code></td>
+          <td style="text-align: left">了解构造器的名称、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetConstructors或GetConstructor方法来调用特定的构造函数</td>
+      </tr>
+      <tr>
+          <td><code>MethodInfo</code></td>
+          <td style="text-align: left">了解方法的名称、返回类型、参数、访问修饰符（如public或private）和实现详细信息（如abstract或virtual）等。使用Type的GetMethods或GetMethod方法来调用特定的方法</td>
+      </tr>
+      <tr>
+          <td><code>FieldInfo</code></td>
+          <td style="text-align: left">了解字段的名称、访问修饰符（如public或private）和实现详细信息（如static）等，并获取或设置字段值</td>
+      </tr>
+      <tr>
+          <td><code>EventInfo</code></td>
+          <td style="text-align: left">了解事件的名称、事件处理程序数据类型、自定义特性、声明类型和反射类型等，并添加或移除事件处理程序</td>
+      </tr>
+      <tr>
+          <td><code>PropertyInfo</code></td>
+          <td style="text-align: left">了解属性的名称、数据类型、声明类型、反射类型和只读或可写状态等，并获取或设置属性值</td>
+      </tr>
+      <tr>
+          <td><code>ParameterInfo</code></td>
+          <td style="text-align: left">了解参数的名称、数据类型、参数是输入参数还是输出参数等，以及参数在方法签名中的位置等</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="反射用到的命名空间">反射用到的命名空间<a class="anchor" href="#%e5%8f%8d%e5%b0%84%e7%94%a8%e5%88%b0%e7%9a%84%e5%91%bd%e5%90%8d%e7%a9%ba%e9%97%b4">#</a></h1>
+<ul>
+<li><code>System.Reflection</code></li>
+<li><code>System.Type</code></li>
+<li><code>System.Reflection.Assembly</code></li>
+</ul>
+<h1 id="反射用到的主要类">反射用到的主要类<a class="anchor" href="#%e5%8f%8d%e5%b0%84%e7%94%a8%e5%88%b0%e7%9a%84%e4%b8%bb%e8%a6%81%e7%b1%bb">#</a></h1>
+<ul>
+<li><code>System.Type</code> ：通过这个类可以访问任何给定数据类型的信息</li>
+<li><code>System.Reflection.Assembly</code>：  可以用于访问给定程序集的信息，或者把这个程序集加载到程序中</li>
+</ul>
+<h1 id="systemtype">System.Type<a class="anchor" href="#systemtype">#</a></h1>
+<p>一个抽象的基类。<code>Type</code> 有与每种数据类型对应的派生类，使用这个派生类的对象的方法、字段、属性来查找有关该类型的所有信息。</p>
+<h2 id="获取给定类型-type-值">获取给定类型 Type 值<a class="anchor" href="#%e8%8e%b7%e5%8f%96%e7%bb%99%e5%ae%9a%e7%b1%bb%e5%9e%8b-type-%e5%80%bc">#</a></h2>
+<p><strong>typeof 运算符</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Type t = <span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">string</span>);</span></span></code></pre></div><p><strong>对象的GetType()方法</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s = <span style="color:#e6db74">&#34;guo&#34;</span>;
+</span></span><span style="display:flex;"><span>Type t = s.GetType();</span></span></code></pre></div><p><strong>Type类的静态方法GetType()</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Type t = Type.GetType(<span style="color:#e6db74">&#34;System.String&#34;</span>);</span></span></code></pre></div><h2 id="type-属性">Type 属性<a class="anchor" href="#type-%e5%b1%9e%e6%80%a7">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Name</td>
+          <td>数据类型名</td>
+      </tr>
+      <tr>
+          <td>FullName</td>
+          <td>数据类型的完全限定名(包括命名空间名)</td>
+      </tr>
+      <tr>
+          <td>Namespace</td>
+          <td>定义数据类型的命名空间名</td>
+      </tr>
+      <tr>
+          <td>IsAbstract</td>
+          <td>指示该类型是否是抽象类型</td>
+      </tr>
+      <tr>
+          <td>IsArray</td>
+          <td>指示该类型是否是数组</td>
+      </tr>
+      <tr>
+          <td>IsClass</td>
+          <td>指示该类型是否是类</td>
+      </tr>
+      <tr>
+          <td>IsEnum</td>
+          <td>指示该类型是否是枚举</td>
+      </tr>
+      <tr>
+          <td>IsInterface</td>
+          <td>指示该类型是否是接口</td>
+      </tr>
+      <tr>
+          <td>IsPublic</td>
+          <td>指示该类型是否是公有的</td>
+      </tr>
+      <tr>
+          <td>IsSealed</td>
+          <td>指示该类型是否是密封类</td>
+      </tr>
+      <tr>
+          <td>IsValueType</td>
+          <td>指示该类型是否是值类型</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="type-方法">Type 方法<a class="anchor" href="#type-%e6%96%b9%e6%b3%95">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>方法名称</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>GetConstructor(), GetConstructors()</td>
+          <td>返回ConstructorInfo类型，用于取得该类的构造函数的信息</td>
+      </tr>
+      <tr>
+          <td>GetEvent(), GetEvents()</td>
+          <td>返回EventInfo类型，用于取得该类的事件的信息</td>
+      </tr>
+      <tr>
+          <td>GetField(), GetFields()</td>
+          <td>返回FieldInfo类型，用于取得该类的字段（成员变量）的信息</td>
+      </tr>
+      <tr>
+          <td>GetInterface(), GetInterfaces()</td>
+          <td>返回InterfaceInfo类型，用于取得该类实现的接口的信息</td>
+      </tr>
+      <tr>
+          <td>GetMember(), GetMembers()</td>
+          <td>返回MemberInfo类型，用于取得该类的所有成员的信息</td>
+      </tr>
+      <tr>
+          <td>GetMethod(), GetMethods()</td>
+          <td>返回MethodInfo类型，用于取得该类的方法的信息</td>
+      </tr>
+      <tr>
+          <td>GetProperty(), GetProperties()</td>
+          <td>返回PropertyInfo类型，用于取得该类的属性的信息</td>
+      </tr>
+  </tbody>
+</table>
+<p>可以调用这些成员，其方式是调用 <code>Type</code> 的 <code>InvokeMember()</code> 方法，或者调用 <code>MethodInfo</code> , <code>PropertyInfo</code> 和其他类的 <code>Invoke()</code> 方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReflectClass</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Address;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Age { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Sex { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ReflectClass() { }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ReflectClass(<span style="color:#66d9ef">string</span> name)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ReflectClass(<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">string</span> sex)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.Sex = sex;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Show()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;姓名：&#34;</span> + Name + <span style="color:#e6db74">&#34;\n&#34;</span> + <span style="color:#e6db74">&#34;年龄：&#34;</span> + Age + <span style="color:#e6db74">&#34;\n&#34;</span> + <span style="color:#e6db74">&#34;性别：&#34;</span> + Sex);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="获取所有构造函数">获取所有构造函数<a class="anchor" href="#%e8%8e%b7%e5%8f%96%e6%89%80%e6%9c%89%e6%9e%84%e9%80%a0%e5%87%bd%e6%95%b0">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetConstructors()
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     Type t = <span style="color:#66d9ef">new</span> ReflectClass().GetType();
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 获取类的所有构造函数</span>
+</span></span><span style="display:flex;"><span>     ConstructorInfo[] constructorInfos = t.GetConstructors();
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">foreach</span> (ConstructorInfo ci <span style="color:#66d9ef">in</span> constructorInfos)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 获取每个构造函数的参数</span>
+</span></span><span style="display:flex;"><span>         ParameterInfo[] parameterInfos = ci.GetParameters();
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">foreach</span> (ParameterInfo p <span style="color:#66d9ef">in</span> parameterInfos)
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             Console.WriteLine(p.ParameterType.ToString() + <span style="color:#e6db74">&#34;\n&#34;</span> + p.Name + <span style="color:#e6db74">&#34;\n&#34;</span>);
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     Assert.IsTrue(constructorInfos.Length &gt; <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><h2 id="动态创建对象">动态创建对象<a class="anchor" href="#%e5%8a%a8%e6%80%81%e5%88%9b%e5%bb%ba%e5%af%b9%e8%b1%a1">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> DynamicCreateObject()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Type t = <span style="color:#66d9ef">typeof</span>(ReflectClass);
+</span></span><span style="display:flex;"><span>    Type[] pt = <span style="color:#66d9ef">new</span> Type[<span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>    pt[<span style="color:#ae81ff">0</span>] = <span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">string</span>);
+</span></span><span style="display:flex;"><span>    pt[<span style="color:#ae81ff">1</span>] = <span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">string</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//根据参数类型获取构造函数</span>
+</span></span><span style="display:flex;"><span>    ConstructorInfo ci = t.GetConstructor(pt);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//构造Object数组，作为构造函数的输入参数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span>[] obj = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[<span style="color:#ae81ff">2</span>] { <span style="color:#e6db74">&#34;wang&#34;</span>, <span style="color:#e6db74">&#34;男&#34;</span> };
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//调用构造函数生成对象</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> @object = ci.Invoke(obj);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//调用生成的对象的方法测试是否对象生成成功</span>
+</span></span><span style="display:flex;"><span>    ((ReflectClass)@object).Show();
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="activator-动态创建对象">Activator 动态创建对象<a class="anchor" href="#activator-%e5%8a%a8%e6%80%81%e5%88%9b%e5%bb%ba%e5%af%b9%e8%b1%a1">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ActivatorDynamicCreateObject()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Type t = <span style="color:#66d9ef">typeof</span>(ReflectClass);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span>[] obj = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[<span style="color:#ae81ff">2</span>] { <span style="color:#e6db74">&#34;wang&#34;</span>, <span style="color:#e6db74">&#34;男&#34;</span> };
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//用Activator的CreateInstance静态方法，生成新对象</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> @object = Activator.CreateInstance(t, obj);
+</span></span><span style="display:flex;"><span>    ((ReflectClass)@object).Show();
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="获取类中-public-属性">获取类中 Public 属性<a class="anchor" href="#%e8%8e%b7%e5%8f%96%e7%b1%bb%e4%b8%ad-public-%e5%b1%9e%e6%80%a7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetProperties()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Type t = <span style="color:#66d9ef">new</span> ReflectClass().GetType();
+</span></span><span style="display:flex;"><span>    PropertyInfo[] propertyInfos = t.GetProperties();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (PropertyInfo p <span style="color:#66d9ef">in</span> propertyInfos)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(p.Name);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="获取类-public-方法">获取类 Public 方法<a class="anchor" href="#%e8%8e%b7%e5%8f%96%e7%b1%bb-public-%e6%96%b9%e6%b3%95">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetPublicMethod()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Type t = <span style="color:#66d9ef">new</span> ReflectClass().GetType();
+</span></span><span style="display:flex;"><span>    MethodInfo[] mi = t.GetMethods();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (MethodInfo method <span style="color:#66d9ef">in</span> mi)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(method.ReturnType + <span style="color:#e6db74">&#34;|&#34;</span> + method.Name);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="获取类中-public-字段">获取类中 Public 字段<a class="anchor" href="#%e8%8e%b7%e5%8f%96%e7%b1%bb%e4%b8%ad-public-%e5%ad%97%e6%ae%b5">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetField()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Type t = <span style="color:#66d9ef">new</span> ReflectClass().GetType();
+</span></span><span style="display:flex;"><span>    FieldInfo[] fieldInfos = t.GetFields();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (FieldInfo fieldInfo <span style="color:#66d9ef">in</span> fieldInfos)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(fieldInfo.Name);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Example_01()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ReflectClass rc = <span style="color:#66d9ef">new</span> ReflectClass();
+</span></span><span style="display:flex;"><span>    Type t = rc.GetType();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> obj = Activator.CreateInstance(t);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    FieldInfo address = t.GetField(<span style="color:#e6db74">&#34;Address&#34;</span>);
+</span></span><span style="display:flex;"><span>    address.SetValue(obj, <span style="color:#e6db74">&#34;Beijing&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PropertyInfo name = t.GetProperty(<span style="color:#e6db74">&#34;Name&#34;</span>);
+</span></span><span style="display:flex;"><span>    name.SetValue(obj, <span style="color:#e6db74">&#34;wang&#34;</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PropertyInfo age = t.GetProperty(<span style="color:#e6db74">&#34;Age&#34;</span>);
+</span></span><span style="display:flex;"><span>    age.SetValue(obj, <span style="color:#ae81ff">20</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    MethodInfo method = t.GetMethod(<span style="color:#e6db74">&#34;Show&#34;</span>);
+</span></span><span style="display:flex;"><span>    method.Invoke(obj, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Address为：&#34;</span> + ((ReflectClass)obj).Address);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="assembly">Assembly<a class="anchor" href="#assembly">#</a></h1>
+<h2 id="getassembly">GetAssembly<a class="anchor" href="#getassembly">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetAssembly()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过程序集名称返回Assembly对象</span>
+</span></span><span style="display:flex;"><span>    Assembly assembly = Assembly.Load(<span style="color:#e6db74">&#34;CodeSnippet&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过Assembly获取程序集中类(参数必须是类的全名)</span>
+</span></span><span style="display:flex;"><span>    Type type = assembly.GetType(<span style="color:#e6db74">&#34;CodeSnippet.Csharp.ReflectClass&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsNotNull(type);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过Assembly获取程序集中所有的类</span>
+</span></span><span style="display:flex;"><span>    Type[] types = assembly.GetTypes();
+</span></span><span style="display:flex;"><span>    Assert.IsNotNull(types);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过DLL文件名称返回Assembly对象</span>
+</span></span><span style="display:flex;"><span>warning disable S3885 <span style="color:#75715e">// &#34;Assembly.Load&#34; should be used</span>
+</span></span><span style="display:flex;"><span>    Assembly assembly2 = Assembly.LoadFrom(<span style="color:#e6db74">&#34;CodeSnippet.dll&#34;</span>);
+</span></span><span style="display:flex;"><span>warning restore S3885 <span style="color:#75715e">// &#34;Assembly.Load&#34; should be used</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过Assembly获取程序集中类(参数必须是类的全名)</span>
+</span></span><span style="display:flex;"><span>    Type type2 = assembly2.GetType(<span style="color:#e6db74">&#34;CodeSnippet.Csharp.ReflectClass&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsNotNull(type2);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过Assembly获取程序集中所有的类</span>
+</span></span><span style="display:flex;"><span>    Type[] types2 = assembly2.GetTypes();
+</span></span><span style="display:flex;"><span>    Assert.IsNotNull(types2);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="通过程序集名称反射">通过程序集名称反射<a class="anchor" href="#%e9%80%9a%e8%bf%87%e7%a8%8b%e5%ba%8f%e9%9b%86%e5%90%8d%e7%a7%b0%e5%8f%8d%e5%b0%84">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Example_02()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Assembly assembly = Assembly.Load(<span style="color:#e6db74">&#34;CodeSnippet&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//参数必须是类的全名</span>
+</span></span><span style="display:flex;"><span>    Type t = assembly.GetType(<span style="color:#e6db74">&#34;CodeSnippet.Csharp.ReflectClass&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> o = Activator.CreateInstance(t, <span style="color:#e6db74">&#34;男&#34;</span>);
+</span></span><span style="display:flex;"><span>    MethodInfo mi = t.GetMethod(<span style="color:#e6db74">&#34;Show&#34;</span>);
+</span></span><span style="display:flex;"><span>    mi.Invoke(o, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsNotNull(o);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="通过dll文件反射类型">通过DLL文件反射类型<a class="anchor" href="#%e9%80%9a%e8%bf%87dll%e6%96%87%e4%bb%b6%e5%8f%8d%e5%b0%84%e7%b1%bb%e5%9e%8b">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Example_03()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>warning disable S3885 <span style="color:#75715e">// &#34;Assembly.Load&#34; should be used</span>
+</span></span><span style="display:flex;"><span>    Assembly assembly = Assembly.LoadFrom(<span style="color:#e6db74">&#34;CodeSnippet.dll&#34;</span>);
+</span></span><span style="display:flex;"><span>warning restore S3885 <span style="color:#75715e">// &#34;Assembly.Load&#34; should be used</span>
+</span></span><span style="display:flex;"><span>    Type[] types = assembly.GetTypes();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (Type t <span style="color:#66d9ef">in</span> types)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (t.FullName == <span style="color:#e6db74">&#34;CodeSnippet.Csharp.ReflectClass&#34;</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">object</span> o = Activator.CreateInstance(t);
+</span></span><span style="display:flex;"><span>            Assert.IsNotNull(o);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="bindingflags">BindingFlags<a class="anchor" href="#bindingflags">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">//     Specifies flags that control binding and the way in which the search for members</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//     and types is conducted by reflection.</span></span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>值类型和引用类型的内存分配</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="flex align-center">
+      <span>基础合集</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#获取给定类型-type-值">获取给定类型 Type 值</a></li>
+    <li><a href="#type-属性">Type 属性</a></li>
+    <li><a href="#type-方法">Type 方法</a></li>
+    <li><a href="#获取所有构造函数">获取所有构造函数</a></li>
+    <li><a href="#动态创建对象">动态创建对象</a></li>
+    <li><a href="#activator-动态创建对象">Activator 动态创建对象</a></li>
+    <li><a href="#获取类中-public-属性">获取类中 Public 属性</a></li>
+    <li><a href="#获取类-public-方法">获取类 Public 方法</a></li>
+    <li><a href="#获取类中-public-字段">获取类中 Public 字段</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#getassembly">GetAssembly</a></li>
+    <li><a href="#通过程序集名称反射">通过程序集名称反射</a></li>
+    <li><a href="#通过dll文件反射类型">通过DLL文件反射类型</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

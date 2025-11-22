@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="之前已经了解到镜像的定制实际上就是定制每一层所添加的配置、文件。如果可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，这就是 Dockerfile。
+格式描述# Dockerfile 整体由两类语句组成
+Comment 注释信息 Instruction arguments 指令参数，一行一个指令 注意
+Dockerfile 文件名首字母必须大写 Dockerfile 指令不区分大小写，但为方便和参数做区分，通常指令使用大写字母 Dockerfile 指令按顺序从上至下依次执行 Dockerfile 第一个非注释行必须是 FROM 指令，用来指定制作当前镜像依据的是哪个基础镜像 Dockerfile 需要调用的文件必须跟 Dockerfile 文件在同一目录下，或者在其子目录下。父目录或者其它路径无效 FROM# 功能为指定基础镜像，并且必须是第一条指令 如果不以任何镜像为基础写法为： FROM scratch ，意味着接下来所写的指令将作为镜像的第一层开始 注意：如果没有指定仓库，docker build 会先从本机查找是否有此基础镜像，如果没有默认去 Docker Hub Registry 上拉取，再找不到就会报错
+FROM &lt;image&gt; FROM &lt;image&gt;:&lt;tag&gt; FROM &lt;image&gt;:&lt;digest&gt; # 三种写法，其中&lt;tag&gt;和&lt;digest&gt; 是可选项，如果没有选择，那么默认值为latestMAINTAINER（新版本过时）# Dockerfile 作者信息，一般格式是：姓名&#43;邮箱地址 并不限制 MAINTAINER 指令的位置，但建议放在 FROM 指令之后 在较新的 docker 版本中，MAINTAINER 已经被 LABEL 替代 MAINTAINER &#34;merle@example.com&#34;LABEL# 为镜像指定各种元数据（键值对格式）: LABEL 会继承基础镜像中的 LABEL ，如遇 key 相同值将会被覆盖
+LABEL &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt;COPY# 复制宿主机上的文件到目标镜像中，格式：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/docker/1.8dockerfile/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="之前已经了解到镜像的定制实际上就是定制每一层所添加的配置、文件。如果可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，这就是 Dockerfile。
+格式描述# Dockerfile 整体由两类语句组成
+Comment 注释信息 Instruction arguments 指令参数，一行一个指令 注意
+Dockerfile 文件名首字母必须大写 Dockerfile 指令不区分大小写，但为方便和参数做区分，通常指令使用大写字母 Dockerfile 指令按顺序从上至下依次执行 Dockerfile 第一个非注释行必须是 FROM 指令，用来指定制作当前镜像依据的是哪个基础镜像 Dockerfile 需要调用的文件必须跟 Dockerfile 文件在同一目录下，或者在其子目录下。父目录或者其它路径无效 FROM# 功能为指定基础镜像，并且必须是第一条指令 如果不以任何镜像为基础写法为： FROM scratch ，意味着接下来所写的指令将作为镜像的第一层开始 注意：如果没有指定仓库，docker build 会先从本机查找是否有此基础镜像，如果没有默认去 Docker Hub Registry 上拉取，再找不到就会报错
+FROM &lt;image&gt; FROM &lt;image&gt;:&lt;tag&gt; FROM &lt;image&gt;:&lt;digest&gt; # 三种写法，其中&lt;tag&gt;和&lt;digest&gt; 是可选项，如果没有选择，那么默认值为latestMAINTAINER（新版本过时）# Dockerfile 作者信息，一般格式是：姓名&#43;邮箱地址 并不限制 MAINTAINER 指令的位置，但建议放在 FROM 指令之后 在较新的 docker 版本中，MAINTAINER 已经被 LABEL 替代 MAINTAINER &#34;merle@example.com&#34;LABEL# 为镜像指定各种元数据（键值对格式）: LABEL 会继承基础镜像中的 LABEL ，如遇 key 相同值将会被覆盖
+LABEL &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt;COPY# 复制宿主机上的文件到目标镜像中，格式：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="之前已经了解到镜像的定制实际上就是定制每一层所添加的配置、文件。如果可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，这就是 Dockerfile。
+格式描述# Dockerfile 整体由两类语句组成
+Comment 注释信息 Instruction arguments 指令参数，一行一个指令 注意
+Dockerfile 文件名首字母必须大写 Dockerfile 指令不区分大小写，但为方便和参数做区分，通常指令使用大写字母 Dockerfile 指令按顺序从上至下依次执行 Dockerfile 第一个非注释行必须是 FROM 指令，用来指定制作当前镜像依据的是哪个基础镜像 Dockerfile 需要调用的文件必须跟 Dockerfile 文件在同一目录下，或者在其子目录下。父目录或者其它路径无效 FROM# 功能为指定基础镜像，并且必须是第一条指令 如果不以任何镜像为基础写法为： FROM scratch ，意味着接下来所写的指令将作为镜像的第一层开始 注意：如果没有指定仓库，docker build 会先从本机查找是否有此基础镜像，如果没有默认去 Docker Hub Registry 上拉取，再找不到就会报错
+FROM &lt;image&gt; FROM &lt;image&gt;:&lt;tag&gt; FROM &lt;image&gt;:&lt;digest&gt; # 三种写法，其中&lt;tag&gt;和&lt;digest&gt; 是可选项，如果没有选择，那么默认值为latestMAINTAINER（新版本过时）# Dockerfile 作者信息，一般格式是：姓名&#43;邮箱地址 并不限制 MAINTAINER 指令的位置，但建议放在 FROM 指令之后 在较新的 docker 版本中，MAINTAINER 已经被 LABEL 替代 MAINTAINER &#34;merle@example.com&#34;LABEL# 为镜像指定各种元数据（键值对格式）: LABEL 会继承基础镜像中的 LABEL ，如遇 key 相同值将会被覆盖
+LABEL &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt;COPY# 复制宿主机上的文件到目标镜像中，格式：">
+  <meta itemprop="wordCount" content="535">
+
+<title>1.8 Dockerfile | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/docker/1.8dockerfile/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.8 Dockerfile</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.8 Dockerfile
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>之前已经了解到镜像的定制实际上就是定制每一层所添加的配置、文件。如果可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，这就是 <code>Dockerfile</code>。</p>
+<h1 id="格式描述">格式描述<a class="anchor" href="#%e6%a0%bc%e5%bc%8f%e6%8f%8f%e8%bf%b0">#</a></h1>
+<p>Dockerfile 整体由两类语句组成</p>
+<ul>
+<li><code>Comment</code>  注释信息</li>
+<li><code>Instruction arguments</code>  指令参数，一行一个指令</li>
+</ul>
+<p><strong>注意</strong></p>
+<ul>
+<li><code>Dockerfile</code> 文件名首字母必须大写</li>
+<li><code>Dockerfile</code> 指令不区分大小写，但为方便和参数做区分，通常指令使用大写字母</li>
+<li><code>Dockerfile</code> 指令按顺序从上至下依次执行</li>
+<li><code>Dockerfile</code> 第一个非注释行必须是 <code>FROM</code> 指令，用来指定制作当前镜像依据的是哪个基础镜像</li>
+<li><code>Dockerfile</code> 需要调用的文件必须跟 <code>Dockerfile</code> 文件在同一目录下，或者在其子目录下。父目录或者其它路径无效</li>
+</ul>
+<h1 id="from">FROM<a class="anchor" href="#from">#</a></h1>
+<ul>
+<li>功能为指定基础镜像，并且必须是第一条指令</li>
+<li>如果不以任何镜像为基础写法为： <code>FROM scratch</code> ，意味着接下来所写的指令将作为镜像的第一层开始</li>
+</ul>
+<blockquote class='book-hint '>
+<p>注意：如果没有指定仓库，<code>docker build</code> 会先从本机查找是否有此基础镜像，如果没有默认去 <code>Docker Hub Registry</code> 上拉取，再找不到就会报错</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&lt;image</span>&gt;<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&lt;image&gt;:&lt;tag</span>&gt;<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">&lt;image&gt;:&lt;digest</span>&gt; <span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 三种写法，其中&lt;tag&gt;和&lt;digest&gt; 是可选项，如果没有选择，那么默认值为latest</span></span></span></code></pre></div><h1 id="maintainer新版本过时">MAINTAINER（新版本过时）<a class="anchor" href="#maintainer%e6%96%b0%e7%89%88%e6%9c%ac%e8%bf%87%e6%97%b6">#</a></h1>
+<ul>
+<li><code>Dockerfile</code> 作者信息，一般格式是：姓名+邮箱地址</li>
+<li>并不限制 <code>MAINTAINER</code> 指令的位置，但建议放在 <code>FROM</code> 指令之后</li>
+<li>在较新的 <code>docker</code> 版本中，<code>MAINTAINER</code> 已经被 <code>LABEL</code> 替代</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">MAINTAINER</span> <span style="color:#e6db74">&#34;merle@example.com</span><span style="color:#e6db74">&#34;</span></span></span></code></pre></div><h1 id="label">LABEL<a class="anchor" href="#label">#</a></h1>
+<p>为镜像指定各种元数据（键值对格式）: <code>LABEL</code> 会继承基础镜像中的 <code>LABEL</code> ，如遇 <code>key</code> 相同值将会被覆盖</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">LABEL</span> &lt;key&gt;<span style="color:#f92672">=</span>&lt;value&gt; &lt;key&gt;<span style="color:#f92672">=</span>&lt;value&gt;</span></span></code></pre></div><h1 id="copy">COPY<a class="anchor" href="#copy">#</a></h1>
+<p>复制宿主机上的文件到目标镜像中，格式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>COPY <span style="color:#f92672">[</span>--chown<span style="color:#f92672">=</span>:<span style="color:#f92672">]</span> &lt;源路径&gt;... &lt;目标路径&gt;
+</span></span><span style="display:flex;"><span>COPY <span style="color:#f92672">[</span>--chown<span style="color:#f92672">=</span>:<span style="color:#f92672">]</span> <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;&lt;源路径1&gt;&#34;</span>,... <span style="color:#e6db74">&#34;&lt;目标路径&gt;&#34;</span><span style="color:#f92672">]</span></span></span></code></pre></div><p>和 <code>RUN</code>  指令一样，<code>COPY</code> 也有两种格式，一种类似于命令行，一种类似于函数调用。<code>COPY</code>  指令将从构建上下文目录中 <code>&lt;源路径&gt;</code>  的文件/目录复制到新的一层的镜像内的 <code>&lt;目标路径&gt;</code>  位置。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>COPY package.json /usr/src/app/</span></span></code></pre></div><p><code>&lt;源路径&gt;</code>  可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <code>filepath.Match</code>  规则，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>COPY hom* /mydir/
+</span></span><span style="display:flex;"><span>COPY hom?.txt /mydir/</span></span></code></pre></div><p><code>&lt;目标路径&gt;</code>  可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 <code>WORKDIR</code>  指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先创建缺失目录。</p>
+<blockquote class='book-hint '>
+<p>注意：使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候</p>
+</blockquote><p>在使用该指令的时候还可以加上 <code>--chown=&lt;user&gt;:&lt;group&gt;</code>    选项来改变文件的所属用户及所属组</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>COPY --chown<span style="color:#f92672">=</span>55:mygroup files* /mydir/
+</span></span><span style="display:flex;"><span>COPY --chown<span style="color:#f92672">=</span>bin files* /mydir/
+</span></span><span style="display:flex;"><span>COPY --chown<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> files* /mydir/
+</span></span><span style="display:flex;"><span>COPY --chown<span style="color:#f92672">=</span>10:11 files* /mydir/</span></span></code></pre></div><h1 id="add">ADD<a class="anchor" href="#add">#</a></h1>
+<ul>
+<li><code>ADD</code> 指令跟 <code>COPY</code> 类似，不过它支持使用 <code>tar</code> 文件和 <code>URL</code> 路径</li>
+<li>当拷贝的源文件是 <code>tar</code> 文件时，会自动展开为一个目录并拷贝进新的镜像中。通过 <code>URL</code> 获取到的 <code>tar</code> 文件不会自动展开</li>
+<li>主机可以联网的情况下， <code>docker build</code> 可以将网络上的某文件引用下载并打包到新的镜像中</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">ADD</span> &lt;src&gt;... &lt;dest&gt;<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span> <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;&lt;src&gt;&#34;</span>,... <span style="color:#e6db74">&#34;&lt;dest&gt;&#34;</span><span style="color:#f92672">]</span></span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：<code>ADD</code> 指令会令镜像构建缓存失效，从而可能会令镜像构建变得比较缓慢。在 Docker 官方的 <a href="https://www.bookstack.cn/read/docker_practice-v1.1.0/appendix-best_practices.md">Dockerfile 最佳实践文档</a> 中要求，尽可能的使用 COPY，因为 COPY 的语义很明确，就是复制文件，而 ADD 则包含了更复杂的功能，其行为也不一定很清晰。最适合使用 ADD 的场合，就是所提及的需要自动解压缩的场合。因此在 <code>COPY</code> 和 <code>ADD</code> 指令中选择的时候，可以遵循这样的原则，所有的文件复制均使用 <code>COPY</code> 指令，仅在需要自动解压缩的场合使用 <code>ADD</code></p>
+</blockquote><p>在使用该指令的时候也可以加上 <code>--chown=&lt;user&gt;:&lt;group&gt;</code> 选项来改变文件的所属用户及所属组</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ADD --chown<span style="color:#f92672">=</span>55:mygroup files* /mydir/
+</span></span><span style="display:flex;"><span>ADD --chown<span style="color:#f92672">=</span>bin files* /mydir/
+</span></span><span style="display:flex;"><span>ADD --chown<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> files* /mydir/
+</span></span><span style="display:flex;"><span>ADD --chown<span style="color:#f92672">=</span>10:11 files* /mydir/</span></span></code></pre></div><h1 id="workdir">WORKDIR<a class="anchor" href="#workdir">#</a></h1>
+<ul>
+<li>同 <code>docker run -w</code></li>
+<li>指定工作目录，可以指定多个，每个 <code>WORKDIR</code> 只影响它下面的指令，直到遇见下一个 <code>WORKDIR</code> 为止</li>
+<li><code>WORKDIR</code> 可以调用由 <code>ENV</code> 指令定义的变量</li>
+<li><code>WORKDIR</code> 相对路径或者绝对路径：相对路径是相对于上一个 <code>WORKDIR</code> 指令的路径，如果上面没有 <code>WORKDIR</code> 指令，那就是当前 <code>Dockerfile</code> 文件的目录</li>
+</ul>
+<h1 id="volume">VOLUME<a class="anchor" href="#volume">#</a></h1>
+<ul>
+<li>同 <code>docker run -v</code></li>
+<li>用于在镜像中创建一个挂载点目录。之前提到 <code>Volume</code> 有两种类型：挂载主机目录和数据卷。在Dockerfile中只支持docker数据卷，也就是说只能指定容器内的路径，不能指定宿主机的路径</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">VOLUME</span> <span style="color:#e6db74">&lt;mountpoint</span>&gt;<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">VOLUME</span> [<span style="color:#e6db74">&#34;&lt;mountpoint&gt;&#34;</span>]</span></span></code></pre></div><h1 id="expose">EXPOSE<a class="anchor" href="#expose">#</a></h1>
+<ul>
+<li>同 <code>docker run -expose</code> 指定容器中待暴露的端口。比如容器提供的是一个https服务且需要对外提供访问，那就需要指定待暴露443端口，然后在使用此镜像启动容器时搭配 <code>-P</code>  参数才能将待暴露的状态转换为真正暴露的状态，转换的同时443也会转换成一个随机端口，跟 <code>-p:443</code>一个意思</li>
+<li><code>EXPOSE</code> 指令可以一次指定多个端口，例如： <code>EXPOSE 11111/udp 11112/tcp</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">EXPOSE</span> <span style="color:#e6db74">&lt;port&gt;[/&lt;protocol</span>&gt;<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>&lt;port&gt;<span style="color:#f92672">[</span>/&lt;protocol&gt;<span style="color:#f92672">]</span> ...<span style="color:#f92672">]</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>&lt;protocol&gt;用于指定协议类型，如果不指定，默认TCP协议</span></span></code></pre></div><h1 id="env">ENV<a class="anchor" href="#env">#</a></h1>
+<ul>
+<li>同 <code>docker run -e</code></li>
+<li>为镜像定义所需的环境变量，并可被 <code>ENV</code> 指令后面的其它指令所调用。调用格式为 <code>$variable_name</code> 或者 <code>${variable_name}</code></li>
+<li>使用 <code>docker run</code> 启动容器的时候加上 <code>-e</code>  的参数为 <code>variable_name</code> 赋值，可以覆盖 <code>Dockerfile</code> 中 <code>ENV</code> 指令指定的环境变量值。但不会影响到 <code>Dockerfile</code> 中已经引用过此变量的文件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">ENV</span> &lt;key&gt; &lt;value&gt;<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> &lt;key&gt;<span style="color:#f92672">=</span>&lt;value&gt; ...<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 第一种格式一次只能定义一个变量，&lt;key&gt;之后所有内容都会被视为&lt;value&gt;的组成部分</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 第二种格式一次可以定义多个变量，每个变量为一个&#34;=&#34;的键值对，如果&lt;value&gt;中包含空格，可以用反斜线 \ 进行转义，也可以为&lt;value&gt;加引号，另外参数过长时可用反斜线做续行。</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 定义多个变量时，建议使用第二种方式，因为Dockerfile中每一行都是一个镜像层，构建起来比较吃资源</span></span></span></code></pre></div><h1 id="run">RUN<a class="anchor" href="#run">#</a></h1>
+<ul>
+<li>用于指定 <code>docker build</code> 过程中运行的程序，可以是任何命令</li>
+<li><code>RUN</code> 指令后所执行的命令必须在 <code>FROM</code> 指令后的基础镜像中存在才行    </li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">RUN</span> &lt;command&gt;<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;executable&#34;</span>, <span style="color:#e6db74">&#34;param1&#34;</span>, <span style="color:#e6db74">&#34;param2&#34;</span><span style="color:#f92672">]</span></span></span></code></pre></div><p>第一种后边直接跟 <code>shell</code> 命令</p>
+<ul>
+<li><code>linux</code> 上默认 <code>/bin/sh -c</code></li>
+<li><code>windows</code> 上默认 <code>cmd /S /C</code></li>
+</ul>
+<p>第二种类似于函数调用，可将 <code>executable</code> 理解成为可执行文件，后面就是两个参数。</p>
+<ul>
+<li><code>RUN /bin/bash -c 'source $HOME/.bashrc; echo $HOME</code></li>
+<li><code>RUN [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;echo hello&quot;]</code></li>
+</ul>
+<blockquote class='book-hint '>
+<p>注意：多行命令不要写多个RUN，原因是Dockerfile中每一个指令都会建立一层，多少个RUN就构建了多少层镜像，会造成镜像的臃肿、多层，不仅仅增加了构件部署的时间，还容易出错。RUN书写时的换行符是 <code>\</code></p>
+</blockquote><h1 id="cmd">CMD<a class="anchor" href="#cmd">#</a></h1>
+<ul>
+<li>指定启动容器的默认要运行的程序，也就是 <code>PID</code> 为1的进程命令，且其运行结束后容器也会终止。如果不指定，默认是 <code>bash</code></li>
+<li><code>CMD</code> 指令指定的默认程序会被 <code>docker run</code> 命令行指定的参数所覆盖</li>
+<li><code>Dockerfile</code> 中可以存在多个 <code>CMD</code> 指令，但仅最后一个生效。因为一个 <code>docker</code> 容器只能运行一个 <code>PID</code> 为1的进程。</li>
+<li><code>CMD</code> 类似于 <code>RUN</code> 指令，也可以运行任意命令或程序，但是两者的运行时间点不同（ <code>RUN</code> 指令运行在 <code>docker build</code> 的过程中，而 <code>CMD</code> 指令运行在基于新镜像启动容器也就是 <code>docker run</code> 时）</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">CMD</span> command param1 param2<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;executable&#34;</span>,<span style="color:#e6db74">&#34;param1&#34;</span>,<span style="color:#e6db74">&#34;param2&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;param1&#34;</span>,<span style="color:#e6db74">&#34;param2&#34;</span>]</span></span></code></pre></div><p>前两种语法格式同 <code>RUN</code> 指令。第一种用法对于CMD指令基本没有意义，因为它运行的程序PID不为1。
+第三种则需要结合 <code>ENTRYPOINT</code> 指令使用，CMD指令后面的命令作为 <code>ENTRYPOINT</code> 指令的默认参数。如果 <code>docker run</code> 命令行结尾有参数指定，那 <code>CMD</code> 后面的参数不生效。</p>
+<h1 id="entrypoint">ENTRYPOINT<a class="anchor" href="#entrypoint">#</a></h1>
+<ul>
+<li>类似 <code>CMD</code> 指令的功能，用于为容器指定默认运行程序</li>
+<li><code>Dockerfile</code> 中可以存在多个 <code>ENTRYPOINT</code> 指令，但仅最后一个生效</li>
+<li>与CMD区别在于：由 <code>ENTRYPOINT</code> 启动的程序不会被 <code>docker run</code> 命令行指定的参数所覆盖，而且这些命令行参数会被当做参数传递给 <code>ENTRYPOINT</code> 指令指定的程序</li>
+<li><code>docker run</code> 的 <code>--entrypoint</code> 选项的参数可覆盖 <code>ENTRYPOINT</code> 指定的默认程序</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">ENTRYPOINT</span> command param1 param2<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;executable&#34;</span>, <span style="color:#e6db74">&#34;param1&#34;</span>, <span style="color:#e6db74">&#34;param2&#34;</span>]</span></span></code></pre></div><h1 id="user">USER<a class="anchor" href="#user">#</a></h1>
+<ul>
+<li>用于指定 <code>docker build</code> 过程中任何 <code>RUN</code> 、 <code>CMD</code> 等指令的用户名或者 <code>UID</code></li>
+<li>默认情况下容器的运行用户为 <code>root</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&lt;user&gt;[:&lt;group</span>&gt;<span style="color:#f92672">]</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">USER</span> <span style="color:#e6db74">&lt;UID&gt;[:&lt;GID</span>&gt;<span style="color:#f92672">]</span></span></span></code></pre></div><blockquote class='book-hint '>
+<p>实践中UID需要是 <code>/etc/passwd</code> 中某用户的有效UID，否则docker run命令将运行失败</p>
+</blockquote><h1 id="healthcheck">HEALTHCHECK<a class="anchor" href="#healthcheck">#</a></h1>
+<p>顾名思义，健康检查。此指令的就是告诉 <code>docker </code>检查容器是否正常工作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>HEALTHCHECK <span style="color:#f92672">[</span>OPTIONS<span style="color:#f92672">]</span> CMD command
+</span></span><span style="display:flex;"><span>HEALTHCHECK NONE</span></span></code></pre></div><p>HEALTHCHECK 指令定义一个 <code>CMD</code> ，在CMD后面编写一条命令去判断服务运行是否正常。检查肯定不是一次性的，所以 <code>OPTIONS</code> 就是指定检查的频率等</p>
+<ul>
+<li><code>--interval=DURATION</code> （默认值：30s）：每隔多久检查一次，默认30s</li>
+<li><code>--timeout=DURATION</code> （默认值：30s）：超时时长，默认30s</li>
+<li><code>--start-period=DURATION</code> （默认值：0s）：启动健康检查的等待时间。因为容器启动成功时，进程不一定立马就启动成功，过早开始检查就会返回不健康</li>
+<li><code>--retries=N</code> （默认值：3）：如果检查一次失败就返回不健康未免太武断，所以默认三次机会</li>
+</ul>
+<p>CMD 健康检测命令发出时，返回值有三种情况：</p>
+<ul>
+<li>0：成功</li>
+<li>1：不健康</li>
+<li>2：保留，无实际意义。</li>
+</ul>
+<p><code>HEALTHCHECK NONE</code> 就是不做健康检查</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">HEALTHCHECK</span> --interval<span style="color:#f92672">=</span>5m --timeout<span style="color:#f92672">=</span>3s 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CMD</span> curl -f http://localhost/ <span style="color:#f92672">||</span> exit <span style="color:#ae81ff">1</span></span></span></code></pre></div><h1 id="shell">SHELL<a class="anchor" href="#shell">#</a></h1>
+<p>用来指定运行程序默认要使用的 <code>shell</code> 类型，因为 <code>windows</code> 环境默认是 <code>powershell</code> 。此指令一般不会使用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">SHELL</span> [<span style="color:#e6db74">&#34;executable&#34;</span>, <span style="color:#e6db74">&#34;parameters&#34;</span>]</span></span></code></pre></div><h1 id="stopsignal">STOPSIGNAL<a class="anchor" href="#stopsignal">#</a></h1>
+<p>指定发送使容器退出的系统调用信号。 <code>docker stop</code> 之所以能停止容器，就是发送了15的信号给容器内PID为1的进程。此指令一般不会使用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">STOPSIGNAL</span> <span style="color:#e6db74">signal</span></span></span></code></pre></div><h1 id="arg">ARG<a class="anchor" href="#arg">#</a></h1>
+<p><code>ARG</code> 命令同 <code>EVN</code> 类似，也是指定一个变量，但不同的是， <code>ENV</code> 指令配合 <code>-e</code> 参数可以在 <code>docker run</code> 过程中传参，而使用 <code>ARG</code> 指令配合 <code>--build-arg</code> 参数可以在 <code>docker build</code> 过程中传参，方便为不同场景构建不同镜像。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">ARG</span> &lt;name&gt;<span style="color:#f92672">[=</span>&lt;default value&gt;<span style="color:#f92672">]</span></span></span></code></pre></div><h1 id="onbuild">ONBUILD<a class="anchor" href="#onbuild">#</a></h1>
+<ul>
+<li>用于在 <code>Dockerfile</code> 中定义一个触发器</li>
+<li><code>ONBUILD</code> 后面指定的指令在 <code>docker build</code> 时是不会执行，构建完的镜像在被另一个 <code>Dockerfile</code> 文件中 <code>FROM</code> 指令所引用的时才会触发执行</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">ONBUILD</span> <span style="color:#f92672">[</span>INSTRUCTION<span style="color:#f92672">]</span></span></span></code></pre></div><ul>
+<li>几乎任何指令都可以成为触发器指令，但 <code>ONBUILD</code> 不能自我嵌套，且不会触发 <code>FROM</code> 和 <code>MAINTAINER</code> 指令，多数情况是使用 <code>RUN</code> 或者 <code>ADD</code></li>
+<li>在使用 <code>COPY</code> 指令时，应该注意后续引用该镜像的 <code>Dockerfile</code> 的同级目录下是否有被拷贝的文件</li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.7 Docker高级网络配置</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/docker/1.9dockercompose/" class="flex align-center">
+      <span>1.9 Docker Compose</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

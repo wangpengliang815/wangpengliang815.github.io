@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="在容器中管理数据主要有两种方式：
+数据卷（ Volumes ） 挂载主机目录 ( Bind Mounts ) 关于使用：-v or --mount，新手推荐选择 --mount 参数，经验丰富的自由发挥。
+容器数据卷# 数据卷（Volumes）是一个可供一个或多个容器使用的特殊目录它可以绕过 UFS，可以提供很多有用的特性：
+数据卷可以在容器之间共享和重用 对数据卷的修改会立马生效 对数据卷的更新不会影响镜像 数据卷默认会一直存在，即使容器被删除 数据卷的使用，类似 Linux 下对目录或文件进行 mount，镜像中被指定为挂载点的目录中的文件会复制到数据卷中（仅数据卷为空时会复制）
+创建数据卷# [root@wangpengliang ~]# docker volume create myredis myredis查看所有数据卷# [root@wangpengliang ~]# docker volume ls DRIVER VOLUME NAME local myredis查看指定数据卷# [root@wangpengliang ~]# docker volume inspect myredis [ { &#34;CreatedAt&#34;: &#34;2021-05-26T13:35:05&#43;08:00&#34;, &#34;Driver&#34;: &#34;local&#34;, &#34;Labels&#34;: {}, &#34;Mountpoint&#34;: &#34;/var/lib/docker/volumes/myredis/_data&#34;, &#34;Name&#34;: &#34;myredis&#34;, &#34;Options&#34;: {}, &#34;Scope&#34;: &#34;local&#34; } ]启动容器# 使用 docker run 命令时，使用 --mount 标记来将数据卷挂载到容器里。在一次docker run中可以挂载多个数据卷。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="在容器中管理数据主要有两种方式：
+数据卷（ Volumes ） 挂载主机目录 ( Bind Mounts ) 关于使用：-v or --mount，新手推荐选择 --mount 参数，经验丰富的自由发挥。
+容器数据卷# 数据卷（Volumes）是一个可供一个或多个容器使用的特殊目录它可以绕过 UFS，可以提供很多有用的特性：
+数据卷可以在容器之间共享和重用 对数据卷的修改会立马生效 对数据卷的更新不会影响镜像 数据卷默认会一直存在，即使容器被删除 数据卷的使用，类似 Linux 下对目录或文件进行 mount，镜像中被指定为挂载点的目录中的文件会复制到数据卷中（仅数据卷为空时会复制）
+创建数据卷# [root@wangpengliang ~]# docker volume create myredis myredis查看所有数据卷# [root@wangpengliang ~]# docker volume ls DRIVER VOLUME NAME local myredis查看指定数据卷# [root@wangpengliang ~]# docker volume inspect myredis [ { &#34;CreatedAt&#34;: &#34;2021-05-26T13:35:05&#43;08:00&#34;, &#34;Driver&#34;: &#34;local&#34;, &#34;Labels&#34;: {}, &#34;Mountpoint&#34;: &#34;/var/lib/docker/volumes/myredis/_data&#34;, &#34;Name&#34;: &#34;myredis&#34;, &#34;Options&#34;: {}, &#34;Scope&#34;: &#34;local&#34; } ]启动容器# 使用 docker run 命令时，使用 --mount 标记来将数据卷挂载到容器里。在一次docker run中可以挂载多个数据卷。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="在容器中管理数据主要有两种方式：
+数据卷（ Volumes ） 挂载主机目录 ( Bind Mounts ) 关于使用：-v or --mount，新手推荐选择 --mount 参数，经验丰富的自由发挥。
+容器数据卷# 数据卷（Volumes）是一个可供一个或多个容器使用的特殊目录它可以绕过 UFS，可以提供很多有用的特性：
+数据卷可以在容器之间共享和重用 对数据卷的修改会立马生效 对数据卷的更新不会影响镜像 数据卷默认会一直存在，即使容器被删除 数据卷的使用，类似 Linux 下对目录或文件进行 mount，镜像中被指定为挂载点的目录中的文件会复制到数据卷中（仅数据卷为空时会复制）
+创建数据卷# [root@wangpengliang ~]# docker volume create myredis myredis查看所有数据卷# [root@wangpengliang ~]# docker volume ls DRIVER VOLUME NAME local myredis查看指定数据卷# [root@wangpengliang ~]# docker volume inspect myredis [ { &#34;CreatedAt&#34;: &#34;2021-05-26T13:35:05&#43;08:00&#34;, &#34;Driver&#34;: &#34;local&#34;, &#34;Labels&#34;: {}, &#34;Mountpoint&#34;: &#34;/var/lib/docker/volumes/myredis/_data&#34;, &#34;Name&#34;: &#34;myredis&#34;, &#34;Options&#34;: {}, &#34;Scope&#34;: &#34;local&#34; } ]启动容器# 使用 docker run 命令时，使用 --mount 标记来将数据卷挂载到容器里。在一次docker run中可以挂载多个数据卷。">
+  <meta itemprop="wordCount" content="278">
+
+<title>1.5 Docker数据管理 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.5 Docker数据管理</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#创建数据卷">创建数据卷</a></li>
+    <li><a href="#查看所有数据卷">查看所有数据卷</a></li>
+    <li><a href="#查看指定数据卷">查看指定数据卷</a></li>
+    <li><a href="#启动容器">启动容器</a></li>
+    <li><a href="#查看数据卷具体信息">查看数据卷具体信息</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#指定路径挂载">指定路径挂载</a></li>
+    <li><a href="#匿名挂载">匿名挂载</a></li>
+    <li><a href="#具名挂载">具名挂载</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.5 Docker数据管理
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>在容器中管理数据主要有两种方式：</p>
+<ul>
+<li>数据卷（ <code>Volumes</code> ）</li>
+<li>挂载主机目录 ( <code>Bind Mounts</code> )</li>
+</ul>
+<p>关于使用：<code>-v</code> or <code>--mount</code>，新手推荐选择 <code>--mount</code> 参数，经验丰富的自由发挥。</p>
+<h1 id="容器数据卷">容器数据卷<a class="anchor" href="#%e5%ae%b9%e5%99%a8%e6%95%b0%e6%8d%ae%e5%8d%b7">#</a></h1>
+<p>数据卷（<code>Volumes</code>）是一个可供一个或多个容器使用的特殊目录它可以绕过 UFS，可以提供很多有用的特性：</p>
+<ul>
+<li>数据卷可以在容器之间共享和重用</li>
+<li>对数据卷的修改会立马生效</li>
+<li>对数据卷的更新不会影响镜像</li>
+<li>数据卷默认会一直存在，即使容器被删除</li>
+</ul>
+<p>数据卷的使用，类似 Linux 下对目录或文件进行 mount，镜像中被指定为挂载点的目录中的文件会复制到数据卷中（仅数据卷为空时会复制）</p>
+<h2 id="创建数据卷">创建数据卷<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e6%95%b0%e6%8d%ae%e5%8d%b7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker volume create myredis</span>
+</span></span><span style="display:flex;"><span>myredis</span></span></code></pre></div><h2 id="查看所有数据卷">查看所有数据卷<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%89%80%e6%9c%89%e6%95%b0%e6%8d%ae%e5%8d%b7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker volume ls</span>
+</span></span><span style="display:flex;"><span>DRIVER    VOLUME NAME
+</span></span><span style="display:flex;"><span>local     myredis</span></span></code></pre></div><h2 id="查看指定数据卷">查看指定数据卷<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%8c%87%e5%ae%9a%e6%95%b0%e6%8d%ae%e5%8d%b7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[root@wangpengliang ~]</span><span style="color:#960050;background-color:#1e0010">#</span> docker volume inspect myredis
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;CreatedAt&#34;: &#34;2021-05-26T13:35:05+08:00&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;Driver&#34;: &#34;local&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;Labels&#34;: {},
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;Mountpoint&#34;: &#34;/var/lib/docker/volumes/myredis/_data&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;Name&#34;: &#34;myredis&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;Options&#34;: {},
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        &#34;Scope&#34;: &#34;local&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">]</span></span></span></code></pre></div><h2 id="启动容器">启动容器<a class="anchor" href="#%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8">#</a></h2>
+<p>使用 <code>docker run</code>  命令时，使用 <code>--mount</code> 标记来将数据卷挂载到容器里。在一次<code>docker run</code>中可以挂载多个数据卷。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d --name redis -v myredis:/data redis redis-server --appendonly yes  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>docker run -d --name redis --mount source<span style="color:#f92672">=</span>myredis,target<span style="color:#f92672">=</span>/data  redis redis-server --appendonly yes</span></span></code></pre></div><h2 id="查看数据卷具体信息">查看数据卷具体信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%95%b0%e6%8d%ae%e5%8d%b7%e5%85%b7%e4%bd%93%e4%bf%a1%e6%81%af">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ docker inspect redis</span></span></code></pre></div><p>数据卷信息在 <code>Mounts</code> Key 下面</p>
+<p><img src="/images/2021-09-09-14-08-05.png" alt="" /></p>
+<p>删除数据卷</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ docker volume rm myredis</span></span></code></pre></div><p>数据卷是用来持久化数据的，它的生命周期独立于容器，Docker 不会在容器被删除后自动删除数据卷，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的数据卷。如果需要在删除容器的同时移除数据卷。可以在删除容器的时候使用 <code>docker rm -v</code> 命令。</p>
+<p>无主的数据卷可能会占据很多空间，要清理使用以下命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ docker volume prune</span></span></code></pre></div><h1 id="挂载主机目录">挂载主机目录<a class="anchor" href="#%e6%8c%82%e8%bd%bd%e4%b8%bb%e6%9c%ba%e7%9b%ae%e5%bd%95">#</a></h1>
+<p>挂载主机目录指挂载一个主机目录作为数据卷（<code>Bind Mounts</code>）。</p>
+<p>使用 <code>--mount</code>  标记可以指定挂载一个本地主机的目录到容器中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d --name redis -v /data/docker/redis/data:/data redis redis-server --appendonly yes  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>docker run -d --name redis --mount type<span style="color:#f92672">=</span>bind,source<span style="color:#f92672">=</span>/data/docker/redis/data,target<span style="color:#f92672">=</span>/data redis redis-server --appendonly yes</span></span></code></pre></div><p>上面命令加载宿主机的<code>/data/docker/redis/data</code> 目录到容器的 <code>/data</code>目录。</p>
+<blockquote class='book-hint '>
+<p>注意：本地目录路径必须是绝对路径，使用 <code>-v</code> 参数时如果本地目录不存在 Docker 会自动创建一个目录，使用<code>--mount</code>参数时如果本地目录不存在，Docker 会报错</p>
+</blockquote><p>Docker 挂载主机目录的默认权限是读写，也可以通过增加 <code>readonly</code> 指定为只读：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d --name redis -v /data/docker/redis/data:/data:ro redis redis-server --appendonly yes  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or</span>
+</span></span><span style="display:flex;"><span>docker run -d --name redis6 --mount type<span style="color:#f92672">=</span>bind,source<span style="color:#f92672">=</span>/data/docker/redis/data,target<span style="color:#f92672">=</span>/data,ro redis redis-server --appendonly yes</span></span></code></pre></div><p>加了<code>readonly</code>之后，就挂载为只读了。如果在容器内 <code>/bin</code> 目录新建文件，会显示如下错误</p>
+<p>加了 <code>readonly </code>之后，就挂载为只读了。如果在容器内 <code>/bin</code> 目录新建文件，会显示如下错误：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Read-only file system</span></span></code></pre></div><p><strong>简拼</strong></p>
+<ul>
+<li><code>ro</code> ：ReadOnly</li>
+<li><code>rw</code> ：ReadAndWrite</li>
+</ul>
+<h1 id="挂载方式判定">挂载方式判定<a class="anchor" href="#%e6%8c%82%e8%bd%bd%e6%96%b9%e5%bc%8f%e5%88%a4%e5%ae%9a">#</a></h1>
+<ul>
+<li><code>-v 容器内路径</code>  匿名挂载</li>
+<li><code>-v 卷名:容器内路径</code> 具名挂载</li>
+<li><code>-v /宿主机路径:容器内路径</code>   指定路径挂载</li>
+</ul>
+<h2 id="指定路径挂载">指定路径挂载<a class="anchor" href="#%e6%8c%87%e5%ae%9a%e8%b7%af%e5%be%84%e6%8c%82%e8%bd%bd">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -it -v <span style="color:#f92672">[</span>本地路径<span style="color:#f92672">]</span>:<span style="color:#f92672">[</span>容器内路径<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>docker run -d --name redis  -v /data/docker/redis/data:/data redis redis-server /etc/redis/redis.conf --appendonly yes   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看容器详细信息</span>
+</span></span><span style="display:flex;"><span>docker inspect redis</span></span></code></pre></div><p><img src="/images/2021-09-09-14-10-07.png" alt="" /></p>
+<h2 id="匿名挂载">匿名挂载<a class="anchor" href="#%e5%8c%bf%e5%90%8d%e6%8c%82%e8%bd%bd">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d --name redis -v /data  redis redis-server --appendonly yes   
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看容器详细信息</span>
+</span></span><span style="display:flex;"><span>docker inspect redis</span></span></code></pre></div><p><img src="/images/2021-09-09-14-11-22.png" alt="" /></p>
+<h2 id="具名挂载">具名挂载<a class="anchor" href="#%e5%85%b7%e5%90%8d%e6%8c%82%e8%bd%bd">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d --name redis -v redis:/data redis redis-server --appendonly yes</span></span></code></pre></div><blockquote class='book-hint '>
+<p>推荐使用具名挂载因为方便后期查找或其他操作</p>
+</blockquote><h1 id="数据卷容器">数据卷容器 <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%8d%b7%e5%ae%b9%e5%99%a8">#</a></h1>
+<p>定义一个容器（挂载了数据卷的），其他容器通过挂载这个容器(父容器)实现数据共享，挂载数据卷的容器，称为数据卷容器（ <code>--volumes-from</code>）。通过数据卷容器可以实现容器间的数据共享。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -it/ -d  -p 主机端口:容器端口 --name<span style="color:#f92672">=</span>容器名称 --volumes-from 数据卷容器ID/数据卷容器名称 生成数据卷容器的镜像ID/镜像名称<span style="color:#f92672">[</span>:版本号<span style="color:#f92672">]</span></span></span></code></pre></div><blockquote class='book-hint '>
+<p>注：这里数据共享的方式：<strong>是拷贝不是共享</strong>，这就意味着哪怕父数据卷容器被停止，子容器数据还是存在的</p>
+</blockquote></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/docker/1.4docker%E4%BB%93%E5%BA%93/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.4 Docker仓库</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="flex align-center">
+      <span>1.6 Docker容器网络模式</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#创建数据卷">创建数据卷</a></li>
+    <li><a href="#查看所有数据卷">查看所有数据卷</a></li>
+    <li><a href="#查看指定数据卷">查看指定数据卷</a></li>
+    <li><a href="#启动容器">启动容器</a></li>
+    <li><a href="#查看数据卷具体信息">查看数据卷具体信息</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#指定路径挂载">指定路径挂载</a></li>
+    <li><a href="#匿名挂载">匿名挂载</a></li>
+    <li><a href="#具名挂载">具名挂载</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

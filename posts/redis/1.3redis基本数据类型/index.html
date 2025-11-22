@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Redis基本数据类型
+String字符串# Redis 字符串是字节序列。Redis 字符串是二进制安全的，意味着他们有一个已知的长度没有任何特殊字符终止，所以可以存储任何东西，512M 为上限，主要的还是操作键值对。String的数据结构是简单的 Key-Value模型，Value可以是字符串，也可以是数字。
+set key value# 普通添加
+127.0.0.1:6379 set name wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34;setex key seconds value# 添加时设置过期时间
+127.0.0.1:6379 setex name 30 wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34;ttl# 检查key还有多少秒过期
+127.0.0.1:6379 setex name 30 wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34; # 查看距离过期时间还有多少秒 127.0.0.1:6379 ttl name (integer) 18 127.0.0.1:6379 &gt;setnx key value# 如果key不存在，则创建一个key，如果key存在，则创建失败并返回0；setnx 在分布式锁中经常使用到
+# 设置key=name value=wangpengliang 127.0.0.1:6379 set name wangpengliang OK # 检查是否设置成功 127.0.0.1:6379 get name &#34;wangpengliang&#34; # 使用setnx设置key=name:因为已存在所以创建失败返回0 127.0.0.1:6379 setnx name wangpengliang (integer) 0 # 清空数据库 127.0.0.1:6379 FLUSHDB OK # 重新使用setnx设置key=name:返回1说明创建成功 127.0.0.1:6379 setnx name wangpengliang (integer) 1 # 检查是否设置成功 127.0.0.1:6379 get name &#34;wangpengliang&#34;get key# 获取指定key的value
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="Redis基本数据类型
+String字符串# Redis 字符串是字节序列。Redis 字符串是二进制安全的，意味着他们有一个已知的长度没有任何特殊字符终止，所以可以存储任何东西，512M 为上限，主要的还是操作键值对。String的数据结构是简单的 Key-Value模型，Value可以是字符串，也可以是数字。
+set key value# 普通添加
+127.0.0.1:6379 set name wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34;setex key seconds value# 添加时设置过期时间
+127.0.0.1:6379 setex name 30 wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34;ttl# 检查key还有多少秒过期
+127.0.0.1:6379 setex name 30 wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34; # 查看距离过期时间还有多少秒 127.0.0.1:6379 ttl name (integer) 18 127.0.0.1:6379 &gt;setnx key value# 如果key不存在，则创建一个key，如果key存在，则创建失败并返回0；setnx 在分布式锁中经常使用到
+# 设置key=name value=wangpengliang 127.0.0.1:6379 set name wangpengliang OK # 检查是否设置成功 127.0.0.1:6379 get name &#34;wangpengliang&#34; # 使用setnx设置key=name:因为已存在所以创建失败返回0 127.0.0.1:6379 setnx name wangpengliang (integer) 0 # 清空数据库 127.0.0.1:6379 FLUSHDB OK # 重新使用setnx设置key=name:返回1说明创建成功 127.0.0.1:6379 setnx name wangpengliang (integer) 1 # 检查是否设置成功 127.0.0.1:6379 get name &#34;wangpengliang&#34;get key# 获取指定key的value">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="Redis基本数据类型
+String字符串# Redis 字符串是字节序列。Redis 字符串是二进制安全的，意味着他们有一个已知的长度没有任何特殊字符终止，所以可以存储任何东西，512M 为上限，主要的还是操作键值对。String的数据结构是简单的 Key-Value模型，Value可以是字符串，也可以是数字。
+set key value# 普通添加
+127.0.0.1:6379 set name wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34;setex key seconds value# 添加时设置过期时间
+127.0.0.1:6379 setex name 30 wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34;ttl# 检查key还有多少秒过期
+127.0.0.1:6379 setex name 30 wangpengliang OK 127.0.0.1:6379 get name &#34;wangpengliang&#34; # 查看距离过期时间还有多少秒 127.0.0.1:6379 ttl name (integer) 18 127.0.0.1:6379 &gt;setnx key value# 如果key不存在，则创建一个key，如果key存在，则创建失败并返回0；setnx 在分布式锁中经常使用到
+# 设置key=name value=wangpengliang 127.0.0.1:6379 set name wangpengliang OK # 检查是否设置成功 127.0.0.1:6379 get name &#34;wangpengliang&#34; # 使用setnx设置key=name:因为已存在所以创建失败返回0 127.0.0.1:6379 setnx name wangpengliang (integer) 0 # 清空数据库 127.0.0.1:6379 FLUSHDB OK # 重新使用setnx设置key=name:返回1说明创建成功 127.0.0.1:6379 setnx name wangpengliang (integer) 1 # 检查是否设置成功 127.0.0.1:6379 get name &#34;wangpengliang&#34;get key# 获取指定key的value">
+  <meta itemprop="wordCount" content="2241">
+
+<title>1.3 Redis基本数据类型 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.3 Redis基本数据类型</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#set-key-value"><code>set key value</code></a></li>
+    <li><a href="#setex-key-seconds-value"><code>setex key seconds value</code></a></li>
+    <li><a href="#ttl"><code>ttl</code></a></li>
+    <li><a href="#setnx-key-value"><code>setnx key value</code></a></li>
+    <li><a href="#get-key"><code>get key</code></a></li>
+    <li><a href="#msetmget"><code>mset/mget</code></a></li>
+    <li><a href="#incr"><code>incr</code></a></li>
+    <li><a href="#incrby"><code>incrby</code></a></li>
+    <li><a href="#decr"><code>decr</code></a></li>
+    <li><a href="#decrby"><code>decrby</code></a></li>
+    <li><a href="#append"><code>append</code></a></li>
+    <li><a href="#strlen"><code>strlen</code></a></li>
+    <li><a href="#getrange"><code>getrange</code></a></li>
+    <li><a href="#setrange"><code>setrange</code></a></li>
+    <li><a href="#del"><strong>del</strong></a></li>
+    <li><a href="#对象方式设置">对象方式设置</a></li>
+    <li><a href="#getset"><code>getset</code></a></li>
+    <li><a href="#应用场景">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#hset"><code>hset</code></a></li>
+    <li><a href="#hget"><code>hget</code></a></li>
+    <li><a href="#hmset"><code>hmset</code></a></li>
+    <li><a href="#hmget"><code>hmget</code></a></li>
+    <li><a href="#hexists"><code>hexists</code></a></li>
+    <li><a href="#hdel"><code>hdel</code></a></li>
+    <li><a href="#hgetall"><code>hgetall</code></a></li>
+    <li><a href="#hvals"><code>hvals</code></a></li>
+    <li><a href="#hkeys"><code>hkeys</code></a></li>
+    <li><a href="#hlen"><code>hlen</code></a></li>
+    <li><a href="#hincrby-key-field-value"><code>hincrby key field value</code></a></li>
+    <li><a href="#hsetnx-key-field-value"><code>hsetnx key field value</code></a></li>
+    <li><a href="#应用场景-1">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#lpush-key-value"><code>lpush key value</code></a></li>
+    <li><a href="#rpush-key-value"><code>rpush key value</code></a></li>
+    <li><a href="#lpop-key"><code>lpop key</code></a></li>
+    <li><a href="#rpop-key"><code>rpop key</code></a></li>
+    <li><a href="#lrange-key-start-end"><code>lrange key start end</code></a></li>
+    <li><a href="#llen-key"><code>llen key</code></a></li>
+    <li><a href="#lindex-key-indexnumber"><code>lindex key indexnumber</code></a></li>
+    <li><a href="#lset-key-indexnumber-value"><code>lset key indexnumber value</code></a></li>
+    <li><a href="#lrem-key-count-value"><code>lrem key count value</code></a></li>
+    <li><a href="#ltrim-list-startindex-endindex"><code>ltrim list startIndex endIndex</code></a></li>
+    <li><a href="#rpoplpush-source-destination"><code>rpoplpush source destination</code></a></li>
+    <li><a href="#linsert-key-beforeafter-pivot-value"><code>linsert key BEFORE|AFTER pivot value</code></a></li>
+    <li><a href="#应用场景-2">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#sadd-key-value"><code>sadd key value</code></a></li>
+    <li><a href="#scard-key"><code>scard key</code></a></li>
+    <li><a href="#smembers-key"><code>smembers key</code></a></li>
+    <li><a href="#sismember-key-value"><code>sismember key value</code></a></li>
+    <li><a href="#srem-key-value"><code>srem key value</code></a></li>
+    <li><a href="#srandmember-key-nums"><code>srandmember key nums</code></a></li>
+    <li><a href="#spop-key"><code>spop key</code></a></li>
+    <li><a href="#smove-source-destination-member"><code>smove source destination member</code></a></li>
+    <li><a href="#sdiff-key1-key2"><code>sdiff key1 key2</code></a></li>
+    <li><a href="#sinter-key1-key2"><code>sinter key1 key2</code></a></li>
+    <li><a href="#sunion-key1-key2"><code>sunion key1 key2</code></a></li>
+    <li><a href="#应用场景-3">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#zadd-key-score-value"><code>zadd key score value</code></a></li>
+    <li><a href="#zrange-key-start-end"><code>zrange key start end</code></a></li>
+    <li><a href="#zrange-key-0--1-withscores"><code>zrange key 0 -1 withscores</code></a></li>
+    <li><a href="#zremrangebyscore-key-start-end"><code>zremrangebyscore key start end</code></a></li>
+    <li><a href="#zrangebyscore-key-min-max"><code>zrangebyscore key min max</code></a></li>
+    <li><a href="#srandmember-key-nums-1"><code>srandmember key nums</code></a></li>
+    <li><a href="#zrem-key-value"><code>zrem key value</code></a></li>
+    <li><a href="#zcard-key"><code>zcard key</code></a></li>
+    <li><a href="#count-key-min-max"><code>count key min max</code></a></li>
+    <li><a href="#应用场景-4">应用场景</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.3 Redis基本数据类型
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>Redis基本数据类型</p>
+<!-- more -->
+<h1 id="string字符串">String字符串<a class="anchor" href="#string%e5%ad%97%e7%ac%a6%e4%b8%b2">#</a></h1>
+<p>Redis 字符串是字节序列。Redis 字符串是二进制安全的，意味着他们有一个已知的长度没有任何特殊字符终止，所以可以存储任何东西，<code>512M</code> 为上限，主要的还是操作键值对。String的数据结构是简单的 <code>Key-Value</code>模型，Value可以是字符串，也可以是数字。</p>
+<h2 id="set-key-value"><code>set key value</code><a class="anchor" href="#set-key-value">#</a></h2>
+<p>普通添加</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379  set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379  get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="setex-key-seconds-value"><code>setex key seconds value</code><a class="anchor" href="#setex-key-seconds-value">#</a></h2>
+<p>添加时设置过期时间</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379  setex name <span style="color:#ae81ff">30</span> wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379  get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="ttl"><code>ttl</code><a class="anchor" href="#ttl">#</a></h2>
+<p>检查key还有多少秒过期</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379  setex  name <span style="color:#ae81ff">30</span> wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379  get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看距离过期时间还有多少秒</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 ttl name
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">18</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 &gt;</span></span></code></pre></div><h2 id="setnx-key-value"><code>setnx key value</code><a class="anchor" href="#setnx-key-value">#</a></h2>
+<p>如果key不存在，则创建一个key，如果key存在，则创建失败并返回0；<code>setnx</code> 在分布式锁中经常使用到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置key=name value=wangpengliang</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 检查是否设置成功</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用setnx设置key=name:因为已存在所以创建失败返回0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 setnx name wangpengliang
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 清空数据库</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 FLUSHDB
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重新使用setnx设置key=name:返回1说明创建成功</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 setnx name wangpengliang
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 检查是否设置成功</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="get-key"><code>get key</code><a class="anchor" href="#get-key">#</a></h2>
+<p>获取指定key的value</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="msetmget"><code>mset/mget</code><a class="anchor" href="#msetmget">#</a></h2>
+<p>用于同时设置/获取一个或多个键值对，批量操作。同时设置多个值，如果其中有一个存在，那么就都创建失败；要么一起成功，要么一起失败，这是一个<strong>原子性操作</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 使用mset同时设置多个k-v</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 mset name1 wangpengliang name2 lizimeng name3 shijiangtao
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用met同时读取多个k-v</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 mget name1 name2 name3
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;lizimeng&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;shijiangtao&#34;</span></span></span></code></pre></div><h2 id="incr"><code>incr</code><a class="anchor" href="#incr">#</a></h2>
+<p>让当前键值以 1 的数量递增，并返回递增后的值。相当于C#中的 <code>i++</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=10</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 set num <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get num
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=value+1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 incr num
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">11</span></span></span></code></pre></div><h2 id="incrby"><code>incrby</code><a class="anchor" href="#incrby">#</a></h2>
+<p>可以指定参数一次增加的数值，并返回递增后的值。<strong>设置步长的方式递增</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=10</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 set num <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get num
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=value+2(2是步长)</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 incrby num <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">12</span></span></span></code></pre></div><h2 id="decr"><code>decr</code><a class="anchor" href="#decr">#</a></h2>
+<p>让当前键值以 1 的数量递减，并返回递减后的值。相当于C#中的 <code>i--</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=10</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 set num <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get num
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=value-1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 decr num
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">9</span></span></span></code></pre></div><h2 id="decrby"><code>decrby</code><a class="anchor" href="#decrby">#</a></h2>
+<p>可以指定参数一次减少的数值，并返回递减后的值。<strong>设置步长的方式递减</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get num
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=value-2(2是步长)</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 incrby num <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">8</span></span></span></code></pre></div><h2 id="append"><code>append</code><a class="anchor" href="#append">#</a></h2>
+<p>向键值的末尾追加 value。如果键不存在则将该键的值设置为 value。返回值是追加后字符串的总长度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 append name wang
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wang&#34;</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name wang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wang&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 append name pengliang
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">13</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="strlen"><code>strlen</code><a class="anchor" href="#strlen">#</a></h2>
+<p>获取字符串长度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 strlen name
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">13</span></span></span></code></pre></div><h2 id="getrange"><code>getrange</code><a class="anchor" href="#getrange">#</a></h2>
+<p>截取指定索引的字符串，相当于 <code>Substring</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 getrange name <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wang&#34;</span></span></span></code></pre></div><h2 id="setrange"><code>setrange</code><a class="anchor" href="#setrange">#</a></h2>
+<p>从指定索引开始替换字符串</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name hello
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 setrange name <span style="color:#ae81ff">0</span> world
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;world&#34;</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name <span style="color:#e6db74">&#34;hello java&#34;</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello java&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 setrange name <span style="color:#ae81ff">6</span> <span style="color:#e6db74">&#34;csharp&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello csharp&#34;</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name <span style="color:#e6db74">&#34;hello csharp&#34;</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello csharp&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 setrange name <span style="color:#ae81ff">6</span> <span style="color:#e6db74">&#34;java&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">12</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello javarp&#34;</span></span></span></code></pre></div><p><strong>注意</strong>：命令会确保字符串足够长以便将 <code>value</code> 设置在指定的偏移量上，如果给定 <code>key</code> 原来储存的字符串长度比偏移量小。<strong>比如</strong>：字符串只有 <code>5</code> 个字符长，但你设置的 <code>offset</code> 是 <code>10</code> ，那么原字符和偏移量之间的空白将用零字节(zerobytes, <code>&quot;\x00&quot;</code> )来填充。</p>
+<h2 id="del"><strong>del</strong><a class="anchor" href="#del">#</a></h2>
+<p>根据key删除一个或者多个元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 del name
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 mset k1 wangpengliang k2 lizimeng
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 mget k1 k2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;lizimeng&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 del k1 k2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 mget k1 k2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span></span></span></code></pre></div><h2 id="对象方式设置">对象方式设置<a class="anchor" href="#%e5%af%b9%e8%b1%a1%e6%96%b9%e5%bc%8f%e8%ae%be%e7%bd%ae">#</a></h2>
+<p>设置一个user:1对象，值为Json字符串来保存一个对象；<code>set user:1 {name:zhangsan,age:3}</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=10</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 set num <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get num
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置key=num value=value-1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 decr num
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">9</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 mset user:1:name wangpengliang user:1:age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 mget user:1:name user:1:age
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span></span></span></code></pre></div><h2 id="getset"><code>getset</code><a class="anchor" href="#getset">#</a></h2>
+<p>先 <code>get</code> 然后再 <code>set</code>
+如果设置的键不存在值 =&gt; 则设置值，并且返回 <code>nil</code>
+如果设置的键存在值，则返回该值，并设置新的值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 getset name wangpengliang
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 get name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 getset name lizimeng
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:63</span></span></code></pre></div><h2 id="应用场景">应用场景<a class="anchor" href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af">#</a></h2>
+<ul>
+<li>计数器—点赞,视频播放量,每播放一次就+1</li>
+<li>统计多单位的数量</li>
+<li>粉丝数</li>
+<li>对象缓存存储</li>
+</ul>
+<h1 id="hash散列表">Hash散列表<a class="anchor" href="#hash%e6%95%a3%e5%88%97%e8%a1%a8">#</a></h1>
+<p><img src="/images/2021-09-03-16-29-45.png" alt="" /></p>
+<p>Redis 的哈希是键值对的集合。Redis 的哈希值是字符串字段和字符串值之间的映射，因此它们被用来表示对象，还有用户信息之类的，经常变动的信息。</p>
+<h2 id="hset"><code>hset</code><a class="anchor" href="#hset">#</a></h2>
+<p>存储一个哈希键值对的集合。格式：<code>hset key field value</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hget user name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hget user age
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;25&#34;</span></span></span></code></pre></div><h2 id="hget"><code>hget</code><a class="anchor" href="#hget">#</a></h2>
+<p>获取一个哈希键的值。格式：<code>hget key field</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hget user name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="hmset"><code>hmset</code><a class="anchor" href="#hmset">#</a></h2>
+<p>存储一个或多个哈希是键值对的集合。格式：<code>hmset key field1 value1 …fieldN keyN</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user1 name wangpengliang age <span style="color:#ae81ff">25</span> address beijing
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hmget user1 name age address
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;beijing&#34;</span></span></span></code></pre></div><h2 id="hmget"><code>hmget</code><a class="anchor" href="#hmget">#</a></h2>
+<p>获取多个指定的键的值。格式：<code>hmget key field1 … fieldN</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hget user name
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="hexists"><code>hexists</code><a class="anchor" href="#hexists">#</a></h2>
+<p>判断哈希表中的字段名是否存在 如果存在返回 1 否则返回 0。格式：<code>hexists key field</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user1 name wangpengliang age <span style="color:#ae81ff">25</span> address beijing
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hmget user1 name age address
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;beijing&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hexists user1 name
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hexists user1 aa
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span></span></span></code></pre></div><h2 id="hdel"><code>hdel</code><a class="anchor" href="#hdel">#</a></h2>
+<p>删除一个或多个字段。格式：<code>hdel key field</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hmget user name age
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hdel user name
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hmget user name age
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span></span></span></code></pre></div><h2 id="hgetall"><code>hgetall</code><a class="anchor" href="#hgetall">#</a></h2>
+<p>获取一个哈希是键值对的集合。 格式：<code>hgetall key</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hgetall user
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;age&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;name&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="hvals"><code>hvals</code><a class="anchor" href="#hvals">#</a></h2>
+<p>只返回字段值。 格式：<code>hvals key</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hvals user
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;25&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;wangpengliang&#34;</span></span></span></code></pre></div><h2 id="hkeys"><code>hkeys</code><a class="anchor" href="#hkeys">#</a></h2>
+<p>只返回字段名。 格式：<code>hkeys key</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hkeys user
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;age&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;name&#34;</span></span></span></code></pre></div><h2 id="hlen"><code>hlen</code><a class="anchor" href="#hlen">#</a></h2>
+<p>返回 key 的 hash 的元素个数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hmset user name wangpengliang age <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hlen user
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span></span></span></code></pre></div><h2 id="hincrby-key-field-value"><code>hincrby key field value</code><a class="anchor" href="#hincrby-key-field-value">#</a></h2>
+<p>指定增量value</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hset test num <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hget test num
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hincrby test num <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">12</span></span></span></code></pre></div><h2 id="hsetnx-key-field-value"><code>hsetnx key field value</code><a class="anchor" href="#hsetnx-key-field-value">#</a></h2>
+<p>如果该键不存在就创建，如果该键存在就创建失败</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 hsetnx test num <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 hsetnx test num <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span></span></span></code></pre></div><h2 id="应用场景-1">应用场景<a class="anchor" href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af-1">#</a></h2>
+<ul>
+<li>主要用于存储部分变更数据，比如存储用户信息等等</li>
+</ul>
+<h1 id="list链表">List链表<a class="anchor" href="#list%e9%93%be%e8%a1%a8">#</a></h1>
+<p>Redis 的链表是简单的字符串列表，可以添加元素到 Redis 列表的头部或尾部。
+<code>Lpush</code>：表示向链表的左添加，也就是向链表的头添加
+<code>Rpush</code>：表示向链表的右添加，也就是向链表的尾添加</p>
+<h2 id="lpush-key-value"><code>lpush key value</code><a class="anchor" href="#lpush-key-value">#</a></h2>
+<p>向链表左侧添加(头插法)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 lpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lpush keys three
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;three&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span></span></span></code></pre></div><h2 id="rpush-key-value"><code>rpush key value</code><a class="anchor" href="#rpush-key-value">#</a></h2>
+<p>向链表右侧添加(尾插法)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys three
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;three&#34;</span></span></span></code></pre></div><h2 id="lpop-key"><code>lpop key</code><a class="anchor" href="#lpop-key">#</a></h2>
+<p>从左边移出一个元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys three
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;three&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lpop keys
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;three&#34;</span></span></span></code></pre></div><h2 id="rpop-key"><code>rpop key</code><a class="anchor" href="#rpop-key">#</a></h2>
+<p>从右边移出一个元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys three
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpop keys
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;three&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span></span></span></code></pre></div><h2 id="lrange-key-start-end"><code>lrange key start end</code><a class="anchor" href="#lrange-key-start-end">#</a></h2>
+<p>命令将返回索引从 <code>start</code> 到 <code>stop</code>  之间的所有元素。Redis 的列表起始索引为 0。如果要获取全部的元素：<code>lrange key 0 -1</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span></span></span></code></pre></div><h2 id="llen-key"><code>llen key</code><a class="anchor" href="#llen-key">#</a></h2>
+<p>返回链表中元素的个数 相当于关系型数据库中 <code>select count(*)</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 llen keys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span></span></span></code></pre></div><h2 id="lindex-key-indexnumber"><code>lindex key indexnumber</code><a class="anchor" href="#lindex-key-indexnumber">#</a></h2>
+<p>lindex 命令用来返回指定索引的元素，索引从 0 开始，如果是负数表示从右边开始计算的索引，最右边元素的索引是-1。如果要将列表类型当做数组来用，lindex 命令是必不可少的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys three
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;three&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lindex keys <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;three&#34;</span></span></span></code></pre></div><h2 id="lset-key-indexnumber-value"><code>lset key indexnumber value</code><a class="anchor" href="#lset-key-indexnumber-value">#</a></h2>
+<p>它会将索引为 index的元素赋值为 value，原来的值会被覆盖。如果该列表不存在就会报错。所以使用这个命令之前先使用<code>exists</code>判断一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys one
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys two
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys three
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;three&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lset keys <span style="color:#ae81ff">2</span> twotwo
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;twotwo&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lset keys <span style="color:#ae81ff">10</span>  twotwo
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>error<span style="color:#f92672">)</span> ERR index out of range</span></span></code></pre></div><h2 id="lrem-key-count-value"><code>lrem key count value</code><a class="anchor" href="#lrem-key-count-value">#</a></h2>
+<p>移除key链表中``count` 个元素的value值，精确匹配，如果链表中有多个重复的值，这里的count指的是可以删除多个相同key的值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys d
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrem keys <span style="color:#ae81ff">2</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span></span></span></code></pre></div><h2 id="ltrim-list-startindex-endindex"><code>ltrim list startIndex endIndex</code><a class="anchor" href="#ltrim-list-startindex-endindex">#</a></h2>
+<p>通过下标截取指定的长度，这个时候List已经改变了，只剩下截断的元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 clear
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys d
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 ltrim keys <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;d&#34;</span></span></span></code></pre></div><h2 id="rpoplpush-source-destination"><code>rpoplpush source destination</code><a class="anchor" href="#rpoplpush-source-destination">#</a></h2>
+<p>移除当前的source链表中的最后一个元素，并且将该元素移动到<code>destination</code>链表当中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys1 a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys1 b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys1 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpoplpush keys1 keys2
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys1 <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys2 <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span></span></span></code></pre></div><h2 id="linsert-key-beforeafter-pivot-value"><code>linsert key BEFORE|AFTER pivot value</code><a class="anchor" href="#linsert-key-beforeafter-pivot-value">#</a></h2>
+<p>在Key列表的指定元素的前/后面插入元素value</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 rpush keys1 a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys1 b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 rpush keys1 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 linsert keys1 before b a1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>empty array<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys1 <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 linsert keys1 after b b1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 lrange keys1 <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b1&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span></span></span></code></pre></div><ul>
+<li>List是一个链表，before node after，left ，right都可以插入值</li>
+<li>如果key不存在，就创建新的链表</li>
+<li>如果key存在就创建新的值</li>
+<li>如果移除了所有的值，空链表，也就代表不存在</li>
+<li>在两边插入或者改动值，效率最高，中间元素相对来说效率会低一点</li>
+</ul>
+<h2 id="应用场景-2">应用场景<a class="anchor" href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af-2">#</a></h2>
+<ul>
+<li>消息队列：利用 <code>List</code> 的<code>Push</code> 操作，将任务存在 <code>List</code> 中，然后工作线程再用<code>POP</code> 操作将任务取出进行执行。Redis还提供了操作List中某一段的API，可以直接查询，删除 List 中某一段的元素。</li>
+<li>消息排队：消息队列（Lpush、Rpop）、栈（Lpush、Lpop）使用 <code>List</code> 可以构建队列系统，使用 <code>sorted set</code> 甚至可以构建有优先级的队列系统。</li>
+</ul>
+<h1 id="set集合">Set集合<a class="anchor" href="#set%e9%9b%86%e5%90%88">#</a></h1>
+<p>Redis 的集合是字符串的无序集合。但在Set集合当中，是不允许有重复的。Set是通过hash table实现的，可以进行添加、删除和查找。对集合可以取 <strong>并集</strong>，<strong>交集</strong>，<strong>差集</strong>。</p>
+<h2 id="sadd-key-value"><code>sadd key value</code><a class="anchor" href="#sadd-key-value">#</a></h2>
+<p>添加一个 string 元素到key对应的 set 集合中， 成功返回 1,如果元素已经在集合中返回 0</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span></span></span></code></pre></div><h2 id="scard-key"><code>scard key</code><a class="anchor" href="#scard-key">#</a></h2>
+<p>返回 set 的元素个数，如果 set 是空或者key不存在返回 0</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 scard keys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">3</span></span></span></code></pre></div><h2 id="smembers-key"><code>smembers key</code><a class="anchor" href="#smembers-key">#</a></h2>
+<p>返回 key 对应 set 的所有元素，结果是无序的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span></span></span></code></pre></div><h2 id="sismember-key-value"><code>sismember key value</code><a class="anchor" href="#sismember-key-value">#</a></h2>
+<p>判断 value 是否在 set 中，存在返回1，0表示不存在或者key不存在</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sismember keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sismember keys d
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span></span></span></code></pre></div><h2 id="srem-key-value"><code>srem key value</code><a class="anchor" href="#srem-key-value">#</a></h2>
+<p>从 key 对应 set 中移除给定元素，成功返回1，如果 value 在集合中不存在或者key不存在返回 0</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 srem keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 srem keys g
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span></span></span></code></pre></div><h2 id="srandmember-key-nums"><code>srandmember key nums</code><a class="anchor" href="#srandmember-key-nums">#</a></h2>
+<p>从key集合中随机抽取nums个元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 srandmember keys <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span></span></span></code></pre></div><h2 id="spop-key"><code>spop key</code><a class="anchor" href="#spop-key">#</a></h2>
+<p>随机删除一些key集合中的元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 spop keys
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span></span></span></code></pre></div><h2 id="smove-source-destination-member"><code>smove source destination member</code><a class="anchor" href="#smove-source-destination-member">#</a></h2>
+<p>将原集合source中的member元素移动到destination集合中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smove keys keys2 a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 smembers keys2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span></span></span></code></pre></div><h2 id="sdiff-key1-key2"><code>sdiff key1 key2</code><a class="anchor" href="#sdiff-key1-key2">#</a></h2>
+<p>取出key1中与key2集合的不同元素，<strong>差集</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 g
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 f
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sdiff keys1 keys2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span></span></span></code></pre></div><h2 id="sinter-key1-key2"><code>sinter key1 key2</code><a class="anchor" href="#sinter-key1-key2">#</a></h2>
+<p>取key1与key2两个集合中相同的元素，<strong>交集</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 g
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 f
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sinter keys1 keys2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span></span></span></code></pre></div><h2 id="sunion-key1-key2"><code>sunion key1 key2</code><a class="anchor" href="#sunion-key1-key2">#</a></h2>
+<p>将key1与key2两个集合中的元素合在一起，<strong>并集</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys1 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 g
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sadd keys2 f
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 sunion keys1 keys2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;g&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;f&#34;</span></span></span></code></pre></div><h2 id="应用场景-3">应用场景<a class="anchor" href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af-3">#</a></h2>
+<ul>
+<li>微博、用户将所有关注的人都放入到一个set集合当中，将它的粉丝也放在一个集合中</li>
+<li>共同关注、共同爱好、二度好友、QQ的好友推荐（六度分割理论）</li>
+</ul>
+<h1 id="sortedset-有序集合-zset">SortedSet( 有序集合) zset<a class="anchor" href="#sortedset-%e6%9c%89%e5%ba%8f%e9%9b%86%e5%90%88-zset">#</a></h1>
+<p>Redis 的有序集合类似于 Redis 的集合，字符串不重复的集合；zset是一个有序集合，每一个成员有一个分数与之对应，成员不可以重复，但是分数是可以重复的，zset会自动用分数对成员进行排序。</p>
+<h2 id="zadd-key-score-value"><code>zadd key score value</code><a class="anchor" href="#zadd-key-score-value">#</a></h2>
+<p>将一个或多个 value 及其 socre 加入到 set 中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span></span></span></code></pre></div><h2 id="zrange-key-start-end"><code>zrange key start end</code><a class="anchor" href="#zrange-key-start-end">#</a></h2>
+<p>0 和-1 表示从索引为 0 的元素到最后一个元素（同 LRANGE 命令相似）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span></span></span></code></pre></div><h2 id="zrange-key-0--1-withscores"><code>zrange key 0 -1 withscores</code><a class="anchor" href="#zrange-key-0--1-withscores">#</a></h2>
+<p>连同 score 一块输出，使用 WITHSCORES 参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1 withscores
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;3&#34;</span></span></span></code></pre></div><h2 id="zremrangebyscore-key-start-end"><code>zremrangebyscore key start end</code><a class="anchor" href="#zremrangebyscore-key-start-end">#</a></h2>
+<p>范围删除操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1 withscores
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zremrangebyscore keys <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1 withscores
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;3&#34;</span></span></span></code></pre></div><h2 id="zrangebyscore-key-min-max"><code>zrangebyscore key min max</code><a class="anchor" href="#zrangebyscore-key-min-max">#</a></h2>
+<p>升序排序操作，将key按最小值到最大值进行输出</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrangebyscore keys <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span></span></span></code></pre></div><h2 id="srandmember-key-nums-1"><code>srandmember key nums</code><a class="anchor" href="#srandmember-key-nums-1">#</a></h2>
+<p>倒序排序操作，将key按照从大到小排序输出</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrevrangebyscore keys <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span></span></span></code></pre></div><h2 id="zrem-key-value"><code>zrem key value</code><a class="anchor" href="#zrem-key-value">#</a></h2>
+<p>删除指定的元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrem keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrem keys d
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span></span></span></code></pre></div><h2 id="zcard-key"><code>zcard key</code><a class="anchor" href="#zcard-key">#</a></h2>
+<p>获取有序集合中的个数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrem keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrem keys d
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zcard keys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span></span></span></code></pre></div><h2 id="count-key-min-max"><code>count key min max</code><a class="anchor" href="#count-key-min-max">#</a></h2>
+<p>获取指定区间的成员数量</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">1</span> a
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">2</span> b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zadd keys <span style="color:#ae81ff">3</span> c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrem keys b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrem keys d
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zrange keys <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zcard keys
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379 zcount keys <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">1</span></span></span></code></pre></div><h2 id="应用场景-4">应用场景<a class="anchor" href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af-4">#</a></h2>
+<ul>
+<li>存储班级成绩表、工资表排序</li>
+</ul>
+<h1 id="参考">参考<a class="anchor" href="#%e5%8f%82%e8%80%83">#</a></h1>
+<p><a href="https://www.redis.net.cn/order/">Redis中文命令手册</a></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/redis/1.2redis%E5%AE%89%E8%A3%85/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.2 Redis安装</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="flex align-center">
+      <span>1.4 Redis特殊数据类型</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#set-key-value"><code>set key value</code></a></li>
+    <li><a href="#setex-key-seconds-value"><code>setex key seconds value</code></a></li>
+    <li><a href="#ttl"><code>ttl</code></a></li>
+    <li><a href="#setnx-key-value"><code>setnx key value</code></a></li>
+    <li><a href="#get-key"><code>get key</code></a></li>
+    <li><a href="#msetmget"><code>mset/mget</code></a></li>
+    <li><a href="#incr"><code>incr</code></a></li>
+    <li><a href="#incrby"><code>incrby</code></a></li>
+    <li><a href="#decr"><code>decr</code></a></li>
+    <li><a href="#decrby"><code>decrby</code></a></li>
+    <li><a href="#append"><code>append</code></a></li>
+    <li><a href="#strlen"><code>strlen</code></a></li>
+    <li><a href="#getrange"><code>getrange</code></a></li>
+    <li><a href="#setrange"><code>setrange</code></a></li>
+    <li><a href="#del"><strong>del</strong></a></li>
+    <li><a href="#对象方式设置">对象方式设置</a></li>
+    <li><a href="#getset"><code>getset</code></a></li>
+    <li><a href="#应用场景">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#hset"><code>hset</code></a></li>
+    <li><a href="#hget"><code>hget</code></a></li>
+    <li><a href="#hmset"><code>hmset</code></a></li>
+    <li><a href="#hmget"><code>hmget</code></a></li>
+    <li><a href="#hexists"><code>hexists</code></a></li>
+    <li><a href="#hdel"><code>hdel</code></a></li>
+    <li><a href="#hgetall"><code>hgetall</code></a></li>
+    <li><a href="#hvals"><code>hvals</code></a></li>
+    <li><a href="#hkeys"><code>hkeys</code></a></li>
+    <li><a href="#hlen"><code>hlen</code></a></li>
+    <li><a href="#hincrby-key-field-value"><code>hincrby key field value</code></a></li>
+    <li><a href="#hsetnx-key-field-value"><code>hsetnx key field value</code></a></li>
+    <li><a href="#应用场景-1">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#lpush-key-value"><code>lpush key value</code></a></li>
+    <li><a href="#rpush-key-value"><code>rpush key value</code></a></li>
+    <li><a href="#lpop-key"><code>lpop key</code></a></li>
+    <li><a href="#rpop-key"><code>rpop key</code></a></li>
+    <li><a href="#lrange-key-start-end"><code>lrange key start end</code></a></li>
+    <li><a href="#llen-key"><code>llen key</code></a></li>
+    <li><a href="#lindex-key-indexnumber"><code>lindex key indexnumber</code></a></li>
+    <li><a href="#lset-key-indexnumber-value"><code>lset key indexnumber value</code></a></li>
+    <li><a href="#lrem-key-count-value"><code>lrem key count value</code></a></li>
+    <li><a href="#ltrim-list-startindex-endindex"><code>ltrim list startIndex endIndex</code></a></li>
+    <li><a href="#rpoplpush-source-destination"><code>rpoplpush source destination</code></a></li>
+    <li><a href="#linsert-key-beforeafter-pivot-value"><code>linsert key BEFORE|AFTER pivot value</code></a></li>
+    <li><a href="#应用场景-2">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#sadd-key-value"><code>sadd key value</code></a></li>
+    <li><a href="#scard-key"><code>scard key</code></a></li>
+    <li><a href="#smembers-key"><code>smembers key</code></a></li>
+    <li><a href="#sismember-key-value"><code>sismember key value</code></a></li>
+    <li><a href="#srem-key-value"><code>srem key value</code></a></li>
+    <li><a href="#srandmember-key-nums"><code>srandmember key nums</code></a></li>
+    <li><a href="#spop-key"><code>spop key</code></a></li>
+    <li><a href="#smove-source-destination-member"><code>smove source destination member</code></a></li>
+    <li><a href="#sdiff-key1-key2"><code>sdiff key1 key2</code></a></li>
+    <li><a href="#sinter-key1-key2"><code>sinter key1 key2</code></a></li>
+    <li><a href="#sunion-key1-key2"><code>sunion key1 key2</code></a></li>
+    <li><a href="#应用场景-3">应用场景</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#zadd-key-score-value"><code>zadd key score value</code></a></li>
+    <li><a href="#zrange-key-start-end"><code>zrange key start end</code></a></li>
+    <li><a href="#zrange-key-0--1-withscores"><code>zrange key 0 -1 withscores</code></a></li>
+    <li><a href="#zremrangebyscore-key-start-end"><code>zremrangebyscore key start end</code></a></li>
+    <li><a href="#zrangebyscore-key-min-max"><code>zrangebyscore key min max</code></a></li>
+    <li><a href="#srandmember-key-nums-1"><code>srandmember key nums</code></a></li>
+    <li><a href="#zrem-key-value"><code>zrem key value</code></a></li>
+    <li><a href="#zcard-key"><code>zcard key</code></a></li>
+    <li><a href="#count-key-min-max"><code>count key min max</code></a></li>
+    <li><a href="#应用场景-4">应用场景</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

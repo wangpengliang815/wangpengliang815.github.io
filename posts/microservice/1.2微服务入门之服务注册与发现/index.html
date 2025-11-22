@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="前言# 上一篇说到要做到服务的灵活伸缩需要有一种机制来实现，这个机制就是服务注册与发现。这并不是必须的，如果服务实例很少并且很稳定，就没有必要使用。
+概念# 服务注册：简单理解就是有一个注册中心，每个服务实例启动时都去注册中心注册，告诉注册中心地址，端口等信息。同样删除时，也需要去注册中心删除，注册中心负责维护这些服务实例的信息 服务发现：既然注册中心维护了各个服务实例的信息，那么客户端通过注册中心就很容易能发现服务的变化。有了服务注册与发现，客户端就不用再去配置各个服务实例的地址，改为从注册中心统一获取 健康检查：注册中心要保证每个地址的可用状态，挂掉的实例不应该被客户端获取到，所以需要：健康检查。每个服务都需要提供一个用于健康检查的接口，这个接口不具备任何业务功能。服务注册时把这个接口的地址也告诉注册中心，注册中心会定时调用这个接口来检测服务是否正常，如果不正常，则将它移除，这样来保证了服务的可用性 常见注册中心有 Consul、ZooKeeper、etcd、Eureka。
+Consul# Consul官网：https://www.consul.io，主要功能有服务注册与发现、健康检查、K-V存储、多数据中心等，这里不做详细介绍。
+安装：直接在官网下载解压即可 运行：在 consul.exe 目录下打开命令行执行 consul.exe agent -dev 浏览器访问：http://localhost:8500 这里选择使用Docker来部署Consul：
+docker pull consul docker run -d -p 8500:8500 --restart=always --name=consul consul:latest agent -server -bootstrap -ui -node=1 -client=&#39;0.0.0.0&#39; agent： 表示启动 Agent 进程 server：表示启动 Consul Server 模式 client：表示启动 Consul Cilent 模式 bootstrap：表示这个节点是 Server-Leader ，每个数据中心只能运行一台服务器。技术角度上来看 Leader 是通过 Raft 算法选举的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，建议不要使用此标志 ui：表示启动 Web UI 管理器，默认开放端口 8500，所以上面使用 Docker 命令把 8500 端口对外开放 node：节点的名称，集群中必须是唯一的，默认是该节点的主机名 client：Consul服务监听地址，这提供HTTP、DNS、RPC等服务，默认是 127.0.0.1 所以不对外提供服务，如果要对外提供服务改成 0.0.0.0 join：表示加入到某一个集群中。 如：-json=192.168.0.11 ">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="前言# 上一篇说到要做到服务的灵活伸缩需要有一种机制来实现，这个机制就是服务注册与发现。这并不是必须的，如果服务实例很少并且很稳定，就没有必要使用。
+概念# 服务注册：简单理解就是有一个注册中心，每个服务实例启动时都去注册中心注册，告诉注册中心地址，端口等信息。同样删除时，也需要去注册中心删除，注册中心负责维护这些服务实例的信息 服务发现：既然注册中心维护了各个服务实例的信息，那么客户端通过注册中心就很容易能发现服务的变化。有了服务注册与发现，客户端就不用再去配置各个服务实例的地址，改为从注册中心统一获取 健康检查：注册中心要保证每个地址的可用状态，挂掉的实例不应该被客户端获取到，所以需要：健康检查。每个服务都需要提供一个用于健康检查的接口，这个接口不具备任何业务功能。服务注册时把这个接口的地址也告诉注册中心，注册中心会定时调用这个接口来检测服务是否正常，如果不正常，则将它移除，这样来保证了服务的可用性 常见注册中心有 Consul、ZooKeeper、etcd、Eureka。
+Consul# Consul官网：https://www.consul.io，主要功能有服务注册与发现、健康检查、K-V存储、多数据中心等，这里不做详细介绍。
+安装：直接在官网下载解压即可 运行：在 consul.exe 目录下打开命令行执行 consul.exe agent -dev 浏览器访问：http://localhost:8500 这里选择使用Docker来部署Consul：
+docker pull consul docker run -d -p 8500:8500 --restart=always --name=consul consul:latest agent -server -bootstrap -ui -node=1 -client=&#39;0.0.0.0&#39; agent： 表示启动 Agent 进程 server：表示启动 Consul Server 模式 client：表示启动 Consul Cilent 模式 bootstrap：表示这个节点是 Server-Leader ，每个数据中心只能运行一台服务器。技术角度上来看 Leader 是通过 Raft 算法选举的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，建议不要使用此标志 ui：表示启动 Web UI 管理器，默认开放端口 8500，所以上面使用 Docker 命令把 8500 端口对外开放 node：节点的名称，集群中必须是唯一的，默认是该节点的主机名 client：Consul服务监听地址，这提供HTTP、DNS、RPC等服务，默认是 127.0.0.1 所以不对外提供服务，如果要对外提供服务改成 0.0.0.0 join：表示加入到某一个集群中。 如：-json=192.168.0.11">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="前言# 上一篇说到要做到服务的灵活伸缩需要有一种机制来实现，这个机制就是服务注册与发现。这并不是必须的，如果服务实例很少并且很稳定，就没有必要使用。
+概念# 服务注册：简单理解就是有一个注册中心，每个服务实例启动时都去注册中心注册，告诉注册中心地址，端口等信息。同样删除时，也需要去注册中心删除，注册中心负责维护这些服务实例的信息 服务发现：既然注册中心维护了各个服务实例的信息，那么客户端通过注册中心就很容易能发现服务的变化。有了服务注册与发现，客户端就不用再去配置各个服务实例的地址，改为从注册中心统一获取 健康检查：注册中心要保证每个地址的可用状态，挂掉的实例不应该被客户端获取到，所以需要：健康检查。每个服务都需要提供一个用于健康检查的接口，这个接口不具备任何业务功能。服务注册时把这个接口的地址也告诉注册中心，注册中心会定时调用这个接口来检测服务是否正常，如果不正常，则将它移除，这样来保证了服务的可用性 常见注册中心有 Consul、ZooKeeper、etcd、Eureka。
+Consul# Consul官网：https://www.consul.io，主要功能有服务注册与发现、健康检查、K-V存储、多数据中心等，这里不做详细介绍。
+安装：直接在官网下载解压即可 运行：在 consul.exe 目录下打开命令行执行 consul.exe agent -dev 浏览器访问：http://localhost:8500 这里选择使用Docker来部署Consul：
+docker pull consul docker run -d -p 8500:8500 --restart=always --name=consul consul:latest agent -server -bootstrap -ui -node=1 -client=&#39;0.0.0.0&#39; agent： 表示启动 Agent 进程 server：表示启动 Consul Server 模式 client：表示启动 Consul Cilent 模式 bootstrap：表示这个节点是 Server-Leader ，每个数据中心只能运行一台服务器。技术角度上来看 Leader 是通过 Raft 算法选举的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，建议不要使用此标志 ui：表示启动 Web UI 管理器，默认开放端口 8500，所以上面使用 Docker 命令把 8500 端口对外开放 node：节点的名称，集群中必须是唯一的，默认是该节点的主机名 client：Consul服务监听地址，这提供HTTP、DNS、RPC等服务，默认是 127.0.0.1 所以不对外提供服务，如果要对外提供服务改成 0.0.0.0 join：表示加入到某一个集群中。 如：-json=192.168.0.11">
+  <meta itemprop="wordCount" content="710">
+
+<title>1.2微服务入门之服务注册与发现 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.2微服务入门之服务注册与发现</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.2微服务入门之服务注册与发现
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇说到要做到服务的灵活伸缩需要有一种机制来实现，这个机制就是服务注册与发现。这并不是必须的，如果服务实例很少并且很稳定，就没有必要使用。</p>
+<!-- more -->
+<h1 id="概念">概念<a class="anchor" href="#%e6%a6%82%e5%bf%b5">#</a></h1>
+<ul>
+<li>服务注册：简单理解就是有一个注册中心，每个服务实例启动时都去注册中心注册，告诉注册中心地址，端口等信息。同样删除时，也需要去注册中心删除，注册中心负责维护这些服务实例的信息</li>
+<li>服务发现：既然注册中心维护了各个服务实例的信息，那么客户端通过注册中心就很容易能发现服务的变化。有了服务注册与发现，客户端就不用再去配置各个服务实例的地址，改为从注册中心统一获取</li>
+<li>健康检查：注册中心要保证每个地址的可用状态，挂掉的实例不应该被客户端获取到，所以需要：健康检查。每个服务都需要提供一个用于健康检查的接口，这个接口不具备任何业务功能。服务注册时把这个接口的地址也告诉注册中心，注册中心会定时调用这个接口来检测服务是否正常，如果不正常，则将它移除，这样来保证了服务的可用性</li>
+</ul>
+<p>常见注册中心有 <code>Consul</code>、<code>ZooKeeper</code>、<code>etcd</code>、<code>Eureka</code>。</p>
+<h1 id="consul">Consul<a class="anchor" href="#consul">#</a></h1>
+<p>Consul官网：https://www.consul.io，主要功能有服务注册与发现、健康检查、K-V存储、多数据中心等，这里不做详细介绍。</p>
+<ul>
+<li>安装：直接在官网下载解压即可</li>
+<li>运行：在 <code>consul.exe</code> 目录下打开命令行执行 <code>consul.exe agent -dev</code></li>
+<li>浏览器访问：http://localhost:8500</li>
+</ul>
+<p>这里选择使用Docker来部署Consul：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> docker pull consul </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d -p 8500:8500 --restart<span style="color:#f92672">=</span>always --name<span style="color:#f92672">=</span>consul consul:latest agent -server -bootstrap -ui -node<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> -client<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;0.0.0.0&#39;</span></span></span></code></pre></div><ul>
+<li><code>agent</code>： 表示启动 Agent 进程</li>
+<li><code>server</code>：表示启动 Consul Server 模式</li>
+<li><code>client</code>：表示启动 Consul Cilent 模式</li>
+<li><code>bootstrap</code>：表示这个节点是 Server-Leader ，每个数据中心只能运行一台服务器。技术角度上来看 Leader 是通过 Raft 算法选举的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，建议不要使用此标志</li>
+<li><code>ui</code>：表示启动 Web UI 管理器，默认开放端口 <code>8500</code>，所以上面使用 Docker 命令把 <code>8500</code> 端口对外开放</li>
+<li><code>node</code>：节点的名称，集群中必须是唯一的，默认是该节点的主机名</li>
+<li><code>client</code>：Consul服务监听地址，这提供<code>HTTP</code>、<code>DNS</code>、<code>RPC</code>等服务，默认是 <code>127.0.0.1</code> 所以不对外提供服务，如果要对外提供服务改成 <code>0.0.0.0</code></li>
+<li><code>join</code>：表示加入到某一个集群中。 如：<code>-json=192.168.0.11</code></li>
+</ul>
+<p><img src="/images/2021-09-17-20-00-01.png" alt="" /></p>
+<p>这里看到Consul已经成功运行。</p>
+<h1 id="服务注册">服务注册<a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e6%b3%a8%e5%86%8c">#</a></h1>
+<p>订单服务项目使用<code>Nuget</code> 安装 <code>Consul</code>，然后添加相关代码：</p>
+<p>ConsulHelper.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConsulHelper</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 服务注册</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;app&#34;&gt;The application.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;configuration&#34;&gt;The configuration.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;lifetime&#34;&gt;The lifetime.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IApplicationBuilder RegisterConsul(<span style="color:#66d9ef">this</span> IApplicationBuilder app
+</span></span><span style="display:flex;"><span>        , IConfiguration configuration
+</span></span><span style="display:flex;"><span>        , IHostApplicationLifetime lifetime)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> consulClient = <span style="color:#66d9ef">new</span> ConsulClient(c =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            c.Address = <span style="color:#66d9ef">new</span> Uri(configuration[<span style="color:#e6db74">&#34;ConsulSetting:ConsulAddress&#34;</span>]);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> registration = <span style="color:#66d9ef">new</span> AgentServiceRegistration()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 服务实例唯一标识</span>
+</span></span><span style="display:flex;"><span>            ID = Guid.NewGuid().ToString(),
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 服务名称</span>
+</span></span><span style="display:flex;"><span>            Name = configuration[<span style="color:#e6db74">&#34;ConsulSetting:ServiceName&#34;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 服务IP地址</span>
+</span></span><span style="display:flex;"><span>            Address = configuration[<span style="color:#e6db74">&#34;ConsulSetting:ServiceIP&#34;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 服务端口：因为要运行多个实例，端口不能在appsettings.json里配置而是在docker容器运行时传入</span>
+</span></span><span style="display:flex;"><span>            Port = <span style="color:#66d9ef">int</span>.Parse(configuration[<span style="color:#e6db74">&#34;ConsulSetting:ServicePort&#34;</span>]),
+</span></span><span style="display:flex;"><span>            Check = <span style="color:#66d9ef">new</span> AgentServiceCheck()
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 服务启动多久后注册</span>
+</span></span><span style="display:flex;"><span>                DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(<span style="color:#ae81ff">3</span>),
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 健康检查时间间隔</span>
+</span></span><span style="display:flex;"><span>                Interval = TimeSpan.FromSeconds(<span style="color:#ae81ff">10</span>),
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 健康检查地址</span>
+</span></span><span style="display:flex;"><span>                HTTP = <span style="color:#e6db74">$&#34;http://{configuration[&#34;</span>ConsulSetting:ServiceIP<span style="color:#e6db74">&#34;]}:{configuration[&#34;</span>ConsulSetting:ServicePort<span style="color:#e6db74">&#34;]}{configuration[&#34;</span>ConsulSetting:ServiceHealthCheck<span style="color:#e6db74">&#34;]}&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 超时时间</span>
+</span></span><span style="display:flex;"><span>                Timeout = TimeSpan.FromSeconds(<span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 服务注册</span>
+</span></span><span style="display:flex;"><span>        consulClient.Agent.ServiceRegister(registration).Wait();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 应用程序终止时，取消注册</span>
+</span></span><span style="display:flex;"><span>        lifetime.ApplicationStopping.Register(() =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            consulClient.Agent.ServiceDeregister(registration.ID).Wait();
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> app;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>appsettings.json：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Logging&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;LogLevel&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Default&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft&#34;</span>: <span style="color:#e6db74">&#34;Warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft.Hosting.Lifetime&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;AllowedHosts&#34;</span>: <span style="color:#e6db74">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ConsulSetting&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceIP&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceHealthCheck&#34;</span>: <span style="color:#e6db74">&#34;/healthcheck&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ConsulAddress&#34;</span>: <span style="color:#e6db74">&#34;http://192.168.31.191:8500&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：这里没有配置ServicePort，所以如果本地直接运行项目会报错</p>
+</blockquote><p>Startup.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (env.IsDevelopment())
+</span></span><span style="display:flex;"><span>    { }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    { }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    app.UseStaticFiles();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    app.UseRouting();
+</span></span><span style="display:flex;"><span>    app.UseEndpoints(endpoints =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        endpoints.MapControllers();
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 启用服务注册</span>
+</span></span><span style="display:flex;"><span>    app.RegisterConsul(Configuration, lifetime);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>OrdersController.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[Controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrdersController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> OrdersController(IConfiguration configuration)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.configuration = configuration;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Index()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> result = <span style="color:#e6db74">$&#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&#34;</span>ConsulSetting:ServicePort<span style="color:#e6db74">&#34;]}&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(result);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>HealthCheckController.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HealthCheckController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 健康检查接口</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(<span style="color:#e6db74">&#34;Pong.&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>至此就完成了服务注册、取消注册、健康检查的代码编写，下面重新 <code>build</code> 镜像（过程略过）运行新的容器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api -p 80:80 order.api  --ConsulSetting:ServicePort=&#34;80&#34;</span>
+</span></span><span style="display:flex;"><span>89acc7d7035f2041a91bc1e1299464a5460290dd66b12161ee4e994d5548def2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api1 -p 81:80 order.api --ConsulSetting:ServicePort=&#34;81&#34;</span>
+</span></span><span style="display:flex;"><span>223be73a41e501e168fdc44459cd6f5851d565e60817dbd0047dff7718394e22
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api2 -p 82:80 order.api --ConsulSetting:ServicePort=&#34;82&#34;</span></span></span></code></pre></div><p><img src="/images/2021-09-17-20-36-21.png" alt="" />
+<img src="/images/2021-09-17-20-36-40.png" alt="" /></p>
+<p>至此，3个服务实例都已运行，并且成功注册到 Consul。测试一下服务停止会不会从Consul移除：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker stop order.api</span></span></span></code></pre></div><p><img src="/images/2021-09-17-20-39-00.png" alt="" /></p>
+<p>这里需要注意：程序发生异常，健康检查不能正确响应的话，Consul也会移除。至此注册、发现、健康检查功能都完成了，下一步考虑客户端如何拿到这些服务实例的地址。</p>
+<h1 id="客户端">客户端<a class="anchor" href="#%e5%ae%a2%e6%88%b7%e7%ab%af">#</a></h1>
+<p>上面已经成功将服务注册到 Consul中，接下来就该客户端通过 Consul 去做服务发现了。客户端项目同样使用<code>Nuget</code> 安装 Consul，然后调整相关代码：</p>
+<p>ServiceHelper.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Consul;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.Configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> RestSharp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Concurrent;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Linq;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading.Tasks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Web.Client
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IServiceHelper</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceHelper</span> : IServiceHelper
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> ServiceHelper(IConfiguration configuration)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.configuration = configuration;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> consulClient = <span style="color:#66d9ef">new</span> ConsulClient(c =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                c.Address = <span style="color:#66d9ef">new</span> Uri(configuration[<span style="color:#e6db74">&#34;ConsulSetting:ConsulAddress&#34;</span>]);
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取健康的服务</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> services = consulClient.Health.Service(<span style="color:#e6db74">&#34;order.service&#34;</span>, <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">null</span>).Result.Response;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取订单服务地址列表</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span>[] serviceUrls = services.Select(p =&gt; <span style="color:#e6db74">$&#34;http://{p.Service.Address + &#34;</span>:<span style="color:#e6db74">&#34; + p.Service.Port}&#34;</span>).ToArray();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (!serviceUrls.Any())
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Task.FromResult(<span style="color:#e6db74">&#34;【订单服务】服务列表为空&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 每次随机访问一个服务实例</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> client = <span style="color:#66d9ef">new</span> RestClient(serviceUrls[<span style="color:#66d9ef">new</span> Random().Next(<span style="color:#ae81ff">0</span>, serviceUrls.Length)]);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> RestRequest(<span style="color:#e6db74">&#34;/orders&#34;</span>, Method.GET);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.ExecuteAsync(request);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response.Content;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>appsettings.json：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Logging&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;LogLevel&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Default&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft&#34;</span>: <span style="color:#e6db74">&#34;Warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft.Hosting.Lifetime&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;AllowedHosts&#34;</span>: <span style="color:#e6db74">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ConsulSetting&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ConsulAddress&#34;</span>: <span style="color:#e6db74">&#34;http://192.168.31.191:8500&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>以上代码就完成了对服务列表的获取，浏览器访问测试一下：</p>
+<p><img src="/images/2021-09-17-20-48-22.png" alt="" /></p>
+<p>这时候如果停止其中一个服务实例，Consul中也会同步下线，客户端也就访问不到了，但是只要三个实例活着一个就可以正常访问。虽然这里解决了服务发现的问题，但是新的问题又来了：客户端每次调用服务都需要先去Consul中获取服务地址，不仅浪费资源还增加了请求的响应时间。如何保证不要每次请求都需要去Consul 获取地址的同时又可以拿到可用的地址列表呢？Consul 提供的解决方案是：Blocking Queries （阻塞的请求）。详情见官网：<a href="https://www.consul.io/api-docs/features/blocking">Blocking Queries</a> 。</p>
+<h1 id="blocking-queries">Blocking Queries<a class="anchor" href="#blocking-queries">#</a></h1>
+<p>简单来说就是当客户端请求 Consul 获取地址列表时，需要携带一个版本号信息，Consul 会比较这个客户端版本号是否和 Consul 服务端的版本号一致，如果一致，则 Consul 会阻塞这个请求，直到 Consul 中的服务列表发生变化，或者到达阻塞时间上限；如果版本号不一致，则立即返回。这个阻塞时间默认是5分钟，支持自定义。如果启动一个线程专门去做这件事，就不会影响每次的用户请求了。这样既保证了客户端服务列表的准确性，又节约了客户端请求服务列表的次数。</p>
+<p>调整代码：</p>
+<p>IServiceHelper.cs 增加获取服务列表的接口方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Consul;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.Configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> RestSharp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Concurrent;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Linq;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading.Tasks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Web.Client
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IServiceHelper</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> GetServices();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceHelper</span> : IServiceHelper
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration configuration;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ConsulClient consulClient;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> ConcurrentBag&lt;<span style="color:#66d9ef">string</span>&gt; orderServiceUrls;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> ServiceHelper(IConfiguration configuration)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.configuration = configuration;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.consulClient = <span style="color:#66d9ef">new</span> ConsulClient(c =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                c.Address = <span style="color:#66d9ef">new</span> Uri(configuration[<span style="color:#e6db74">&#34;ConsulSetting:ConsulAddress&#34;</span>]);
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (orderServiceUrls == <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">await</span> Task.FromResult(<span style="color:#e6db74">&#34;【订单服务】初始化服务列表...&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> client = <span style="color:#66d9ef">new</span> RestClient(orderServiceUrls.ElementAt(<span style="color:#66d9ef">new</span> Random().Next(<span style="color:#ae81ff">0</span>, orderServiceUrls.Count())));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> RestRequest(<span style="color:#e6db74">&#34;/orders&#34;</span>, Method.GET);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.ExecuteAsync(request);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response.Content;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetServices()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> serviceNames = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[] { <span style="color:#e6db74">&#34;order.service&#34;</span> };
+</span></span><span style="display:flex;"><span>            Array.ForEach(serviceNames, p =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Task.Run(() =&gt;
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// WaitTime默认为5分钟</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">var</span> queryOptions = <span style="color:#66d9ef">new</span> QueryOptions { WaitTime = TimeSpan.FromMinutes(<span style="color:#ae81ff">10</span>) };
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        GetServices(queryOptions, p);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> GetServices(QueryOptions queryOptions, <span style="color:#66d9ef">string</span> serviceName)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> res = consulClient.Health.Service(serviceName, <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">true</span>, queryOptions).Result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 打印服务列表的响应时间等信息</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{DateTime.Now}获取{serviceName}：queryOptions.WaitIndex：{queryOptions.WaitIndex}  LastIndex：{res.LastIndex}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 版本号不一致 说明服务列表发生变化</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (queryOptions.WaitIndex != res.LastIndex)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                queryOptions.WaitIndex = res.LastIndex;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//服务地址列表</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> serviceUrls = res.Response.Select(p =&gt; <span style="color:#e6db74">$&#34;http://{p.Service.Address + &#34;</span>:<span style="color:#e6db74">&#34; + p.Service.Port}&#34;</span>).ToArray();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (serviceName == <span style="color:#e6db74">&#34;order.service&#34;</span>)
+</span></span><span style="display:flex;"><span>                    orderServiceUrls = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;<span style="color:#66d9ef">string</span>&gt;(serviceUrls);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-17-21-02-33.png" alt="" /></p>
+<p>至此不需要每次都先请求服务列表，如果服务列表没有更新的话，获取列表的请求会一直阻塞直到设置的10分钟。这时候又发现新的问题：</p>
+<ol>
+<li>每个客户端系统都去维护服务地址是否合理</li>
+<li>服务的IP端口直接暴露给所有客户端是否安全</li>
+<li>该模式下怎么做到客户端的统一管理</li>
+</ol>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.1微服务入门之项目搭建</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="flex align-center">
+      <span>1.3微服务入门之网关</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

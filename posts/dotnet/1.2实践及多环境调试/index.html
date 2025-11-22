@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="新建 Web应用程序# Configuration 加载顺序# namespace Microsoft.Extensions.Hosting { // // 摘要: // Provides convenience methods for creating instances of Microsoft.Extensions.Hosting.IHostBuilder // with pre-configured defaults. public static class Host { // // 摘要: // Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class // with pre-configured defaults. // // 返回结果: // The initialized Microsoft.Extensions.Hosting.IHostBuilder. // // 言论： // The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder: // • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the // result of System.IO.Directory.GetCurrentDirectory // • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34; // prefixed environment variables // • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39; // and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39; // • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets // when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39; // using the entry assembly // • load app Microsoft.Extensions.Configuration.IConfiguration from environment // variables // • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console, // debug, and event source output // • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName // is &#39;Development&#39; public static IHostBuilder CreateDefaultBuilder(); // // 摘要: // Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class // with pre-configured defaults. // // 参数: // args: // The command line args. // // 返回结果: // The initialized Microsoft.Extensions.Hosting.IHostBuilder. // // 言论： // The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder: // • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the // result of System.IO.Directory.GetCurrentDirectory // • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34; // prefixed environment variables // • load host Microsoft.Extensions.Configuration.IConfiguration from supplied command // line args // • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39; // and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39; // • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets // when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39; // using the entry assembly // • load app Microsoft.Extensions.Configuration.IConfiguration from environment // variables // • load app Microsoft.Extensions.Configuration.IConfiguration from supplied command // line args // • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console, // debug, and event source output // • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName // is &#39;Development&#39; public static IHostBuilder CreateDefaultBuilder(string[] args); } }注意这段注释：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/1.2%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="新建 Web应用程序# Configuration 加载顺序# namespace Microsoft.Extensions.Hosting { // // 摘要: // Provides convenience methods for creating instances of Microsoft.Extensions.Hosting.IHostBuilder // with pre-configured defaults. public static class Host { // // 摘要: // Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class // with pre-configured defaults. // // 返回结果: // The initialized Microsoft.Extensions.Hosting.IHostBuilder. // // 言论： // The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder: // • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the // result of System.IO.Directory.GetCurrentDirectory // • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34; // prefixed environment variables // • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39; // and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39; // • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets // when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39; // using the entry assembly // • load app Microsoft.Extensions.Configuration.IConfiguration from environment // variables // • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console, // debug, and event source output // • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName // is &#39;Development&#39; public static IHostBuilder CreateDefaultBuilder(); // // 摘要: // Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class // with pre-configured defaults. // // 参数: // args: // The command line args. // // 返回结果: // The initialized Microsoft.Extensions.Hosting.IHostBuilder. // // 言论： // The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder: // • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the // result of System.IO.Directory.GetCurrentDirectory // • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34; // prefixed environment variables // • load host Microsoft.Extensions.Configuration.IConfiguration from supplied command // line args // • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39; // and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39; // • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets // when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39; // using the entry assembly // • load app Microsoft.Extensions.Configuration.IConfiguration from environment // variables // • load app Microsoft.Extensions.Configuration.IConfiguration from supplied command // line args // • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console, // debug, and event source output // • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName // is &#39;Development&#39; public static IHostBuilder CreateDefaultBuilder(string[] args); } }注意这段注释：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="新建 Web应用程序# Configuration 加载顺序# namespace Microsoft.Extensions.Hosting { // // 摘要: // Provides convenience methods for creating instances of Microsoft.Extensions.Hosting.IHostBuilder // with pre-configured defaults. public static class Host { // // 摘要: // Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class // with pre-configured defaults. // // 返回结果: // The initialized Microsoft.Extensions.Hosting.IHostBuilder. // // 言论： // The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder: // • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the // result of System.IO.Directory.GetCurrentDirectory // • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34; // prefixed environment variables // • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39; // and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39; // • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets // when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39; // using the entry assembly // • load app Microsoft.Extensions.Configuration.IConfiguration from environment // variables // • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console, // debug, and event source output // • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName // is &#39;Development&#39; public static IHostBuilder CreateDefaultBuilder(); // // 摘要: // Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class // with pre-configured defaults. // // 参数: // args: // The command line args. // // 返回结果: // The initialized Microsoft.Extensions.Hosting.IHostBuilder. // // 言论： // The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder: // • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the // result of System.IO.Directory.GetCurrentDirectory // • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34; // prefixed environment variables // • load host Microsoft.Extensions.Configuration.IConfiguration from supplied command // line args // • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39; // and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39; // • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets // when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39; // using the entry assembly // • load app Microsoft.Extensions.Configuration.IConfiguration from environment // variables // • load app Microsoft.Extensions.Configuration.IConfiguration from supplied command // line args // • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console, // debug, and event source output // • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName // is &#39;Development&#39; public static IHostBuilder CreateDefaultBuilder(string[] args); } }注意这段注释：">
+  <meta itemprop="wordCount" content="446">
+
+<title>1.2实践及多环境调试 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/1.2%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.2实践及多环境调试</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.2实践及多环境调试
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="新建-web应用程序">新建 Web应用程序<a class="anchor" href="#%e6%96%b0%e5%bb%ba-web%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f">#</a></h1>
+<p><img src="/images/2021-09-24-15-52-30.png" alt="" /></p>
+<h1 id="configuration-加载顺序">Configuration 加载顺序<a class="anchor" href="#configuration-%e5%8a%a0%e8%bd%bd%e9%a1%ba%e5%ba%8f">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Microsoft.Extensions.Hosting
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 摘要:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//     Provides convenience methods for creating instances of Microsoft.Extensions.Hosting.IHostBuilder</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//     with pre-configured defaults.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Host</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 摘要:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     with pre-configured defaults.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 返回结果:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     The initialized Microsoft.Extensions.Hosting.IHostBuilder.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 言论：</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     result of System.IO.Directory.GetCurrentDirectory</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     prefixed environment variables</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     using the entry assembly</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from environment</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     variables</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     debug, and event source output</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     is &#39;Development&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateDefaultBuilder();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 摘要:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     Initializes a new instance of the Microsoft.Extensions.Hosting.HostBuilder class</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     with pre-configured defaults.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 参数:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//   args:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     The command line args.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 返回结果:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     The initialized Microsoft.Extensions.Hosting.IHostBuilder.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 言论：</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     The following defaults are applied to the returned Microsoft.Extensions.Hosting.HostBuilder:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • set the Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath to the</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     result of System.IO.Directory.GetCurrentDirectory</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load host Microsoft.Extensions.Configuration.IConfiguration from &#34;DOTNET_&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     prefixed environment variables</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load host Microsoft.Extensions.Configuration.IConfiguration from supplied command</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     line args</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName is &#39;Development&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     using the entry assembly</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from environment</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     variables</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • load app Microsoft.Extensions.Configuration.IConfiguration from supplied command</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     line args</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • configure the Microsoft.Extensions.Logging.ILoggerFactory to log to the console,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     debug, and event source output</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     • enables scope validation on the dependency injection container when Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//     is &#39;Development&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateDefaultBuilder(<span style="color:#66d9ef">string</span>[] args);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>注意这段注释：</p>
+<pre tabindex="0"><code>    //     • load app Microsoft.Extensions.Configuration.IConfiguration from &#39;appsettings.json&#39;
+    //     and &#39;appsettings.[Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName].json&#39;
+    //     • load app Microsoft.Extensions.Configuration.IConfiguration from User Secrets</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            CreateHostBuilder(args).Build().Run();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateHostBuilder(<span style="color:#66d9ef">string</span>[] args) =&gt;
+</span></span><span style="display:flex;"><span>            Host.CreateDefaultBuilder(args)
+</span></span><span style="display:flex;"><span>                .ConfigureWebHostDefaults(webBuilder =&gt;
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    webBuilder.UseStartup&lt;Startup&gt;();
+</span></span><span style="display:flex;"><span>                });
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><p>这里意思是说：<code>Host.CreateDefaultBuilder()</code> 加载 <code>Configuration</code> 的顺序是：</p>
+<ol>
+<li><code>appsettings.json</code></li>
+<li><code>appsettings.{envName}.json</code></li>
+<li><code>usesecrets(secrets.json)</code></li>
+</ol>
+<blockquote class='book-hint '>
+<p>同一个节点信息如果在三个<code>.json</code>文件中都有定义，会依赖加载顺序，最后的会覆盖之前的</p>
+</blockquote><h1 id="多环境配置">多环境配置<a class="anchor" href="#%e5%a4%9a%e7%8e%af%e5%a2%83%e9%85%8d%e7%bd%ae">#</a></h1>
+<p><img src="/images/2021-09-24-15-54-39.png" alt="" /></p>
+<p>这里的设计思路是将全局通用配置放在 <code>appsettings.json</code> 中，不同环境根据需求配置自己的节点，也可以使用相同名称来覆盖 <code>appsettings.json</code>。</p>
+<p>appsettings.json</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Logging&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;LogLevel&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;Default&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;AllowedHosts&#34;</span>: <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>appsettings.Development.json</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ConnectString&#34;</span>: <span style="color:#e6db74">&#34;Server=.;Database=WebApp01.Db.Dev;uid=sa;pwd=wpl19950815;&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>appsettings.Sit.json</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ConnectString&#34;</span>: <span style="color:#e6db74">&#34;Server=.;Database=WebApp01.Db.Sit;uid=sa;pwd=wpl19950815;&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>调试不同环境：</p>
+<p><img src="/images/2021-09-24-15-55-42.png" alt="" /></p>
+<p>通过设置 <code>environmentVariables:ASPNETCORE_ENVIRONMENT</code> 环境名称来切换使用不同环境的配置文件，这里环境变量名称需要和 <code>appsetting.{envName}.json</code> 中 <code>{envName}</code> 保持一致。</p>
+<p>在应用程序开发的过程中，有的时候需要在代码中保存一些机密的信息，比如加密密钥，字符串，或者是用户名密码等。通常的做法是保存到一个配置文件中，以前会保存到 <code>web.config</code> 中，但是 ASP.NET Core中，有更多多元化的方法可以更加优雅的的设置或者保存这些机密资料。</p>
+<h1 id="用户机密简介">用户机密简介<a class="anchor" href="#%e7%94%a8%e6%88%b7%e6%9c%ba%e5%af%86%e7%ae%80%e4%bb%8b">#</a></h1>
+<p>使用场景：</p>
+<ul>
+<li>需要保存一些和第三方网站对接的密钥，比如和 微信，微博站点使用的 appkey</li>
+<li>给每个开发人员配置不用的用户名密码来访问一些资源</li>
+<li>开发人员在开发过程中使用各自本机的数据库，如何配置数据库地址、账号和密码</li>
+</ul>
+<p>ASP.NET Core 提供了一种很优雅简洁的方式 <code>User Secrets</code> 用来解决这个事情。</p>
+<p>新建 Web 应用程序，在 Web 项目上右键,可以看到一个 <code>管理用户机密</code> 的菜单：</p>
+<p><img src="/images/2021-09-24-15-59-28.png" alt="" /></p>
+<p><code>secrets.json</code>
+<img src="/images/2021-09-24-16-00-19.png" alt="" /></p>
+<p><strong><code>secrets.json</code> 文件存储位置</strong>：</p>
+<p>在非Windows系统中，它存储在</p>
+<pre tabindex="0"><code>~/.microsoft/usersecrets/&lt;userSecretsId&gt;/secrets.json</code></pre><p>在Windows系统中，它存储在</p>
+<pre tabindex="0"><code>C:\Users\用户名\AppData\Roaming\Microsoft\UserSecrets\aspnet-WebAppCore-e278c40f-15bd-4c19-9662-541514f02f3e</code></pre><p>可以看到，存储的上层文件夹就是 <code>project.json</code> 文件中的 <code>userSecretsId</code> 设定的值。</p>
+<h1 id="应用程序中使用">应用程序中使用<a class="anchor" href="#%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f%e4%b8%ad%e4%bd%bf%e7%94%a8">#</a></h1>
+<p>要在应用程序中访问配置的用户机密，需要保证 <code>project.json</code> 文件中存在依赖项：<code>Microsoft.Extensions.Configuration.UserSecrets</code> 并且<code>builder.AddUserSecrets()</code>。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/1.1dataprotection%E7%AE%80%E4%BB%8B/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.1 Data Protection简介</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/1.3%E5%9F%BA%E4%BA%8Edataprotection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88/" class="flex align-center">
+      <span>1.3基于 Data Protection的数据保护方案</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

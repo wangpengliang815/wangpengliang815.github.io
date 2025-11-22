@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="记录rabbitMq中常见的命令
+用户角色分类# none# 通常就是普通的生产者和消费者,无法登录控制台,不能访问 management plugin ，通常就是普通的生产者和消费者。
+management# 普通管理者，仅可登陆管理控制台(启用 management plugin 的情况下)，无法看到节点信息，也无法对 policies 进行管理。可以通过 AMQP 做的任何事外加：
+列出自己可以通过AMQP登入的 virtual hosts 查看自己的 virtual hosts 中的 queues, exchanges 和 bindings 查看和关闭自己的 channels 和 connections 查看有关自己的 virtual hosts的全局统计信息，包含其他用户在这些 virtual hosts中的活动 policymaker# 策略制定者，management可以做的任何事外加：
+查看、创建和删除自己的 virtual hosts所属的 policies和 parameters
+monitoring# 监控者，management可以做的任何事外加：
+列出所有virtual hosts，包括他们不能登录的virtual hosts
+查看其他用户的 connections和 channels
+查看节点级别的数据如 clustering和 memory使用情况
+查看真正的关于所有 virtual hosts的全局的统计信息
+同时可以查看 rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等)
+administrator# 超级管理员，policymaker和monitoring可以做的任何事外加:
+创建和删除virtual hosts
+查看、创建和删除 users
+查看创建和删除 permissions
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="记录rabbitMq中常见的命令
+用户角色分类# none# 通常就是普通的生产者和消费者,无法登录控制台,不能访问 management plugin ，通常就是普通的生产者和消费者。
+management# 普通管理者，仅可登陆管理控制台(启用 management plugin 的情况下)，无法看到节点信息，也无法对 policies 进行管理。可以通过 AMQP 做的任何事外加：
+列出自己可以通过AMQP登入的 virtual hosts 查看自己的 virtual hosts 中的 queues, exchanges 和 bindings 查看和关闭自己的 channels 和 connections 查看有关自己的 virtual hosts的全局统计信息，包含其他用户在这些 virtual hosts中的活动 policymaker# 策略制定者，management可以做的任何事外加：
+查看、创建和删除自己的 virtual hosts所属的 policies和 parameters
+monitoring# 监控者，management可以做的任何事外加：
+列出所有virtual hosts，包括他们不能登录的virtual hosts
+查看其他用户的 connections和 channels
+查看节点级别的数据如 clustering和 memory使用情况
+查看真正的关于所有 virtual hosts的全局的统计信息
+同时可以查看 rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等)
+administrator# 超级管理员，policymaker和monitoring可以做的任何事外加:
+创建和删除virtual hosts
+查看、创建和删除 users
+查看创建和删除 permissions">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="记录rabbitMq中常见的命令
+用户角色分类# none# 通常就是普通的生产者和消费者,无法登录控制台,不能访问 management plugin ，通常就是普通的生产者和消费者。
+management# 普通管理者，仅可登陆管理控制台(启用 management plugin 的情况下)，无法看到节点信息，也无法对 policies 进行管理。可以通过 AMQP 做的任何事外加：
+列出自己可以通过AMQP登入的 virtual hosts 查看自己的 virtual hosts 中的 queues, exchanges 和 bindings 查看和关闭自己的 channels 和 connections 查看有关自己的 virtual hosts的全局统计信息，包含其他用户在这些 virtual hosts中的活动 policymaker# 策略制定者，management可以做的任何事外加：
+查看、创建和删除自己的 virtual hosts所属的 policies和 parameters
+monitoring# 监控者，management可以做的任何事外加：
+列出所有virtual hosts，包括他们不能登录的virtual hosts
+查看其他用户的 connections和 channels
+查看节点级别的数据如 clustering和 memory使用情况
+查看真正的关于所有 virtual hosts的全局的统计信息
+同时可以查看 rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等)
+administrator# 超级管理员，policymaker和monitoring可以做的任何事外加:
+创建和删除virtual hosts
+查看、创建和删除 users
+查看创建和删除 permissions">
+  <meta itemprop="wordCount" content="181">
+
+<title>1.6 Rabbit Mq常用命令 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.6 Rabbit Mq常用命令</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#none">none</a></li>
+    <li><a href="#management">management</a></li>
+    <li><a href="#policymaker">policymaker</a></li>
+    <li><a href="#monitoring">monitoring</a></li>
+    <li><a href="#administrator">administrator</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#创建用户">创建用户</a></li>
+    <li><a href="#设置权限">设置权限</a></li>
+    <li><a href="#查看用户列表">查看用户列表</a></li>
+    <li><a href="#为用户赋权">为用户赋权</a></li>
+    <li><a href="#查看权限">查看权限</a></li>
+    <li><a href="#清除权限">清除权限</a></li>
+    <li><a href="#删除用户">删除用户</a></li>
+    <li><a href="#修改用户密码">修改用户密码</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#启动监控管理器">启动监控管理器</a></li>
+    <li><a href="#关闭监控管理器">关闭监控管理器</a></li>
+    <li><a href="#启动rabbitmq">启动rabbitmq</a></li>
+    <li><a href="#关闭rabbitmq">关闭rabbitmq</a></li>
+    <li><a href="#查看所有的队列">查看所有的队列</a></li>
+    <li><a href="#清除所有的队列">清除所有的队列</a></li>
+    <li><a href="#查看已有用户及角色">查看已有用户及角色</a></li>
+    <li><a href="#新增虚拟主机">新增虚拟主机</a></li>
+    <li><a href="#将新虚拟主机授权给新用户">将新虚拟主机授权给新用户</a></li>
+    <li><a href="#设置用户权限">设置用户权限</a></li>
+    <li><a href="#查看指定hostpath所有用户的权限信息">查看(指定hostpath)所有用户的权限信息</a></li>
+    <li><a href="#查看指定用户的权限信息">查看指定用户的权限信息</a></li>
+    <li><a href="#清除用户的权限信息">清除用户的权限信息</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.6 Rabbit Mq常用命令
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>记录rabbitMq中常见的命令</p>
+<!-- more -->
+<h1 id="用户角色分类">用户角色分类<a class="anchor" href="#%e7%94%a8%e6%88%b7%e8%a7%92%e8%89%b2%e5%88%86%e7%b1%bb">#</a></h1>
+<h2 id="none">none<a class="anchor" href="#none">#</a></h2>
+<p>通常就是普通的生产者和消费者,无法登录控制台,不能访问 <code>management plugin</code> ，通常就是普通的生产者和消费者。</p>
+<h2 id="management">management<a class="anchor" href="#management">#</a></h2>
+<p><strong>普通管理者</strong>，仅可登陆管理控制台(启用 <code>management plugin</code> 的情况下)，无法看到节点信息，也无法对 <code>policies</code> 进行管理。可以通过 <code>AMQP</code> 做的任何事外加：</p>
+<ul>
+<li>列出自己可以通过<code>AMQP</code>登入的 <code>virtual hosts</code></li>
+<li>查看自己的 <code>virtual hosts</code> 中的 <code>queues, exchanges</code> 和 <code>bindings</code></li>
+<li>查看和关闭自己的 <code>channels</code> 和 <code>connections</code></li>
+<li>查看有关自己的 <code>virtual hosts</code>的全局统计信息，包含其他用户在这些 <code>virtual hosts</code>中的活动</li>
+</ul>
+<h2 id="policymaker">policymaker<a class="anchor" href="#policymaker">#</a></h2>
+<p><strong>策略制定者</strong>，<code>management</code>可以做的任何事外加：</p>
+<p>查看、创建和删除自己的 <code>virtual hosts</code>所属的 <code>policies</code>和 <code>parameters</code></p>
+<h2 id="monitoring">monitoring<a class="anchor" href="#monitoring">#</a></h2>
+<p><strong>监控者</strong>，<code>management</code>可以做的任何事外加：</p>
+<p>列出所有<code>virtual hosts</code>，包括他们不能登录的<code>virtual hosts</code></p>
+<p>查看其他用户的 <code>connections</code>和 <code>channels</code></p>
+<p>查看节点级别的数据如 <code>clustering</code>和 <code>memory</code>使用情况</p>
+<p>查看真正的关于所有 <code>virtual hosts</code>的全局的统计信息</p>
+<p>同时可以查看 <code>rabbitmq</code>节点的相关信息(进程数，内存使用情况，磁盘使用情况等)</p>
+<h2 id="administrator">administrator<a class="anchor" href="#administrator">#</a></h2>
+<p><strong>超级管理员</strong>，<code>policymaker</code>和<code>monitoring</code>可以做的任何事外加:</p>
+<p>创建和删除<code>virtual hosts</code></p>
+<p>查看、创建和删除 <code>users</code></p>
+<p>查看创建和删除 <code>permissions</code></p>
+<p>关闭其他用户的 <code>connections</code></p>
+<h1 id="rabbitmq-control">RabbitMQ Control<a class="anchor" href="#rabbitmq-control">#</a></h1>
+<p>使用Web管理界面可以实现RabbitMQ的大部分常用功能，但是有些功能WebUI是做不到的，如：开启/关闭RabbitMQ应用程序和集群的管理等。RabbitMQ Control是RabbitMQ的命令行管理工具，可以调用所有的RabbitMQ内置功能，主命令是 <code>rabbitmqctl</code>。</p>
+<h2 id="创建用户">创建用户<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e7%94%a8%e6%88%b7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl add_user <span style="color:#f92672">{</span>用户名<span style="color:#f92672">}</span> <span style="color:#f92672">{</span>密码<span style="color:#f92672">}</span></span></span></code></pre></div><h2 id="设置权限">设置权限<a class="anchor" href="#%e8%ae%be%e7%bd%ae%e6%9d%83%e9%99%90">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl set_user_tags <span style="color:#f92672">{</span>用户名<span style="color:#f92672">}</span> <span style="color:#f92672">{</span>权限<span style="color:#f92672">}</span></span></span></code></pre></div><p>比如：创建一个超级用户</p>
+<pre tabindex="0"><code>rabbitmqctl add_user admin1 admin1
+rabbitmqctl set_user_tags admin1 administrator</code></pre><h2 id="查看用户列表">查看用户列表<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e7%94%a8%e6%88%b7%e5%88%97%e8%a1%a8">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl list_users</span></span></code></pre></div><h2 id="为用户赋权">为用户赋权<a class="anchor" href="#%e4%b8%ba%e7%94%a8%e6%88%b7%e8%b5%8b%e6%9d%83">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>// 使用户user1具有vhost1这个virtual host中所有资源的配置、写、读权限以便管理其中的资源
+</span></span><span style="display:flex;"><span>rabbitmqctl  set_permissions -p vhost1 user1 <span style="color:#e6db74">&#39;.*&#39;</span> <span style="color:#e6db74">&#39;.*&#39;</span> <span style="color:#e6db74">&#39; .*&#39;</span></span></span></code></pre></div><h2 id="查看权限">查看权限<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%9d%83%e9%99%90">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl list_user_permissions user1
+</span></span><span style="display:flex;"><span>rabbitmqctl list_permissions -p vhost1</span></span></code></pre></div><h2 id="清除权限">清除权限<a class="anchor" href="#%e6%b8%85%e9%99%a4%e6%9d%83%e9%99%90">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl clear_permissions <span style="color:#f92672">[</span>-p VHostPath<span style="color:#f92672">]</span> User</span></span></code></pre></div><h2 id="删除用户">删除用户<a class="anchor" href="#%e5%88%a0%e9%99%a4%e7%94%a8%e6%88%b7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl delete_user Username</span></span></code></pre></div><h2 id="修改用户密码">修改用户密码<a class="anchor" href="#%e4%bf%ae%e6%94%b9%e7%94%a8%e6%88%b7%e5%af%86%e7%a0%81">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl change_password Username Newpassword</span></span></code></pre></div><h1 id="management-plugin">Management Plugin<a class="anchor" href="#management-plugin">#</a></h1>
+<p>找到安装rabbitMQ的路径，然后切换到<code>sbin</code>的文件夹，管理员运行Shell脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmq-pluginsenable rabbitmq_managementrabbitmqctl clear_permissions <span style="color:#f92672">[</span>-p VHostPath<span style="color:#f92672">]</span> User</span></span></code></pre></div><h2 id="启动监控管理器">启动监控管理器<a class="anchor" href="#%e5%90%af%e5%8a%a8%e7%9b%91%e6%8e%a7%e7%ae%a1%e7%90%86%e5%99%a8">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmq-plugins enable rabbitmq_management</span></span></code></pre></div><h2 id="关闭监控管理器">关闭监控管理器<a class="anchor" href="#%e5%85%b3%e9%97%ad%e7%9b%91%e6%8e%a7%e7%ae%a1%e7%90%86%e5%99%a8">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmq-plugins disable rabbitmq_management</span></span></code></pre></div><h2 id="启动rabbitmq">启动rabbitmq<a class="anchor" href="#%e5%90%af%e5%8a%a8rabbitmq">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>net start RabbitMQ</span></span></code></pre></div><h2 id="关闭rabbitmq">关闭rabbitmq<a class="anchor" href="#%e5%85%b3%e9%97%adrabbitmq">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>net stop RabbitMQ</span></span></code></pre></div><h2 id="查看所有的队列">查看所有的队列<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%89%80%e6%9c%89%e7%9a%84%e9%98%9f%e5%88%97">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl list_queues</span></span></code></pre></div><h2 id="清除所有的队列">清除所有的队列<a class="anchor" href="#%e6%b8%85%e9%99%a4%e6%89%80%e6%9c%89%e7%9a%84%e9%98%9f%e5%88%97">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl reset</span></span></code></pre></div><h2 id="查看已有用户及角色">查看已有用户及角色<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%b7%b2%e6%9c%89%e7%94%a8%e6%88%b7%e5%8f%8a%e8%a7%92%e8%89%b2">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl list_users</span></span></code></pre></div><h2 id="新增虚拟主机">新增虚拟主机<a class="anchor" href="#%e6%96%b0%e5%a2%9e%e8%99%9a%e6%8b%9f%e4%b8%bb%e6%9c%ba">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl add_vhost vhost_name</span></span></code></pre></div><h2 id="将新虚拟主机授权给新用户">将新虚拟主机授权给新用户<a class="anchor" href="#%e5%b0%86%e6%96%b0%e8%99%9a%e6%8b%9f%e4%b8%bb%e6%9c%ba%e6%8e%88%e6%9d%83%e7%bb%99%e6%96%b0%e7%94%a8%e6%88%b7">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl set_permissions -p vhost_name username <span style="color:#e6db74">&#39;.*&#39;</span> <span style="color:#e6db74">&#39;.*&#39;</span> <span style="color:#e6db74">&#39;.*&#39;</span></span></span></code></pre></div><h2 id="设置用户权限">设置用户权限<a class="anchor" href="#%e8%ae%be%e7%bd%ae%e7%94%a8%e6%88%b7%e6%9d%83%e9%99%90">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl set_permissions -p VHostPath username ConfP WriteP ReadP</span></span></code></pre></div><h2 id="查看指定hostpath所有用户的权限信息">查看(指定hostpath)所有用户的权限信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%8c%87%e5%ae%9ahostpath%e6%89%80%e6%9c%89%e7%94%a8%e6%88%b7%e7%9a%84%e6%9d%83%e9%99%90%e4%bf%a1%e6%81%af">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl list_permissions <span style="color:#f92672">[</span>-p VHostPath<span style="color:#f92672">]</span></span></span></code></pre></div><h2 id="查看指定用户的权限信息">查看指定用户的权限信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%8c%87%e5%ae%9a%e7%94%a8%e6%88%b7%e7%9a%84%e6%9d%83%e9%99%90%e4%bf%a1%e6%81%af">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl list_user_permissions username</span></span></code></pre></div><h2 id="清除用户的权限信息">清除用户的权限信息<a class="anchor" href="#%e6%b8%85%e9%99%a4%e7%94%a8%e6%88%b7%e7%9a%84%e6%9d%83%e9%99%90%e4%bf%a1%e6%81%af">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rabbitmqctl clear_permissions <span style="color:#f92672">[</span>-p VHostPath<span style="color:#f92672">]</span> username</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.5 Channel常见方法</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="flex align-center">
+      <span>1.7 Rabbit Mq常见策略</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#none">none</a></li>
+    <li><a href="#management">management</a></li>
+    <li><a href="#policymaker">policymaker</a></li>
+    <li><a href="#monitoring">monitoring</a></li>
+    <li><a href="#administrator">administrator</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#创建用户">创建用户</a></li>
+    <li><a href="#设置权限">设置权限</a></li>
+    <li><a href="#查看用户列表">查看用户列表</a></li>
+    <li><a href="#为用户赋权">为用户赋权</a></li>
+    <li><a href="#查看权限">查看权限</a></li>
+    <li><a href="#清除权限">清除权限</a></li>
+    <li><a href="#删除用户">删除用户</a></li>
+    <li><a href="#修改用户密码">修改用户密码</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#启动监控管理器">启动监控管理器</a></li>
+    <li><a href="#关闭监控管理器">关闭监控管理器</a></li>
+    <li><a href="#启动rabbitmq">启动rabbitmq</a></li>
+    <li><a href="#关闭rabbitmq">关闭rabbitmq</a></li>
+    <li><a href="#查看所有的队列">查看所有的队列</a></li>
+    <li><a href="#清除所有的队列">清除所有的队列</a></li>
+    <li><a href="#查看已有用户及角色">查看已有用户及角色</a></li>
+    <li><a href="#新增虚拟主机">新增虚拟主机</a></li>
+    <li><a href="#将新虚拟主机授权给新用户">将新虚拟主机授权给新用户</a></li>
+    <li><a href="#设置用户权限">设置用户权限</a></li>
+    <li><a href="#查看指定hostpath所有用户的权限信息">查看(指定hostpath)所有用户的权限信息</a></li>
+    <li><a href="#查看指定用户的权限信息">查看指定用户的权限信息</a></li>
+    <li><a href="#清除用户的权限信息">清除用户的权限信息</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="客户端连接RabbitMQ
+RabbitMQ.Client# 基于 RabbitMQ.Client 的封装，在 NuGet 中搜索 RabbitMQ.Client ，直接点击按钮安装即可。
+namespace CommonLib.RabbitMQ { using global::RabbitMQ.Client; using global::RabbitMQ.Client.Events; using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading; public class QueueOptions { /// &lt;summary&gt; /// 是否持久化 /// &lt;/summary&gt; public bool Durable { get; set; } = true; /// &lt;summary&gt; /// 是否自动删除 /// &lt;/summary&gt; public bool AutoDelete { get; set; } = false; /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; Arguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public class ConsumeQueueOptions : QueueOptions { /// &lt;summary&gt; /// 是否自动提交 /// &lt;/summary&gt; public bool AutoAck { get; set; } = false; /// &lt;summary&gt; /// 每次接收消息条数 /// &lt;/summary&gt; public ushort? FetchCount { get; set; } = 1; } public class ExchangeConsumeQueueOptions : ConsumeQueueOptions { /// &lt;summary&gt; /// 路由值 /// &lt;/summary&gt; public string[] RoutingKeys { get; set; } /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; BindArguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public class ExchangeQueueOptions : QueueOptions { /// &lt;summary&gt; /// 交换机类型 /// &lt;/summary&gt; public string Type { get; set; } /// &lt;summary&gt; /// 队列及路由值 /// &lt;/summary&gt; public List&lt;Tuple&lt;string, string&gt;&gt; QueueAndRoutingKey { get; set; } = new List&lt;Tuple&lt;string, string&gt;&gt;(); /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; BindArguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public static class RabbitMQExchangeType { /// &lt;summary&gt; /// 普通模式 /// &lt;/summary&gt; public const string Common = &#34;&#34;; /// &lt;summary&gt; /// 路由模式 /// &lt;/summary&gt; public const string Direct = &#34;direct&#34;; /// &lt;summary&gt; /// 发布/订阅模式 /// &lt;/summary&gt; public const string Fanout = &#34;fanout&#34;; /// &lt;summary&gt; /// 匹配订阅模式 /// &lt;/summary&gt; public const string Topic = &#34;topic&#34;; } public abstract class RabbitBase : IDisposable { private readonly List&lt;AmqpTcpEndpoint&gt; amqpList; private IConnection connection; protected RabbitBase(params string[] hosts) { if (hosts == null || hosts.Length == 0) { throw new ArgumentException(&#34;invalid hosts！&#34;, nameof(hosts)); } amqpList = new List&lt;AmqpTcpEndpoint&gt;(); amqpList.AddRange(hosts.Select(host =&gt; new AmqpTcpEndpoint(host, Port))); } protected RabbitBase(params (string, int)[] hostAndPorts) { if (hostAndPorts == null || hostAndPorts.Length == 0) { throw new ArgumentException(&#34;invalid hosts！&#34;, nameof(hostAndPorts)); } amqpList = new List&lt;AmqpTcpEndpoint&gt;(); amqpList.AddRange(hostAndPorts.Select(tuple =&gt; new AmqpTcpEndpoint(tuple.Item1, tuple.Item2))); } /// &lt;summary&gt; /// 端口 /// &lt;/summary&gt; public int Port { get; set; } = 5672; /// &lt;summary&gt; /// 账号 /// &lt;/summary&gt; public string UserName { get; set; } = ConnectionFactory.DefaultUser; /// &lt;summary&gt; /// 密码 /// &lt;/summary&gt; public string Password { get; set; } = ConnectionFactory.DefaultPass; /// &lt;summary&gt; /// 虚拟机 /// &lt;/summary&gt; public string VirtualHost { get; set; } = ConnectionFactory.DefaultVHost; public virtual void Dispose() { // connection?.Close(); // connection?.Dispose(); } /// &lt;summary&gt; /// 关闭连接 /// &lt;/summary&gt; public void Close() { connection?.Close(); connection?.Dispose(); } /// &lt;summary&gt; /// 获取rabbitmq的连接 /// &lt;/summary&gt; /// &lt;returns&gt;&lt;/returns&gt; protected IModel GetChannel() { if (connection == null) { lock (this) { if (connection == null) { ConnectionFactory factory = new() { Port = Port, UserName = UserName, VirtualHost = VirtualHost, Password = Password }; // 网络故障自动恢复连接 factory.AutomaticRecoveryEnabled = true; // 心跳处理 factory.RequestedHeartbeat = new TimeSpan(5000); connection = factory.CreateConnection(amqpList); } } } return connection.CreateModel(); } } public class RabbitMQHelper : RabbitBase { public RabbitMQHelper(params string[] hosts) : base(hosts) { } public RabbitMQHelper(params (string, int)[] hostAndPorts) : base(hostAndPorts) { } /// &lt;summary&gt; /// 简单队列消息发布 /// &lt;/summary&gt; /// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt; /// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; public void Publish(string queue, string message, QueueOptions options = null) { options ??= new QueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); byte[] buffer = Encoding.UTF8.GetBytes(message); channel.BasicPublish(exchange: &#34;&#34;, routingKey: queue, basicProperties: null, body: buffer); channel.Close(); } /// &lt;summary&gt; /// 订阅模式/路由模式/Topic模式 /// &lt;/summary&gt; /// &lt;param name=&#34;exchange&#34;&gt;The exchange.&lt;/param&gt; /// &lt;param name=&#34;routingKey&#34;&gt;The routing key.&lt;/param&gt; /// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; public void Publish(string exchange, string routingKey, string message, ExchangeQueueOptions options = null) { options ??= new ExchangeQueueOptions(); IModel channel = GetChannel(); channel.ExchangeDeclare(exchange, string.IsNullOrEmpty(options.Type) ? RabbitMQExchangeType.Fanout : options.Type, options.Durable, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); if (options.QueueAndRoutingKey.Count &gt; 0) { foreach (var item in options.QueueAndRoutingKey) { if (!string.IsNullOrEmpty(item.Item1)) { channel.QueueDeclare(item.Item1, options.Durable, false, options.AutoDelete, options.Arguments); channel.QueueBind(item.Item1, exchange, item.Item2 ?? &#34;&#34;, options.BindArguments ?? new Dictionary&lt;string, object&gt;()); } } } byte[] buffer = Encoding.UTF8.GetBytes(message); channel.BasicPublish(exchange, routingKey, null, buffer); channel.Close(); } public event Action&lt;RecieveResult&gt; Received; /// &lt;summary&gt; /// 构造消费者 /// &lt;/summary&gt; /// &lt;param name=&#34;channel&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; private IBasicConsumer ConsumeInternal(IModel channel, ConsumeQueueOptions options) { EventingBasicConsumer consumer = new(channel); consumer.Received &#43;= (sender, e) =&gt; { try { CancellationTokenSource cancellationTokenSource = new(); if (!options.AutoAck) { cancellationTokenSource.Token.Register(() =&gt; { channel.BasicAck(e.DeliveryTag, false); }); } Received?.Invoke(new RecieveResult(e, cancellationTokenSource)); } catch { } }; if (options.FetchCount != null) { channel.BasicQos(0, options.FetchCount.Value, false); } return consumer; } /// &lt;summary&gt; /// 消息监听 /// &lt;/summary&gt; /// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; public ListenResult Listen(string queue, ConsumeQueueOptions options = null) { options ??= new ConsumeQueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); IBasicConsumer consumer = ConsumeInternal(channel, options); channel.BasicConsume(queue, options.AutoAck, consumer); ListenResult result = new(); result.Token.Register(() =&gt; { try { channel.Close(); channel.Dispose(); } catch { } }); return result; } /// &lt;summary&gt; /// 消费消息 /// &lt;/summary&gt; /// &lt;param name=&#34;exchange&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;queue&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt; public ListenResult Listen(string exchange, string queue, ExchangeConsumeQueueOptions options = null) { options ??= new ExchangeConsumeQueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); if (options.RoutingKeys != null &amp;&amp; !string.IsNullOrEmpty(exchange)) { foreach (string key in options.RoutingKeys) { channel.QueueBind(queue, exchange, key, options.BindArguments); } } IBasicConsumer consumer = ConsumeInternal(channel, options); channel.BasicConsume(queue, options.AutoAck, consumer); ListenResult result = new(); result.Token.Register(() =&gt; { try { channel.Close(); channel.Dispose(); } catch { } }); return result; } public class RecieveResult { private CancellationTokenSource cancellationTokenSource; public RecieveResult(BasicDeliverEventArgs arg, CancellationTokenSource cancellationTokenSource) { Body = Encoding.UTF8.GetString(arg.Body.ToArray()); ConsumerTag = arg.ConsumerTag; DeliveryTag = arg.DeliveryTag; Exchange = arg.Exchange; Redelivered = arg.Redelivered; RoutingKey = arg.RoutingKey; this.cancellationTokenSource = cancellationTokenSource; } /// &lt;summary&gt; /// 消息体 /// &lt;/summary&gt; public string Body { get; private set; } /// &lt;summary&gt; /// 消费者标签 /// &lt;/summary&gt; public string ConsumerTag { get; private set; } /// &lt;summary&gt; /// Ack标签 /// &lt;/summary&gt; public ulong DeliveryTag { get; private set; } /// &lt;summary&gt; /// 交换机 /// &lt;/summary&gt; public string Exchange { get; private set; } /// &lt;summary&gt; /// 是否Ack /// &lt;/summary&gt; public bool Redelivered { get; private set; } /// &lt;summary&gt; /// 路由 /// &lt;/summary&gt; public string RoutingKey { get; private set; } public void Commit() { if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested) return; cancellationTokenSource.Cancel(); cancellationTokenSource.Dispose(); cancellationTokenSource = null; } } public class ListenResult { private readonly CancellationTokenSource cancellationTokenSource; /// &lt;summary&gt; /// CancellationToken /// &lt;/summary&gt; public CancellationToken Token { get { return cancellationTokenSource.Token; } } /// &lt;summary&gt; /// 是否已停止 /// &lt;/summary&gt; public bool Stoped { get { return cancellationTokenSource.IsCancellationRequested; } } public ListenResult() { cancellationTokenSource = new CancellationTokenSource(); } /// &lt;summary&gt; /// 停止监听 /// &lt;/summary&gt; public void Stop() { cancellationTokenSource.Cancel(); } } } }EasyNetQ# 简介# EasyNetQ 是基于官方.NET组件 RabbitMQ.Client 的又一层封装，使用起来更加方便，不用关心具体队列声明，路由声明等细节。EasyNetQ目的是提供一个尽可能简洁适用于RabbitMQ的.NET类库。为了实现这些目标，EasyNetQ强制使用了一些简单的约定。包括如下:
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="客户端连接RabbitMQ
+RabbitMQ.Client# 基于 RabbitMQ.Client 的封装，在 NuGet 中搜索 RabbitMQ.Client ，直接点击按钮安装即可。
+namespace CommonLib.RabbitMQ { using global::RabbitMQ.Client; using global::RabbitMQ.Client.Events; using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading; public class QueueOptions { /// &lt;summary&gt; /// 是否持久化 /// &lt;/summary&gt; public bool Durable { get; set; } = true; /// &lt;summary&gt; /// 是否自动删除 /// &lt;/summary&gt; public bool AutoDelete { get; set; } = false; /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; Arguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public class ConsumeQueueOptions : QueueOptions { /// &lt;summary&gt; /// 是否自动提交 /// &lt;/summary&gt; public bool AutoAck { get; set; } = false; /// &lt;summary&gt; /// 每次接收消息条数 /// &lt;/summary&gt; public ushort? FetchCount { get; set; } = 1; } public class ExchangeConsumeQueueOptions : ConsumeQueueOptions { /// &lt;summary&gt; /// 路由值 /// &lt;/summary&gt; public string[] RoutingKeys { get; set; } /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; BindArguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public class ExchangeQueueOptions : QueueOptions { /// &lt;summary&gt; /// 交换机类型 /// &lt;/summary&gt; public string Type { get; set; } /// &lt;summary&gt; /// 队列及路由值 /// &lt;/summary&gt; public List&lt;Tuple&lt;string, string&gt;&gt; QueueAndRoutingKey { get; set; } = new List&lt;Tuple&lt;string, string&gt;&gt;(); /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; BindArguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public static class RabbitMQExchangeType { /// &lt;summary&gt; /// 普通模式 /// &lt;/summary&gt; public const string Common = &#34;&#34;; /// &lt;summary&gt; /// 路由模式 /// &lt;/summary&gt; public const string Direct = &#34;direct&#34;; /// &lt;summary&gt; /// 发布/订阅模式 /// &lt;/summary&gt; public const string Fanout = &#34;fanout&#34;; /// &lt;summary&gt; /// 匹配订阅模式 /// &lt;/summary&gt; public const string Topic = &#34;topic&#34;; } public abstract class RabbitBase : IDisposable { private readonly List&lt;AmqpTcpEndpoint&gt; amqpList; private IConnection connection; protected RabbitBase(params string[] hosts) { if (hosts == null || hosts.Length == 0) { throw new ArgumentException(&#34;invalid hosts！&#34;, nameof(hosts)); } amqpList = new List&lt;AmqpTcpEndpoint&gt;(); amqpList.AddRange(hosts.Select(host =&gt; new AmqpTcpEndpoint(host, Port))); } protected RabbitBase(params (string, int)[] hostAndPorts) { if (hostAndPorts == null || hostAndPorts.Length == 0) { throw new ArgumentException(&#34;invalid hosts！&#34;, nameof(hostAndPorts)); } amqpList = new List&lt;AmqpTcpEndpoint&gt;(); amqpList.AddRange(hostAndPorts.Select(tuple =&gt; new AmqpTcpEndpoint(tuple.Item1, tuple.Item2))); } /// &lt;summary&gt; /// 端口 /// &lt;/summary&gt; public int Port { get; set; } = 5672; /// &lt;summary&gt; /// 账号 /// &lt;/summary&gt; public string UserName { get; set; } = ConnectionFactory.DefaultUser; /// &lt;summary&gt; /// 密码 /// &lt;/summary&gt; public string Password { get; set; } = ConnectionFactory.DefaultPass; /// &lt;summary&gt; /// 虚拟机 /// &lt;/summary&gt; public string VirtualHost { get; set; } = ConnectionFactory.DefaultVHost; public virtual void Dispose() { // connection?.Close(); // connection?.Dispose(); } /// &lt;summary&gt; /// 关闭连接 /// &lt;/summary&gt; public void Close() { connection?.Close(); connection?.Dispose(); } /// &lt;summary&gt; /// 获取rabbitmq的连接 /// &lt;/summary&gt; /// &lt;returns&gt;&lt;/returns&gt; protected IModel GetChannel() { if (connection == null) { lock (this) { if (connection == null) { ConnectionFactory factory = new() { Port = Port, UserName = UserName, VirtualHost = VirtualHost, Password = Password }; // 网络故障自动恢复连接 factory.AutomaticRecoveryEnabled = true; // 心跳处理 factory.RequestedHeartbeat = new TimeSpan(5000); connection = factory.CreateConnection(amqpList); } } } return connection.CreateModel(); } } public class RabbitMQHelper : RabbitBase { public RabbitMQHelper(params string[] hosts) : base(hosts) { } public RabbitMQHelper(params (string, int)[] hostAndPorts) : base(hostAndPorts) { } /// &lt;summary&gt; /// 简单队列消息发布 /// &lt;/summary&gt; /// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt; /// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; public void Publish(string queue, string message, QueueOptions options = null) { options ??= new QueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); byte[] buffer = Encoding.UTF8.GetBytes(message); channel.BasicPublish(exchange: &#34;&#34;, routingKey: queue, basicProperties: null, body: buffer); channel.Close(); } /// &lt;summary&gt; /// 订阅模式/路由模式/Topic模式 /// &lt;/summary&gt; /// &lt;param name=&#34;exchange&#34;&gt;The exchange.&lt;/param&gt; /// &lt;param name=&#34;routingKey&#34;&gt;The routing key.&lt;/param&gt; /// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; public void Publish(string exchange, string routingKey, string message, ExchangeQueueOptions options = null) { options ??= new ExchangeQueueOptions(); IModel channel = GetChannel(); channel.ExchangeDeclare(exchange, string.IsNullOrEmpty(options.Type) ? RabbitMQExchangeType.Fanout : options.Type, options.Durable, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); if (options.QueueAndRoutingKey.Count &gt; 0) { foreach (var item in options.QueueAndRoutingKey) { if (!string.IsNullOrEmpty(item.Item1)) { channel.QueueDeclare(item.Item1, options.Durable, false, options.AutoDelete, options.Arguments); channel.QueueBind(item.Item1, exchange, item.Item2 ?? &#34;&#34;, options.BindArguments ?? new Dictionary&lt;string, object&gt;()); } } } byte[] buffer = Encoding.UTF8.GetBytes(message); channel.BasicPublish(exchange, routingKey, null, buffer); channel.Close(); } public event Action&lt;RecieveResult&gt; Received; /// &lt;summary&gt; /// 构造消费者 /// &lt;/summary&gt; /// &lt;param name=&#34;channel&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; private IBasicConsumer ConsumeInternal(IModel channel, ConsumeQueueOptions options) { EventingBasicConsumer consumer = new(channel); consumer.Received &#43;= (sender, e) =&gt; { try { CancellationTokenSource cancellationTokenSource = new(); if (!options.AutoAck) { cancellationTokenSource.Token.Register(() =&gt; { channel.BasicAck(e.DeliveryTag, false); }); } Received?.Invoke(new RecieveResult(e, cancellationTokenSource)); } catch { } }; if (options.FetchCount != null) { channel.BasicQos(0, options.FetchCount.Value, false); } return consumer; } /// &lt;summary&gt; /// 消息监听 /// &lt;/summary&gt; /// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; public ListenResult Listen(string queue, ConsumeQueueOptions options = null) { options ??= new ConsumeQueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); IBasicConsumer consumer = ConsumeInternal(channel, options); channel.BasicConsume(queue, options.AutoAck, consumer); ListenResult result = new(); result.Token.Register(() =&gt; { try { channel.Close(); channel.Dispose(); } catch { } }); return result; } /// &lt;summary&gt; /// 消费消息 /// &lt;/summary&gt; /// &lt;param name=&#34;exchange&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;queue&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt; public ListenResult Listen(string exchange, string queue, ExchangeConsumeQueueOptions options = null) { options ??= new ExchangeConsumeQueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); if (options.RoutingKeys != null &amp;&amp; !string.IsNullOrEmpty(exchange)) { foreach (string key in options.RoutingKeys) { channel.QueueBind(queue, exchange, key, options.BindArguments); } } IBasicConsumer consumer = ConsumeInternal(channel, options); channel.BasicConsume(queue, options.AutoAck, consumer); ListenResult result = new(); result.Token.Register(() =&gt; { try { channel.Close(); channel.Dispose(); } catch { } }); return result; } public class RecieveResult { private CancellationTokenSource cancellationTokenSource; public RecieveResult(BasicDeliverEventArgs arg, CancellationTokenSource cancellationTokenSource) { Body = Encoding.UTF8.GetString(arg.Body.ToArray()); ConsumerTag = arg.ConsumerTag; DeliveryTag = arg.DeliveryTag; Exchange = arg.Exchange; Redelivered = arg.Redelivered; RoutingKey = arg.RoutingKey; this.cancellationTokenSource = cancellationTokenSource; } /// &lt;summary&gt; /// 消息体 /// &lt;/summary&gt; public string Body { get; private set; } /// &lt;summary&gt; /// 消费者标签 /// &lt;/summary&gt; public string ConsumerTag { get; private set; } /// &lt;summary&gt; /// Ack标签 /// &lt;/summary&gt; public ulong DeliveryTag { get; private set; } /// &lt;summary&gt; /// 交换机 /// &lt;/summary&gt; public string Exchange { get; private set; } /// &lt;summary&gt; /// 是否Ack /// &lt;/summary&gt; public bool Redelivered { get; private set; } /// &lt;summary&gt; /// 路由 /// &lt;/summary&gt; public string RoutingKey { get; private set; } public void Commit() { if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested) return; cancellationTokenSource.Cancel(); cancellationTokenSource.Dispose(); cancellationTokenSource = null; } } public class ListenResult { private readonly CancellationTokenSource cancellationTokenSource; /// &lt;summary&gt; /// CancellationToken /// &lt;/summary&gt; public CancellationToken Token { get { return cancellationTokenSource.Token; } } /// &lt;summary&gt; /// 是否已停止 /// &lt;/summary&gt; public bool Stoped { get { return cancellationTokenSource.IsCancellationRequested; } } public ListenResult() { cancellationTokenSource = new CancellationTokenSource(); } /// &lt;summary&gt; /// 停止监听 /// &lt;/summary&gt; public void Stop() { cancellationTokenSource.Cancel(); } } } }EasyNetQ# 简介# EasyNetQ 是基于官方.NET组件 RabbitMQ.Client 的又一层封装，使用起来更加方便，不用关心具体队列声明，路由声明等细节。EasyNetQ目的是提供一个尽可能简洁适用于RabbitMQ的.NET类库。为了实现这些目标，EasyNetQ强制使用了一些简单的约定。包括如下:">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="客户端连接RabbitMQ
+RabbitMQ.Client# 基于 RabbitMQ.Client 的封装，在 NuGet 中搜索 RabbitMQ.Client ，直接点击按钮安装即可。
+namespace CommonLib.RabbitMQ { using global::RabbitMQ.Client; using global::RabbitMQ.Client.Events; using System; using System.Collections.Generic; using System.Linq; using System.Text; using System.Threading; public class QueueOptions { /// &lt;summary&gt; /// 是否持久化 /// &lt;/summary&gt; public bool Durable { get; set; } = true; /// &lt;summary&gt; /// 是否自动删除 /// &lt;/summary&gt; public bool AutoDelete { get; set; } = false; /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; Arguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public class ConsumeQueueOptions : QueueOptions { /// &lt;summary&gt; /// 是否自动提交 /// &lt;/summary&gt; public bool AutoAck { get; set; } = false; /// &lt;summary&gt; /// 每次接收消息条数 /// &lt;/summary&gt; public ushort? FetchCount { get; set; } = 1; } public class ExchangeConsumeQueueOptions : ConsumeQueueOptions { /// &lt;summary&gt; /// 路由值 /// &lt;/summary&gt; public string[] RoutingKeys { get; set; } /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; BindArguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public class ExchangeQueueOptions : QueueOptions { /// &lt;summary&gt; /// 交换机类型 /// &lt;/summary&gt; public string Type { get; set; } /// &lt;summary&gt; /// 队列及路由值 /// &lt;/summary&gt; public List&lt;Tuple&lt;string, string&gt;&gt; QueueAndRoutingKey { get; set; } = new List&lt;Tuple&lt;string, string&gt;&gt;(); /// &lt;summary&gt; /// 参数 /// &lt;/summary&gt; public IDictionary&lt;string, object&gt; BindArguments { get; set; } = new Dictionary&lt;string, object&gt;(); } public static class RabbitMQExchangeType { /// &lt;summary&gt; /// 普通模式 /// &lt;/summary&gt; public const string Common = &#34;&#34;; /// &lt;summary&gt; /// 路由模式 /// &lt;/summary&gt; public const string Direct = &#34;direct&#34;; /// &lt;summary&gt; /// 发布/订阅模式 /// &lt;/summary&gt; public const string Fanout = &#34;fanout&#34;; /// &lt;summary&gt; /// 匹配订阅模式 /// &lt;/summary&gt; public const string Topic = &#34;topic&#34;; } public abstract class RabbitBase : IDisposable { private readonly List&lt;AmqpTcpEndpoint&gt; amqpList; private IConnection connection; protected RabbitBase(params string[] hosts) { if (hosts == null || hosts.Length == 0) { throw new ArgumentException(&#34;invalid hosts！&#34;, nameof(hosts)); } amqpList = new List&lt;AmqpTcpEndpoint&gt;(); amqpList.AddRange(hosts.Select(host =&gt; new AmqpTcpEndpoint(host, Port))); } protected RabbitBase(params (string, int)[] hostAndPorts) { if (hostAndPorts == null || hostAndPorts.Length == 0) { throw new ArgumentException(&#34;invalid hosts！&#34;, nameof(hostAndPorts)); } amqpList = new List&lt;AmqpTcpEndpoint&gt;(); amqpList.AddRange(hostAndPorts.Select(tuple =&gt; new AmqpTcpEndpoint(tuple.Item1, tuple.Item2))); } /// &lt;summary&gt; /// 端口 /// &lt;/summary&gt; public int Port { get; set; } = 5672; /// &lt;summary&gt; /// 账号 /// &lt;/summary&gt; public string UserName { get; set; } = ConnectionFactory.DefaultUser; /// &lt;summary&gt; /// 密码 /// &lt;/summary&gt; public string Password { get; set; } = ConnectionFactory.DefaultPass; /// &lt;summary&gt; /// 虚拟机 /// &lt;/summary&gt; public string VirtualHost { get; set; } = ConnectionFactory.DefaultVHost; public virtual void Dispose() { // connection?.Close(); // connection?.Dispose(); } /// &lt;summary&gt; /// 关闭连接 /// &lt;/summary&gt; public void Close() { connection?.Close(); connection?.Dispose(); } /// &lt;summary&gt; /// 获取rabbitmq的连接 /// &lt;/summary&gt; /// &lt;returns&gt;&lt;/returns&gt; protected IModel GetChannel() { if (connection == null) { lock (this) { if (connection == null) { ConnectionFactory factory = new() { Port = Port, UserName = UserName, VirtualHost = VirtualHost, Password = Password }; // 网络故障自动恢复连接 factory.AutomaticRecoveryEnabled = true; // 心跳处理 factory.RequestedHeartbeat = new TimeSpan(5000); connection = factory.CreateConnection(amqpList); } } } return connection.CreateModel(); } } public class RabbitMQHelper : RabbitBase { public RabbitMQHelper(params string[] hosts) : base(hosts) { } public RabbitMQHelper(params (string, int)[] hostAndPorts) : base(hostAndPorts) { } /// &lt;summary&gt; /// 简单队列消息发布 /// &lt;/summary&gt; /// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt; /// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; public void Publish(string queue, string message, QueueOptions options = null) { options ??= new QueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); byte[] buffer = Encoding.UTF8.GetBytes(message); channel.BasicPublish(exchange: &#34;&#34;, routingKey: queue, basicProperties: null, body: buffer); channel.Close(); } /// &lt;summary&gt; /// 订阅模式/路由模式/Topic模式 /// &lt;/summary&gt; /// &lt;param name=&#34;exchange&#34;&gt;The exchange.&lt;/param&gt; /// &lt;param name=&#34;routingKey&#34;&gt;The routing key.&lt;/param&gt; /// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; public void Publish(string exchange, string routingKey, string message, ExchangeQueueOptions options = null) { options ??= new ExchangeQueueOptions(); IModel channel = GetChannel(); channel.ExchangeDeclare(exchange, string.IsNullOrEmpty(options.Type) ? RabbitMQExchangeType.Fanout : options.Type, options.Durable, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); if (options.QueueAndRoutingKey.Count &gt; 0) { foreach (var item in options.QueueAndRoutingKey) { if (!string.IsNullOrEmpty(item.Item1)) { channel.QueueDeclare(item.Item1, options.Durable, false, options.AutoDelete, options.Arguments); channel.QueueBind(item.Item1, exchange, item.Item2 ?? &#34;&#34;, options.BindArguments ?? new Dictionary&lt;string, object&gt;()); } } } byte[] buffer = Encoding.UTF8.GetBytes(message); channel.BasicPublish(exchange, routingKey, null, buffer); channel.Close(); } public event Action&lt;RecieveResult&gt; Received; /// &lt;summary&gt; /// 构造消费者 /// &lt;/summary&gt; /// &lt;param name=&#34;channel&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; private IBasicConsumer ConsumeInternal(IModel channel, ConsumeQueueOptions options) { EventingBasicConsumer consumer = new(channel); consumer.Received &#43;= (sender, e) =&gt; { try { CancellationTokenSource cancellationTokenSource = new(); if (!options.AutoAck) { cancellationTokenSource.Token.Register(() =&gt; { channel.BasicAck(e.DeliveryTag, false); }); } Received?.Invoke(new RecieveResult(e, cancellationTokenSource)); } catch { } }; if (options.FetchCount != null) { channel.BasicQos(0, options.FetchCount.Value, false); } return consumer; } /// &lt;summary&gt; /// 消息监听 /// &lt;/summary&gt; /// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; public ListenResult Listen(string queue, ConsumeQueueOptions options = null) { options ??= new ConsumeQueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); IBasicConsumer consumer = ConsumeInternal(channel, options); channel.BasicConsume(queue, options.AutoAck, consumer); ListenResult result = new(); result.Token.Register(() =&gt; { try { channel.Close(); channel.Dispose(); } catch { } }); return result; } /// &lt;summary&gt; /// 消费消息 /// &lt;/summary&gt; /// &lt;param name=&#34;exchange&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;queue&#34;&gt;&lt;/param&gt; /// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt; public ListenResult Listen(string exchange, string queue, ExchangeConsumeQueueOptions options = null) { options ??= new ExchangeConsumeQueueOptions(); IModel channel = GetChannel(); channel.QueueDeclare(queue, options.Durable, false, options.AutoDelete, options.Arguments ?? new Dictionary&lt;string, object&gt;()); if (options.RoutingKeys != null &amp;&amp; !string.IsNullOrEmpty(exchange)) { foreach (string key in options.RoutingKeys) { channel.QueueBind(queue, exchange, key, options.BindArguments); } } IBasicConsumer consumer = ConsumeInternal(channel, options); channel.BasicConsume(queue, options.AutoAck, consumer); ListenResult result = new(); result.Token.Register(() =&gt; { try { channel.Close(); channel.Dispose(); } catch { } }); return result; } public class RecieveResult { private CancellationTokenSource cancellationTokenSource; public RecieveResult(BasicDeliverEventArgs arg, CancellationTokenSource cancellationTokenSource) { Body = Encoding.UTF8.GetString(arg.Body.ToArray()); ConsumerTag = arg.ConsumerTag; DeliveryTag = arg.DeliveryTag; Exchange = arg.Exchange; Redelivered = arg.Redelivered; RoutingKey = arg.RoutingKey; this.cancellationTokenSource = cancellationTokenSource; } /// &lt;summary&gt; /// 消息体 /// &lt;/summary&gt; public string Body { get; private set; } /// &lt;summary&gt; /// 消费者标签 /// &lt;/summary&gt; public string ConsumerTag { get; private set; } /// &lt;summary&gt; /// Ack标签 /// &lt;/summary&gt; public ulong DeliveryTag { get; private set; } /// &lt;summary&gt; /// 交换机 /// &lt;/summary&gt; public string Exchange { get; private set; } /// &lt;summary&gt; /// 是否Ack /// &lt;/summary&gt; public bool Redelivered { get; private set; } /// &lt;summary&gt; /// 路由 /// &lt;/summary&gt; public string RoutingKey { get; private set; } public void Commit() { if (cancellationTokenSource == null || cancellationTokenSource.IsCancellationRequested) return; cancellationTokenSource.Cancel(); cancellationTokenSource.Dispose(); cancellationTokenSource = null; } } public class ListenResult { private readonly CancellationTokenSource cancellationTokenSource; /// &lt;summary&gt; /// CancellationToken /// &lt;/summary&gt; public CancellationToken Token { get { return cancellationTokenSource.Token; } } /// &lt;summary&gt; /// 是否已停止 /// &lt;/summary&gt; public bool Stoped { get { return cancellationTokenSource.IsCancellationRequested; } } public ListenResult() { cancellationTokenSource = new CancellationTokenSource(); } /// &lt;summary&gt; /// 停止监听 /// &lt;/summary&gt; public void Stop() { cancellationTokenSource.Cancel(); } } } }EasyNetQ# 简介# EasyNetQ 是基于官方.NET组件 RabbitMQ.Client 的又一层封装，使用起来更加方便，不用关心具体队列声明，路由声明等细节。EasyNetQ目的是提供一个尽可能简洁适用于RabbitMQ的.NET类库。为了实现这些目标，EasyNetQ强制使用了一些简单的约定。包括如下:">
+  <meta itemprop="wordCount" content="1320">
+
+<title>客户端连接 Rabbit Mq | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>客户端连接 Rabbit Mq</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#优势">优势</a></li>
+    <li><a href="#安装">安装</a></li>
+    <li><a href="#连接">连接</a></li>
+    <li><a href="#日志">日志</a></li>
+    <li><a href="#发布订阅">发布/订阅</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    客户端连接 Rabbit Mq
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>客户端连接RabbitMQ</p>
+<!-- more -->
+<h1 id="rabbitmqclient">RabbitMQ.Client<a class="anchor" href="#rabbitmqclient">#</a></h1>
+<p>基于 <code>RabbitMQ.Client</code> 的封装，在 <code>NuGet</code> 中搜索 <code>RabbitMQ.Client</code> ，直接点击按钮安装即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> CommonLib.RabbitMQ
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> global::RabbitMQ.Client;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> global::RabbitMQ.Client.Events;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System.Collections.Generic;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System.Linq;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System.Text;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System.Threading;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueOptions</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 是否持久化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Durable { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 是否自动删除</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> AutoDelete { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 参数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> IDictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt; Arguments { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConsumeQueueOptions</span> : QueueOptions
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 是否自动提交</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> AutoAck { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 每次接收消息条数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">ushort?</span> FetchCount { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExchangeConsumeQueueOptions</span> : ConsumeQueueOptions
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 路由值</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span>[] RoutingKeys { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 参数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> IDictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt; BindArguments { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExchangeQueueOptions</span> : QueueOptions
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 交换机类型</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Type { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 队列及路由值</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> List&lt;Tuple&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;&gt; QueueAndRoutingKey { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">new</span> List&lt;Tuple&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 参数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> IDictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt; BindArguments { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RabbitMQExchangeType</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 普通模式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Common = <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 路由模式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Direct = <span style="color:#e6db74">&#34;direct&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 发布/订阅模式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Fanout = <span style="color:#e6db74">&#34;fanout&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 匹配订阅模式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Topic = <span style="color:#e6db74">&#34;topic&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RabbitBase</span> : IDisposable
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> List&lt;AmqpTcpEndpoint&gt; amqpList;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> IConnection connection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> RabbitBase(<span style="color:#66d9ef">params</span> <span style="color:#66d9ef">string</span>[] hosts)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (hosts == <span style="color:#66d9ef">null</span> || hosts.Length == <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentException(<span style="color:#e6db74">&#34;invalid hosts！&#34;</span>, nameof(hosts));
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            amqpList = <span style="color:#66d9ef">new</span> List&lt;AmqpTcpEndpoint&gt;();
+</span></span><span style="display:flex;"><span>            amqpList.AddRange(hosts.Select(host =&gt; <span style="color:#66d9ef">new</span> AmqpTcpEndpoint(host, Port)));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> RabbitBase(<span style="color:#66d9ef">params</span> (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">int</span>)[] hostAndPorts)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (hostAndPorts == <span style="color:#66d9ef">null</span> || hostAndPorts.Length == <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ArgumentException(<span style="color:#e6db74">&#34;invalid hosts！&#34;</span>, nameof(hostAndPorts));
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            amqpList = <span style="color:#66d9ef">new</span> List&lt;AmqpTcpEndpoint&gt;();
+</span></span><span style="display:flex;"><span>            amqpList.AddRange(hostAndPorts.Select(tuple =&gt; <span style="color:#66d9ef">new</span> AmqpTcpEndpoint(tuple.Item1, tuple.Item2)));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 端口</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Port { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">5672</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 账号</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> UserName { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = ConnectionFactory.DefaultUser;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 密码</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Password { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = ConnectionFactory.DefaultPass;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 虚拟机</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> VirtualHost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = ConnectionFactory.DefaultVHost;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Dispose()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// connection?.Close();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// connection?.Dispose();</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 关闭连接</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Close()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            connection?.Close();
+</span></span><span style="display:flex;"><span>            connection?.Dispose();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 获取rabbitmq的连接</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> IModel GetChannel()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (connection == <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">lock</span> (<span style="color:#66d9ef">this</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (connection == <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        ConnectionFactory factory = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                            Port = Port,
+</span></span><span style="display:flex;"><span>                            UserName = UserName,
+</span></span><span style="display:flex;"><span>                            VirtualHost = VirtualHost,
+</span></span><span style="display:flex;"><span>                            Password = Password
+</span></span><span style="display:flex;"><span>                        };
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 网络故障自动恢复连接</span>
+</span></span><span style="display:flex;"><span>                        factory.AutomaticRecoveryEnabled = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 心跳处理</span>
+</span></span><span style="display:flex;"><span>                        factory.RequestedHeartbeat = <span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">5000</span>);
+</span></span><span style="display:flex;"><span>                        connection = factory.CreateConnection(amqpList);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> connection.CreateModel();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RabbitMQHelper</span> : RabbitBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> RabbitMQHelper(<span style="color:#66d9ef">params</span> <span style="color:#66d9ef">string</span>[] hosts) : <span style="color:#66d9ef">base</span>(hosts)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> RabbitMQHelper(<span style="color:#66d9ef">params</span> (<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">int</span>)[] hostAndPorts) : <span style="color:#66d9ef">base</span>(hostAndPorts)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 简单队列消息发布</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Publish(<span style="color:#66d9ef">string</span> queue, <span style="color:#66d9ef">string</span> message, QueueOptions options = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            options ??= <span style="color:#66d9ef">new</span> QueueOptions();
+</span></span><span style="display:flex;"><span>            IModel channel = GetChannel();
+</span></span><span style="display:flex;"><span>            channel.QueueDeclare(queue, options.Durable, <span style="color:#66d9ef">false</span>, options.AutoDelete, options.Arguments ?? <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;());
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span>[] buffer = Encoding.UTF8.GetBytes(message);
+</span></span><span style="display:flex;"><span>            channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>, routingKey: queue, basicProperties: <span style="color:#66d9ef">null</span>, body: buffer);
+</span></span><span style="display:flex;"><span>            channel.Close();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 订阅模式/路由模式/Topic模式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;exchange&#34;&gt;The exchange.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;routingKey&#34;&gt;The routing key.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Publish(<span style="color:#66d9ef">string</span> exchange, <span style="color:#66d9ef">string</span> routingKey, <span style="color:#66d9ef">string</span> message, ExchangeQueueOptions options = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            options ??= <span style="color:#66d9ef">new</span> ExchangeQueueOptions();
+</span></span><span style="display:flex;"><span>            IModel channel = GetChannel();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            channel.ExchangeDeclare(exchange,
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">string</span>.IsNullOrEmpty(options.Type) ? RabbitMQExchangeType.Fanout : options.Type,
+</span></span><span style="display:flex;"><span>                options.Durable,
+</span></span><span style="display:flex;"><span>                options.AutoDelete,
+</span></span><span style="display:flex;"><span>                options.Arguments ?? <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (options.QueueAndRoutingKey.Count &gt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> options.QueueAndRoutingKey)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (!<span style="color:#66d9ef">string</span>.IsNullOrEmpty(item.Item1))
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        channel.QueueDeclare(item.Item1, options.Durable, <span style="color:#66d9ef">false</span>, options.AutoDelete, options.Arguments);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        channel.QueueBind(item.Item1,
+</span></span><span style="display:flex;"><span>                            exchange,
+</span></span><span style="display:flex;"><span>                            item.Item2 ?? <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                            options.BindArguments ?? <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;());
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span>[] buffer = Encoding.UTF8.GetBytes(message);
+</span></span><span style="display:flex;"><span>            channel.BasicPublish(exchange, routingKey, <span style="color:#66d9ef">null</span>, buffer);
+</span></span><span style="display:flex;"><span>            channel.Close();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">event</span> Action&lt;RecieveResult&gt; Received;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 构造消费者</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;channel&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> IBasicConsumer ConsumeInternal(IModel channel, ConsumeQueueOptions options)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            EventingBasicConsumer consumer = <span style="color:#66d9ef">new</span>(channel);
+</span></span><span style="display:flex;"><span>            consumer.Received += (sender, e) =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    CancellationTokenSource cancellationTokenSource = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (!options.AutoAck)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        cancellationTokenSource.Token.Register(() =&gt;
+</span></span><span style="display:flex;"><span>                        {
+</span></span><span style="display:flex;"><span>                            channel.BasicAck(e.DeliveryTag, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>                        });
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    Received?.Invoke(<span style="color:#66d9ef">new</span> RecieveResult(e, cancellationTokenSource));
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">catch</span> { }
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (options.FetchCount != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                channel.BasicQos(<span style="color:#ae81ff">0</span>, options.FetchCount.Value, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> consumer;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 消息监听</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;queue&#34;&gt;The queue.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;options&#34;&gt;The options.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> ListenResult Listen(<span style="color:#66d9ef">string</span> queue, ConsumeQueueOptions options = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            options ??= <span style="color:#66d9ef">new</span> ConsumeQueueOptions();
+</span></span><span style="display:flex;"><span>            IModel channel = GetChannel();
+</span></span><span style="display:flex;"><span>            channel.QueueDeclare(queue, options.Durable, <span style="color:#66d9ef">false</span>, options.AutoDelete, options.Arguments ?? <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;());
+</span></span><span style="display:flex;"><span>            IBasicConsumer consumer = ConsumeInternal(channel, options);
+</span></span><span style="display:flex;"><span>            channel.BasicConsume(queue, options.AutoAck, consumer);
+</span></span><span style="display:flex;"><span>            ListenResult result = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>            result.Token.Register(() =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    channel.Close();
+</span></span><span style="display:flex;"><span>                    channel.Dispose();
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">catch</span> { }
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 消费消息</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;exchange&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;queue&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;options&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> ListenResult Listen(<span style="color:#66d9ef">string</span> exchange, <span style="color:#66d9ef">string</span> queue, ExchangeConsumeQueueOptions options = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            options ??= <span style="color:#66d9ef">new</span> ExchangeConsumeQueueOptions();
+</span></span><span style="display:flex;"><span>            IModel channel = GetChannel();
+</span></span><span style="display:flex;"><span>            channel.QueueDeclare(queue, options.Durable, <span style="color:#66d9ef">false</span>, options.AutoDelete, options.Arguments ?? <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;());
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (options.RoutingKeys != <span style="color:#66d9ef">null</span> &amp;&amp; !<span style="color:#66d9ef">string</span>.IsNullOrEmpty(exchange))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">string</span> key <span style="color:#66d9ef">in</span> options.RoutingKeys)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    channel.QueueBind(queue, exchange, key, options.BindArguments);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            IBasicConsumer consumer = ConsumeInternal(channel, options);
+</span></span><span style="display:flex;"><span>            channel.BasicConsume(queue, options.AutoAck, consumer);
+</span></span><span style="display:flex;"><span>            ListenResult result = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>            result.Token.Register(() =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    channel.Close();
+</span></span><span style="display:flex;"><span>                    channel.Dispose();
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">catch</span> { }
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RecieveResult</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">private</span> CancellationTokenSource cancellationTokenSource;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> RecieveResult(BasicDeliverEventArgs arg, CancellationTokenSource cancellationTokenSource)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Body = Encoding.UTF8.GetString(arg.Body.ToArray());
+</span></span><span style="display:flex;"><span>                ConsumerTag = arg.ConsumerTag;
+</span></span><span style="display:flex;"><span>                DeliveryTag = arg.DeliveryTag;
+</span></span><span style="display:flex;"><span>                Exchange = arg.Exchange;
+</span></span><span style="display:flex;"><span>                Redelivered = arg.Redelivered;
+</span></span><span style="display:flex;"><span>                RoutingKey = arg.RoutingKey;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">this</span>.cancellationTokenSource = cancellationTokenSource;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 消息体</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Body { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 消费者标签</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> ConsumerTag { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// Ack标签</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">ulong</span> DeliveryTag { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 交换机</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Exchange { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 是否Ack</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Redelivered { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 路由</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> RoutingKey { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Commit()
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (cancellationTokenSource == <span style="color:#66d9ef">null</span> || cancellationTokenSource.IsCancellationRequested) <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                cancellationTokenSource.Cancel();
+</span></span><span style="display:flex;"><span>                cancellationTokenSource.Dispose();
+</span></span><span style="display:flex;"><span>                cancellationTokenSource = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ListenResult</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> CancellationTokenSource cancellationTokenSource;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// CancellationToken</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> CancellationToken Token { <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> cancellationTokenSource.Token; } }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 是否已停止</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Stoped { <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> cancellationTokenSource.IsCancellationRequested; } }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> ListenResult()
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                cancellationTokenSource = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 停止监听</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Stop()
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                cancellationTokenSource.Cancel();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="easynetq">EasyNetQ<a class="anchor" href="#easynetq">#</a></h1>
+<h2 id="简介">简介<a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a></h2>
+<p>EasyNetQ 是基于官方.NET组件 RabbitMQ.Client 的又一层封装，使用起来更加方便，不用关心具体队列声明，路由声明等细节。EasyNetQ目的是提供一个尽可能简洁适用于RabbitMQ的.NET类库。为了实现这些目标，EasyNetQ强制使用了一些简单的约定。包括如下:</p>
+<ul>
+<li>消息用 .NET 类型 表示</li>
+<li>消息通过 .NET类型 路由</li>
+</ul>
+<p>这意味着消息必须用 .NET class定义。每一个不同的消息类型必须用一个 class 表示。这个类必须是 public 并带有一个默认构造函数和可以读写的属性。这个类不需要实现任何功能。仅仅做一个简单的数据容器，下面是一个简单的消息：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyMessage</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Content { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>EasyNetQ通过消息的类型来路由。当发布一个消息，EasyNetQ会检查消息类型， 然后给它一个 基于类型名称、命名空间和程序集的路由键。默认EasyNetQ使用 Newtonsoft.Json 序列化 .NET类型 为 JSON ，这样好处是消息可读性好。</p>
+<blockquote class='book-hint '>
+<p><strong>引用</strong>：EasyNetQ是一个在RabbitMQ.Client类库之上提供服务的组件集合。做了这些事情，像序列化、错误处理、线程管理、连接管理等。通过一个Mini-Ioc容器组织在一起。你能很容易用你自己实现去替换这些组件。所以如果你喜欢用XML 序列化而不是用JSON，仅仅需要以一个ISerializer的实现，然后注册到这个容器中。</p>
+<p>这些组件最上层是IAdvancedBus API。这看起来很像AMQP规格。实际也是你能够通过这个API运行很多AMQP方法。这个API对你隐藏了唯一AMQP概念是channels。这是因为channels 是一个复杂的底层概念，不应该被放到AMQP部分规格的第一的位置。 坦白来说，这个API中 ‘Advanced’不是一个非常好的名字。用‘lamqp’可能更好些。</p>
+<p>这个顶层高级API是一系列消息模式：Publish/Subscribe, Request/Response,和 Send/Receive. 这是EasyNetQ坚持的设计思想。这些模式是我们应该实现的。这样有非常小的弹性。要么你接受我的处理方法，或者你就不要去使用。这样做的目的是，不用你和使用者花费精力去重新发明轮子。你不需要每一次去做选择，你只需要简单的去Publish和Subscribe消息。这样设计是未来实现EasyNetQ的核心目标，即尽可能简单的使用RabbitMQ。</p>
+<p>这些模式的后面是这个 IBus API. 再一次看到这个一个简单的名字，它跟消息总线概念有关。IPackagedMessagePatterns可能是一个更好名字。</p>
+<p>80%的用户的工作，在80%的时间都会使用IBus。它不是完备的API，如果这个模式下，你想实现的功能这个IBus没有提供，那么你应该使用IAdvancedBus。这样使用没有问题，EasyNetQ就这这样设计使用的。</p>
+</blockquote><h2 id="优势">优势<a class="anchor" href="#%e4%bc%98%e5%8a%bf">#</a></h2>
+<p>C#中已经提供了RabbitMQ.Client， RabbitMQ. Client 实现了AMQP协议的客户端（RabbitMQ实现了服务器端）。 AMQP是为HTTP协议设计的。它的设计是跨平台的和与语言无关的。它也旨在灵活支持多种基于交换/绑定/队列模型的消息传递模式。</p>
+<p>RabiitMQ Client 非常地灵活，但是伴随着灵活性而来是复杂性。这意味着需要写大量代码。比如：</p>
+<ul>
+<li>实现消息传递模式，例如 <code>Publish/Subscribe</code>或 <code>Request/Response</code></li>
+<li>实现路由策略。需要设计如何绑定 Exchange/Queue 。并且需要设计怎样在生产者和消费者之间进行消息路由</li>
+<li>实现消息的序列化/反序列化。 如何转换AMQP的二进制消息为编程语言能理解的格式</li>
+<li>为订阅去实现一个消费者线程。将需要有一个专门的消费者循环等待订阅的消息。如何处理多个订阅者，或者瞬间订阅者</li>
+<li>实现消费者重新连接。假如连接崩溃了或者RabbitMQ 服务挂了，怎样能检测到并确保所有的订阅都能被重建</li>
+<li>懂得和实施服务质量设置。需要什么样的设置来确保一个可靠的客户端</li>
+<li>实现一个错误处理策略。假如接受到一个错误的消息，或者发生一个未处理异常被抛出，客户端应该做什么</li>
+<li>实现发布者可靠的消息确认。</li>
+</ul>
+<p>EasyNetQ目标是在AMQP之上封装所有这些关注点在一个简单好用的类库中。</p>
+<h2 id="安装">安装<a class="anchor" href="#%e5%ae%89%e8%a3%85">#</a></h2>
+<p>在 <code>NuGet</code> 中搜索 <code>EasyNetQ</code> 直接点击按钮安装即可。EasyNetQ 依赖 RabbitMQ.Client，所以会同时安装两个dll。</p>
+<h2 id="连接">连接<a class="anchor" href="#%e8%bf%9e%e6%8e%a5">#</a></h2>
+<p>使用 EasyNetQ 连接 RabbitMQ，是在应用程序启动时创建一个 <code>IBus</code> 对象，并且在应用程序关闭时释放该对象。<code>RabbitMQ</code> 连接是基于 <code>IBus</code> 接口的，当<code>IBus</code> 中的方法被调用，连接才会开启。创建一个 <code>IBus</code> 对象的方法如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> bus = RabbitHutch.CreateBus(<span style="color:#960050;background-color:#1e0010">“</span>host=myServer;virtualHost=myVirtualHost;username=mike;password=topsecret<span style="color:#960050;background-color:#1e0010">”</span>);</span></span></code></pre></div><p>连接字符串基于 <code>Key/Value</code> 形式，每个Key中间用分号 <code>;</code> 断开。其中 <code>host</code> 是必须的，其他值采用默认配置。连接中可能用到的 <code>Key</code> 如下：</p>
+<ul>
+<li><code>host</code>：<code>host=localhost</code> 或 <code>host =192.168.1.102</code> 或者 <code>host=my.rabbitmq.com</code> ,集群配置的话可以用逗号将服务地址隔开，例如：<code>host=a.com,b.com,c.com</code></li>
+<li><code>virtualHost</code>：虚拟主机，默认 <code>/</code></li>
+<li><code>username</code>：登录名</li>
+<li><code>password</code>：登录密码</li>
+<li><code>requestedHeartbeat</code>：心跳设置，默认10秒</li>
+<li><code>prefetchcount</code>：默认是50</li>
+<li><code>pubisherConfirms</code>：默认 <code>false</code></li>
+<li><code>persistentMessages</code>：消息持久化，默认 <code>true</code></li>
+<li><code>product</code>：产品名</li>
+<li><code>platform</code>：平台</li>
+<li><code>timeout</code>：默认10秒</li>
+</ul>
+<p>关闭连接，使用 <code>bus.Dispose();</code></p>
+<h2 id="日志">日志<a class="anchor" href="#%e6%97%a5%e5%bf%97">#</a></h2>
+<p>EasyNetQ 提供了日志接口 <code> IEasyNetQLogger</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IEasyNetQLogger</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">void</span> DebugWrite(<span style="color:#66d9ef">string</span> format, <span style="color:#66d9ef">params</span> <span style="color:#66d9ef">object</span>[] args);
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">void</span> InfoWrite(<span style="color:#66d9ef">string</span> format, <span style="color:#66d9ef">params</span> <span style="color:#66d9ef">object</span>[] args);
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">void</span> ErrorWrite(<span style="color:#66d9ef">string</span> format, <span style="color:#66d9ef">params</span> <span style="color:#66d9ef">object</span>[] args);
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">void</span> ErrorWrite(Exception exception);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>内部默认用的是 <code>NullLogger</code>，即什么也不做，不记录日志。在测试的时候也可以用 <code>ConsoleLogger</code> 来显示运行中的各种信息。不过一般在正式使用环境中，可以自定义日志并实现 <code>IEasyNetQLogger</code>接口。然后在 <code>RabbitHutch.CreateBus</code> 的重载方法中注册想用的日志类型。（日志中会记录连接RabbitMQ的过程和队列创建细节等信息）代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> logger = <span style="color:#66d9ef">new</span> MyLogger() <span style="color:#75715e">// 继承自 IEasyNetQLogger</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> bus = RabbitHutch.CreateBus(<span style="color:#960050;background-color:#1e0010">“</span>my connection<span style="color:#960050;background-color:#1e0010">”</span>, x =&gt; x.Register&lt;IEasyNetQLogger&gt;(_ =&gt; logger));</span></span></code></pre></div><h2 id="发布订阅">发布/订阅<a class="anchor" href="#%e5%8f%91%e5%b8%83%e8%ae%a2%e9%98%85">#</a></h2>
+<p>EasyNetQ 支持最简单的消息模式是：发布/订阅。发布消息后任意消费者都可以订阅该消息，并且不需要额外配置。首先：需要先创建一个 <code>IBus</code> 对象，然后创建一个<strong>可序列化的 <code>.NET</code>对象</strong>。调用 <code>Publish</code>方法即可。</p>
+<p><strong>Pub</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddSingleton(RabbitHutch.CreateBus(redisConnection));
+</span></span><span style="display:flex;"><span>IServiceProvider provider = services.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>mq = provider.GetService&lt;IBus&gt;();
+</span></span><span style="display:flex;"><span>mq.PubSub.Publish(<span style="color:#66d9ef">new</span> { message = <span style="color:#e6db74">&#34;hello.world&#34;</span> });</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：Publish只顾发送消息到队列，但是不管有没有消费端订阅，所以，发布之后，如果没有消费者，该消息将不会被消费甚至丢失。</p>
+</blockquote><p><strong>Sub</strong></p>
+<p>一个EasyNetQ订阅者订阅一种消息类型（消息类为.NET 类型）。通过调用Subcribe方法一旦对一个类型设置了订阅，一个持久化队列就会在RabbitMQ broker上被创建，这个类型的任何消息都会被发送到这个队列上。</p>
+<pre tabindex="0"><code> mq.PubSub.Subscribe&lt;MyMessage&gt;(&#34;&#34;, msg =&gt;
+ {
+       Console.WriteLine(msg.Content);
+ });</code></pre><p><strong>subscription_id</strong></p>
+<p><strong>相同类型消息、相同订阅id调用Subscribe</strong>：EasyNetQ将会在RabbitMQ Broker上为特定的消息类型的和订阅id的组合创建唯一的队列。每一次调用Subscribe方法会创建一个新的队列消费者。如果用相同的消息和订阅id调用Subscribe两次，将会创建两个消费者去消费同一个队列。然后RabbitMQ将会依次连续轮询消息给每一个消费者（均摊机制）。这种可伸缩性和工作分担是非常棒的。比如：一个处理消息的服务已经超负荷工作了。简单的创建一个新的服务实例（在同一个机器上，或者不同的机器上），不用配置任何东西，自动就得到了伸缩性。</p>
+<p><strong>相同类型消息、不同订阅id调用Subscribe</strong>：假如相同的消息类型，用不同的订阅id调用了两次Subscribe，将创建两个队列，每一个队列有自己的消费者。每一个消息的副本将会路由到每一个队列，因此不同的消费者都将得到所有消息（这个类型的，Fanout）。适用于几个不同的服务都关心相同类型的消息。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.9 Rabbit Mq集群方案</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="flex align-center">
+      <span>1.10 Redis常见问题</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#优势">优势</a></li>
+    <li><a href="#安装">安装</a></li>
+    <li><a href="#连接">连接</a></li>
+    <li><a href="#日志">日志</a></li>
+    <li><a href="#发布订阅">发布/订阅</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

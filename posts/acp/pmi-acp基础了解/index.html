@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PMI 认证体系# PMI（Project Management Institute）认证计划以适应全球化的发展和应用而著名，这一特点使PMI认证得到了跨行业、跨地域的认可。同时，PMI认证不受限于任何一种方法、标准或组织来应用，这一通用性使得持证人士在不同职业发展阶段和各种项目场景上都更具职业发展优势。
+PMI-ACP# 熟练运用敏捷、善于协作、积极应对复杂的环境、快速响应，都是现今商业环境亟需的技能。
+PMI敏捷管理专业人士（PMI-ACP）认证表明持证人士掌握敏捷原则、知识、技能和方法。如果具备敏捷技能，通过PMI-ACP认证将使你的能力进一步被雇主、相关方、同事所认可。
+PMI-ACP涵盖了多种敏捷方法，如Scrum、看板、精益、极限编程（XP）和测试驱动开发（TDD），因此可根据项目需求灵活多样地运用敏捷方法。
+申请对象# 在敏捷团队中工作，或者所在组织正在采用敏捷实践，可以考虑申请 PMI-ACP 认证。与其他仅基于培训和考试的敏捷认证相比，PMI-ACP表明持证人士具备实际的敏捷经验和技能。
+拿证和续证# PMI-ACP认证考试形式为120道选择题，考试时间为3小时 为维持PMI-ACP认证的有效性，必须每3年积累30个与敏捷相关的专业发展单位（PDU） 报考条件# 教育背景：中等学历(高中文凭，大专学历，全球同等学历及以上) 普通项目经验：需在申请之日起前五年内在项目团队工作2000小时(12个月) 敏捷项目经验：需在申请之日起前三年内在项目团队运用敏捷方法工作1500小时(8个月)，这些工作时长是在普通项目经验要求的2000小时以外的 PMI-ACP 与PMI-PMP# ACP 和 PMP 都是PMI体系下的，PMP全称 Project Management Professional (项目管理专业人士认证)。PMP证书作为项目管理专业人士的重要标志，在众多企业尤其是跨国企业中被认为是项目经理岗位的必备条件，同时也是许多重大项目招标中项目经理人员必备的资质证明。目前全球有100多万PMP，中国也已经有20多万人通过PMP认证考试，PMP证书正获得越来越多的职业人士的青睐，被誉为与MBA、MPA齐名的全球三大管理证书。
+PMI-ACP 考试是由美国项目管理协会(PMI)于2011年推出一门敏捷项目管理的考试，全称 Agile Certified Practitioner。PMI经过多年调查发现许多项目需求不断地变更，成员小于10人的团队 ，套用以往“先做计划再做事”的思维，项目根本推不动。因此，PMI提倡采用敏捷(Agile)的方法管理充满变动的项目，并从2011年开始正式推出 PMI Agile Certified Practitioner(PMI-ACP) 认证，使项目经理能够具备快速应变的能力
+PMP是传统项目管理模式，它的雏形是建筑工程项目，然后将其理论化、标准化、抽象化，形成一个 universal 的项目管理框架，但将PMP应用到软件工程中在实践层面时会觉得比较别扭，主要问题是软件工程的不确定性远高于其他行业。ACP是起始于软件工程，同时在向其他行业领域推广，所以ACP更适合软件行业，但有PMP的知识作为支撑是更强的组合。
+PMP 学的是标准的项目管理知识体系，侧重理论知识。ACP主要学习敏捷方法和策略，侧重敏捷开发管理
+参考# https://pmichina.org/certification/index.jhtml
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="PMI 认证体系# PMI（Project Management Institute）认证计划以适应全球化的发展和应用而著名，这一特点使PMI认证得到了跨行业、跨地域的认可。同时，PMI认证不受限于任何一种方法、标准或组织来应用，这一通用性使得持证人士在不同职业发展阶段和各种项目场景上都更具职业发展优势。
+PMI-ACP# 熟练运用敏捷、善于协作、积极应对复杂的环境、快速响应，都是现今商业环境亟需的技能。
+PMI敏捷管理专业人士（PMI-ACP）认证表明持证人士掌握敏捷原则、知识、技能和方法。如果具备敏捷技能，通过PMI-ACP认证将使你的能力进一步被雇主、相关方、同事所认可。
+PMI-ACP涵盖了多种敏捷方法，如Scrum、看板、精益、极限编程（XP）和测试驱动开发（TDD），因此可根据项目需求灵活多样地运用敏捷方法。
+申请对象# 在敏捷团队中工作，或者所在组织正在采用敏捷实践，可以考虑申请 PMI-ACP 认证。与其他仅基于培训和考试的敏捷认证相比，PMI-ACP表明持证人士具备实际的敏捷经验和技能。
+拿证和续证# PMI-ACP认证考试形式为120道选择题，考试时间为3小时 为维持PMI-ACP认证的有效性，必须每3年积累30个与敏捷相关的专业发展单位（PDU） 报考条件# 教育背景：中等学历(高中文凭，大专学历，全球同等学历及以上) 普通项目经验：需在申请之日起前五年内在项目团队工作2000小时(12个月) 敏捷项目经验：需在申请之日起前三年内在项目团队运用敏捷方法工作1500小时(8个月)，这些工作时长是在普通项目经验要求的2000小时以外的 PMI-ACP 与PMI-PMP# ACP 和 PMP 都是PMI体系下的，PMP全称 Project Management Professional (项目管理专业人士认证)。PMP证书作为项目管理专业人士的重要标志，在众多企业尤其是跨国企业中被认为是项目经理岗位的必备条件，同时也是许多重大项目招标中项目经理人员必备的资质证明。目前全球有100多万PMP，中国也已经有20多万人通过PMP认证考试，PMP证书正获得越来越多的职业人士的青睐，被誉为与MBA、MPA齐名的全球三大管理证书。
+PMI-ACP 考试是由美国项目管理协会(PMI)于2011年推出一门敏捷项目管理的考试，全称 Agile Certified Practitioner。PMI经过多年调查发现许多项目需求不断地变更，成员小于10人的团队 ，套用以往“先做计划再做事”的思维，项目根本推不动。因此，PMI提倡采用敏捷(Agile)的方法管理充满变动的项目，并从2011年开始正式推出 PMI Agile Certified Practitioner(PMI-ACP) 认证，使项目经理能够具备快速应变的能力
+PMP是传统项目管理模式，它的雏形是建筑工程项目，然后将其理论化、标准化、抽象化，形成一个 universal 的项目管理框架，但将PMP应用到软件工程中在实践层面时会觉得比较别扭，主要问题是软件工程的不确定性远高于其他行业。ACP是起始于软件工程，同时在向其他行业领域推广，所以ACP更适合软件行业，但有PMP的知识作为支撑是更强的组合。
+PMP 学的是标准的项目管理知识体系，侧重理论知识。ACP主要学习敏捷方法和策略，侧重敏捷开发管理
+参考# https://pmichina.org/certification/index.jhtml">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="PMI 认证体系# PMI（Project Management Institute）认证计划以适应全球化的发展和应用而著名，这一特点使PMI认证得到了跨行业、跨地域的认可。同时，PMI认证不受限于任何一种方法、标准或组织来应用，这一通用性使得持证人士在不同职业发展阶段和各种项目场景上都更具职业发展优势。
+PMI-ACP# 熟练运用敏捷、善于协作、积极应对复杂的环境、快速响应，都是现今商业环境亟需的技能。
+PMI敏捷管理专业人士（PMI-ACP）认证表明持证人士掌握敏捷原则、知识、技能和方法。如果具备敏捷技能，通过PMI-ACP认证将使你的能力进一步被雇主、相关方、同事所认可。
+PMI-ACP涵盖了多种敏捷方法，如Scrum、看板、精益、极限编程（XP）和测试驱动开发（TDD），因此可根据项目需求灵活多样地运用敏捷方法。
+申请对象# 在敏捷团队中工作，或者所在组织正在采用敏捷实践，可以考虑申请 PMI-ACP 认证。与其他仅基于培训和考试的敏捷认证相比，PMI-ACP表明持证人士具备实际的敏捷经验和技能。
+拿证和续证# PMI-ACP认证考试形式为120道选择题，考试时间为3小时 为维持PMI-ACP认证的有效性，必须每3年积累30个与敏捷相关的专业发展单位（PDU） 报考条件# 教育背景：中等学历(高中文凭，大专学历，全球同等学历及以上) 普通项目经验：需在申请之日起前五年内在项目团队工作2000小时(12个月) 敏捷项目经验：需在申请之日起前三年内在项目团队运用敏捷方法工作1500小时(8个月)，这些工作时长是在普通项目经验要求的2000小时以外的 PMI-ACP 与PMI-PMP# ACP 和 PMP 都是PMI体系下的，PMP全称 Project Management Professional (项目管理专业人士认证)。PMP证书作为项目管理专业人士的重要标志，在众多企业尤其是跨国企业中被认为是项目经理岗位的必备条件，同时也是许多重大项目招标中项目经理人员必备的资质证明。目前全球有100多万PMP，中国也已经有20多万人通过PMP认证考试，PMP证书正获得越来越多的职业人士的青睐，被誉为与MBA、MPA齐名的全球三大管理证书。
+PMI-ACP 考试是由美国项目管理协会(PMI)于2011年推出一门敏捷项目管理的考试，全称 Agile Certified Practitioner。PMI经过多年调查发现许多项目需求不断地变更，成员小于10人的团队 ，套用以往“先做计划再做事”的思维，项目根本推不动。因此，PMI提倡采用敏捷(Agile)的方法管理充满变动的项目，并从2011年开始正式推出 PMI Agile Certified Practitioner(PMI-ACP) 认证，使项目经理能够具备快速应变的能力
+PMP是传统项目管理模式，它的雏形是建筑工程项目，然后将其理论化、标准化、抽象化，形成一个 universal 的项目管理框架，但将PMP应用到软件工程中在实践层面时会觉得比较别扭，主要问题是软件工程的不确定性远高于其他行业。ACP是起始于软件工程，同时在向其他行业领域推广，所以ACP更适合软件行业，但有PMP的知识作为支撑是更强的组合。
+PMP 学的是标准的项目管理知识体系，侧重理论知识。ACP主要学习敏捷方法和策略，侧重敏捷开发管理
+参考# https://pmichina.org/certification/index.jhtml">
+  <meta itemprop="wordCount" content="48">
+
+<title>Pmi Acp基础了解 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Pmi Acp基础了解</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#申请对象">申请对象</a></li>
+    <li><a href="#拿证和续证">拿证和续证</a></li>
+    <li><a href="#报考条件">报考条件</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Pmi Acp基础了解
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="pmi-认证体系">PMI 认证体系<a class="anchor" href="#pmi-%e8%ae%a4%e8%af%81%e4%bd%93%e7%b3%bb">#</a></h1>
+<blockquote class='book-hint '>
+<p>PMI（Project Management Institute）认证计划以适应全球化的发展和应用而著名，这一特点使PMI认证得到了跨行业、跨地域的认可。同时，PMI认证不受限于任何一种方法、标准或组织来应用，这一通用性使得持证人士在不同职业发展阶段和各种项目场景上都更具职业发展优势。</p>
+</blockquote><h1 id="pmi-acp">PMI-ACP<a class="anchor" href="#pmi-acp">#</a></h1>
+<blockquote class='book-hint '>
+<p>熟练运用敏捷、善于协作、积极应对复杂的环境、快速响应，都是现今商业环境亟需的技能。</p>
+<p>PMI敏捷管理专业人士（PMI-ACP）认证表明持证人士掌握敏捷原则、知识、技能和方法。如果具备敏捷技能，通过PMI-ACP认证将使你的能力进一步被雇主、相关方、同事所认可。</p>
+<p>PMI-ACP涵盖了多种敏捷方法，如Scrum、看板、精益、极限编程（XP）和测试驱动开发（TDD），因此可根据项目需求灵活多样地运用敏捷方法。</p>
+</blockquote><h2 id="申请对象">申请对象<a class="anchor" href="#%e7%94%b3%e8%af%b7%e5%af%b9%e8%b1%a1">#</a></h2>
+<p>在敏捷团队中工作，或者所在组织正在采用敏捷实践，可以考虑申请  PMI-ACP  认证。<strong>与其他仅基于培训和考试的敏捷认证相比，PMI-ACP表明持证人士具备实际的敏捷经验和技能。</strong></p>
+<h2 id="拿证和续证">拿证和续证<a class="anchor" href="#%e6%8b%bf%e8%af%81%e5%92%8c%e7%bb%ad%e8%af%81">#</a></h2>
+<ul>
+<li>PMI-ACP认证考试形式为120道选择题，考试时间为3小时</li>
+<li>为维持PMI-ACP认证的有效性，必须每3年积累30个与敏捷相关的专业发展单位（PDU）</li>
+</ul>
+<h2 id="报考条件">报考条件<a class="anchor" href="#%e6%8a%a5%e8%80%83%e6%9d%a1%e4%bb%b6">#</a></h2>
+<ul>
+<li>教育背景：中等学历(高中文凭，大专学历，全球同等学历及以上)</li>
+<li>普通项目经验：需在申请之日起前五年内在项目团队工作2000小时(12个月)</li>
+<li>敏捷项目经验：需在申请之日起前三年内在项目团队运用敏捷方法工作1500小时(8个月)，这些工作时长是在普通项目经验要求的2000小时以外的</li>
+</ul>
+<h1 id="pmi-acp-与pmi-pmp">PMI-ACP 与PMI-PMP<a class="anchor" href="#pmi-acp-%e4%b8%8epmi-pmp">#</a></h1>
+<blockquote class='book-hint '>
+<p>ACP 和 PMP 都是PMI体系下的，PMP全称 <code>Project Management Professional</code> (项目管理专业人士认证)。PMP证书作为项目管理专业人士的重要标志，在众多企业尤其是跨国企业中被认为是项目经理岗位的必备条件，同时也是许多重大项目招标中项目经理人员必备的资质证明。目前全球有100多万PMP，中国也已经有20多万人通过PMP认证考试，PMP证书正获得越来越多的职业人士的青睐，被誉为与MBA、MPA齐名的全球三大管理证书。</p>
+</blockquote><blockquote class='book-hint '>
+<p>PMI-ACP 考试是由美国项目管理协会(PMI)于2011年推出一门敏捷项目管理的考试，全称 <code>Agile Certified Practitioner</code>。PMI经过多年调查发现许多项目需求不断地变更，成员小于10人的团队 ，套用以往“先做计划再做事”的思维，项目根本推不动。因此，PMI提倡采用敏捷(Agile)的方法管理充满变动的项目，并从2011年开始正式推出 <code>PMI Agile Certified Practitioner(PMI-ACP)</code> 认证，使项目经理能够具备快速应变的能力</p>
+</blockquote><ol>
+<li>
+<p>PMP是传统项目管理模式，它的雏形是建筑工程项目，然后将其理论化、标准化、抽象化，形成一个 <code>universal</code> 的项目管理框架，但将PMP应用到软件工程中在实践层面时会觉得比较别扭，主要问题是软件工程的不确定性远高于其他行业。ACP是起始于软件工程，同时在向其他行业领域推广，所以ACP更适合软件行业，但有PMP的知识作为支撑是更强的组合。</p>
+</li>
+<li>
+<p>PMP 学的是标准的项目管理知识体系，侧重理论知识。ACP主要学习敏捷方法和策略，侧重敏捷开发管理</p>
+</li>
+</ol>
+<h1 id="参考">参考<a class="anchor" href="#%e5%8f%82%e8%80%83">#</a></h1>
+<p><a href="https://pmichina.org/certification/index.jhtml">https://pmichina.org/certification/index.jhtml</a></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/acp/pmi-acpdown/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Pmi Acpdown</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="flex align-center">
+      <span>Pmi Acp备考笔记01</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#申请对象">申请对象</a></li>
+    <li><a href="#拿证和续证">拿证和续证</a></li>
+    <li><a href="#报考条件">报考条件</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="集群安装方式# minikube K8S 集群模拟器，只有一个节点的集群，只为测试用，master 和 worker 都在一起 直接用云平台 Kubernetes 可视化搭建，只需简单几步就可以创建好一个集群 优点：安装简单，生态齐全，负载均衡器、存储等都给你配套好，简单操作就搞定 裸机安装（Bare Metal） 至少需要两台机器（主节点、工作节点各一台），需要自己安装 Kubernetes 组件，配置会稍微麻烦点。 可以到各云厂商按时租用服务器，费用低，用完就销毁 缺点：配置麻烦，缺少生态支持，例如负载均衡器、云存储 安装 Kubernetes 集群# 服务器环境# 这里选择裸机安装，三台服务器配置如下且均已安装 Docker：
+IP 主机名称 描述 192.168.110.20 master 主节点 192.168.110.232 node1 工作节点1 192.168.110.233 node2 工作节点2 通用节点配置# 分别设置对应主机名# hostnamectl set-hostname master hostnamectl set-hostname node1 hostnamectl set-hostname node2关闭 selinux# setenforce 0 sed -i --follow-symlinks &#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39; /etc/sysconfig/selinux关闭 swap# cat /etc/fstab # # /etc/fstab # Created by anaconda on Tue Aug 9 14:09:10 2022 # # Accessible filesystems, by reference, are maintained under &#39;/dev/disk&#39; # See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info # /dev/mapper/centos-root / xfs defaults 0 0 UUID=6228c8d0-3efa-4ac0-a147-a3ee8dc90897 /boot xfs defaults 0 0 #/dev/mapper/centos-swap swap swap defaults 0 0 # 注释掉最后一行修改 hosts# vim /etc/hosts 192.168.110.20 master 192.168.110.232 node1 192.168.110.233 node2关闭防火墙# systemctl stop firewalld systemctl disable firewalld添加安装源# # 添加 k8s 安装源 cat &lt;&lt;EOF &gt; kubernetes.repo [kubernetes] name=Kubernetes baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64 enabled=1 gpgcheck=0 repo_gpgcheck=0 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg EOF mv kubernetes.repo /etc/yum.repos.d/ # 添加 Docker 安装源 yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo安装所需组件# yum install -y kubelet-1.22.4 kubectl-1.22.4 kubeadm-1.22.4 docker-ce设置开机启动# systemctl enable kubelet systemctl start kubelet systemctl enable docker systemctl start docker修改 Docker 配置# # kubernetes 官方推荐 docker 等使用 systemd 作为 cgroupdriver，否则 kubelet 启动不了 cat &lt;&lt;EOF &gt; daemon.json { &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;], &#34;registry-mirrors&#34;: [&#34;https://ud6340vz.mirror.aliyuncs.com&#34;] } EOF mv daemon.json /etc/docker/ # 重启生效 systemctl daemon-reload &amp;&amp; systemctl restart docker主节点配置# 使用 kubeadm 初始化集群（仅在主节点跑）
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="集群安装方式# minikube K8S 集群模拟器，只有一个节点的集群，只为测试用，master 和 worker 都在一起 直接用云平台 Kubernetes 可视化搭建，只需简单几步就可以创建好一个集群 优点：安装简单，生态齐全，负载均衡器、存储等都给你配套好，简单操作就搞定 裸机安装（Bare Metal） 至少需要两台机器（主节点、工作节点各一台），需要自己安装 Kubernetes 组件，配置会稍微麻烦点。 可以到各云厂商按时租用服务器，费用低，用完就销毁 缺点：配置麻烦，缺少生态支持，例如负载均衡器、云存储 安装 Kubernetes 集群# 服务器环境# 这里选择裸机安装，三台服务器配置如下且均已安装 Docker：
+IP 主机名称 描述 192.168.110.20 master 主节点 192.168.110.232 node1 工作节点1 192.168.110.233 node2 工作节点2 通用节点配置# 分别设置对应主机名# hostnamectl set-hostname master hostnamectl set-hostname node1 hostnamectl set-hostname node2关闭 selinux# setenforce 0 sed -i --follow-symlinks &#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39; /etc/sysconfig/selinux关闭 swap# cat /etc/fstab # # /etc/fstab # Created by anaconda on Tue Aug 9 14:09:10 2022 # # Accessible filesystems, by reference, are maintained under &#39;/dev/disk&#39; # See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info # /dev/mapper/centos-root / xfs defaults 0 0 UUID=6228c8d0-3efa-4ac0-a147-a3ee8dc90897 /boot xfs defaults 0 0 #/dev/mapper/centos-swap swap swap defaults 0 0 # 注释掉最后一行修改 hosts# vim /etc/hosts 192.168.110.20 master 192.168.110.232 node1 192.168.110.233 node2关闭防火墙# systemctl stop firewalld systemctl disable firewalld添加安装源# # 添加 k8s 安装源 cat &lt;&lt;EOF &gt; kubernetes.repo [kubernetes] name=Kubernetes baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64 enabled=1 gpgcheck=0 repo_gpgcheck=0 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg EOF mv kubernetes.repo /etc/yum.repos.d/ # 添加 Docker 安装源 yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo安装所需组件# yum install -y kubelet-1.22.4 kubectl-1.22.4 kubeadm-1.22.4 docker-ce设置开机启动# systemctl enable kubelet systemctl start kubelet systemctl enable docker systemctl start docker修改 Docker 配置# # kubernetes 官方推荐 docker 等使用 systemd 作为 cgroupdriver，否则 kubelet 启动不了 cat &lt;&lt;EOF &gt; daemon.json { &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;], &#34;registry-mirrors&#34;: [&#34;https://ud6340vz.mirror.aliyuncs.com&#34;] } EOF mv daemon.json /etc/docker/ # 重启生效 systemctl daemon-reload &amp;&amp; systemctl restart docker主节点配置# 使用 kubeadm 初始化集群（仅在主节点跑）">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="集群安装方式# minikube K8S 集群模拟器，只有一个节点的集群，只为测试用，master 和 worker 都在一起 直接用云平台 Kubernetes 可视化搭建，只需简单几步就可以创建好一个集群 优点：安装简单，生态齐全，负载均衡器、存储等都给你配套好，简单操作就搞定 裸机安装（Bare Metal） 至少需要两台机器（主节点、工作节点各一台），需要自己安装 Kubernetes 组件，配置会稍微麻烦点。 可以到各云厂商按时租用服务器，费用低，用完就销毁 缺点：配置麻烦，缺少生态支持，例如负载均衡器、云存储 安装 Kubernetes 集群# 服务器环境# 这里选择裸机安装，三台服务器配置如下且均已安装 Docker：
+IP 主机名称 描述 192.168.110.20 master 主节点 192.168.110.232 node1 工作节点1 192.168.110.233 node2 工作节点2 通用节点配置# 分别设置对应主机名# hostnamectl set-hostname master hostnamectl set-hostname node1 hostnamectl set-hostname node2关闭 selinux# setenforce 0 sed -i --follow-symlinks &#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39; /etc/sysconfig/selinux关闭 swap# cat /etc/fstab # # /etc/fstab # Created by anaconda on Tue Aug 9 14:09:10 2022 # # Accessible filesystems, by reference, are maintained under &#39;/dev/disk&#39; # See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info # /dev/mapper/centos-root / xfs defaults 0 0 UUID=6228c8d0-3efa-4ac0-a147-a3ee8dc90897 /boot xfs defaults 0 0 #/dev/mapper/centos-swap swap swap defaults 0 0 # 注释掉最后一行修改 hosts# vim /etc/hosts 192.168.110.20 master 192.168.110.232 node1 192.168.110.233 node2关闭防火墙# systemctl stop firewalld systemctl disable firewalld添加安装源# # 添加 k8s 安装源 cat &lt;&lt;EOF &gt; kubernetes.repo [kubernetes] name=Kubernetes baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64 enabled=1 gpgcheck=0 repo_gpgcheck=0 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg EOF mv kubernetes.repo /etc/yum.repos.d/ # 添加 Docker 安装源 yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo安装所需组件# yum install -y kubelet-1.22.4 kubectl-1.22.4 kubeadm-1.22.4 docker-ce设置开机启动# systemctl enable kubelet systemctl start kubelet systemctl enable docker systemctl start docker修改 Docker 配置# # kubernetes 官方推荐 docker 等使用 systemd 作为 cgroupdriver，否则 kubelet 启动不了 cat &lt;&lt;EOF &gt; daemon.json { &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;], &#34;registry-mirrors&#34;: [&#34;https://ud6340vz.mirror.aliyuncs.com&#34;] } EOF mv daemon.json /etc/docker/ # 重启生效 systemctl daemon-reload &amp;&amp; systemctl restart docker主节点配置# 使用 kubeadm 初始化集群（仅在主节点跑）">
+  <meta itemprop="wordCount" content="318">
+
+<title>Kubernetes集群安装 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Kubernetes集群安装</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#服务器环境">服务器环境</a></li>
+    <li><a href="#通用节点配置">通用节点配置</a>
+      <ul>
+        <li><a href="#分别设置对应主机名">分别设置对应主机名</a></li>
+        <li><a href="#关闭-selinux">关闭 selinux</a></li>
+        <li><a href="#关闭-swap">关闭 swap</a></li>
+        <li><a href="#修改-hosts">修改 hosts</a></li>
+        <li><a href="#关闭防火墙">关闭防火墙</a></li>
+        <li><a href="#添加安装源">添加安装源</a></li>
+        <li><a href="#安装所需组件">安装所需组件</a></li>
+        <li><a href="#设置开机启动">设置开机启动</a></li>
+        <li><a href="#修改-docker-配置">修改 Docker 配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#主节点配置">主节点配置</a></li>
+    <li><a href="#工作节点配置">工作节点配置</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Kubernetes集群安装
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="集群安装方式">集群安装方式<a class="anchor" href="#%e9%9b%86%e7%be%a4%e5%ae%89%e8%a3%85%e6%96%b9%e5%bc%8f">#</a></h1>
+<ul>
+<li>minikube
+K8S 集群模拟器，只有一个节点的集群，只为测试用，master 和 worker 都在一起</li>
+<li>直接用云平台 Kubernetes
+可视化搭建，只需简单几步就可以创建好一个集群
+优点：安装简单，生态齐全，负载均衡器、存储等都给你配套好，简单操作就搞定</li>
+<li>裸机安装（Bare Metal）
+至少需要两台机器（主节点、工作节点各一台），需要自己安装 Kubernetes 组件，配置会稍微麻烦点。
+可以到各云厂商按时租用服务器，费用低，用完就销毁
+缺点：配置麻烦，缺少生态支持，例如负载均衡器、云存储</li>
+</ul>
+<h1 id="安装-kubernetes-集群">安装 Kubernetes 集群<a class="anchor" href="#%e5%ae%89%e8%a3%85-kubernetes-%e9%9b%86%e7%be%a4">#</a></h1>
+<h2 id="服务器环境">服务器环境<a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%8e%af%e5%a2%83">#</a></h2>
+<p>这里选择裸机安装，三台服务器配置如下且均已安装 Docker：</p>
+<table>
+  <thead>
+      <tr>
+          <th>IP</th>
+          <th>主机名称</th>
+          <th>描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>192.168.110.20</td>
+          <td>master</td>
+          <td>主节点</td>
+      </tr>
+      <tr>
+          <td>192.168.110.232</td>
+          <td>node1</td>
+          <td>工作节点1</td>
+      </tr>
+      <tr>
+          <td>192.168.110.233</td>
+          <td>node2</td>
+          <td>工作节点2</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="通用节点配置">通用节点配置<a class="anchor" href="#%e9%80%9a%e7%94%a8%e8%8a%82%e7%82%b9%e9%85%8d%e7%bd%ae">#</a></h2>
+<h3 id="分别设置对应主机名">分别设置对应主机名<a class="anchor" href="#%e5%88%86%e5%88%ab%e8%ae%be%e7%bd%ae%e5%af%b9%e5%ba%94%e4%b8%bb%e6%9c%ba%e5%90%8d">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hostnamectl set-hostname master
+</span></span><span style="display:flex;"><span>hostnamectl set-hostname node1
+</span></span><span style="display:flex;"><span>hostnamectl set-hostname node2</span></span></code></pre></div><h3 id="关闭-selinux">关闭 selinux<a class="anchor" href="#%e5%85%b3%e9%97%ad-selinux">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>setenforce <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>sed -i --follow-symlinks <span style="color:#e6db74">&#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39;</span> /etc/sysconfig/selinux</span></span></code></pre></div><h3 id="关闭-swap">关闭 swap<a class="anchor" href="#%e5%85%b3%e9%97%ad-swap">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat /etc/fstab
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># /etc/fstab</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Created by anaconda on Tue Aug  9 14:09:10 2022</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Accessible filesystems, by reference, are maintained under &#39;/dev/disk&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>/dev/mapper/centos-root /                       xfs     defaults        <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>UUID<span style="color:#f92672">=</span>6228c8d0-3efa-4ac0-a147-a3ee8dc90897 /boot                   xfs     defaults        <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 注释掉最后一行</span></span></span></code></pre></div><h3 id="修改-hosts">修改 hosts<a class="anchor" href="#%e4%bf%ae%e6%94%b9-hosts">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vim /etc/hosts
+</span></span><span style="display:flex;"><span>192.168.110.20 master
+</span></span><span style="display:flex;"><span>192.168.110.232 node1
+</span></span><span style="display:flex;"><span>192.168.110.233 node2</span></span></code></pre></div><h3 id="关闭防火墙">关闭防火墙<a class="anchor" href="#%e5%85%b3%e9%97%ad%e9%98%b2%e7%81%ab%e5%a2%99">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl stop firewalld
+</span></span><span style="display:flex;"><span>systemctl disable firewalld</span></span></code></pre></div><h3 id="添加安装源">添加安装源<a class="anchor" href="#%e6%b7%bb%e5%8a%a0%e5%ae%89%e8%a3%85%e6%ba%90">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 添加 k8s 安装源</span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt; kubernetes.repo
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[kubernetes]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">name=Kubernetes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">enabled=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpgcheck=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">repo_gpgcheck=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>mv kubernetes.repo /etc/yum.repos.d/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 添加 Docker 安装源</span>
+</span></span><span style="display:flex;"><span>yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span></span></code></pre></div><h3 id="安装所需组件">安装所需组件<a class="anchor" href="#%e5%ae%89%e8%a3%85%e6%89%80%e9%9c%80%e7%bb%84%e4%bb%b6">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum install -y kubelet-1.22.4 kubectl-1.22.4 kubeadm-1.22.4 docker-ce</span></span></code></pre></div><h3 id="设置开机启动">设置开机启动<a class="anchor" href="#%e8%ae%be%e7%bd%ae%e5%bc%80%e6%9c%ba%e5%90%af%e5%8a%a8">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl enable kubelet
+</span></span><span style="display:flex;"><span>systemctl start kubelet
+</span></span><span style="display:flex;"><span>systemctl enable docker
+</span></span><span style="display:flex;"><span>systemctl start docker</span></span></code></pre></div><h3 id="修改-docker-配置">修改 Docker 配置<a class="anchor" href="#%e4%bf%ae%e6%94%b9-docker-%e9%85%8d%e7%bd%ae">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># kubernetes 官方推荐 docker 等使用 systemd 作为 cgroupdriver，否则 kubelet 启动不了</span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt; daemon.json
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;registry-mirrors&#34;: [&#34;https://ud6340vz.mirror.aliyuncs.com&#34;]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>mv daemon.json /etc/docker/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重启生效</span>
+</span></span><span style="display:flex;"><span>systemctl daemon-reload <span style="color:#f92672">&amp;&amp;</span> systemctl restart docker</span></span></code></pre></div><h2 id="主节点配置">主节点配置<a class="anchor" href="#%e4%b8%bb%e8%8a%82%e7%82%b9%e9%85%8d%e7%bd%ae">#</a></h2>
+<p>使用 <a href="https://kubernetes.io/docs/reference/setup-tools/kubeadm/">kubeadm</a> 初始化集群（仅在主节点跑）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 初始化集群控制台 Control plane</span>
+</span></span><span style="display:flex;"><span>kubeadm init --image-repository<span style="color:#f92672">=</span>registry.aliyuncs.com/google_containers
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 失败了可以用 kubeadm reset 重置</span></span></span></code></pre></div><p>集群创建成功后，保存命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubeadm join 192.168.110.20:6443 --token yeaovk.aiaf64mm7phk62jy <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        --discovery-token-ca-cert-hash sha256:7c3a7118b7a0b8f1b997d00531fcf304be457f89ec8ea2e6dcd91710f0752ed5
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 忘记了重新获取：kubeadm token create --print-join-command</span></span></span></code></pre></div><p>复制授权文件，以便 kubectl 可以有权限访问集群。如果其他节点需要访问集群，需要从主节点复制这个文件过去其他节点。</p>
+<pre tabindex="0"><code>mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+# 在其他机器上创建 ~/.kube/config 文件也能通过 kubectl 访问到集群</code></pre><blockquote class='book-hint '>
+<p>有兴趣了解 kubeadm init 具体做了什么的，可以 <a href="https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/">查看文档</a></p>
+</blockquote><h2 id="工作节点配置">工作节点配置<a class="anchor" href="#%e5%b7%a5%e4%bd%9c%e8%8a%82%e7%82%b9%e9%85%8d%e7%bd%ae">#</a></h2>
+<p>把工作节点加入集群（只在工作节点跑）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubeadm join 192.168.110.20:6443 --token yeaovk.aiaf64mm7phk62jy <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        --discovery-token-ca-cert-hash sha256:7c3a7118b7a0b8f1b997d00531fcf304be457f89ec8ea2e6dcd91710f0752ed5</span></span></code></pre></div><p>安装网络插件，否则 node 是 NotReady 状态（主节点跑）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 很有可能国内网络访问不到这个资源，你可以网上找找国内的源安装 flannel</span>
+</span></span><span style="display:flex;"><span>kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span></span></code></pre></div><p>这里选择直接下载一份 <code>kube-flannel.yml</code> 的源码，<a href="https://blog.csdn.net/qq_22409661/article/details/113371921">源码参考</a> 下载文件后，在文件所在目录执行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f kube-flannel.yml </span></span></code></pre></div><p>查看节点，要在主节点查看（其他节点有安装 kubectl 也可以查看）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@master k8s<span style="color:#f92672">]</span><span style="color:#75715e"># kubectl get nodes</span>
+</span></span><span style="display:flex;"><span>NAME     STATUS   ROLES                  AGE   VERSION
+</span></span><span style="display:flex;"><span>master   Ready    control-plane,master   27m   v1.22.4
+</span></span><span style="display:flex;"><span>node1    Ready    &lt;none&gt;                 16m   v1.22.4
+</span></span><span style="display:flex;"><span>node2    Ready    &lt;none&gt;                 11m   v1.22.4</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Kubernetes基础知识</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="flex align-center">
+      <span>Centos7升级gcc版本</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#服务器环境">服务器环境</a></li>
+    <li><a href="#通用节点配置">通用节点配置</a>
+      <ul>
+        <li><a href="#分别设置对应主机名">分别设置对应主机名</a></li>
+        <li><a href="#关闭-selinux">关闭 selinux</a></li>
+        <li><a href="#关闭-swap">关闭 swap</a></li>
+        <li><a href="#修改-hosts">修改 hosts</a></li>
+        <li><a href="#关闭防火墙">关闭防火墙</a></li>
+        <li><a href="#添加安装源">添加安装源</a></li>
+        <li><a href="#安装所需组件">安装所需组件</a></li>
+        <li><a href="#设置开机启动">设置开机启动</a></li>
+        <li><a href="#修改-docker-配置">修改 Docker 配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#主节点配置">主节点配置</a></li>
+    <li><a href="#工作节点配置">工作节点配置</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

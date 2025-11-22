@@ -1,0 +1,351 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content='使用C#连接rabbitMq测试各工作模式区别
+C#创建RabbitMq连接
+namespace RabbitMQPublisher { using System; using RabbitMQ.Client; public static class BasePublisher { public static ConnectionFactory CreateRabbitMqConnection() { // RabbitMQ连接工厂 return new ConnectionFactory() { HostName = "localhost", // 用户名 UserName = "guest", // 密码 Password = "guest", // 网络故障自动恢复连接 AutomaticRecoveryEnabled = true, // 心跳处理 RequestedHeartbeat = new TimeSpan(5000) }; } } }工作模式# Rabbitmq的几种工作模式，具体可参考官网给出的Demo：https://www.rabbitmq.com/getstarted.html， RPC 模式类似常用的请求-响应模式，这里不过多解释，感兴趣可以参考官网文档：https://www.rabbitmq.com/tutorials/tutorial-six-dotnet.html。 这里只学习其中的1-5种，也可以分类成两种：不使用交换机和使用交换机。
+其实还是使用了交换机的，简单队列和work模式是绑定到了默认的 AMQP default。只不过没有显式声明和绑定而已
+简单队列# “ P”是生产者，“ C”是消费者。中间的框是一个队列-RabbitMQ代表保留的消息缓冲区，这个模式很简单，其实就是只有一个消费者，简单的保证操作的顺序性
+'><meta name=theme-color media="(prefers-color-scheme: light)" content="#ffffff"><meta name=theme-color media="(prefers-color-scheme: dark)" content="#343a40"><meta name=color-scheme content="light dark"><meta property="og:url" content="https://wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/"><meta property="og:site_name" content="CODE'NOTE"><meta property="og:title" content="CODE'NOTE"><meta property="og:description" content='使用C#连接rabbitMq测试各工作模式区别
+C#创建RabbitMq连接
+namespace RabbitMQPublisher { using System; using RabbitMQ.Client; public static class BasePublisher { public static ConnectionFactory CreateRabbitMqConnection() { // RabbitMQ连接工厂 return new ConnectionFactory() { HostName = "localhost", // 用户名 UserName = "guest", // 密码 Password = "guest", // 网络故障自动恢复连接 AutomaticRecoveryEnabled = true, // 心跳处理 RequestedHeartbeat = new TimeSpan(5000) }; } } }工作模式# Rabbitmq的几种工作模式，具体可参考官网给出的Demo：https://www.rabbitmq.com/getstarted.html， RPC 模式类似常用的请求-响应模式，这里不过多解释，感兴趣可以参考官网文档：https://www.rabbitmq.com/tutorials/tutorial-six-dotnet.html。 这里只学习其中的1-5种，也可以分类成两种：不使用交换机和使用交换机。
+其实还是使用了交换机的，简单队列和work模式是绑定到了默认的 AMQP default。只不过没有显式声明和绑定而已
+简单队列# “ P”是生产者，“ C”是消费者。中间的框是一个队列-RabbitMQ代表保留的消息缓冲区，这个模式很简单，其实就是只有一个消费者，简单的保证操作的顺序性'><meta property="og:locale" content="zh_cn"><meta property="og:type" content="article"><meta property="article:section" content="docs"><meta itemprop=name content="CODE'NOTE"><meta itemprop=description content='使用C#连接rabbitMq测试各工作模式区别
+C#创建RabbitMq连接
+namespace RabbitMQPublisher { using System; using RabbitMQ.Client; public static class BasePublisher { public static ConnectionFactory CreateRabbitMqConnection() { // RabbitMQ连接工厂 return new ConnectionFactory() { HostName = "localhost", // 用户名 UserName = "guest", // 密码 Password = "guest", // 网络故障自动恢复连接 AutomaticRecoveryEnabled = true, // 心跳处理 RequestedHeartbeat = new TimeSpan(5000) }; } } }工作模式# Rabbitmq的几种工作模式，具体可参考官网给出的Demo：https://www.rabbitmq.com/getstarted.html， RPC 模式类似常用的请求-响应模式，这里不过多解释，感兴趣可以参考官网文档：https://www.rabbitmq.com/tutorials/tutorial-six-dotnet.html。 这里只学习其中的1-5种，也可以分类成两种：不使用交换机和使用交换机。
+其实还是使用了交换机的，简单队列和work模式是绑定到了默认的 AMQP default。只不过没有显式声明和绑定而已
+简单队列# “ P”是生产者，“ C”是消费者。中间的框是一个队列-RabbitMQ代表保留的消息缓冲区，这个模式很简单，其实就是只有一个消费者，简单的保证操作的顺序性'><meta itemprop=wordCount content="838"><title>1.2工作模式介绍 | CODE'NOTE</title><link rel=icon href=/favicon.png><link rel=manifest href=/manifest.json><link rel=canonical href=https://wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/><link rel=stylesheet href=/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG+T2l66Bw7pV8=" crossorigin=anonymous><script defer src=/fuse.min.js></script><script defer src=/en.search.min.16bbea805e586532aeca5e48249564b81bcbb5a9d44401ea4658ef5e6a5e812f.js integrity="sha256-FrvqgF5YZTKuyl5IJJVkuBvLtanURAHqRljvXmpegS8=" crossorigin=anonymous></script></head><body dir=ltr class="book-kind-page book-type-docs"><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/><span>CODE'NOTE</span></a></h2><div class="book-search hidden"><input id=book-search-input type=text placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/><div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><script>document.querySelector(".book-search").classList.remove("hidden")</script><ul><li><input type=checkbox id=section-f32afe48992fac3b3fc76dc3b27dd1d5 class=toggle>
+<label for=section-f32afe48992fac3b3fc76dc3b27dd1d5 class=flex><a role=button>📚 .NET</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/>值类型和引用类型的内存分配</a></li><li><a href=/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/>反射技术</a></li><li><a href=/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/>基础合集</a></li><li><a href=/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/>多线程</a></li><li><a href=/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/>委托和事件</a></li><li><a href=/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/>并行编程</a></li><li><a href=/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/>异步编程</a></li><li><a href=/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/>数据结构</a></li><li><a href=/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/>泛型技术</a></li><li><a href=/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/>线程同步</a></li><li><a href=/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/>面向对象</a></li></ul></li><li><input type=checkbox id=section-17ee4616d3316ecf2ecdb7c27cfa2a63 class=toggle>
+<label for=section-17ee4616d3316ecf2ecdb7c27cfa2a63 class=flex><a role=button>🎭 PMI-ACP</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/>Pmi Acp基础了解</a></li><li><a href=/docs/acp/pmi-acpdown/>Pmi Acpdown</a></li><li><a href=/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/>Pmi Acp备考笔记01</a></li><li><a href=/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/>Pmi Acp备考笔记02</a></li><li><a href=/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/>Pmi Acp备考笔记03</a></li></ul></li><li><input type=checkbox id=section-fba10961f5d9c66eab238d766cb1a791 class=toggle>
+<label for=section-fba10961f5d9c66eab238d766cb1a791 class=flex><a role=button>⌛ 软件测试</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/>单元测试</a></li><li><a href=/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/>压力测试k6</a></li><li><a href=/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/>自动化 Ui测试</a></li><li><a href=/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/>集成测试</a></li></ul></li><li><input type=checkbox id=section-92cef1621a3b87cdf19787a11c3e85e0 class=toggle>
+<label for=section-92cef1621a3b87cdf19787a11c3e85e0 class=flex><a role=button>⛷️ Prometheus</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/>1.1 Prometheus简介及安装</a></li><li><a href=/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/>1.2 Exporter数据采集</a></li><li><a href=/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/>1.3 Prom Ql查询语言</a></li><li><a href=/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/>1.4 Alertmanager告警处理</a></li><li><a href=/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/>1.5 Grafana监控可视化</a></li></ul></li><li><input type=checkbox id=section-c4b81cc06a2cdd0259ab09c2dde93fb5 class=toggle checked>
+<label for=section-c4b81cc06a2cdd0259ab09c2dde93fb5 class=flex><a role=button>🐇 RabbitMq</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/>1.1 Rabbit Mq概念及安装</a></li><li><a href=/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/ class=active>1.2工作模式介绍</a></li><li><a href=/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/>1.3消息确认及持久化</a></li><li><a href=/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/>1.4两种消费模式和 Qos的实现</a></li><li><a href=/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/>1.5 Channel常见方法</a></li><li><a href=/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/>1.6 Rabbit Mq常用命令</a></li><li><a href=/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/>1.7 Rabbit Mq常见策略</a></li><li><a href=/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/>1.8 Rabbit Mq常见问题</a></li><li><a href=/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/>1.9 Rabbit Mq集群方案</a></li><li><a href=/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/>客户端连接 Rabbit Mq</a></li></ul></li><li><input type=checkbox id=section-45de5b9a6214c965d493f727c3af2aae class=toggle>
+<label for=section-45de5b9a6214c965d493f727c3af2aae class=flex><a role=button>🐹 Golang</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/>01开发环境搭建</a></li><li><a href=/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/>02变量和常量</a></li><li><a href=/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/>03基本数据类型</a></li><li><a href=/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/>04流程控制和运算符</a></li><li><a href=/docs/go/05%E6%95%B0%E7%BB%84/>05数组</a></li><li><a href=/docs/go/06%E5%88%87%E7%89%87/>06切片</a></li><li><a href=/docs/go/07map/>07map</a></li><li><a href=/docs/go/08%E5%87%BD%E6%95%B0/>08函数</a></li><li><a href=/docs/go/09%E6%8C%87%E9%92%88/>09指针</a></li><li><a href=/docs/go/10%E5%8F%8D%E5%B0%84/>10反射</a></li><li><a href=/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/>11结构体</a></li><li><a href=/docs/go/12%E6%8E%A5%E5%8F%A3/>12接口</a></li><li><a href=/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/>Channel</a></li><li><a href=/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/>Csp并发模型</a></li><li><a href=/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/>Goroutine</a></li><li><a href=/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/>Gpm原理与调度</a></li><li><a href=/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/>原子操作</a></li><li><a href=/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/>并发安全和锁</a></li><li><a href=/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/>Flag</a></li><li><a href=/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/>Fmt</a></li><li><a href=/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/>Log</a></li><li><a href=/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/>Time</a></li></ul></li><li><input type=checkbox id=section-61dde4567035e1fd2b5d2aa51b82a7a0 class=toggle>
+<label for=section-61dde4567035e1fd2b5d2aa51b82a7a0 class=flex><a role=button>💫 Microservice</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/>1.1微服务入门之项目搭建</a></li><li><a href=/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/>1.2微服务入门之服务注册与发现</a></li><li><a href=/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/>1.3微服务入门之网关</a></li><li><a href=/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/>1.4微服务入门之事件总线</a></li><li><a href=/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/>1.5微服务入门之 Docker Compose</a></li><li><a href=/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/>Consul服务注册发现</a></li></ul></li><li><input type=checkbox id=section-e6c26370c56585ceaa14c64b7d769452 class=toggle>
+<label for=section-e6c26370c56585ceaa14c64b7d769452 class=flex><a role=button>📦 Redis</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/>1.10 Redis常见问题</a></li><li><a href=/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/>1.1 No Sql概述</a></li><li><a href=/docs/redis/1.2redis%E5%AE%89%E8%A3%85/>1.2 Redis安装</a></li><li><a href=/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/>1.3 Redis基本数据类型</a></li><li><a href=/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/>1.4 Redis特殊数据类型</a></li><li><a href=/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/>1.5 Redis事务操作</a></li><li><a href=/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/>1.6 Redis配置文件详解</a></li><li><a href=/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/>1.7 Redis持久化</a></li><li><a href=/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/>1.8 Redis发布订阅</a></li><li><a href=/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/>1.9 Redis集群方案</a></li><li><a href=/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/>使用 Docker搭建 Redis集群</a></li><li><a href=/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/>客户端连接 Redis</a></li></ul></li><li><input type=checkbox id=section-f781adde1ca4021db6751ec1e71e0572 class=toggle>
+<label for=section-f781adde1ca4021db6751ec1e71e0572 class=flex><a role=button>🔎 ELK</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/>1.1 Elastatic Search入门</a></li><li><a href=/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/>1.2 Elastatic Search配置</a></li><li><a href=/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/>1.3使用 Kibana操作 Es</a></li></ul></li><li><input type=checkbox id=section-17df8bdb44c678e43d193647c6ae88f1 class=toggle>
+<label for=section-17df8bdb44c678e43d193647c6ae88f1 class=flex><a role=button>🚢 Docker</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/>1.1 Docker概念及安装</a></li><li><a href=/docs/docker/1.2docker%E9%95%9C%E5%83%8F/>1.2 Docker镜像</a></li><li><a href=/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/>1.3 Docker容器</a></li><li><a href=/docs/docker/1.4docker%E4%BB%93%E5%BA%93/>1.4 Docker仓库</a></li><li><a href=/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/>1.5 Docker数据管理</a></li><li><a href=/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/>1.6 Docker容器网络模式</a></li><li><a href=/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/>1.7 Docker高级网络配置</a></li><li><a href=/docs/docker/1.8dockerfile/>1.8 Dockerfile</a></li><li><a href=/docs/docker/1.9dockercompose/>1.9 Docker Compose</a></li><li><a href=/docs/docker/2.0dockermachine/>2.0 Docker Machine</a></li><li><a href=/docs/docker/2.1dockerswarm/>2.1 Docker Swarm</a></li><li><a href=/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/>2.2 Docker常用命令</a></li><li><a href=/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/>2.3 Portainer可视化面板</a></li></ul></li><li><input type=checkbox id=section-566aa18ccd5b6b6934a70aded3a8361a class=toggle>
+<label for=section-566aa18ccd5b6b6934a70aded3a8361a class=flex><a role=button>🕸️ K8s</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/>Kubernetes基础知识</a></li><li><a href=/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/>Kubernetes集群安装</a></li></ul></li><li><input type=checkbox id=section-04176b4c8c5f502db36c25b60db03d67 class=toggle>
+<label for=section-04176b4c8c5f502db36c25b60db03d67 class=flex><a role=button>🖥️ Linux</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/>Centos7升级gcc版本</a></li><li><a href=/docs/linux/centos%E5%AE%89%E8%A3%85hexo/>Centos安装 Hexo</a></li><li><a href=/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/>Centos网络配置</a></li><li><a href=/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/>Linux常用命令</a></li><li><a href=/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/>Linux目录说明</a></li><li><a href=/docs/linux/vmware%E5%AE%89%E8%A3%85centos/>Vmware安装 Centos</a></li></ul></li><li><input type=checkbox id=section-9397a01455952fcbd887e2206a8a3054 class=toggle>
+<label for=section-9397a01455952fcbd887e2206a8a3054 class=flex><a role=button>🛍️ Devops</a>
+<img src=/icons/chevron-right.svg class=book-icon alt=Expand></label><ul><li><a href=/docs/devops/gitlab%E5%AE%89%E8%A3%85/>Gitlab安装</a></li><li><a href=/docs/devops/jenkins%E5%AE%89%E8%A3%85/>Jenkins安装</a></li><li><a href=/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/>Jenkins常见操作</a></li><li><a href=/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/>Nuget Server搭建</a></li></ul></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class="book-header hidden"><div class="flex align-center justify-between"><label for=menu-control><img src=/icons/menu.svg class=book-icon alt=Menu></label><h3>1.2工作模式介绍</h3><label for=toc-control></label></div></header><article class="markdown book-article"><p>使用C#连接rabbitMq测试各工作模式区别</p><p>C#创建RabbitMq连接</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>namespace</span> RabbitMQPublisher
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>BasePublisher</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> ConnectionFactory CreateRabbitMqConnection()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#75715e>// RabbitMQ连接工厂</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> ConnectionFactory()
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                HostName = <span style=color:#e6db74>&#34;localhost&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#75715e>// 用户名</span>
+</span></span><span style=display:flex><span>                UserName = <span style=color:#e6db74>&#34;guest&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#75715e>// 密码</span>
+</span></span><span style=display:flex><span>                Password = <span style=color:#e6db74>&#34;guest&#34;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#75715e>// 网络故障自动恢复连接</span>
+</span></span><span style=display:flex><span>                AutomaticRecoveryEnabled = <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>                <span style=color:#75715e>// 心跳处理</span>
+</span></span><span style=display:flex><span>                RequestedHeartbeat = <span style=color:#66d9ef>new</span> TimeSpan(<span style=color:#ae81ff>5000</span>)
+</span></span><span style=display:flex><span>            };
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}</span></span></code></pre></div><h1 id=工作模式>工作模式<a class=anchor href=#%e5%b7%a5%e4%bd%9c%e6%a8%a1%e5%bc%8f>#</a></h1><p>Rabbitmq的几种工作模式，具体可参考官网给出的Demo：https://www.rabbitmq.com/getstarted.html， <code>RPC</code> 模式类似常用的请求-响应模式，这里不过多解释，感兴趣可以参考官网文档：https://www.rabbitmq.com/tutorials/tutorial-six-dotnet.html。 这里只学习其中的1-5种，也可以分类成两种：不使用交换机和使用交换机。</p><blockquote class=book-hint><p>其实还是使用了交换机的，简单队列和work模式是绑定到了默认的 <code>AMQP default</code>。只不过没有显式声明和绑定而已</p></blockquote><p><img src=/images/RabbitMQ.png alt></p><h1 id=简单队列>简单队列<a class=anchor href=#%e7%ae%80%e5%8d%95%e9%98%9f%e5%88%97>#</a></h1><blockquote class=book-hint><p>“ P”是生产者，“ C”是消费者。中间的框是一个队列-RabbitMQ代表保留的消息缓冲区，这个模式很简单，其实就是只有一个消费者，简单的保证操作的顺序性</p></blockquote><p><img src="https://www.rabbitmq.com/img/tutorials/python-one-overall.png#align=left&amp;display=inline&amp;height=100&amp;margin=%5Bobject%20Object%5D&amp;originHeight=100&amp;originWidth=288&amp;status=done&amp;style=none&amp;width=288" alt></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>namespace</span> RabbitMQPublisher
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System.Text;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// 点对点:最简单的工作模式</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;/summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PointToPointPublisher</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>readonly</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>string</span> queueName = <span style=color:#e6db74>&#34;test.pointToPoint.queue&#34;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> Main(<span style=color:#66d9ef>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Console.WriteLine(<span style=color:#e6db74>&#34;消息发布者:模式{点对点}=&gt;输入消息内容&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>string</span> message = Console.ReadLine();
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> (!<span style=color:#66d9ef>string</span>.IsNullOrEmpty(message))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// RabbitMQ连接工厂</span>
+</span></span><span style=display:flex><span>                    ConnectionFactory factory = BasePublisher.CreateRabbitMqConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 建立连接</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> IConnection connection = factory.CreateConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 创建信道</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> IModel channel = connection.CreateModel();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明队列</span>
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queueName, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 消息发送</span>
+</span></span><span style=display:flex><span>                    channel.BasicPublish(exchange: <span style=color:#e6db74>&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style=color:#66d9ef>null</span>, body: Encoding.UTF8.GetBytes(message));
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}</span></span></code></pre></div><p>默认的传统队列是：发布者发布消息，只有一个消费者消费。但是如果消费者多开默认采用轮询(均摊)机制。</p><blockquote class=book-hint><p>均摊消费，如果每个消费者速度不一样的情况下，均摊消费是不公平的，应该是能者多劳</p></blockquote><p><img src=/images/2021-09-11-20-57-16.png alt></p><h1 id=worker>Worker<a class=anchor href=#worker>#</a></h1><blockquote class=book-hint><p>Worker模式是一对多的模式，但是这个一对多并不是像发布订阅那种，而是将消息顺序传输给每个接收者。<strong>其实就是简单队列模式下的消费者多开</strong></p></blockquote><p><img src="https://www.rabbitmq.com/img/tutorials/python-two.png#align=left&amp;display=inline&amp;height=111&amp;margin=%5Bobject%20Object%5D&amp;originHeight=111&amp;originWidth=332&amp;status=done&amp;style=none&amp;width=332" alt></p><h1 id=exchangestype>ExchangesType<a class=anchor href=#exchangestype>#</a></h1><p>Exchange分发消息时根据类型的不同分发策略有区别：<code>direct</code>、<code>fanout</code>、<code>topic</code>、<code>headers</code> 。<code>headers</code> 匹配 AMQP 消息的 <code>header</code> 而不是路由键，此外 <code>headers</code> 交换器和 <code>direct</code>交换器完全一致，但性能差很多，目前几乎用不到了，所以直接看另外三种类型。</p><h1 id=fanout>Fanout<a class=anchor href=#fanout>#</a></h1><blockquote class=book-hint><p>发布订阅模式(fanout)，消息发送到Exchange，所有订阅了当前Exchange的Queue都可以收到消息。<em>fanout 交换器不处理路由键，只是简单的将队列绑定到交换器上</em>。每个发到 fanout 类型交换器的消息都会分发到所有绑定的队列上去。很像子网广播，每台子网内的主机都获得了一份复制的消息。fanout 类型转发消息是最快的</p></blockquote><p><img src=/images/2021-09-05-22-04-12.png alt></p><p>生产者</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>namespace</span> RabbitMQPublisher
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> EasyNetQ;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System.Text;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// 发布订阅模式(fanout),消息会发送到exchange,所有订阅了exchange的queue都可以收到消息</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// type=fanout：routingKey不会生效</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;/summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FanoutPublisher</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> Main(<span style=color:#66d9ef>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Console.WriteLine(<span style=color:#e6db74>&#34;消息发布者:模式{fanout}=&gt;输入消息内容&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>string</span> message = Console.ReadLine();
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> (!<span style=color:#66d9ef>string</span>.IsNullOrEmpty(message))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// RabbitMQ连接工厂</span>
+</span></span><span style=display:flex><span>                    ConnectionFactory factory = BasePublisher.CreateRabbitMqConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 建立连接</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> IConnection connection = factory.CreateConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 创建信道</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> IModel channel = connection.CreateModel();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明交换机</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> exchangeName = <span style=color:#e6db74>$&#34;test.exchange.fanout&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.ExchangeDeclare(exchange: exchangeName, type: <span style=color:#e6db74>&#34;fanout&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明队列</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> queue1 = <span style=color:#e6db74>&#34;test.fanout.queue1&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queue1, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> queue2 = <span style=color:#e6db74>&#34;test.fanout.queue2&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queue2, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 将队列与交换机进行绑定</span>
+</span></span><span style=display:flex><span>                    channel.QueueBind(queue: queue1, exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;fanout&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    channel.QueueBind(queue: queue2, exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    channel.BasicPublish(exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;&#34;</span>, basicProperties: <span style=color:#66d9ef>null</span>, body: Encoding.UTF8.GetBytes(message));
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}</span></span></code></pre></div><p><img src=/images/2021-09-11-21-41-32.png alt></p><p>这里虽然绑定 <code>q1</code> 时指定了 <code>routingkey="fanout"</code> 但是<code>q1/q2</code> 都正常收到了消息，证实上面说的“fanout 交换器不处理路由键”。</p><p>消费者</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>namespace</span> RabbitMQConsumer
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client.Events;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System.Text;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FanoutConsumer</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> Main(<span style=color:#66d9ef>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            Console.WriteLine(<span style=color:#e6db74>&#34;input queueName...&#34;</span>);
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>var</span> input = Console.ReadLine();
+</span></span><span style=display:flex><span>            ConnectionFactory factory = BaseConsumer.CreateRabbitMqConnection();
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>using</span> IConnection connection = factory.CreateConnection();
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>using</span> IModel channel = connection.CreateModel();
+</span></span><span style=display:flex><span>            EventingBasicConsumer consumer = <span style=color:#66d9ef>new</span>(channel);
+</span></span><span style=display:flex><span>            channel.BasicQos(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>, <span style=color:#66d9ef>false</span>);
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>switch</span> (input)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;1&#34;</span>:
+</span></span><span style=display:flex><span>                    channel.BasicConsume(queue: <span style=color:#e6db74>&#34;test.fanout.queue1&#34;</span>, autoAck: <span style=color:#66d9ef>false</span>, consumer: consumer);
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 绑定消息接收后的事件委托</span>
+</span></span><span style=display:flex><span>                    consumer.Received += (model, message) =&gt;
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        Console.WriteLine(<span style=color:#e6db74>$&#34;Message:{Encoding.UTF8.GetString(message.Body.ToArray())}&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                        channel.BasicAck(
+</span></span><span style=display:flex><span>                            deliveryTag: message.DeliveryTag,
+</span></span><span style=display:flex><span>                            <span style=color:#75715e>// 是否一次性确认多条数据</span>
+</span></span><span style=display:flex><span>                            multiple: <span style=color:#66d9ef>false</span>);
+</span></span><span style=display:flex><span>                    };
+</span></span><span style=display:flex><span>                    Console.ReadLine();
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;2&#34;</span>:
+</span></span><span style=display:flex><span>                    channel.BasicConsume(queue: <span style=color:#e6db74>&#34;test.fanout.queue2&#34;</span>, autoAck: <span style=color:#66d9ef>false</span>, consumer: consumer);
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 绑定消息接收后的事件委托</span>
+</span></span><span style=display:flex><span>                    consumer.Received += (model, message) =&gt;
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        Console.WriteLine(<span style=color:#e6db74>$&#34;Message:{Encoding.UTF8.GetString(message.Body.ToArray())}&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                        channel.BasicAck(
+</span></span><span style=display:flex><span>                            deliveryTag: message.DeliveryTag,
+</span></span><span style=display:flex><span>                            <span style=color:#75715e>// 是否一次性确认多条数据</span>
+</span></span><span style=display:flex><span>                            multiple: <span style=color:#66d9ef>false</span>);
+</span></span><span style=display:flex><span>                    };
+</span></span><span style=display:flex><span>                    Console.ReadLine();
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}</span></span></code></pre></div><h1 id=direct>Direct<a class=anchor href=#direct>#</a></h1><blockquote class=book-hint><p>direct跟fanout的区别在于多了routekey，消息发送到Exchange，所有订阅了当前Exchange并且routingKey完全匹配的Queue才可以收到消息。消息中的路由键（routing key）如果和 Binding 中的 binding key 一致，交换器就将消息发到对应的队列中。路由键与队列名完全匹配，如果一个队列绑定到交换机要求路由键为“dog”，则只转发 routing key标记为“dog”的消息，不会转发“dog.puppy”，也不会转发“dog.guard”等等。它是完全匹配、单播的模式。</p></blockquote><p><img src=/images/2021-09-05-22-07-05.png alt></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>namespace</span> RabbitMQPublisher
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System.Text;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// 路由模式(direct),消息会发送到exchange</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// 所有订阅了当前Exchange并且routingKey完全匹配的Queue都可以收到消息</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;/summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DirectPublisher</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> Main(<span style=color:#66d9ef>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Console.WriteLine(<span style=color:#e6db74>&#34;消息发布者:模式{direct}=&gt;输入消息内容&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>string</span> message = Console.ReadLine();
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> (!<span style=color:#66d9ef>string</span>.IsNullOrEmpty(message))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    ConnectionFactory factory = BasePublisher.CreateRabbitMqConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> var connection = factory.CreateConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> var channel = connection.CreateModel();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明交换机</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> exchangeName = <span style=color:#e6db74>$&#34;test.exchange.direct&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.ExchangeDeclare(exchange: exchangeName, type: <span style=color:#e6db74>&#34;direct&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明队列</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> queue1 = <span style=color:#e6db74>&#34;test.direct.queue1&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queue1, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> queue2 = <span style=color:#e6db74>&#34;test.direct.queue2&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queue2, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>//将队列与交换机进行绑定</span>
+</span></span><span style=display:flex><span>                    channel.QueueBind(queue: queue1, exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;fanout&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    channel.QueueBind(queue: queue2, exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 只有queue1可以收到消息,因为queue2的routingKey不匹配</span>
+</span></span><span style=display:flex><span>                    channel.BasicPublish(exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;fanout&#34;</span>, basicProperties: <span style=color:#66d9ef>null</span>, body: Encoding.UTF8.GetBytes(message));
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}</span></span></code></pre></div><h1 id=topic>Topic<a class=anchor href=#topic>#</a></h1><blockquote class=book-hint><p>topic符模式与路由模式一致，只不过通配符模式中的路由可以声明为模糊查询，RabbitMQ拥有两个通配符；topic 交换器通过模式匹配分配消息的路由键属性，将路由键和某个模式进行匹配，此时队列需要绑定到一个模式上。它将路由键和绑定键的字符串切分成单词，这些单词之间用点隔开。它同样也会识别两个通配符：符号 <code>#</code> 和符号 <code>*</code>。<code>#</code> 匹配0个或多个单词，<code>* </code>匹配一个单词</p></blockquote><p><img src=/images/2021-09-05-22-07-45.png alt></p><ul><li><code>#</code>：匹配0-n个字符语句</li><li><code>*</code>：匹配一个字符语句</li></ul><p>注意：RabbitMQ中通配符并不像正则中的单个字符，而是一个以“.”分割的字符串，如 ”topic1.*“匹配的规则以topic1开始并且".&ldquo;后只有一段语句的路由。例：&ldquo;topic1.aaa&rdquo;，&ldquo;topic1.bb&rdquo;</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>namespace</span> RabbitMQPublisher
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> System.Text;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> RabbitMQ.Client;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// 路由模式(topic),消息会发送到exchange</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// topic与direct模式区别在于routingKey可以声明为模糊查询，RabbitMQ拥有两个通配符</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// #：匹配0-n个字符语句</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// *：匹配一个字符语句</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/// &lt;/summary&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TopicPublisher</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> Main(<span style=color:#66d9ef>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Console.WriteLine(<span style=color:#e6db74>&#34;消息发布者:模式{topic}=&gt;输入消息内容&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>string</span> message = Console.ReadLine();
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> (!<span style=color:#66d9ef>string</span>.IsNullOrEmpty(message))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    ConnectionFactory factory = BasePublisher.CreateRabbitMqConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> var connection = factory.CreateConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> var channel = connection.CreateModel();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明交换机</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> exchangeName = <span style=color:#e6db74>$&#34;test.exchange.topic&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.ExchangeDeclare(exchange: exchangeName, type: <span style=color:#e6db74>&#34;topic&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明队列</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> queue1 = <span style=color:#e6db74>&#34;test.topic.queue1&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queue1, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>string</span> queue2 = <span style=color:#e6db74>&#34;test.topic.queue2&#34;</span>;
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queue2, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>//将队列与交换机进行绑定</span>
+</span></span><span style=display:flex><span>                    channel.QueueBind(queue: queue1, exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;topic.*&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                    channel.QueueBind(queue: queue2, exchange: exchangeName, routingKey: <span style=color:#e6db74>&#34;topic.#&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#if</span> debug
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// queue1和queue2都可以收到消息</span>
+</span></span><span style=display:flex><span>                    channel.BasicPublish(
+</span></span><span style=display:flex><span>                        exchange: exchangeName,
+</span></span><span style=display:flex><span>                        routingKey: <span style=color:#e6db74>&#34;topic.test&#34;</span>,
+</span></span><span style=display:flex><span>                        basicProperties: <span style=color:#66d9ef>null</span>,
+</span></span><span style=display:flex><span>                        body: Encoding.UTF8.GetBytes(message));
+</span></span><span style=display:flex><span><span style=color:#75715e>#endif</span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 只有queue2可以收到消息,因为.#可以匹配一个或者多个字符语句而.*只能匹配单个</span>
+</span></span><span style=display:flex><span>                    channel.BasicPublish(
+</span></span><span style=display:flex><span>                        exchange: exchangeName,
+</span></span><span style=display:flex><span>                        routingKey: <span style=color:#e6db74>&#34;topic.test.test&#34;</span>,
+</span></span><span style=display:flex><span>                        basicProperties: <span style=color:#66d9ef>null</span>,
+</span></span><span style=display:flex><span>                        body: Encoding.UTF8.GetBytes(message));
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}</span></span></code></pre></div><p>发布,路由,通配符这三种模式可以算为一种模式，区别仅仅是交互机类型不同.发送者将消息发送发送到交换机，接收者创建各自的消息队列绑定到交换机。</p><p><img src=/images/2021-09-05-22-08-53.png alt></p><h1 id=mandatory参数>Mandatory参数<a class=anchor href=#mandatory%e5%8f%82%e6%95%b0>#</a></h1><p>注意：<code>channel.BasicPublish()</code>，<code>mandatory</code> 参数指定交换器无法根据自身类型和路由键找到一个符合条件的队列时的处理方式。</p><ul><li><em>true：RabbitMQ会调用Basic.Return命令将消息返回给生产者</em></li><li><em>false：RabbitMQ会把消息直接丢弃</em></li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span>    <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PointToPointPublisher</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>readonly</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>string</span> queueName = <span style=color:#e6db74>&#34;test.pointToPoint.queue&#34;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> Main(<span style=color:#66d9ef>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Console.WriteLine(<span style=color:#e6db74>&#34;消息发布者:模式{点对点}=&gt;输入消息内容&#34;</span>);
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>string</span> message = Console.ReadLine();
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> (!<span style=color:#66d9ef>string</span>.IsNullOrEmpty(message))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// RabbitMQ连接工厂</span>
+</span></span><span style=display:flex><span>                    ConnectionFactory factory = BasePublisher.CreateRabbitMqConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 建立连接</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> IConnection connection = factory.CreateConnection();
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 创建信道</span>
+</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>using</span> IModel channel = connection.CreateModel();
+</span></span><span style=display:flex><span><span style=color:#75715e>#if</span> mandatory
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 声明队列</span>
+</span></span><span style=display:flex><span>                    channel.QueueDeclare(queueName, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>false</span>, <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span><span style=color:#75715e>#endif</span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>// 消息发送</span>
+</span></span><span style=display:flex><span>                    channel.BasicPublish(exchange: <span style=color:#e6db74>&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style=color:#66d9ef>null</span>, body: Encoding.UTF8.GetBytes(message));
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }</span></span></code></pre></div><p>这里发送消息时<code>rabbitMq</code> 中并没有名称为 <code>test.pointToPoint.queue</code> 的队列，这里没有设置 <code>mandatory</code> 参数所以消息会默认被丢弃，可以使用<code>BasicReturn</code> 来获取没有正常发送到队列中的消息。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#75715e>// 消息发送</span>
+</span></span><span style=display:flex><span>channel.BasicPublish(exchange: <span style=color:#e6db74>&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style=color:#66d9ef>null</span>, body: Encoding.UTF8.GetBytes(message), mandatory: <span style=color:#66d9ef>true</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// 获取没有正常发送到队列中的消息</span>
+</span></span><span style=display:flex><span>channel.BasicReturn += (sender, message) =&gt;
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    Console.WriteLine(Encoding.UTF8.GetString(message.Body.ToArray()));
+</span></span><span style=display:flex><span>};</span></span></code></pre></div><h1 id=exchangeamqp-default>Exchange：AMQP default<a class=anchor href=#exchangeamqp-default>#</a></h1><blockquote class=book-hint><p>Default exchange：</p><p>The default exchange is implicitly bound to every queue, with a routing key equal to the queue name. It is not possible to explicitly bind to, or unbind from the default exchange. It also cannot be deleted.</p></blockquote><blockquote class=book-hint><p>译：默认交换器隐式地绑定到每个队列，<strong>其路由键等于队列名</strong>。 不可能显式地绑定到默认交换，或从默认交换取消绑定。 也不能删除。</p></blockquote><p>这里是说每个 <code>queue</code> 都会默认绑定到这个<code>AMQP default</code> 这个交换器，不能显式手动绑定也不能解绑或者删除。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#75715e>// 消息发送</span>
+</span></span><span style=display:flex><span>channel.BasicPublish(exchange: <span style=color:#e6db74>&#34;&#34;</span>,
+</span></span><span style=display:flex><span>                     routingKey: <span style=color:#e6db74>&#34;test.pointToPoint.queue&#34;</span>,
+</span></span><span style=display:flex><span>                     basicProperties: <span style=color:#66d9ef>null</span>, 
+</span></span><span style=display:flex><span>                     body: Encoding.UTF8.GetBytes(message));</span></span></code></pre></div><p>这里发布消息时没有指定 <code>exchange</code>，队列名称就是<code>routingKey</code>。</p><h1 id=qos机制>Qos机制<a class=anchor href=#qos%e6%9c%ba%e5%88%b6>#</a></h1><p>当生产者将消息发布到rabbitmq之后，如果在未配置 <code>QOS</code> 的情况下，rabbitmq尽可能快速地发送队列中的所有消息到消费者端，如果消息比较多，消费者来不及处理，就会缓存这些消息，当消息堆积过多，可能导致服务器内存不足而影响其他进程，rabbitmq的QOS可以很好的解决这类问题，<code>QOS</code> 就是限制消费者一次性从rabbitmq中获取消息的个数，而不是获取所有消息。比如设置rabbitmq的QOS为10，也就是 <code>prefetch=10</code> ，就是说哪怕rabbitmq中有100条消息，消费者也只是一次性获取10条，然后消费者消费这10条消息，剩下的交给其他消费者，当10条消息中的 <code>unacked</code> 个数少于prefetch * 消费者数目时，会继续从rabbitmq获取消息，如果在工作模式中，不使用QOS，你会发现所有的消息都被一个消费者消费了。</p><p>　</p></article><footer class=book-footer><div class="flex flex-wrap justify-between"><div></div><div></div></div><div class="flex flex-wrap justify-between"><span><a href=/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/ class="flex align-center"><img src=/icons/backward.svg class=book-icon alt=Backward>
+<span>1.1 Rabbit Mq概念及安装</span>
+</a></span><span><a href=/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/ class="flex align-center"><span>1.3消息确认及持久化</span>
+<img src=/icons/forward.svg class=book-icon alt=Forward></a></span></div><script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script></footer><label for=menu-control class="hidden book-menu-overlay"></label></div></main></body></html>

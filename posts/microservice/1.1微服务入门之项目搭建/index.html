@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="前言# 此系列旨在复习微服务的相关知识，示例代码中不会出现聚合、聚合根、服务拆分等相关概念（不会涉及到领域驱动相关知识），只使用最简单的.Net Core Web程序，主要关注点在于：
+如何使用 Docker 部署 .NetCore 应用 应用程序的 DockerFile 编写 服务注册和服务发现是什么？解决了什么问题？ 网关用来做什么？服务治理相关（熔断/限流/降级/链路追踪/缓存…） 微服务概念# 关于微服务的概念解释网上有很多，每个人的理解都不同。至于为什么要使用微服务？微服务的优缺点等相关问题每个人理解不同。个人理解：微服务是一种系统架构模式，和语言无关，框架无关，工具无关，服务器环境无关，微服务目的是：将传统单体系统按照业务拆分成多个职责单一、且可独立运行的服务。至于服务如何拆分，没有明确的定义。采用微服务优点是：每个服务的职责单一且可独立部署、不同服务间采用轻量级的通信协议作为通信原则，松耦合。这样不同服务就可以使用不同的技术栈（优势语言），缺点的话是：微服务架构避免不了会引入更多技术栈、中间件等等增加系统复杂度。（微服务不是银弹，要根据实际业务体量考虑是否使用，否则只会徒增不必要的麻烦）
+项目结构搭建# Order.Api：订单服务 Web.Client：测试使用的客户端 创建项目时启用Docker支持，或者之后添加也可以。添加基础代码，简单的返回服务名称、当前时间、服务IP、端口：
+using Microsoft.AspNetCore.Mvc; using Microsoft.Extensions.Configuration; using System; namespace Order.Api.Controller { [Route(&#34;[Controller]&#34;)] [ApiController] public class OrdersController : ControllerBase { [HttpGet] public IActionResult Index() { string result = $&#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{Request.HttpContext.Connection.LocalPort}&#34;; return Ok(result); } } }容器化部署# 代码就写这么简单，下面使用Docker来部署订单服务。这里先了解一下如果启用了Docker支持，VS默认生成的 Dockerfile 文件如下：
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging. FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base WORKDIR /app EXPOSE 80 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build WORKDIR /src COPY [&#34;Order.Api/Order.Api.csproj&#34;, &#34;Order.Api/&#34;] RUN dotnet restore &#34;Order.Api/Order.Api.csproj&#34; COPY . . WORKDIR &#34;/src/Order.Api&#34; RUN dotnet build &#34;Order.Api.csproj&#34; -c Release -o /app/build FROM build AS publish RUN dotnet publish &#34;Order.Api.csproj&#34; -c Release -o /app/publish FROM base AS final WORKDIR /app COPY --from=publish /app/publish . ENTRYPOINT [&#34;dotnet&#34;, &#34;Order.Api.dll&#34;]关于Dockerfile 各个命令的作用这里不再解释，可以参考 【Dockerfile】。这里的 Dockerfile 文件不能直接使用，因为我采用的方式是：将发布后的应用部署到 Centos =&gt; docker build镜像=&gt;运行容器。跳过了这里的 dotnet restore 和 dotnet publish。修改后的 Dockerfile如下：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="前言# 此系列旨在复习微服务的相关知识，示例代码中不会出现聚合、聚合根、服务拆分等相关概念（不会涉及到领域驱动相关知识），只使用最简单的.Net Core Web程序，主要关注点在于：
+如何使用 Docker 部署 .NetCore 应用 应用程序的 DockerFile 编写 服务注册和服务发现是什么？解决了什么问题？ 网关用来做什么？服务治理相关（熔断/限流/降级/链路追踪/缓存…） 微服务概念# 关于微服务的概念解释网上有很多，每个人的理解都不同。至于为什么要使用微服务？微服务的优缺点等相关问题每个人理解不同。个人理解：微服务是一种系统架构模式，和语言无关，框架无关，工具无关，服务器环境无关，微服务目的是：将传统单体系统按照业务拆分成多个职责单一、且可独立运行的服务。至于服务如何拆分，没有明确的定义。采用微服务优点是：每个服务的职责单一且可独立部署、不同服务间采用轻量级的通信协议作为通信原则，松耦合。这样不同服务就可以使用不同的技术栈（优势语言），缺点的话是：微服务架构避免不了会引入更多技术栈、中间件等等增加系统复杂度。（微服务不是银弹，要根据实际业务体量考虑是否使用，否则只会徒增不必要的麻烦）
+项目结构搭建# Order.Api：订单服务 Web.Client：测试使用的客户端 创建项目时启用Docker支持，或者之后添加也可以。添加基础代码，简单的返回服务名称、当前时间、服务IP、端口：
+using Microsoft.AspNetCore.Mvc; using Microsoft.Extensions.Configuration; using System; namespace Order.Api.Controller { [Route(&#34;[Controller]&#34;)] [ApiController] public class OrdersController : ControllerBase { [HttpGet] public IActionResult Index() { string result = $&#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{Request.HttpContext.Connection.LocalPort}&#34;; return Ok(result); } } }容器化部署# 代码就写这么简单，下面使用Docker来部署订单服务。这里先了解一下如果启用了Docker支持，VS默认生成的 Dockerfile 文件如下：
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging. FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base WORKDIR /app EXPOSE 80 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build WORKDIR /src COPY [&#34;Order.Api/Order.Api.csproj&#34;, &#34;Order.Api/&#34;] RUN dotnet restore &#34;Order.Api/Order.Api.csproj&#34; COPY . . WORKDIR &#34;/src/Order.Api&#34; RUN dotnet build &#34;Order.Api.csproj&#34; -c Release -o /app/build FROM build AS publish RUN dotnet publish &#34;Order.Api.csproj&#34; -c Release -o /app/publish FROM base AS final WORKDIR /app COPY --from=publish /app/publish . ENTRYPOINT [&#34;dotnet&#34;, &#34;Order.Api.dll&#34;]关于Dockerfile 各个命令的作用这里不再解释，可以参考 【Dockerfile】。这里的 Dockerfile 文件不能直接使用，因为我采用的方式是：将发布后的应用部署到 Centos =&gt; docker build镜像=&gt;运行容器。跳过了这里的 dotnet restore 和 dotnet publish。修改后的 Dockerfile如下：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="前言# 此系列旨在复习微服务的相关知识，示例代码中不会出现聚合、聚合根、服务拆分等相关概念（不会涉及到领域驱动相关知识），只使用最简单的.Net Core Web程序，主要关注点在于：
+如何使用 Docker 部署 .NetCore 应用 应用程序的 DockerFile 编写 服务注册和服务发现是什么？解决了什么问题？ 网关用来做什么？服务治理相关（熔断/限流/降级/链路追踪/缓存…） 微服务概念# 关于微服务的概念解释网上有很多，每个人的理解都不同。至于为什么要使用微服务？微服务的优缺点等相关问题每个人理解不同。个人理解：微服务是一种系统架构模式，和语言无关，框架无关，工具无关，服务器环境无关，微服务目的是：将传统单体系统按照业务拆分成多个职责单一、且可独立运行的服务。至于服务如何拆分，没有明确的定义。采用微服务优点是：每个服务的职责单一且可独立部署、不同服务间采用轻量级的通信协议作为通信原则，松耦合。这样不同服务就可以使用不同的技术栈（优势语言），缺点的话是：微服务架构避免不了会引入更多技术栈、中间件等等增加系统复杂度。（微服务不是银弹，要根据实际业务体量考虑是否使用，否则只会徒增不必要的麻烦）
+项目结构搭建# Order.Api：订单服务 Web.Client：测试使用的客户端 创建项目时启用Docker支持，或者之后添加也可以。添加基础代码，简单的返回服务名称、当前时间、服务IP、端口：
+using Microsoft.AspNetCore.Mvc; using Microsoft.Extensions.Configuration; using System; namespace Order.Api.Controller { [Route(&#34;[Controller]&#34;)] [ApiController] public class OrdersController : ControllerBase { [HttpGet] public IActionResult Index() { string result = $&#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{Request.HttpContext.Connection.LocalPort}&#34;; return Ok(result); } } }容器化部署# 代码就写这么简单，下面使用Docker来部署订单服务。这里先了解一下如果启用了Docker支持，VS默认生成的 Dockerfile 文件如下：
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging. FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base WORKDIR /app EXPOSE 80 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build WORKDIR /src COPY [&#34;Order.Api/Order.Api.csproj&#34;, &#34;Order.Api/&#34;] RUN dotnet restore &#34;Order.Api/Order.Api.csproj&#34; COPY . . WORKDIR &#34;/src/Order.Api&#34; RUN dotnet build &#34;Order.Api.csproj&#34; -c Release -o /app/build FROM build AS publish RUN dotnet publish &#34;Order.Api.csproj&#34; -c Release -o /app/publish FROM base AS final WORKDIR /app COPY --from=publish /app/publish . ENTRYPOINT [&#34;dotnet&#34;, &#34;Order.Api.dll&#34;]关于Dockerfile 各个命令的作用这里不再解释，可以参考 【Dockerfile】。这里的 Dockerfile 文件不能直接使用，因为我采用的方式是：将发布后的应用部署到 Centos =&gt; docker build镜像=&gt;运行容器。跳过了这里的 dotnet restore 和 dotnet publish。修改后的 Dockerfile如下：">
+  <meta itemprop="wordCount" content="690">
+
+<title>1.1微服务入门之项目搭建 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.1微服务入门之项目搭建</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.1微服务入门之项目搭建
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>此系列旨在复习微服务的相关知识，示例代码中不会出现聚合、聚合根、服务拆分等相关概念（不会涉及到领域驱动相关知识），只使用最简单的<code>.Net Core Web</code>程序，主要关注点在于：</p>
+<ul>
+<li>如何使用 Docker 部署 <code>.NetCore</code> 应用</li>
+<li>应用程序的 DockerFile 编写</li>
+<li>服务注册和服务发现是什么？解决了什么问题？</li>
+<li>网关用来做什么？服务治理相关（熔断/限流/降级/链路追踪/缓存&hellip;）</li>
+</ul>
+<!-- more -->
+<h1 id="微服务概念">微服务概念<a class="anchor" href="#%e5%be%ae%e6%9c%8d%e5%8a%a1%e6%a6%82%e5%bf%b5">#</a></h1>
+<p>关于微服务的概念解释网上有很多，每个人的理解都不同。至于为什么要使用微服务？微服务的优缺点等相关问题每个人理解不同。个人理解：微服务是一种系统架构模式，和语言无关，框架无关，工具无关，服务器环境无关，微服务目的是：将传统单体系统按照业务拆分成多个职责单一、且可独立运行的服务。至于服务如何拆分，没有明确的定义。采用微服务优点是：每个服务的职责单一且可独立部署、不同服务间采用轻量级的通信协议作为通信原则，松耦合。这样不同服务就可以使用不同的技术栈（优势语言），缺点的话是：微服务架构避免不了会引入更多技术栈、中间件等等增加系统复杂度。（微服务不是银弹，要根据实际业务体量考虑是否使用，否则只会徒增不必要的麻烦）</p>
+<h1 id="项目结构搭建">项目结构搭建<a class="anchor" href="#%e9%a1%b9%e7%9b%ae%e7%bb%93%e6%9e%84%e6%90%ad%e5%bb%ba">#</a></h1>
+<p><img src="/images/2021-09-17-17-31-42.png" alt="" /></p>
+<ul>
+<li><code>Order.Api</code>：订单服务</li>
+<li><code>Web.Client</code>：测试使用的客户端</li>
+</ul>
+<p>创建项目时启用Docker支持，或者之后添加也可以。添加基础代码，简单的返回服务名称、当前时间、服务IP、端口：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Mvc;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.Configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Order.Api.Controller
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;[Controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">    [ApiController]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrdersController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [HttpGet]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> IActionResult Index()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> result = <span style="color:#e6db74">$&#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{Request.HttpContext.Connection.LocalPort}&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(result);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="容器化部署">容器化部署<a class="anchor" href="#%e5%ae%b9%e5%99%a8%e5%8c%96%e9%83%a8%e7%bd%b2">#</a></h1>
+<p>代码就写这么简单，下面使用Docker来部署订单服务。这里先了解一下如果启用了Docker支持，VS默认生成的 <code>Dockerfile</code> 文件如下：</p>
+<pre tabindex="0"><code>#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY [&#34;Order.Api/Order.Api.csproj&#34;, &#34;Order.Api/&#34;]
+RUN dotnet restore &#34;Order.Api/Order.Api.csproj&#34;
+COPY . .
+WORKDIR &#34;/src/Order.Api&#34;
+RUN dotnet build &#34;Order.Api.csproj&#34; -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish &#34;Order.Api.csproj&#34; -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [&#34;dotnet&#34;, &#34;Order.Api.dll&#34;]</code></pre><p>关于<code>Dockerfile</code> 各个命令的作用这里不再解释，可以参考  <a href="https://wpl.wiki/docker/1.8Dockerfile">【Dockerfile】</a>。这里的 <code>Dockerfile</code> 文件不能直接使用，因为我采用的方式是：将发布后的应用部署到 <code>Centos</code> =&gt; <code>docker build镜像</code>=&gt;<code>运行容器</code>。跳过了这里的 <code>dotnet restore</code> 和 <code>dotnet publish</code>。修改后的 <code>Dockerfile</code>如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#75715e"># See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 指定基础镜像</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span> <span style="color:#e6db74">mcr.microsoft.com/dotnet/aspnet:5.0</span> <span style="color:#66d9ef">AS</span> <span style="color:#e6db74">base</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 设置工作目录,如不存在会被创建</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span> <span style="color:#e6db74">/app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Copy release文件夹内容到工作目录app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> . /app<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 运行.dll</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;Order.Api.dll&#34;</span>]</span></span></code></pre></div><p>将发布后的包扔到虚机指定目录中：</p>
+<p><img src="/images/2021-09-17-17-52-17.png" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 进入目录</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /usr/dotnetcore_src/order.api.release/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看本地镜像列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY                        TAG          IMAGE ID       CREATED        SIZE
+</span></span><span style="display:flex;"><span>&lt;none&gt;                            &lt;none&gt;       16ff5dcb1c6d   <span style="color:#ae81ff">2</span> hours ago    206MB
+</span></span><span style="display:flex;"><span>&lt;none&gt;                            &lt;none&gt;       6d3756023f75   <span style="color:#ae81ff">25</span> hours ago   210MB
+</span></span><span style="display:flex;"><span>&lt;none&gt;                            &lt;none&gt;       3f41b63e8f79   <span style="color:#ae81ff">25</span> hours ago   210MB
+</span></span><span style="display:flex;"><span>mcr.microsoft.com/dotnet/sdk      5.0          da19c23a5531   <span style="color:#ae81ff">2</span> days ago     631MB
+</span></span><span style="display:flex;"><span>mcr.microsoft.com/dotnet/aspnet   5.0          a2be3e478ffa   <span style="color:#ae81ff">2</span> days ago     205MB
+</span></span><span style="display:flex;"><span>consul                            latest       b74a0a01afc4   <span style="color:#ae81ff">2</span> weeks ago    116MB
+</span></span><span style="display:flex;"><span>rabbitmq                          management   0bfe221339ae   <span style="color:#ae81ff">7</span> weeks ago    253MB
+</span></span><span style="display:flex;"><span>mongo                             latest       aad77ae58e0c   <span style="color:#ae81ff">7</span> weeks ago    682MB
+</span></span><span style="display:flex;"><span>redis                             latest       08502081bff6   <span style="color:#ae81ff">2</span> months ago   105MB
+</span></span><span style="display:flex;"><span>portainer/portainer               latest       580c0e4e98b0   <span style="color:#ae81ff">6</span> months ago   79.1MB
+</span></span><span style="display:flex;"><span>elasticsearch                     7.1.1        b0e9f9f047e6   <span style="color:#ae81ff">2</span> years ago    894MB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># build镜像</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker build -t order.api .</span>
+</span></span><span style="display:flex;"><span>Sending build context to Docker daemon  1.184MB
+</span></span><span style="display:flex;"><span>Step 1/4 : FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+</span></span><span style="display:flex;"><span> ---&gt; a2be3e478ffa
+</span></span><span style="display:flex;"><span>Step 2/4 : WORKDIR /app
+</span></span><span style="display:flex;"><span> ---&gt; Using cache
+</span></span><span style="display:flex;"><span> ---&gt; 9f551bd1698a
+</span></span><span style="display:flex;"><span>Step 3/4 : COPY . /app
+</span></span><span style="display:flex;"><span> ---&gt; 04334af56137
+</span></span><span style="display:flex;"><span>Step 4/4 : ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;Order.Api.dll&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> ---&gt; Running in 44daedf04664
+</span></span><span style="display:flex;"><span>Removing intermediate container 44daedf04664
+</span></span><span style="display:flex;"><span> ---&gt; 58968d65acff
+</span></span><span style="display:flex;"><span>Successfully built 58968d65acff
+</span></span><span style="display:flex;"><span>Successfully tagged order.api:latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看最新本地镜像列表发现 order.api 镜像</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY                        TAG          IMAGE ID       CREATED              SIZE
+</span></span><span style="display:flex;"><span>order.api                         latest       58968d65acff   About a minute ago   206MB
+</span></span><span style="display:flex;"><span>&lt;none&gt;                            &lt;none&gt;       16ff5dcb1c6d   <span style="color:#ae81ff">2</span> hours ago          206MB
+</span></span><span style="display:flex;"><span>&lt;none&gt;                            &lt;none&gt;       6d3756023f75   <span style="color:#ae81ff">25</span> hours ago         210MB
+</span></span><span style="display:flex;"><span>&lt;none&gt;                            &lt;none&gt;       3f41b63e8f79   <span style="color:#ae81ff">25</span> hours ago         210MB
+</span></span><span style="display:flex;"><span>mcr.microsoft.com/dotnet/sdk      5.0          da19c23a5531   <span style="color:#ae81ff">2</span> days ago           631MB
+</span></span><span style="display:flex;"><span>mcr.microsoft.com/dotnet/aspnet   5.0          a2be3e478ffa   <span style="color:#ae81ff">2</span> days ago           205MB
+</span></span><span style="display:flex;"><span>consul                            latest       b74a0a01afc4   <span style="color:#ae81ff">2</span> weeks ago          116MB
+</span></span><span style="display:flex;"><span>rabbitmq                          management   0bfe221339ae   <span style="color:#ae81ff">7</span> weeks ago          253MB
+</span></span><span style="display:flex;"><span>mongo                             latest       aad77ae58e0c   <span style="color:#ae81ff">7</span> weeks ago          682MB
+</span></span><span style="display:flex;"><span>redis                             latest       08502081bff6   <span style="color:#ae81ff">2</span> months ago         105MB
+</span></span><span style="display:flex;"><span>portainer/portainer               latest       580c0e4e98b0   <span style="color:#ae81ff">6</span> months ago         79.1MB
+</span></span><span style="display:flex;"><span>elasticsearch                     7.1.1        b0e9f9f047e6   <span style="color:#ae81ff">2</span> years ago          894MB
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># </span></span></span></code></pre></div><p>有了镜像之后就可以基于镜像创建容器:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api -p 80:80 order.api</span>
+</span></span><span style="display:flex;"><span>eaa1d05afe39ccdc6a07347df78c994f57c654267db1e40b64d21e030b565903</span></span></code></pre></div><p>容器启动成功后，在宿主机上输入IP地址加端口测试访问：</p>
+<p><img src="/images/2021-09-17-19-07-41.png" alt="" /></p>
+<p>至此订单服务就部署完毕。下面使用 <code>Web.Client</code> 客户端测试，这里的客户端是泛指，实际可能是各种业务系统、手机端、小程序等等。</p>
+<h1 id="客户端调用">客户端调用<a class="anchor" href="#%e5%ae%a2%e6%88%b7%e7%ab%af%e8%b0%83%e7%94%a8">#</a></h1>
+<p>这里使用 <code>RestSharp</code>作为Http请求客户端，<code>Nuget</code> 搜索 <a href="https://github.com/restsharp/RestSharp">【RestSharp】</a> 安装即可。</p>
+<p>核心代码如下：</p>
+<p>IServiceHelper.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IServiceHelper</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>ServiceHelper.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceHelper</span> : IServiceHelper
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder()
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 订单服务地址</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">string</span> serviceUrl = <span style="color:#e6db74">&#34;http://192.168.31.191:80&#34;</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">var</span> Client = <span style="color:#66d9ef">new</span> RestClient(serviceUrl);
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> RestRequest(<span style="color:#e6db74">&#34;/orders&#34;</span>, Method.GET);
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> Client.ExecuteAsync(request);
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">return</span> response.Content;
+</span></span><span style="display:flex;"><span>     }      
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>Startup.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddControllersWithViews();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 注入IServiceHelper</span>
+</span></span><span style="display:flex;"><span>    services.AddSingleton&lt;IServiceHelper, ServiceHelper&gt;();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>HomeController.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HomeController</span> : Controller
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;HomeController&gt; logger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IServiceHelper serviceHelper;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> HomeController(ILogger&lt;HomeController&gt; logger, IServiceHelper serviceHelper)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.logger = logger;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.serviceHelper = serviceHelper;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; IndexAsync()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ViewBag.OrderData = <span style="color:#66d9ef">await</span> serviceHelper.GetOrder();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> View();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Privacy()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> View();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Error()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> View(<span style="color:#66d9ef">new</span> ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>Index.cshtml：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>@{
+</span></span><span style="display:flex;"><span>    ViewData[&#34;Title&#34;] = &#34;Home Page&#34;;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text-center&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;display-4&#34;</span>&gt;Welcome&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>        @ViewBag.OrderData
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;</span></span></code></pre></div><p>启动项目浏览器访问：</p>
+<p><img src="/images/2021-09-17-19-16-22.png" alt="" /></p>
+<p>到这里服务已经独立部署运行，客户端也可以正常调用了。但是思考一个问题：如果这个服务挂掉了怎么办？微服务中非常重要的原则就是&quot;高可用&quot;，以上的做法明显不能满足。要解决这个问题一般都会采用集群方式。</p>
+<h1 id="简单服务集群">简单服务集群<a class="anchor" href="#%e7%ae%80%e5%8d%95%e6%9c%8d%e5%8a%a1%e9%9b%86%e7%be%a4">#</a></h1>
+<p>既然单个服务实例有挂掉的风险，那么部署多个服务实例试试，只要不同时挂掉就可以保证正常访问。下面使用Docker运行多个服务实例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api -p 80:80 order.api</span>
+</span></span><span style="display:flex;"><span>c4a974a607b54377115a32a4227fa0f9d2ca4332405875b3763cca2696932c1c
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api1 -p 81:80 order.api</span>
+</span></span><span style="display:flex;"><span>992f0b2975f60320ba92c2e79b33ae066c17b3b26f54e74b96ad7677d54042d7
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d --name order.api2 -p 82:80 order.api</span>
+</span></span><span style="display:flex;"><span>dca6a0cd36a4bca3111b5694f34c8f8ffbcc81d6dbbadb45a2d3209afa7b0595</span></span></code></pre></div><p>现在订单服务增加到三个服务实例，分别映射到<code>80</code>/<code>81</code>/<code>82</code>端口。需要修改一下客户端代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 服务实例集合</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span>[] serviceUrls = { <span style="color:#e6db74">&#34;http://192.168.31.191:80&#34;</span>, <span style="color:#e6db74">&#34;http://192.168.31.191:81&#34;</span>, <span style="color:#e6db74">&#34;http://192.168.31.191:82&#34;</span> };
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 每次随机访问一个服务实例</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> client = <span style="color:#66d9ef">new</span> RestClient(serviceUrls[<span style="color:#66d9ef">new</span> Random().Next(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>)]);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> RestRequest(<span style="color:#e6db74">&#34;/orders&#34;</span>, Method.GET);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.ExecuteAsync(request);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response.Content;
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><blockquote class='book-hint '>
+<p>这里拿到服务地址可以自己做复杂的负载均衡策略，比如轮询，随机，权重等或者使用nginx都可以。这不是重点，所以这里只是简单随机访问一个服务实例</p>
+</blockquote><p>这里已经做到了将请求随机分配到一个服务实例，但这种做法依旧存在问题：</p>
+<ol>
+<li>如果随机访问到的实例刚好挂掉，依然无法正常访问</li>
+<li>如果到某个地址的请求连续多次失败，应该移除这个地址保证其他请求不会再访问到</li>
+<li>实际应用中，上层的业务系统可能非常多，为了保证可用性，每个业务系统都需要考虑服务实例运行状态吗？而且实际应用中服务实例的数量或者地址大多数时候是不固定的，比如：流量高峰期，增加服务实例，这时候每个业务系统再去配置文件里配置地址？高峰期过了又去把配置删掉？显然是不现实的。服务必须要做到可灵活伸缩</li>
+</ol>
+<p>要做到可灵活伸缩就引入了另一个名词：服务注册与发现。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/linux/vmware%E5%AE%89%E8%A3%85centos/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Vmware安装 Centos</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="flex align-center">
+      <span>1.2微服务入门之服务注册与发现</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

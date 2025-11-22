@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CI Pipeline# CI Pipeline 设计并没有特别之处，重点在于 CD Pipeline设计。
+CD Pipeline# 除了自身的CI源之前，添加生成密文控制台应用程序也作为源，以便于在CD过程中使用加密功能。
+Development# Development 开发环境是明文存储的，所以CD管道不做特殊处理。
+Sit# SIT 环境的配置不同，在CD过程中会替换环境变量的值。
+环境变量设置# Step1：下载安全文件# 下载证书，证书存储在Devops中的库中，需要手动上传，如何生成证书自行查找资料。
+Step2：生成加密文件# 依赖生成密文的程序生成秘钥文件以及 secret.xml。
+Step3：机密变量替换# 使用 powershell 脚本解析 Step2 步骤中生成的 secret.xml 文件并替换环境变量的值。
+Step4：启用变量替换# 测试# Development Sit 这里DataBase.DbConnection是null是因为DataBase并不是一个Option。
+可以通过dotnet命令启动程序来查看是否解密成功
+并未做到全自动化，还有很多不足，比如证书如何自动化安装，证书如果有密码如何处理，替换机密变量时Shell脚本的优化、UserSecret集成等。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90azuredevops%E7%AE%A1%E9%81%93/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="CI Pipeline# CI Pipeline 设计并没有特别之处，重点在于 CD Pipeline设计。
+CD Pipeline# 除了自身的CI源之前，添加生成密文控制台应用程序也作为源，以便于在CD过程中使用加密功能。
+Development# Development 开发环境是明文存储的，所以CD管道不做特殊处理。
+Sit# SIT 环境的配置不同，在CD过程中会替换环境变量的值。
+环境变量设置# Step1：下载安全文件# 下载证书，证书存储在Devops中的库中，需要手动上传，如何生成证书自行查找资料。
+Step2：生成加密文件# 依赖生成密文的程序生成秘钥文件以及 secret.xml。
+Step3：机密变量替换# 使用 powershell 脚本解析 Step2 步骤中生成的 secret.xml 文件并替换环境变量的值。
+Step4：启用变量替换# 测试# Development Sit 这里DataBase.DbConnection是null是因为DataBase并不是一个Option。
+可以通过dotnet命令启动程序来查看是否解密成功
+并未做到全自动化，还有很多不足，比如证书如何自动化安装，证书如果有密码如何处理，替换机密变量时Shell脚本的优化、UserSecret集成等。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="CI Pipeline# CI Pipeline 设计并没有特别之处，重点在于 CD Pipeline设计。
+CD Pipeline# 除了自身的CI源之前，添加生成密文控制台应用程序也作为源，以便于在CD过程中使用加密功能。
+Development# Development 开发环境是明文存储的，所以CD管道不做特殊处理。
+Sit# SIT 环境的配置不同，在CD过程中会替换环境变量的值。
+环境变量设置# Step1：下载安全文件# 下载证书，证书存储在Devops中的库中，需要手动上传，如何生成证书自行查找资料。
+Step2：生成加密文件# 依赖生成密文的程序生成秘钥文件以及 secret.xml。
+Step3：机密变量替换# 使用 powershell 脚本解析 Step2 步骤中生成的 secret.xml 文件并替换环境变量的值。
+Step4：启用变量替换# 测试# Development Sit 这里DataBase.DbConnection是null是因为DataBase并不是一个Option。
+可以通过dotnet命令启动程序来查看是否解密成功
+并未做到全自动化，还有很多不足，比如证书如何自动化安装，证书如果有密码如何处理，替换机密变量时Shell脚本的优化、UserSecret集成等。">
+  <meta itemprop="wordCount" content="37">
+
+<title>1.4方案实践及集成 Azure Devops管道 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90azuredevops%E7%AE%A1%E9%81%93/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.4方案实践及集成 Azure Devops管道</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#环境变量设置">环境变量设置</a></li>
+    <li><a href="#step1下载安全文件">Step1：下载安全文件</a></li>
+    <li><a href="#step2生成加密文件">Step2：生成加密文件</a></li>
+    <li><a href="#step3机密变量替换">Step3：机密变量替换</a></li>
+    <li><a href="#step4启用变量替换">Step4：启用变量替换</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.4方案实践及集成 Azure Devops管道
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="ci-pipeline">CI Pipeline<a class="anchor" href="#ci-pipeline">#</a></h1>
+<p><img src="/images/2021-09-24-16-10-04.png" alt="" /></p>
+<p><img src="/images/2021-09-24-16-19-54.png" alt="" /></p>
+<p>CI Pipeline 设计并没有特别之处，重点在于 CD Pipeline设计。</p>
+<h1 id="cd-pipeline">CD Pipeline<a class="anchor" href="#cd-pipeline">#</a></h1>
+<p><img src="/images/2021-09-24-16-12-03.png" alt="" /></p>
+<p>除了自身的CI源之前，添加生成密文控制台应用程序也作为源，以便于在CD过程中使用加密功能。</p>
+<h1 id="development">Development<a class="anchor" href="#development">#</a></h1>
+<p><img src="/images/2021-09-24-16-13-03.png" alt="" />
+Development 开发环境是明文存储的，所以CD管道不做特殊处理。</p>
+<h1 id="sit">Sit<a class="anchor" href="#sit">#</a></h1>
+<p><img src="/images/2021-09-24-16-14-19.png" alt="" /></p>
+<p>SIT 环境的配置不同，在CD过程中会替换环境变量的值。</p>
+<h2 id="环境变量设置">环境变量设置<a class="anchor" href="#%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e8%ae%be%e7%bd%ae">#</a></h2>
+<p><img src="/images/2021-09-24-16-15-25.png" alt="" /></p>
+<h2 id="step1下载安全文件">Step1：下载安全文件<a class="anchor" href="#step1%e4%b8%8b%e8%bd%bd%e5%ae%89%e5%85%a8%e6%96%87%e4%bb%b6">#</a></h2>
+<p>下载证书，证书存储在Devops中的库中，需要手动上传，如何生成证书自行查找资料。</p>
+<p><img src="/images/2021-09-24-16-16-25.png" alt="" /></p>
+<h2 id="step2生成加密文件">Step2：生成加密文件<a class="anchor" href="#step2%e7%94%9f%e6%88%90%e5%8a%a0%e5%af%86%e6%96%87%e4%bb%b6">#</a></h2>
+<p>依赖生成密文的程序生成秘钥文件以及 <code>secret.xml</code>。</p>
+<p><img src="/images/2021-09-24-16-17-04.png" alt="" /></p>
+<h2 id="step3机密变量替换">Step3：机密变量替换<a class="anchor" href="#step3%e6%9c%ba%e5%af%86%e5%8f%98%e9%87%8f%e6%9b%bf%e6%8d%a2">#</a></h2>
+<p>使用 powershell 脚本解析 Step2 步骤中生成的 secret.xml 文件并替换环境变量的值。</p>
+<p><img src="/images/2021-09-24-16-17-34.png" alt="" /></p>
+<h2 id="step4启用变量替换">Step4：启用变量替换<a class="anchor" href="#step4%e5%90%af%e7%94%a8%e5%8f%98%e9%87%8f%e6%9b%bf%e6%8d%a2">#</a></h2>
+<p><img src="/images/2021-09-24-16-18-16.png" alt="" /></p>
+<h1 id="测试">测试<a class="anchor" href="#%e6%b5%8b%e8%af%95">#</a></h1>
+<p><img src="/images/2021-09-24-16-24-40.png" alt="" />
+Development
+<img src="/images/2021-09-24-16-25-07.png" alt="" />
+Sit
+<img src="/images/2021-09-24-16-25-28.png" alt="" /></p>
+<p><img src="/images/2021-09-24-16-25-45.png" alt="" /></p>
+<p>这里DataBase.DbConnection是null是因为DataBase并不是一个Option。</p>
+<p><img src="/images/2021-09-24-16-26-20.png" alt="" /></p>
+<p>可以通过<code>dotnet</code>命令启动程序来查看是否解密成功</p>
+<p>并未做到全自动化，还有很多不足，比如证书如何自动化安装，证书如果有密码如何处理，替换机密变量时Shell脚本的优化、UserSecret集成等。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/1.3%E5%9F%BA%E4%BA%8Edataprotection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.3基于 Data Protection的数据保护方案</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="flex align-center">
+      <span>值类型和引用类型的内存分配</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#环境变量设置">环境变量设置</a></li>
+    <li><a href="#step1下载安全文件">Step1：下载安全文件</a></li>
+    <li><a href="#step2生成加密文件">Step2：生成加密文件</a></li>
+    <li><a href="#step3机密变量替换">Step3：机密变量替换</a></li>
+    <li><a href="#step4启用变量替换">Step4：启用变量替换</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

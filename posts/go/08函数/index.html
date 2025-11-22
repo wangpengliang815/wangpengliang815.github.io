@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="函数指：可重复使用的、用于执行指定任务的代码块。Go语言中支持函数、匿名函数和闭包，函数在Go语言中属于“一等公民”。
+函数定义# 函数定义格式如下：
+func 函数名(参数)(返回值){ 函数体 }注意：
+函数名：由字母、数字、下划线组成。但函数名的第一个字母不能是数字。同一个包内函数名也称不能重名 参数：参数由参数变量和参数变量的类型组成，多个参数之间使用 , 分隔 返回值：返回值由返回值变量和其变量类型组成，也可以只写返回值的类型，多个返回值必须用 () 包裹，并用 , 分隔 函数体：实现指定功能的代码块 比如：定义求两数之和的函数：
+func func1(x int, y int) int { return x &#43; y }函数的参数和返回值都是可选的，比如：可以定义无参数无返回值的函数：
+func func2() { fmt.Println(&#34;hello world&#34;) }函数调用# 通过 函数名() 的方式调用函数，比如：
+func main() { sum := func1(1, 2) func2() fmt.Println(sum) }参数# 类型简写# 函数的参数中如果相邻变量的类型相同，则可以省略类型，比如：
+func func4(x, y int) int { return x &#43; y }可变参数# 可变参数是指函数的参数数量不固定。可变参数通过在参数名后加...标识。比如：
+func func5(x ...int) int { sum := 0 for _, v := range x { sum &#43;= v } return sum }调用：
+a := func5(1) b := func5(2, 3) c := func5(2, 3, 4) fmt.Println(a, b, c) // 1 5 9固定参数搭配可变参数使用时，可变参数要放在固定参数的后面，比如：
+func func6(x int, y ...int) int { for _, v := range y { x &#43;= v } return x }本质上，函数的可变参数是通过切片实现的。
+返回值# Go语言中通过 return 关键字向外输出返回值。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/go/08%E5%87%BD%E6%95%B0/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="函数指：可重复使用的、用于执行指定任务的代码块。Go语言中支持函数、匿名函数和闭包，函数在Go语言中属于“一等公民”。
+函数定义# 函数定义格式如下：
+func 函数名(参数)(返回值){ 函数体 }注意：
+函数名：由字母、数字、下划线组成。但函数名的第一个字母不能是数字。同一个包内函数名也称不能重名 参数：参数由参数变量和参数变量的类型组成，多个参数之间使用 , 分隔 返回值：返回值由返回值变量和其变量类型组成，也可以只写返回值的类型，多个返回值必须用 () 包裹，并用 , 分隔 函数体：实现指定功能的代码块 比如：定义求两数之和的函数：
+func func1(x int, y int) int { return x &#43; y }函数的参数和返回值都是可选的，比如：可以定义无参数无返回值的函数：
+func func2() { fmt.Println(&#34;hello world&#34;) }函数调用# 通过 函数名() 的方式调用函数，比如：
+func main() { sum := func1(1, 2) func2() fmt.Println(sum) }参数# 类型简写# 函数的参数中如果相邻变量的类型相同，则可以省略类型，比如：
+func func4(x, y int) int { return x &#43; y }可变参数# 可变参数是指函数的参数数量不固定。可变参数通过在参数名后加...标识。比如：
+func func5(x ...int) int { sum := 0 for _, v := range x { sum &#43;= v } return sum }调用：
+a := func5(1) b := func5(2, 3) c := func5(2, 3, 4) fmt.Println(a, b, c) // 1 5 9固定参数搭配可变参数使用时，可变参数要放在固定参数的后面，比如：
+func func6(x int, y ...int) int { for _, v := range y { x &#43;= v } return x }本质上，函数的可变参数是通过切片实现的。
+返回值# Go语言中通过 return 关键字向外输出返回值。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="函数指：可重复使用的、用于执行指定任务的代码块。Go语言中支持函数、匿名函数和闭包，函数在Go语言中属于“一等公民”。
+函数定义# 函数定义格式如下：
+func 函数名(参数)(返回值){ 函数体 }注意：
+函数名：由字母、数字、下划线组成。但函数名的第一个字母不能是数字。同一个包内函数名也称不能重名 参数：参数由参数变量和参数变量的类型组成，多个参数之间使用 , 分隔 返回值：返回值由返回值变量和其变量类型组成，也可以只写返回值的类型，多个返回值必须用 () 包裹，并用 , 分隔 函数体：实现指定功能的代码块 比如：定义求两数之和的函数：
+func func1(x int, y int) int { return x &#43; y }函数的参数和返回值都是可选的，比如：可以定义无参数无返回值的函数：
+func func2() { fmt.Println(&#34;hello world&#34;) }函数调用# 通过 函数名() 的方式调用函数，比如：
+func main() { sum := func1(1, 2) func2() fmt.Println(sum) }参数# 类型简写# 函数的参数中如果相邻变量的类型相同，则可以省略类型，比如：
+func func4(x, y int) int { return x &#43; y }可变参数# 可变参数是指函数的参数数量不固定。可变参数通过在参数名后加...标识。比如：
+func func5(x ...int) int { sum := 0 for _, v := range x { sum &#43;= v } return sum }调用：
+a := func5(1) b := func5(2, 3) c := func5(2, 3, 4) fmt.Println(a, b, c) // 1 5 9固定参数搭配可变参数使用时，可变参数要放在固定参数的后面，比如：
+func func6(x int, y ...int) int { for _, v := range y { x &#43;= v } return x }本质上，函数的可变参数是通过切片实现的。
+返回值# Go语言中通过 return 关键字向外输出返回值。">
+  <meta itemprop="wordCount" content="660">
+
+<title>08函数 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/go/08%E5%87%BD%E6%95%B0/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>08函数</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#类型简写">类型简写</a></li>
+    <li><a href="#可变参数">可变参数</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#多返回值">多返回值</a></li>
+    <li><a href="#返回值命名">返回值命名</a></li>
+    <li><a href="#返回值补充">返回值补充</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#全局变量">全局变量</a></li>
+    <li><a href="#局部变量">局部变量</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#定义函数类型">定义函数类型</a></li>
+    <li><a href="#函数类型变量">函数类型变量</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#函数作为参数">函数作为参数</a></li>
+    <li><a href="#函数作为返回值">函数作为返回值</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    08函数
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>函数指：可重复使用的、用于执行指定任务的代码块。Go语言中支持函数、匿名函数和闭包，函数在Go语言中属于“一等公民”。</p>
+<h1 id="函数定义">函数定义<a class="anchor" href="#%e5%87%bd%e6%95%b0%e5%ae%9a%e4%b9%89">#</a></h1>
+<p>函数定义格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">函数名</span>(<span style="color:#a6e22e">参数</span>)(<span style="color:#a6e22e">返回值</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">函数体</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>注意：</p>
+<ul>
+<li>函数名：由字母、数字、下划线组成。但函数名的第一个字母不能是数字。同一个包内函数名也称不能重名</li>
+<li>参数：参数由参数变量和参数变量的类型组成，多个参数之间使用 <code>,</code> 分隔</li>
+<li>返回值：返回值由返回值变量和其变量类型组成，也可以只写返回值的类型，多个返回值必须用 <code>()</code> 包裹，并用 <code>,</code> 分隔</li>
+<li>函数体：实现指定功能的代码块</li>
+</ul>
+<p>比如：定义求两数之和的函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func1</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>函数的参数和返回值都是可选的，比如：可以定义无参数无返回值的函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func2</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;hello world&#34;</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="函数调用">函数调用<a class="anchor" href="#%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8">#</a></h1>
+<p>通过 <code>函数名()</code> 的方式调用函数，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">func1</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">func2</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">sum</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="参数">参数<a class="anchor" href="#%e5%8f%82%e6%95%b0">#</a></h1>
+<h2 id="类型简写">类型简写<a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e7%ae%80%e5%86%99">#</a></h2>
+<p>函数的参数中如果相邻变量的类型相同，则可以省略类型，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func4</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="可变参数">可变参数<a class="anchor" href="#%e5%8f%af%e5%8f%98%e5%8f%82%e6%95%b0">#</a></h2>
+<p>可变参数是指函数的参数数量不固定。可变参数通过在参数名后加<code>...</code>标识。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func5</span>(<span style="color:#a6e22e">x</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">x</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">sum</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">v</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sum</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>调用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">func5</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">func5</span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">func5</span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">c</span>) <span style="color:#75715e">// 1 5 9</span></span></span></code></pre></div><p>固定参数搭配可变参数使用时，可变参数要放在固定参数的后面，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func6</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">y</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">y</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">x</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">v</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>本质上，函数的可变参数是通过切片实现的。</p>
+<h1 id="返回值">返回值<a class="anchor" href="#%e8%bf%94%e5%9b%9e%e5%80%bc">#</a></h1>
+<p>Go语言中通过  <code>return</code>  关键字向外输出返回值。</p>
+<h2 id="多返回值">多返回值<a class="anchor" href="#%e5%a4%9a%e8%bf%94%e5%9b%9e%e5%80%bc">#</a></h2>
+<p>Go语言中函数支持多返回值，函数如果有多个返回值时必须用  <code>()</code>  将所有返回值包裹起来。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func7</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) (<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sub</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sum</span>, <span style="color:#a6e22e">sub</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="返回值命名">返回值命名<a class="anchor" href="#%e8%bf%94%e5%9b%9e%e5%80%bc%e5%91%bd%e5%90%8d">#</a></h2>
+<p>函数定义时可以给返回值命名，并在函数体中直接使用这些变量，最后通过 <code>return</code> 关键字返回。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func8</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">sum</span>, <span style="color:#a6e22e">sub</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sum</span> = <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sub</span> = <span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里可以直接return,不需要指定sum和sub</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sum</span>, <span style="color:#a6e22e">sub</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="返回值补充">返回值补充<a class="anchor" href="#%e8%bf%94%e5%9b%9e%e5%80%bc%e8%a1%a5%e5%85%85">#</a></h2>
+<p>当函数返回值类型为 <code>slice</code> 时，<code>nil</code> 可以看做是一个有效的 <code>slice</code> ，没必要显式返回一个长度为0的切片。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func9</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">string</span>) []<span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span> <span style="color:#75715e">// 没必要返回[]int{}</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">0</span>}
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="变量作用域">变量作用域<a class="anchor" href="#%e5%8f%98%e9%87%8f%e4%bd%9c%e7%94%a8%e5%9f%9f">#</a></h1>
+<h2 id="全局变量">全局变量<a class="anchor" href="#%e5%85%a8%e5%b1%80%e5%8f%98%e9%87%8f">#</a></h2>
+<p>全局变量是定义在函数外部的变量，在程序整个运行周期内都有效。 在函数中可以访问到全局变量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 定义全局变量value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">value</span> <span style="color:#66d9ef">int64</span> = <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">test</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;value=%d\n&#34;</span>, <span style="color:#a6e22e">value</span>) <span style="color:#75715e">// 函数中可以访问全局变量value</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">test</span>() <span style="color:#75715e">// value=10</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="局部变量">局部变量<a class="anchor" href="#%e5%b1%80%e9%83%a8%e5%8f%98%e9%87%8f">#</a></h2>
+<p>局部变量分为两种：</p>
+<ul>
+<li>函数内定义的变量无法在该函数外使用</li>
+<li>如果局部变量和全局变量重名，优先访问局部变量</li>
+<li>语句块定义的变量，只在 <code>if</code>、<code>for</code>、<code>switch</code> 语句内有效</li>
+</ul>
+<h1 id="函数类型与变量">函数类型与变量<a class="anchor" href="#%e5%87%bd%e6%95%b0%e7%b1%bb%e5%9e%8b%e4%b8%8e%e5%8f%98%e9%87%8f">#</a></h1>
+<h2 id="定义函数类型">定义函数类型<a class="anchor" href="#%e5%ae%9a%e4%b9%89%e5%87%bd%e6%95%b0%e7%b1%bb%e5%9e%8b">#</a></h2>
+<p>可以使用 <code>type</code> 关键字来定义一个函数类型，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">calculation</span> <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span></span></span></code></pre></div><p>上面定义了一个 <code>calculation</code> 类型，它是一种函数类型，接收两个 <code>int</code> 类型的参数并且返回一个 <code>int</code> 类型的返回值。凡是满足这个条件的函数都是 <code>calculation</code> 类型的函数，例如下面的 <code>sum</code> 和  <code>sub</code> 都是 <code>calculation</code> 类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// calculation类型的函数sum</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// calculation类型的函数sub</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sub</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><code>sum</code> 和 <code>sub</code> 都能赋值给 <code>calculation</code> 类型的变量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">calc1</span> <span style="color:#a6e22e">calculation</span> = <span style="color:#a6e22e">sum</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">calc2</span> <span style="color:#a6e22e">calculation</span> = <span style="color:#a6e22e">sub</span></span></span></code></pre></div><h2 id="函数类型变量">函数类型变量<a class="anchor" href="#%e5%87%bd%e6%95%b0%e7%b1%bb%e5%9e%8b%e5%8f%98%e9%87%8f">#</a></h2>
+<p>可以声明函数类型的变量并且为该变量赋值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#a6e22e">calculation</span> = <span style="color:#a6e22e">sum</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type of a:%T\n&#34;</span>, <span style="color:#a6e22e">a</span>) <span style="color:#75715e">// type of c:main.calculation</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">a</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>))            <span style="color:#75715e">// 像调用sum一样调用a</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#a6e22e">calculation</span> = <span style="color:#a6e22e">sub</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type of b:%T\n&#34;</span>, <span style="color:#a6e22e">b</span>) <span style="color:#75715e">// type of c:main.calculation</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">b</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>))            <span style="color:#75715e">// 像调用sub一样调用b</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>type of a:main.calculation
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>type of b:main.calculation
+</span></span><span style="display:flex;"><span>-1</span></span></code></pre></div><h1 id="高阶函数">高阶函数<a class="anchor" href="#%e9%ab%98%e9%98%b6%e5%87%bd%e6%95%b0">#</a></h1>
+<h2 id="函数作为参数">函数作为参数<a class="anchor" href="#%e5%87%bd%e6%95%b0%e4%bd%9c%e4%b8%ba%e5%8f%82%e6%95%b0">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 将函数作为参数传递，该函数接收两个int类型变量x/y,一个函数参数sum。</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">functionAsArgument</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">sum</span> <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sum</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">func1</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">functionAsArgumentTest</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ret2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">functionAsArgument</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#a6e22e">func1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ret2</span>) <span style="color:#75715e">//30</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="函数作为返回值">函数作为返回值<a class="anchor" href="#%e5%87%bd%e6%95%b0%e4%bd%9c%e4%b8%ba%e8%bf%94%e5%9b%9e%e5%80%bc">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 接收一个切片参数patients,返回一个函数</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">functionAsTheReturnValue</span>(<span style="color:#a6e22e">patients</span> []<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 定义匿名函数并返回</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">soul</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">patients</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">soul</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">name</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">functionAsTheReturnValueTest</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">testValue</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">string</span>{<span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;b&#34;</span>, <span style="color:#e6db74">&#34;c&#34;</span>, <span style="color:#e6db74">&#34;d&#34;</span>, <span style="color:#e6db74">&#34;e&#34;</span>, <span style="color:#e6db74">&#34;f&#34;</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">functionAsTheReturnValue</span>(<span style="color:#a6e22e">testValue</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 调用筛选器函数获取字母是否已存在</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result</span>(<span style="color:#e6db74">&#34;a&#34;</span>))  <span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">result</span>(<span style="color:#e6db74">&#34;ff&#34;</span>)) <span style="color:#75715e">// false</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="匿名函数">匿名函数<a class="anchor" href="#%e5%8c%bf%e5%90%8d%e5%87%bd%e6%95%b0">#</a></h1>
+<p>已经知道函数可以作为返回值，但是在Go语言函数内部不能再像之前那样定义函数了，只能定义匿名函数。匿名函数就是没有函数名的函数，匿名函数的定义格式如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">参数</span>)(<span style="color:#a6e22e">返回值</span>){
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">函数体</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>匿名函数因为没有函数名，所以没办法像普通函数那样调用，所以匿名函数需要保存到某个变量或者作为立即执行函数:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">anonymousFunc</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 将匿名函数保存到变量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">add</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">x</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">y</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 通过变量调用匿名函数</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 匿名函数作为立即执行函数,一般用于匿名函数只用于一次的情况下就不需要再指定变量存储</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">x</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">y</span>)
+</span></span><span style="display:flex;"><span>	}(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>匿名函数多用于实现回调函数和闭包。</p>
+<h1 id="闭包">闭包<a class="anchor" href="#%e9%97%ad%e5%8c%85">#</a></h1>
+<p>闭包是函数式编程语言中的概念。指内层函数引用了外层函数中的变量或称为引用了自由变量（全局变量）的函数，其返回值也是一个函数。在Go语言中可以理解为<strong>匿名函数与其所引用环境的组合</strong>。</p>
+<p>闭包只是在形式和表现上像函数，但实际上不是函数。函数是一些可执行的代码，这些代码在函数被定义后就确定了，不会在执行时发生变化，所以一个函数只有一个实例。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。所谓引用环境是指在程序执行中的某个点所有处于活跃状态的约束所组成的集合。其中的约束是指一个变量的名字和其所代表的对象之间的联系。那么为什么要把引用环境与函数组合起来呢？这主要是因为在支持嵌套作用域的语言中，有时不能简单直接地确定函数的引用环境。这样的语言一般具有这样的特性</p>
+<blockquote class='book-hint '>
+<p>函数是一等公民（First-class value），即函数可以作为另一个函数的返回值或参数，还可以作为一个变量的值。 函数可以嵌套定义，即在一个函数内部可以定义另一个函数。</p>
+</blockquote><p>比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">add</span>() <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">x</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">addTest</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">f</span> = <span style="color:#a6e22e">add</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">10</span>)) <span style="color:#75715e">//10</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">20</span>)) <span style="color:#75715e">//30</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">30</span>)) <span style="color:#75715e">//60</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>上述代码中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">x</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span>
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p>此时 <code>f</code>  就是一个闭包，<code>f</code> 不仅仅是存储了一个函数的返回值，同时存储了一个闭包的状态。该状态会一直存在外部被赋值的变量 <code>f</code> 中，直到 <code>f</code> 被销毁，整个闭包才被销毁。</p>
+<p>再看一个例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">add2</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">x</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">y</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">x</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">add2Test</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">f</span> = <span style="color:#a6e22e">add2</span>(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">10</span>)) <span style="color:#75715e">//20</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">20</span>)) <span style="color:#75715e">//40</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">f</span>(<span style="color:#ae81ff">30</span>)) <span style="color:#75715e">//70</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>函数 <code>add2</code> 返回了一个函数，返回的这个函数就是一个闭包。这个函数本身中没有定义变量 <code>x</code> 的，而是引用了它所在的环境（函数 <code>add2</code>）中的变量 <code>x</code>。</p>
+<p>每调用一次函数 <code>add2</code>，就形成了一个新的环境，对应的闭包中，函数都是同一个函数，环境却是引用不同的环境。变量 <code>x</code> 是函数 <code>add2 </code>中的局部变量，这个变量不会在函数 <code>add2 </code> 的栈中分配，因为函数 <code>add2</code> 返回后，对应的栈就失效了，<code>add2</code> 返回的那个函数中变量 <code>x</code> 就引用了一个失效的位置。所以闭包的环境中引用的变量不能够在栈上分配。</p>
+<h1 id="闭包的陷阱">闭包的陷阱<a class="anchor" href="#%e9%97%ad%e5%8c%85%e7%9a%84%e9%99%b7%e9%98%b1">#</a></h1>
+<p>TODO</p>
+<h1 id="defer-语句">defer 语句<a class="anchor" href="#defer-%e8%af%ad%e5%8f%a5">#</a></h1>
+<p>Go语言中 <code>defer</code> 语句会将其后面跟随的语句进行延迟处理。在 <code>defer</code> 归属的函数即将返回时，将延迟处理的语句按 <code>defer</code> 定义的逆序执行。先被 <code>defer</code> 的语句最后被执行，最后被 <code>defer</code> 的语句，最先被执行。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// defer将后面的语句延迟到函数即将退出时逆序执行,一般常用于资源释放</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">deferTest</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;start&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;...&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;end&#34;</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>start
+</span></span><span style="display:flex;"><span>end
+</span></span><span style="display:flex;"><span>...</span></span></code></pre></div><p>函数中存在多个 <code>defer</code> 时,逆序执行后进先出，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">deferTest2</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;start&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;1111&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;2222&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;3333&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;end&#34;</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>start
+</span></span><span style="display:flex;"><span>end  
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3333</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2222</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1111</span></span></span></code></pre></div><p>由于 <code>defer </code> 语句延迟调用的特性，所以 <code>defer</code> 语句一般用于处理资源释放问题。比如：资源清理、文件关闭、解锁及记录时间等。</p>
+<h1 id="defer-执行时机">defer 执行时机<a class="anchor" href="#defer-%e6%89%a7%e8%a1%8c%e6%97%b6%e6%9c%ba">#</a></h1>
+<p>Go语言的函数中 <code>return</code> 语句在底层并不是原子操作，它分为两步：</p>
+<ol>
+<li>给返回值赋值</li>
+<li>执行 <code>RET</code> 指令</li>
+</ol>
+<p><code>defer</code> 语句执行的时机是在返回值赋值操作后，执行 <code>RET</code> 指令前。如下图所示：</p>
+<p><img src="https://www.liwenzhou.com/images/Go/func/defer.png" alt="defer执行时机" /></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/go/07map/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>07map</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/go/09%E6%8C%87%E9%92%88/" class="flex align-center">
+      <span>09指针</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#类型简写">类型简写</a></li>
+    <li><a href="#可变参数">可变参数</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#多返回值">多返回值</a></li>
+    <li><a href="#返回值命名">返回值命名</a></li>
+    <li><a href="#返回值补充">返回值补充</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#全局变量">全局变量</a></li>
+    <li><a href="#局部变量">局部变量</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#定义函数类型">定义函数类型</a></li>
+    <li><a href="#函数类型变量">函数类型变量</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#函数作为参数">函数作为参数</a></li>
+    <li><a href="#函数作为返回值">函数作为返回值</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

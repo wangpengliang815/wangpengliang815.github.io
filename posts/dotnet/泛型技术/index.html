@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content=".Net 从2.0版开始支持泛型。泛型允许在编译时实现类型安全。允许创建一个数据结构而不限于特定的数据类型。当使用该数据结构时，编译器保证它使用的类型与类型安全是相一致的。泛型提供了类型安全，但是没有造成任何性能损失和代码臃肿。泛型不仅限于类，还可用于接口、方法、委托…。
+为什么使用泛型# 泛型主要具有以下优势：
+类型安全 避免装箱拆箱带来的性能损耗 二进制代码重用 ArrayList arrs = new ArrayList { &#34;wang&#34;， 100 };问题一：这里如果将 item 设置为 int 类型遍历集合，会抛出异常，因为集合项中存在string 类型
+foreach (var item in arrs) { Console.WriteLine(item); }问题二：遍历时不可避免装箱/拆箱操作
+foreach (var item in arrs) { Console.WriteLine(item); }非泛型集合
+var arr1 = new ArrayList(); arr1.Add(10);//Add方法参数值是object类型，这里将int-&gt;object arr1.Add(&#34;wang&#34;);//Add方法参数值是object类型，这里将int-&gt;object foreach (int item in arr1)//这里如果用int类型遍历集合，就挂掉了 { Console.WriteLine(item);//读取时要进行拆箱 }泛型集合
+/*泛型集合在使用时定义好类型，之后就不存在装箱拆箱; * 因为已经定义当前集合只能存入int类型，也就不能存入其他类型 * 编译时就会报错，错误应及早发现 */ var arr2 = new List&lt;int&gt;(); arr2.Add(10); foreach (var item in arr2) { Console.WriteLine(item); }通过参数化类型来实现在同一份代码上操作多种数据类型，利用“参数化类型”将类型抽象化，从而实现灵活的复用。每个集合的详细规范可以在 System.Collection.Generic 名称空间下找到。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content=".Net 从2.0版开始支持泛型。泛型允许在编译时实现类型安全。允许创建一个数据结构而不限于特定的数据类型。当使用该数据结构时，编译器保证它使用的类型与类型安全是相一致的。泛型提供了类型安全，但是没有造成任何性能损失和代码臃肿。泛型不仅限于类，还可用于接口、方法、委托…。
+为什么使用泛型# 泛型主要具有以下优势：
+类型安全 避免装箱拆箱带来的性能损耗 二进制代码重用 ArrayList arrs = new ArrayList { &#34;wang&#34;， 100 };问题一：这里如果将 item 设置为 int 类型遍历集合，会抛出异常，因为集合项中存在string 类型
+foreach (var item in arrs) { Console.WriteLine(item); }问题二：遍历时不可避免装箱/拆箱操作
+foreach (var item in arrs) { Console.WriteLine(item); }非泛型集合
+var arr1 = new ArrayList(); arr1.Add(10);//Add方法参数值是object类型，这里将int-&gt;object arr1.Add(&#34;wang&#34;);//Add方法参数值是object类型，这里将int-&gt;object foreach (int item in arr1)//这里如果用int类型遍历集合，就挂掉了 { Console.WriteLine(item);//读取时要进行拆箱 }泛型集合
+/*泛型集合在使用时定义好类型，之后就不存在装箱拆箱; * 因为已经定义当前集合只能存入int类型，也就不能存入其他类型 * 编译时就会报错，错误应及早发现 */ var arr2 = new List&lt;int&gt;(); arr2.Add(10); foreach (var item in arr2) { Console.WriteLine(item); }通过参数化类型来实现在同一份代码上操作多种数据类型，利用“参数化类型”将类型抽象化，从而实现灵活的复用。每个集合的详细规范可以在 System.Collection.Generic 名称空间下找到。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content=".Net 从2.0版开始支持泛型。泛型允许在编译时实现类型安全。允许创建一个数据结构而不限于特定的数据类型。当使用该数据结构时，编译器保证它使用的类型与类型安全是相一致的。泛型提供了类型安全，但是没有造成任何性能损失和代码臃肿。泛型不仅限于类，还可用于接口、方法、委托…。
+为什么使用泛型# 泛型主要具有以下优势：
+类型安全 避免装箱拆箱带来的性能损耗 二进制代码重用 ArrayList arrs = new ArrayList { &#34;wang&#34;， 100 };问题一：这里如果将 item 设置为 int 类型遍历集合，会抛出异常，因为集合项中存在string 类型
+foreach (var item in arrs) { Console.WriteLine(item); }问题二：遍历时不可避免装箱/拆箱操作
+foreach (var item in arrs) { Console.WriteLine(item); }非泛型集合
+var arr1 = new ArrayList(); arr1.Add(10);//Add方法参数值是object类型，这里将int-&gt;object arr1.Add(&#34;wang&#34;);//Add方法参数值是object类型，这里将int-&gt;object foreach (int item in arr1)//这里如果用int类型遍历集合，就挂掉了 { Console.WriteLine(item);//读取时要进行拆箱 }泛型集合
+/*泛型集合在使用时定义好类型，之后就不存在装箱拆箱; * 因为已经定义当前集合只能存入int类型，也就不能存入其他类型 * 编译时就会报错，错误应及早发现 */ var arr2 = new List&lt;int&gt;(); arr2.Add(10); foreach (var item in arr2) { Console.WriteLine(item); }通过参数化类型来实现在同一份代码上操作多种数据类型，利用“参数化类型”将类型抽象化，从而实现灵活的复用。每个集合的详细规范可以在 System.Collection.Generic 名称空间下找到。">
+  <meta itemprop="wordCount" content="707">
+
+<title>泛型技术 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>泛型技术</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#协变只能是方法参数"><strong>协变</strong>：只能是方法参数</a></li>
+    <li><a href="#逆变只能是返回值"><strong>逆变</strong>：只能是返回值</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    泛型技术
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>.Net 从2.0版开始支持泛型。泛型允许在编译时实现类型安全。允许创建一个数据结构而不限于特定的数据类型。当使用该数据结构时，编译器保证它使用的类型与类型安全是相一致的。泛型提供了类型安全，但是没有造成任何性能损失和代码臃肿。泛型不仅限于类，还可用于接口、方法、委托&hellip;。</p>
+<h1 id="为什么使用泛型">为什么使用泛型<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8%e6%b3%9b%e5%9e%8b">#</a></h1>
+<p>泛型主要具有以下优势：</p>
+<ul>
+<li>类型安全</li>
+<li>避免装箱拆箱带来的性能损耗</li>
+<li>二进制代码重用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> ArrayList arrs = <span style="color:#66d9ef">new</span> ArrayList
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;wang&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span> };</span></span></code></pre></div><p>问题一：这里如果将 <code>item</code> 设置为 <code>int</code> 类型遍历集合，会抛出异常，因为集合项中存在<code>string</code> 类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> arrs)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>问题二：遍历时不可避免装箱/拆箱操作</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> arrs)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>非泛型集合</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> arr1 = <span style="color:#66d9ef">new</span> ArrayList();
+</span></span><span style="display:flex;"><span>arr1.Add(<span style="color:#ae81ff">10</span>);<span style="color:#75715e">//Add方法参数值是object类型，这里将int-&gt;object</span>
+</span></span><span style="display:flex;"><span>arr1.Add(<span style="color:#e6db74">&#34;wang&#34;</span>);<span style="color:#75715e">//Add方法参数值是object类型，这里将int-&gt;object</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">int</span> item <span style="color:#66d9ef">in</span> arr1)<span style="color:#75715e">//这里如果用int类型遍历集合，就挂掉了</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(item);<span style="color:#75715e">//读取时要进行拆箱</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>泛型集合</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/*泛型集合在使用时定义好类型，之后就不存在装箱拆箱;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 因为已经定义当前集合只能存入int类型，也就不能存入其他类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 编译时就会报错，错误应及早发现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> arr2 = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>arr2.Add(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> arr2)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>通过参数化类型来实现在同一份代码上操作多种数据类型，利用“参数化类型”将类型抽象化，从而实现灵活的复用。每个集合的详细规范可以在 <code>System.Collection.Generic</code>  名称空间下找到。</p>
+<h1 id="泛型工作机制">泛型工作机制<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e5%b7%a5%e4%bd%9c%e6%9c%ba%e5%88%b6">#</a></h1>
+<p>泛型是延迟声明的：即定义的时候没有指定具体的参数类型，把参数类型的声明推迟到了调用的时候才指定参数类型。 延迟思想在程序架构设计的时候很受欢迎。例如：分布式缓存队列、EF的延迟加载等等。</p>
+<p>控制台程序最终会编译成一个exe程序，exe 被点击时，会经过JIT(即时编译器)的编译，最终生成二进制代码，才能被计算机执行。泛型加入到语法后，VS自带的编译器又做了升级，升级之后编译时遇到泛型，会做特殊的处理：生成占位符。再次经过JIT编译的时候，会把上面编译生成的占位符替换成具体的数据类型。</p>
+<h1 id="泛型方法">泛型方法<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e6%96%b9%e6%b3%95">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Print</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PrintType&lt;T&gt;() <span style="color:#66d9ef">where</span> T : <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        T t = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(t.GetType());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenericityMethod()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Print p = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    p.PrintType&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>    p.PrintType&lt;<span style="color:#66d9ef">double</span>&gt;();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="泛型类">泛型类<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e7%b1%bb">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyArray</span>&lt;T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> T t;
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenericityClass()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    MyArray&lt;<span style="color:#66d9ef">int</span>&gt; genericInt = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    genericInt.t = <span style="color:#ae81ff">123</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine(genericInt.t);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    MyArray&lt;<span style="color:#66d9ef">string</span>&gt; genericStr = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    genericStr.t = <span style="color:#e6db74">&#34;123&#34;</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine(genericStr.t);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="default">default<a class="anchor" href="#default">#</a></h1>
+<p><code>default</code> 用于将泛型类型初始化为 <code>null</code> 或 <code>0</code> 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>T t = <span style="color:#66d9ef">default</span>(T);</span></span></code></pre></div><h1 id="泛型接口">泛型接口<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e6%8e%a5%e5%8f%a3">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDAL</span>&lt;T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Add(T t);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassADAL</span>&lt;T&gt; : IDAL&lt;T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Add(T t)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(t);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassBDAL</span>&lt;T&gt; : IDAL&lt;T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Add(T t)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(t);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="泛型委托">泛型委托<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e5%a7%94%e6%89%98">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">delegate</span> <span style="color:#66d9ef">void</span> SayHi&lt;T&gt;(T t);</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenericityDelegate()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    SayHi&lt;<span style="color:#66d9ef">int</span>&gt; a = <span style="color:#66d9ef">new</span>((p) =&gt; { Console.WriteLine(p); });
+</span></span><span style="display:flex;"><span>    a.Invoke(<span style="color:#ae81ff">123</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SayHi&lt;<span style="color:#66d9ef">string</span>&gt; b = <span style="color:#66d9ef">new</span>((p) =&gt; { Console.WriteLine(p); });
+</span></span><span style="display:flex;"><span>    b.Invoke(<span style="color:#e6db74">&#34;123&#34;</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="注意事项">注意事项<a class="anchor" href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9">#</a></h1>
+<p>泛型在声明的时候可以不指定具体的类型，但是在使用时必须指定具体类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Print&lt;<span style="color:#66d9ef">int</span>&gt; iPrint = <span style="color:#66d9ef">new</span> Print&lt;<span style="color:#66d9ef">int</span>&gt;();</span></span></code></pre></div><p>这里的类型是int，如果存在继承并且子类也是泛型的，那么继承的时候可以不指定具体类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Print</span>&lt;T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> T t;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//这里继承时没有指定泛型类型</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConsolePrint</span>&lt;T&gt; : Print&lt;T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>同上，类实现泛型接口也是如此。</p>
+<h1 id="泛型约束">泛型约束<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e7%ba%a6%e6%9d%9f">#</a></h1>
+<p>所谓的泛型约束，就是约束类型 <code>T</code> ，使 <code>T</code> 必须遵循一定的规则。比如 <code>T</code> 必须继承自某个类，或者 <code>T</code> 必须实现某个接口等。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>类型</strong></th>
+          <th style="text-align: left"><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>T:calss</td>
+          <td style="text-align: left">类型参数必须是引用类型，包括任何类、接口、委托或数组类型</td>
+      </tr>
+      <tr>
+          <td>T:stauct</td>
+          <td style="text-align: left">类型参数必须是值类型。可以指定除 Nullable 以外的任何值类型</td>
+      </tr>
+      <tr>
+          <td>T:new()</td>
+          <td style="text-align: left">类型参数必须具有无参数的公共构造函数。当与其他约束一起使用时，new() 约束必须最后指定</td>
+      </tr>
+      <tr>
+          <td>T:&lt;基类名&gt;</td>
+          <td style="text-align: left">类型参数必须是指定的基类或派生自指定的基类</td>
+      </tr>
+      <tr>
+          <td>T:&lt;接口名称&gt;</td>
+          <td style="text-align: left">类型参数必须是指定的接口或实现指定的接口。可以指定多个接口约束。约束接口也可以是泛型的</td>
+      </tr>
+      <tr>
+          <td>T1:T2</td>
+          <td style="text-align: left">类型T1派生自泛型类型T2,该约束也被称为裸类型约束</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> PintSayHello()
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ISport</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Sport();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 约束T必须是Person类型或者是Person的子类并且实现了ISport接口且T类型中必须有无参构造函数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;typeparam name=&#34;T&#34;&gt;&lt;/typeparam&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Show</span>&lt;T&gt; <span style="color:#66d9ef">where</span> T : Person<span style="color:#960050;background-color:#1e0010">，</span> ISport<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 约束T必须是引用类型并且实现了ISport接口且T类型中必须有无参构造函数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;typeparam name=&#34;T&#34;&gt;&lt;/typeparam&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Show2</span>&lt;T&gt; <span style="color:#66d9ef">where</span> T : class<span style="color:#960050;background-color:#1e0010">，</span> ISport<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 约束T必须是值类型并且实现了ISport接口</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;typeparam name=&#34;T&#34;&gt;&lt;/typeparam&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Show3</span>&lt;T&gt; <span style="color:#66d9ef">where</span> T : struct<span style="color:#960050;background-color:#1e0010">，</span> ISport
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：泛型约束可以同时约束多个，有多个泛型约束时，<code>new()</code> 约束一定是在最后。</p>
+</blockquote><h1 id="泛型协变与逆变">泛型协变与逆变<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e5%8d%8f%e5%8f%98%e4%b8%8e%e9%80%86%e5%8f%98">#</a></h1>
+<p>协变和逆变在.NET 4.0的时候出现，<strong>只能放在接口或者委托的泛型参数前</strong>。</p>
+<ul>
+<li><code>out</code>： 协变，用来修饰返回值</li>
+<li><code>in</code>：逆变，用来修饰传入参数</li>
+</ul>
+<p>在C#中声明泛型接口时，可以使用 <code>in</code> 和 <code>out</code> 参数来控制这个泛型是协变还是逆变的（逆变有时也被翻译成抗变）协变和逆变是用来描述 <strong>如果泛型存在继承关系时，两个泛型类是否能够直接赋值的问题</strong>。比如派生泛型  <code>IInterface&lt;Child&gt;</code> 是否能被赋值给 <code>IInterface&lt;Parent&gt;</code>。</p>
+<h2 id="协变只能是方法参数"><strong>协变</strong>：只能是方法参数<a class="anchor" href="#%e5%8d%8f%e5%8f%98%e5%8f%aa%e8%83%bd%e6%98%af%e6%96%b9%e6%b3%95%e5%8f%82%e6%95%b0">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICustomerListIn</span>&lt;<span style="color:#66d9ef">in</span> T&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Show(T t);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 泛型协变(子类到父类的转换)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;remarks&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// out：协变covariant，用来修饰返回值</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/remarks&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [TestMethod]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenericityCovariant()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 直接声明Animal类</span>
+</span></span><span style="display:flex;"><span>            Animal animal = <span style="color:#66d9ef">new</span> Animal();
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{animal.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 直接声明Cat类</span>
+</span></span><span style="display:flex;"><span>            Cat cat = <span style="color:#66d9ef">new</span> Cat();
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{cat.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 声明子类对象指向父类</span>
+</span></span><span style="display:flex;"><span>            Animal animal2 = <span style="color:#66d9ef">new</span> Cat();
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{animal2.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 声明Animal类的集合</span>
+</span></span><span style="display:flex;"><span>            List&lt;Animal&gt; listAnimal = <span style="color:#66d9ef">new</span> List&lt;Animal&gt;();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> listAnimal)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">$&#34;{item.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 声明Cat类的集合</span>
+</span></span><span style="display:flex;"><span>            List&lt;Cat&gt; listCat = <span style="color:#66d9ef">new</span> List&lt;Cat&gt;();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> listCat)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">$&#34;{item.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> debug
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 一只Cat属于Animal，一群Cat也应该属于Animal。但实际上这样声明是错误的：因为List&lt;Cat&gt;和List&lt;Animal&gt;之间没有父子关系</span>
+</span></span><span style="display:flex;"><span>            List&lt;Animal&gt; list = <span style="color:#66d9ef">new</span> List&lt;Cat&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 泛型协变，IEnumerable泛型参数类型使用了out修饰</span>
+</span></span><span style="display:flex;"><span>            ICustomerListOut&lt;Animal&gt; customerList1 = <span style="color:#66d9ef">new</span> CustomerListOut&lt;Animal&gt;();
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{customerList1.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            ICustomerListOut&lt;Animal&gt; customerList2 = <span style="color:#66d9ef">new</span> CustomerListOut&lt;Cat&gt;();
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{customerList2.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>            Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div><h2 id="逆变只能是返回值"><strong>逆变</strong>：只能是返回值<a class="anchor" href="#%e9%80%86%e5%8f%98%e5%8f%aa%e8%83%bd%e6%98%af%e8%bf%94%e5%9b%9e%e5%80%bc">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICustomerListIn</span>&lt;<span style="color:#66d9ef">in</span> T&gt;
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">void</span> Show(T t);
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 泛型逆变(父类到子类的转换)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;remarks&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// int：协变contravariant，用来修饰返回值(子类到父类的转换)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/remarks&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenericityContravariant()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 直接声明Animal类</span>
+</span></span><span style="display:flex;"><span>    Animal animal = <span style="color:#66d9ef">new</span> Animal();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;{animal.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 直接声明Cat类</span>
+</span></span><span style="display:flex;"><span>    Cat cat = <span style="color:#66d9ef">new</span> Cat();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;{cat.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 声明子类对象指向父类</span>
+</span></span><span style="display:flex;"><span>    Animal animal2 = <span style="color:#66d9ef">new</span> Cat();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;{animal2.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 声明Animal类的集合</span>
+</span></span><span style="display:flex;"><span>    List&lt;Animal&gt; listAnimal = <span style="color:#66d9ef">new</span> List&lt;Animal&gt;();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> listAnimal)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;{item.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 声明Cat类的集合</span>
+</span></span><span style="display:flex;"><span>    List&lt;Cat&gt; listCat = <span style="color:#66d9ef">new</span> List&lt;Cat&gt;();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> listCat)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;{item.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ICustomerListIn&lt;Cat&gt; customerListCat1 = <span style="color:#66d9ef">new</span> CustomerListIn&lt;Cat&gt;();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;{customerListCat1.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ICustomerListIn&lt;Cat&gt; customerListCat2 = <span style="color:#66d9ef">new</span> CustomerListIn&lt;Animal&gt;();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;{customerListCat2.GetType()}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="高性能泛型缓存">高性能泛型缓存<a class="anchor" href="#%e9%ab%98%e6%80%a7%e8%83%bd%e6%b3%9b%e5%9e%8b%e7%bc%93%e5%ad%98">#</a></h1>
+<p>静态字典缓存和常用的泛型缓存的性能相比，泛型缓存性能是非常优异的。泛型缓存是 <code>JIT</code> 产生全新的类，内存直接分配，由CPU查找内存地址。静态字典缓存需要根据地址去寻址查找。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 类中的静态类型无论实例化多少次，在内存中只会有一个</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 静态构造函数只会执行一次</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 在泛型类中，T类型不同</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 每个不同的T类型，都会产生一个不同的副本，所以会产生不同的静态属性、不同的静态构造函数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;typeparam name=&#34;T&#34;&gt;&lt;/typeparam&gt;</span>
+</span></span><span style="display:flex;"><span>gma warning disable S1118 <span style="color:#75715e">// Utility classes should not have public constructors</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GenericCache</span>&lt;T&gt;
+</span></span><span style="display:flex;"><span>gma warning restore S1118 <span style="color:#75715e">// Utility classes should not have public constructors</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>gma warning disable S3963 <span style="color:#75715e">// &#34;static&#34; fields should be initialized inline</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> GenericCache()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _CachedValue = <span style="color:#66d9ef">string</span>.Format(<span style="color:#e6db74">&#34;{0}_{1}&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">typeof</span>(T).FullName<span style="color:#960050;background-color:#1e0010">，</span> DateTime.Now.ToString(<span style="color:#e6db74">&#34;yyyyMMddHHmmss.fff&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>gma warning restore S3963 <span style="color:#75715e">// &#34;static&#34; fields should be initialized inline</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>gma warning disable S2743 <span style="color:#75715e">// Static fields should not be used in generic types</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _CachedValue = <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>gma warning restore S2743 <span style="color:#75715e">// Static fields should not be used in generic types</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">string</span> GetCache()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> _CachedValue;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 泛型会为不同的类型都创建一个副本</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 所以静态构造函数会执行4次，而且每次静态属性的值都是一样的</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 利用泛型的这一特性，可以实现缓存</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 注意：只能为不同的类型缓存一次。泛型缓存比字典缓存效率高。泛型缓存不能主动释放</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenericityCache()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(GenericCache&lt;<span style="color:#66d9ef">int</span>&gt;.GetCache());
+</span></span><span style="display:flex;"><span>        Console.WriteLine(GenericCache&lt;<span style="color:#66d9ef">long</span>&gt;.GetCache());
+</span></span><span style="display:flex;"><span>        Console.WriteLine(GenericCache&lt;DateTime&gt;.GetCache());
+</span></span><span style="display:flex;"><span>        Console.WriteLine(GenericCache&lt;<span style="color:#66d9ef">string</span>&gt;.GetCache());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-02-21-55-49.png" alt="" /></p>
+<h1 id="参考">参考<a class="anchor" href="#%e5%8f%82%e8%80%83">#</a></h1>
+<ul>
+<li><a href="https://www.cnblogs.com/dotnet261010/p/9034594.html">https://www.cnblogs.com/dotnet261010/p/9034594.html</a></li>
+<li><a href="https://www.cnblogs.com/yilezhu/p/10029782.html">https://www.cnblogs.com/yilezhu/p/10029782.html</a></li>
+<li><a href="https://www.cnblogs.com/aehyok/p/3384637.html">https://www.cnblogs.com/aehyok/p/3384637.html</a></li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>数据结构</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="flex align-center">
+      <span>线程同步</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#协变只能是方法参数"><strong>协变</strong>：只能是方法参数</a></li>
+    <li><a href="#逆变只能是返回值"><strong>逆变</strong>：只能是返回值</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作。直到该线程完成操作，其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，这种时候很容易出现问题。
+争用条件# 如果两个或多个线程访问相同的对象。并且对共享状态的访问没有同步，就会出现争用条件。
+class StateObject { private int state = 5; public void ChangeState() { state&#43;&#43;; if (state == 5) { Console.WriteLine(&#34;value=5&#34;); } state = 5; } }public static void ThreadSync_Lock_Example_01() { StateObject m = new StateObject(); Thread t1 = new Thread(ChangeState); t1.Start(m); Console.ReadKey(); static void ChangeState(object o) { StateObject m = o as StateObject; while (true) { m.ChangeState(); } } }此时运行程序是没有输出的，因为 StateObject 类中 state 初始值是5，if 条件不会进入,随后又将 state 重新初始化为5。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作。直到该线程完成操作，其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，这种时候很容易出现问题。
+争用条件# 如果两个或多个线程访问相同的对象。并且对共享状态的访问没有同步，就会出现争用条件。
+class StateObject { private int state = 5; public void ChangeState() { state&#43;&#43;; if (state == 5) { Console.WriteLine(&#34;value=5&#34;); } state = 5; } }public static void ThreadSync_Lock_Example_01() { StateObject m = new StateObject(); Thread t1 = new Thread(ChangeState); t1.Start(m); Console.ReadKey(); static void ChangeState(object o) { StateObject m = o as StateObject; while (true) { m.ChangeState(); } } }此时运行程序是没有输出的，因为 StateObject 类中 state 初始值是5，if 条件不会进入,随后又将 state 重新初始化为5。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作。直到该线程完成操作，其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，这种时候很容易出现问题。
+争用条件# 如果两个或多个线程访问相同的对象。并且对共享状态的访问没有同步，就会出现争用条件。
+class StateObject { private int state = 5; public void ChangeState() { state&#43;&#43;; if (state == 5) { Console.WriteLine(&#34;value=5&#34;); } state = 5; } }public static void ThreadSync_Lock_Example_01() { StateObject m = new StateObject(); Thread t1 = new Thread(ChangeState); t1.Start(m); Console.ReadKey(); static void ChangeState(object o) { StateObject m = o as StateObject; while (true) { m.ChangeState(); } } }此时运行程序是没有输出的，因为 StateObject 类中 state 初始值是5，if 条件不会进入,随后又将 state 重新初始化为5。">
+  <meta itemprop="wordCount" content="402">
+
+<title>线程同步 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>线程同步</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    线程同步
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作。直到该线程完成操作，其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，这种时候很容易出现问题。</p>
+<h1 id="争用条件">争用条件<a class="anchor" href="#%e4%ba%89%e7%94%a8%e6%9d%a1%e4%bb%b6">#</a></h1>
+<p>如果两个或多个线程访问相同的对象。并且对共享状态的访问没有同步，就会出现争用条件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StateObject</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> state = <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ChangeState()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            state++;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (state == <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;value=5&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            state = <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ThreadSync_Lock_Example_01()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    StateObject m = <span style="color:#66d9ef">new</span> StateObject();
+</span></span><span style="display:flex;"><span>    Thread t1 = <span style="color:#66d9ef">new</span> Thread(ChangeState);
+</span></span><span style="display:flex;"><span>    t1.Start(m);
+</span></span><span style="display:flex;"><span>    Console.ReadKey();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ChangeState(<span style="color:#66d9ef">object</span> o)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        StateObject m = o <span style="color:#66d9ef">as</span> StateObject;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            m.ChangeState();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>此时运行程序是没有输出的，因为 <code>StateObject</code> 类中 <code>state</code> 初始值是5，<code>if</code> 条件不会进入,随后又将 <code>state</code> 重新初始化为5。</p>
+<p><strong>两个线程执行</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ThreadSync_Lock_Example_02()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    StateObject m = <span style="color:#66d9ef">new</span> StateObject();
+</span></span><span style="display:flex;"><span>    Thread t1 = <span style="color:#66d9ef">new</span> Thread(ChangeState);
+</span></span><span style="display:flex;"><span>    Thread t2 = <span style="color:#66d9ef">new</span> Thread(ChangeState);
+</span></span><span style="display:flex;"><span>    t1.Start(m);
+</span></span><span style="display:flex;"><span>    t2.Start(m);
+</span></span><span style="display:flex;"><span>    Console.ReadKey();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ChangeState(<span style="color:#66d9ef">object</span> o)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        StateObject m = o <span style="color:#66d9ef">as</span> StateObject;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            m.ChangeState();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>此时会不停的打印&quot;value=5&quot;，原因在于：一个线程在判断语句处时，另一个线程可能又将 <code>state</code> 的值改为了5，而导致输出合法。</p>
+<h1 id="死锁">死锁<a class="anchor" href="#%e6%ad%bb%e9%94%81">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Deadlock</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> StateObject o1 = <span style="color:#66d9ef">new</span> StateObject();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> StateObject o2 = <span style="color:#66d9ef">new</span> StateObject();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> DeadlockA(<span style="color:#66d9ef">object</span> o)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">lock</span> (o1)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;我是线程{0},我锁定了对象o1&#34;</span>, o);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">lock</span> (o2)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;我是线程{0},我锁定了对象o2&#34;</span>, o);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> DeadlockB(<span style="color:#66d9ef">object</span> o)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">lock</span> (o2)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;我是线程{0},我锁定了对象o2&#34;</span>, o);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">lock</span> (o1)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;我是线程{0},我锁定了对象o1&#34;</span>, o);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> Thread t1 = <span style="color:#66d9ef">new</span> Thread(Deadlock.DeadlockA);
+</span></span><span style="display:flex;"><span> Thread t2 = <span style="color:#66d9ef">new</span> Thread(Deadlock.DeadlockB);
+</span></span><span style="display:flex;"><span>        t1.Start(<span style="color:#e6db74">&#34;t1&#34;</span>);
+</span></span><span style="display:flex;"><span>        t2.Start(<span style="color:#e6db74">&#34;t2&#34;</span>);</span></span></code></pre></div><p><img src="/images/2021-09-02-22-22-40.png" alt="" />
+<code>t1</code> 线程执行 <code>DeadlockA()</code> 方法顺序锁定<code>o1</code>和<code>o2</code>
+<code>t2</code> 线程执行 <code>DeadlockB()</code> 方法顺序锁定<code>o2</code>和<code>o1</code>
+当前结果显示t1线程锁定了<code>o1</code>后，<code>t2</code>线程在<code>t1</code>线程锁定<code>o1</code>后抢占进来，锁定了<code>o2</code>。<code>t2</code>在等<code>t1</code>解锁,<code>t1</code>在等<code>t2</code>解锁，都处于挂起状态在等对方解锁，这就形成了死锁，线程将无限等待下去。</p>
+<p>这个问题应该从一开始就设计好锁定顺序，也可以为锁定义超时时间来处理，保证“上锁”这个操作在一个线程上执行也是避免死锁的方法之一。</p>
+<p>C#中有多个用于多线程的同步技术</p>
+<ul>
+<li>lock语句</li>
+<li>Interlocked类</li>
+<li>Monitor类</li>
+<li>SpinLock类</li>
+<li>WaitHandle类</li>
+<li>Mutex类</li>
+<li>Semapphore类</li>
+<li>Event类</li>
+<li>Barrier类</li>
+<li>ReaderWriteLockSlim类</li>
+</ul>
+<p>其中lock语句/Interlocked类/Monitor类可用于进程内存的同步，其它几个提供了多进程之间的线程同步。</p>
+<h1 id="lock">Lock<a class="anchor" href="#lock">#</a></h1>
+<p>C#使用 <code>lock</code> 语句锁定在线程中共享的变量，如果一个线程锁定了变量，另一个线程就必须等待该锁定的解除。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ChangeState(<span style="color:#66d9ef">object</span> o)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    StateObject m = o <span style="color:#66d9ef">as</span> StateObject;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>       {
+</span></span><span style="display:flex;"><span>　　　　　　　<span style="color:#75715e">//给变量m加锁</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">lock</span> (m)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>              m.ChangeState();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>       }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>因为实例的对象也可以用于外部的同步访问，而且不能在类自身控制这种访问，所以应采用<code>SyncRoot</code>模式，创建私有对象，将这个对象用于 <code>lock</code> 语句。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">object</span> syncRoot= <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ChangeState(<span style="color:#66d9ef">object</span> o)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    StateObject m = o <span style="color:#66d9ef">as</span> StateObject;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>           <span style="color:#66d9ef">lock</span> (aync)
+</span></span><span style="display:flex;"><span>           {
+</span></span><span style="display:flex;"><span>               m.ChangeState();
+</span></span><span style="display:flex;"><span>           }
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><strong>注意</strong></p>
+<ol>
+<li><code>lock</code>只能锁定对象，即引用类型，不能锁定值类型</li>
+<li><code>lock</code>不能锁定空值,因为<code>null</code>是不需要被释放的</li>
+<li>不能锁定<code>string</code>类型,虽然它也是引用类型的。因为字符串类型被<code>CLR暂留</code>，这意味着整个程序中任何给定字符串都只有一个实例，具有相同内容的字符串上放置了锁，就将锁定应用程序中该字符串的所有实例</li>
+<li>避免锁定<code>public</code>类型,如果该实例可以被公开访问，则 <code>lock(this)</code> 可能会有问题，因为不受控制的代码也可能会锁定该对象</li>
+</ol>
+<h1 id="锁是否必须是静态类型">锁是否必须是静态类型？<a class="anchor" href="#%e9%94%81%e6%98%af%e5%90%a6%e5%bf%85%e9%a1%bb%e6%98%af%e9%9d%99%e6%80%81%e7%b1%bb%e5%9e%8b">#</a></h1>
+<p>如果被锁定的方法是静态的，那么这个锁必须是静态类型。这样就是在全局锁定了该方法，不管该类有多少个实例，都要排队执行。</p>
+<p>如果被锁定的方法不是静态的，那么不能使用静态类型的锁，因为被锁定的方法是属于实例的。只要该实例调用锁定方法不产生损坏就可以，不同实例间是不需要锁的。这个锁只锁该实例的方法，而不是锁所有实例的方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadSafe</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">object</span> _locker = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>();
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> Go()
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">lock</span> (_locker)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      ......<span style="color:#75715e">//共享数据的操作 （Static Method）,使用静态锁确保所有实例排队执行</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">object</span> _locker2=<span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> GoTo()
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">lock</span>(_locker2)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//共享数据的操作，非静态方法，是用非静态锁，确保同一个实例的方法调用者排队执行</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>同步对象可以兼作它 <code>lock</code> 的对象。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadSafe</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">private</span> List &lt;<span style="color:#66d9ef">string</span>&gt; _list = <span style="color:#66d9ef">new</span> List &lt;<span style="color:#66d9ef">string</span>&gt;(); 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> Test()
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">lock</span> (_list)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      _list.Add (<span style="color:#e6db74">&#34;Item 1&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="monitors">Monitors<a class="anchor" href="#monitors">#</a></h1>
+<p><code>lock</code> 其实是 <code>Monitors</code> 的简洁写法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">lock</span> (syncRoot)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    m.ChangeState();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>两者其实是一样的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Monitor.Enter(syncRoot);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    m.ChangeState();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">finally</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Monitor.Exit(syncRoot);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="mutex">Mutex<a class="anchor" href="#mutex">#</a></h1>
+<p>互斥锁是一个互斥的同步对象，同一时间有且仅有一个线程可以获取它。可以实现进程级别上线程的同步。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ThreadSync_Mutex_Example_01()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">3</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//在不同的线程中调用受互斥锁保护的方法</span>
+</span></span><span style="display:flex;"><span>        Thread test = <span style="color:#66d9ef">new</span> Thread(MutexMethod);
+</span></span><span style="display:flex;"><span>        test.Start();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Console.Read();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> MutexMethod()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//实例化一个互斥锁</span>
+</span></span><span style="display:flex;"><span>        Mutex mutex = <span style="color:#66d9ef">new</span> Mutex();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;{0} 请求获取互斥锁&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        mutex.WaitOne();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;{0} 已获取到互斥锁&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;{0} 准备释放互斥锁&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 释放互斥锁</span>
+</span></span><span style="display:flex;"><span>        mutex.ReleaseMutex();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;{0} 已经释放互斥锁&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>互斥锁的带有三个参数的构造函数</p>
+<ul>
+<li><code>initiallyOwned</code> : 如果 <code>initiallyOwned</code> 为 <code>true</code>，互斥锁的初始状态就是被所实例化的线程所获取，否则实例化的线程处于未获取状态</li>
+<li><code>name</code>：该互斥锁的名字，在操作系统中只有一个命名为<code>name</code>的互斥锁<code>mutex</code>，如果一个线程得到这个<code>name</code>的互斥锁，其他线程就无法得到这个互斥锁了，必须等待那个线程对这个线程释放</li>
+<li><code>createNew</code>：如果指定名称的互斥体已经存在就返回<code>false</code>，否则返回<code>true</code></li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>泛型技术</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="flex align-center">
+      <span>面向对象</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

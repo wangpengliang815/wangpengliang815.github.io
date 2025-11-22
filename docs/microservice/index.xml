@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>💫 Microservice on CODE'NOTE</title><link>https://wangpengliang815.github.io/docs/microservice/</link><description>Recent content in 💫 Microservice on CODE'NOTE</description><generator>Hugo</generator><language>zh-cn</language><atom:link href="https://wangpengliang815.github.io/docs/microservice/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/</guid><description>&lt;h1 id="前言"&gt;前言&lt;a class="anchor" href="#%e5%89%8d%e8%a8%80"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;此系列旨在复习微服务的相关知识，示例代码中不会出现聚合、聚合根、服务拆分等相关概念（不会涉及到领域驱动相关知识），只使用最简单的&lt;code&gt;.Net Core Web&lt;/code&gt;程序，主要关注点在于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如何使用 Docker 部署 &lt;code&gt;.NetCore&lt;/code&gt; 应用&lt;/li&gt;
+&lt;li&gt;应用程序的 DockerFile 编写&lt;/li&gt;
+&lt;li&gt;服务注册和服务发现是什么？解决了什么问题？&lt;/li&gt;
+&lt;li&gt;网关用来做什么？服务治理相关（熔断/限流/降级/链路追踪/缓存&amp;hellip;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="微服务概念"&gt;微服务概念&lt;a class="anchor" href="#%e5%be%ae%e6%9c%8d%e5%8a%a1%e6%a6%82%e5%bf%b5"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;关于微服务的概念解释网上有很多，每个人的理解都不同。至于为什么要使用微服务？微服务的优缺点等相关问题每个人理解不同。个人理解：微服务是一种系统架构模式，和语言无关，框架无关，工具无关，服务器环境无关，微服务目的是：将传统单体系统按照业务拆分成多个职责单一、且可独立运行的服务。至于服务如何拆分，没有明确的定义。采用微服务优点是：每个服务的职责单一且可独立部署、不同服务间采用轻量级的通信协议作为通信原则，松耦合。这样不同服务就可以使用不同的技术栈（优势语言），缺点的话是：微服务架构避免不了会引入更多技术栈、中间件等等增加系统复杂度。（微服务不是银弹，要根据实际业务体量考虑是否使用，否则只会徒增不必要的麻烦）&lt;/p&gt;
+&lt;h1 id="项目结构搭建"&gt;项目结构搭建&lt;a class="anchor" href="#%e9%a1%b9%e7%9b%ae%e7%bb%93%e6%9e%84%e6%90%ad%e5%bb%ba"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;img src="https://wangpengliang815.github.io/images/2021-09-17-17-31-42.png" alt="" /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Order.Api&lt;/code&gt;：订单服务&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Web.Client&lt;/code&gt;：测试使用的客户端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;创建项目时启用Docker支持，或者之后添加也可以。添加基础代码，简单的返回服务名称、当前时间、服务IP、端口：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Microsoft.AspNetCore.Mvc;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Microsoft.Extensions.Configuration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; Order.Api.Controller
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [Route(&amp;#34;[Controller]&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;)]
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt; [ApiController]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;OrdersController&lt;/span&gt; : ControllerBase
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [HttpGet]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; IActionResult Index()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; result = &lt;span style="color:#e6db74"&gt;$&amp;#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{Request.HttpContext.Connection.LocalPort}&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Ok(result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="容器化部署"&gt;容器化部署&lt;a class="anchor" href="#%e5%ae%b9%e5%99%a8%e5%8c%96%e9%83%a8%e7%bd%b2"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;代码就写这么简单，下面使用Docker来部署订单服务。这里先了解一下如果启用了Docker支持，VS默认生成的 &lt;code&gt;Dockerfile&lt;/code&gt; 文件如下：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code&gt;#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY [&amp;#34;Order.Api/Order.Api.csproj&amp;#34;, &amp;#34;Order.Api/&amp;#34;]
+RUN dotnet restore &amp;#34;Order.Api/Order.Api.csproj&amp;#34;
+COPY . .
+WORKDIR &amp;#34;/src/Order.Api&amp;#34;
+RUN dotnet build &amp;#34;Order.Api.csproj&amp;#34; -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish &amp;#34;Order.Api.csproj&amp;#34; -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [&amp;#34;dotnet&amp;#34;, &amp;#34;Order.Api.dll&amp;#34;]&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;关于&lt;code&gt;Dockerfile&lt;/code&gt; 各个命令的作用这里不再解释，可以参考 &lt;a href="https://wpl.wiki/docker/1.8Dockerfile"&gt;【Dockerfile】&lt;/a&gt;。这里的 &lt;code&gt;Dockerfile&lt;/code&gt; 文件不能直接使用，因为我采用的方式是：将发布后的应用部署到 &lt;code&gt;Centos&lt;/code&gt; =&amp;gt; &lt;code&gt;docker build镜像&lt;/code&gt;=&amp;gt;&lt;code&gt;运行容器&lt;/code&gt;。跳过了这里的 &lt;code&gt;dotnet restore&lt;/code&gt; 和 &lt;code&gt;dotnet publish&lt;/code&gt;。修改后的 &lt;code&gt;Dockerfile&lt;/code&gt;如下：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/</guid><description>&lt;h1 id="前言"&gt;前言&lt;a class="anchor" href="#%e5%89%8d%e8%a8%80"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;上一篇说到要做到服务的灵活伸缩需要有一种机制来实现，这个机制就是服务注册与发现。这并不是必须的，如果服务实例很少并且很稳定，就没有必要使用。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="概念"&gt;概念&lt;a class="anchor" href="#%e6%a6%82%e5%bf%b5"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;服务注册：简单理解就是有一个注册中心，每个服务实例启动时都去注册中心注册，告诉注册中心地址，端口等信息。同样删除时，也需要去注册中心删除，注册中心负责维护这些服务实例的信息&lt;/li&gt;
+&lt;li&gt;服务发现：既然注册中心维护了各个服务实例的信息，那么客户端通过注册中心就很容易能发现服务的变化。有了服务注册与发现，客户端就不用再去配置各个服务实例的地址，改为从注册中心统一获取&lt;/li&gt;
+&lt;li&gt;健康检查：注册中心要保证每个地址的可用状态，挂掉的实例不应该被客户端获取到，所以需要：健康检查。每个服务都需要提供一个用于健康检查的接口，这个接口不具备任何业务功能。服务注册时把这个接口的地址也告诉注册中心，注册中心会定时调用这个接口来检测服务是否正常，如果不正常，则将它移除，这样来保证了服务的可用性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;常见注册中心有 &lt;code&gt;Consul&lt;/code&gt;、&lt;code&gt;ZooKeeper&lt;/code&gt;、&lt;code&gt;etcd&lt;/code&gt;、&lt;code&gt;Eureka&lt;/code&gt;。&lt;/p&gt;
+&lt;h1 id="consul"&gt;Consul&lt;a class="anchor" href="#consul"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Consul官网：https://www.consul.io，主要功能有服务注册与发现、健康检查、K-V存储、多数据中心等，这里不做详细介绍。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安装：直接在官网下载解压即可&lt;/li&gt;
+&lt;li&gt;运行：在 &lt;code&gt;consul.exe&lt;/code&gt; 目录下打开命令行执行 &lt;code&gt;consul.exe agent -dev&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;浏览器访问：http://localhost:8500&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这里选择使用Docker来部署Consul：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; docker pull consul &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;docker run -d -p 8500:8500 --restart&lt;span style="color:#f92672"&gt;=&lt;/span&gt;always --name&lt;span style="color:#f92672"&gt;=&lt;/span&gt;consul consul:latest agent -server -bootstrap -ui -node&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; -client&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;0.0.0.0&amp;#39;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;agent&lt;/code&gt;： 表示启动 Agent 进程&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;server&lt;/code&gt;：表示启动 Consul Server 模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;client&lt;/code&gt;：表示启动 Consul Cilent 模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bootstrap&lt;/code&gt;：表示这个节点是 Server-Leader ，每个数据中心只能运行一台服务器。技术角度上来看 Leader 是通过 Raft 算法选举的，但是集群第一次启动时需要一个引导 Leader，在引导群集后，建议不要使用此标志&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ui&lt;/code&gt;：表示启动 Web UI 管理器，默认开放端口 &lt;code&gt;8500&lt;/code&gt;，所以上面使用 Docker 命令把 &lt;code&gt;8500&lt;/code&gt; 端口对外开放&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;node&lt;/code&gt;：节点的名称，集群中必须是唯一的，默认是该节点的主机名&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;client&lt;/code&gt;：Consul服务监听地址，这提供&lt;code&gt;HTTP&lt;/code&gt;、&lt;code&gt;DNS&lt;/code&gt;、&lt;code&gt;RPC&lt;/code&gt;等服务，默认是 &lt;code&gt;127.0.0.1&lt;/code&gt; 所以不对外提供服务，如果要对外提供服务改成 &lt;code&gt;0.0.0.0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;join&lt;/code&gt;：表示加入到某一个集群中。 如：&lt;code&gt;-json=192.168.0.11&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="https://wangpengliang815.github.io/images/2021-09-17-20-00-01.png" alt="" /&gt;&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/</guid><description>&lt;h1 id="前言"&gt;前言&lt;a class="anchor" href="#%e5%89%8d%e8%a8%80"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;上一篇使用 Consul 完成了服务的注册与发现，实际中光有服务注册与发现往往是不够的，需要一个统一的入口来连接客户端与服务。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="ocelot"&gt;Ocelot&lt;a class="anchor" href="#ocelot"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;官网：https://ocelot.readthedocs.io ，Ocelot 正是为.Net微服务体系提供一个统一的入口点，称为：Gateway（网关）。&lt;/p&gt;
+&lt;p&gt;首先创建一个空的 &lt;code&gt;asp.net core web&lt;/code&gt; 项目：&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://wangpengliang815.github.io/images/2021-09-19-04-33-35.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;注意：&lt;code&gt;ocelot.json&lt;/code&gt; 是Ocelot的配置文件，设置生成时需要复制到输出目录。&lt;code&gt;ocelot.json&lt;/code&gt; 文件名不是固定的可以自己定义&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;使用 &lt;code&gt;NuGet&lt;/code&gt; 安装 &lt;code&gt;Ocelot&lt;/code&gt;，简单修改几处默认代码：&lt;/p&gt;
+&lt;p&gt;Program.cs：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Main(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;[] args)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CreateHostBuilder(args).Build().Run();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; IHostBuilder CreateHostBuilder(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;[] args) =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Host.CreateDefaultBuilder(args)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .ConfigureAppConfiguration((hostingContext, config) =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; config.AddJsonFile(&lt;span style="color:#e6db74"&gt;&amp;#34;ocelot.json&amp;#34;&lt;/span&gt;, optional: &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;, reloadOnChange: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; })
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .ConfigureWebHostDefaults(webBuilder =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; webBuilder.UseStartup&amp;lt;Startup&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Startup.cs：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/</guid><description>&lt;h1 id="前言"&gt;前言&lt;a class="anchor" href="#%e5%89%8d%e8%a8%80"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;上一篇中已经完成了 Ocelot + Consul 的搭建，这篇简单说一下事件总线（&lt;code&gt;EventBus&lt;/code&gt;)。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="事件总线"&gt;事件总线&lt;a class="anchor" href="#%e4%ba%8b%e4%bb%b6%e6%80%bb%e7%ba%bf"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;什么是事件总线？&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;事件总线是对观察者（发布-订阅）模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到解耦的目的&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;为什么要使用事件总线？&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;ol&gt;
+&lt;li&gt;以当前项目举例，假设有一个订单服务，一个产品服务。客户端有一个下单功能，下单时调用订单服务的下单接口，下单接口需要调用产品服务的减库存接口，这涉及到服务与服务之间的调用。服务之间调用可以选择 &lt;code&gt;RestAPI&lt;/code&gt; 或者效率更高的 &lt;code&gt;gRPC&lt;/code&gt;。可能这两者各有各的使用场景，但是它们都存在服务之间的耦合问题，或者难以做到异步调用&lt;/li&gt;
+&lt;li&gt;假设下单调用订单服务，订单服务需要调用产品服务，产品服务又要调用物流服务，物流服务再去调用xx服务等等，如果每个服务处理时间需要2s，不使用异步处理的话，响应时间可想而知。如果使用EventBus的话，那么订单服务只需要向EventBus发一个“下单事件”就可以了。产品服务会订阅“下单事件”，当产品服务收到下单事件时，自己去减库存。这样就避免了两个服务之间直接调用的耦合性，并且真正做到了异步调用&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;&lt;p&gt;既然涉及到多个服务之间的异步调用，那么就不得不提分布式事务。分布式事务并不是微服务独有的问题，而是所有的分布式系统都会存在的问题。关于分布式事务，可以查一下 “CAP原则” 和 “BASE理论” 了解更多。如今分布式系统更多时候会追求事务的最终一致性。&lt;/p&gt;
+&lt;p&gt;下面使用开源框架 &lt;code&gt;CAP&lt;/code&gt;来演示 &lt;code&gt;EventBus&lt;/code&gt; 的基本使用。之所以使用 &lt;code&gt;CAP&lt;/code&gt; 是因为它既能解决分布式系统的最终一致性，同时又是一个 &lt;code&gt;EventBus&lt;/code&gt;，它具备&lt;code&gt;EventBus&lt;/code&gt; 的所有功能。&lt;a href="https://www.cnblogs.com/savorboard/p/cap.html"&gt;点击了解更多&lt;/a&gt;。&lt;/p&gt;
+&lt;h1 id="cap"&gt;CAP&lt;a class="anchor" href="#cap"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;目前 CAP 支持使用 &lt;code&gt;RabbitMQ&lt;/code&gt; ，&lt;code&gt;Kafka&lt;/code&gt;，&lt;code&gt;Azure Service Bus&lt;/code&gt; 等进行底层之间的消息发送，不需要具备这些消息队列的使用经验就可以轻松的集成到项目中。CAP 目前支持使用 &lt;code&gt;Sql Server&lt;/code&gt;，&lt;code&gt;MySql&lt;/code&gt;，&lt;code&gt;PostgreSql&lt;/code&gt;，&lt;code&gt;MongoDB&lt;/code&gt; 数据库的项目。这里选择：消息组件使用 &lt;code&gt;RabbitMq&lt;/code&gt;，数据库存储使用 &lt;code&gt;SqlServer&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Nuget&lt;/code&gt; 安装 :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Microsoft.EntityFrameworkCore
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Microsoft.EntityFrameworkCore.Tools
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Microsoft.EntityFrameworkCore.SqlServer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DotNetCore.CAP
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DotNetCore.CAP.RabbitMQ
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DotNetCore.CAP.SqlServer&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="productapi"&gt;Product.Api&lt;a class="anchor" href="#productapi"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;新增 &lt;code&gt;Product.Api&lt;/code&gt; 作为产品服务，代码结构与 &lt;code&gt;Order.Api&lt;/code&gt; 结构类似：&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://wangpengliang815.github.io/images/2021-09-19-01-07-00.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2 id="productscontrollercs"&gt;ProductsController.cs&lt;a class="anchor" href="#productscontrollercs"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;增加减库存接口：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; DotNetCore.CAP;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Microsoft.AspNetCore.Mvc;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Microsoft.EntityFrameworkCore;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Microsoft.Extensions.Configuration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Newtonsoft.Json;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Product.Api.Models;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Threading.Tasks;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; Product.Api.Controller
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [Route(&amp;#34;[Controller]&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;)]
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt; [ApiController]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ProductsController&lt;/span&gt; : ControllerBase
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; IConfiguration configuration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; ICapPublisher capBus;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; ProductContext context;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; ProductsController(IConfiguration configuration, ICapPublisher capBus, ProductContext context)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;this&lt;/span&gt;.configuration = configuration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;this&lt;/span&gt;.capBus = capBus;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;this&lt;/span&gt;.context = context;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [HttpGet]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; IActionResult Index()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; result = &lt;span style="color:#e6db74"&gt;$&amp;#34;产品服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&amp;#34;&lt;/span&gt;ConsulSetting:ServicePort&lt;span style="color:#e6db74"&gt;&amp;#34;]}&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Ok(result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 减库存 订阅下单事件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;param name=&amp;#34;message&amp;#34;&amp;gt;&amp;lt;/param&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [NonAction]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [CapSubscribe(&amp;#34;order.services.createorder&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;async&lt;/span&gt; Task ReduceStock(CreateOrderMessageDto message)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(&lt;span style="color:#e6db74"&gt;&amp;#34;message:&amp;#34;&lt;/span&gt; + JsonConvert.SerializeObject(message));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; product = &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; context.Products.FirstOrDefaultAsync(p =&amp;gt; p.ID == message.ProductID);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; product.Stock -= message.Count;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; context.SaveChangesAsync();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="createordermessagedtocs"&gt;CreateOrderMessageDto.cs&lt;a class="anchor" href="#createordermessagedtocs"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; Product.Api.Models
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 下单事件消息&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;CreateOrderMessageDto&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 产品ID&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; ProductID { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 购买数量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; Count { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="productcs"&gt;Product.cs&lt;a class="anchor" href="#productcs"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.ComponentModel.DataAnnotations;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.ComponentModel.DataAnnotations.Schema;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; Product.Api.Models
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Product&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [Key]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; ID { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 产品名称&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [Required]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [Column(TypeName = &amp;#34;VARCHAR(16)&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; Name { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// 库存&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [Required]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; Stock { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="productcontextcs"&gt;ProductContext.cs&lt;a class="anchor" href="#productcontextcs"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-csharp" data-lang="csharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Microsoft.EntityFrameworkCore;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; Product.Api
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ProductContext&lt;/span&gt; : DbContext
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; ProductContext(DbContextOptions&amp;lt;ProductContext&amp;gt; options)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; : &lt;span style="color:#66d9ef"&gt;base&lt;/span&gt;(options)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; DbSet&amp;lt;Models.Product&amp;gt; Products { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;protected&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; OnModelCreating(ModelBuilder modelBuilder)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;//初始化种子数据&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; modelBuilder.Entity&amp;lt;Models.Product&amp;gt;().HasData(&lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Models.Product
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ID = &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Name = &lt;span style="color:#e6db74"&gt;&amp;#34;ThinkPad&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Stock = &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Models.Product
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ID = &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Name = &lt;span style="color:#e6db74"&gt;&amp;#34;Mac&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Stock = &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="appsettingsjson"&gt;appsettings.json&lt;a class="anchor" href="#appsettingsjson"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;Logging&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;LogLevel&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;Default&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Information&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;Microsoft&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Warning&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;Microsoft.Hosting.Lifetime&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Information&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;AllowedHosts&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;*&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ConsulSetting&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ServiceName&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;product.service&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ServiceIP&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;192.168.31.191&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ServiceHealthCheck&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;/healthcheck&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ConsulAddress&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;http://192.168.31.191:8500&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ConnectionString&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Server=192.168.31.210;Database=Microservice.Sample.Product;user id=sa;password=wpl19950815;MultipleActiveResultSets=true&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="startupcs"&gt;Startup.cs&lt;a class="anchor" href="#startupcs"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-css" data-lang="css"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;public&lt;/span&gt; &lt;span style="color:#f92672"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;ConfigureServices&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#f92672"&gt;IServiceCollection&lt;/span&gt; &lt;span style="color:#f92672"&gt;services&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;services.AddControllers()&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;services.AddDbContext&amp;lt;ProductContext&amp;gt;(opt&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;opt.UseSqlServer(Configuration[&amp;#34;ConnectionString&amp;#34;]))&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;services.AddCap(x&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;=&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;x.UseEntityFramework&amp;lt;ProductContext&amp;gt;().UseRabbitMQ(option&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;=&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;option.HostName&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;=&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;&amp;#34;192.168.31.191&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;option.UserName&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;=&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;&amp;#34;guest&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;option.Password&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;=&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;&amp;#34;guest&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }&lt;span style="color:#f92672"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;}&lt;/span&gt;&lt;span style="color:#f92672"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id="orderapi"&gt;Order.Api&lt;a class="anchor" href="#orderapi"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;h2 id="orderscontrollercs"&gt;OrdersController.cs&lt;a class="anchor" href="#orderscontrollercs"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;增加下单接口：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/</guid><description>&lt;h1 id="前言"&gt;前言&lt;a class="anchor" href="#%e5%89%8d%e8%a8%80"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;上一篇中使用 CAP 完成了一个简单的 &lt;code&gt;Eventbus&lt;/code&gt;，实现了服务之间的解耦和异步调用，并且做到数据的最终一致性。搞到这里系统环境已经比较复杂了，想把整个系统运行起来会非常繁琐：要运行 Consul、订单服务、产品服务、网关、&lt;del&gt;鉴权中心&lt;/del&gt;、RabbitMQ，本篇将使用 &lt;code&gt;Docker Compose&lt;/code&gt; 来解决以上问题，仅需一个简单的命令，即可启动整个环境。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="docker-compose"&gt;Docker Compose&lt;a class="anchor" href="#docker-compose"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;什么是Docker Compose？&lt;/p&gt;
+&lt;blockquote class='book-hint '&gt;
+&lt;p&gt;Compose 是用于定义和运行多容器 Docker 应用程序的工具。通过 Compose可以使用 YML 文件来配置应用程序需要的所有服务。然后，使用一个命令，就可以从 YML 文件配置中创建并启动所有服务&lt;/p&gt;
+&lt;/blockquote&gt;&lt;p&gt;简单来理解，Compose类似一个批量工具，可以执行一组命令，支持批量构建镜像，批量启动容器，批量删除容器等等功能。Windows的 Docker Desktop 中已经包括了 Compose，Linux下 Compose 则需要单独安装。关于 Compose 更多信息参考 &lt;a href="https://wpl.wiki/docker/1.9Docker%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8BDockerCompose"&gt;【Docker三剑客之DockerCompose】&lt;/a&gt;。&lt;/p&gt;
+&lt;h1 id="yml-file"&gt;yml file&lt;a class="anchor" href="#yml-file"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;yml 文件是使用 Compose 必不可少的，在编写 yml 文件之前需要准备Dockerfile。之前的章节中，网关服务不是在 Docker 中运行的，现在全部放到Docker中。确保解决方案中每个项目都添加Docker支持。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-dockerfile" data-lang="dockerfile"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;# 基于 `mcr.microsoft.com/dotnet/aspnet:5.0 AS base` 来构建镜像&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; &lt;span style="color:#e6db74"&gt;mcr.microsoft.com/dotnet/aspnet:5.0&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; &lt;span style="color:#e6db74"&gt;base&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;# 设置工作目录,如不存在会被创建&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;WORKDIR&lt;/span&gt; &lt;span style="color:#e6db74"&gt;/app&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;# Copy release文件夹内容到工作目录app&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;COPY&lt;/span&gt; . /app&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;# 运行.dll&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;ENTRYPOINT&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#34;dotnet&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Ocelot.Geteway.dll&amp;#34;&lt;/span&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;新建 &lt;code&gt;docker-compose.yml&lt;/code&gt; 文件，以下是 &lt;code&gt;docker-compose.yml&lt;/code&gt;文件内容：&lt;/p&gt;</description></item><item><title/><link>https://wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/</guid><description>&lt;p&gt;官网地址：https://www.consul.io&lt;/p&gt;
+&lt;h1 id="简介"&gt;简介&lt;a class="anchor" href="#%e7%ae%80%e4%bb%8b"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Consul 是一个支持多数据中心分布式高可用的服务发现和配置共享的服务软件，由 HashiCorp 公司用 Go 语言开发, 基于 Mozilla Public License 2.0 的协议进行开源。 Consul 支持 健康检查，并允许 HTTP 、GRPC 和 DNS 协议调用 API 存储键值对。 一致性协议采用 Raft 算法,用来保证服务的高可用。使用 GOSSIP 协议管理成员和广播消息，并且支持 ACL 访问控制。&lt;/p&gt;
+&lt;p&gt;Consul 包含多个组件，但作为整体来看的话主要功能是：为基础设施提供服务发现和服务配置的工具，主要提供以下关键特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;服务发现&lt;/strong&gt;：Consul 的客户端用于注册服务，其他的客户端可以通过 Consul 来中找到这个注册的服务（使用 DNS 或 HTTP）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;健康检查&lt;/strong&gt;：Consul 客户端可以提供任意数量的健康检查，要么与给定的服务相关联（“网络服务器是否返回 200 OK”），要么与本地节点（“内存利用率是否低于 90%”）相关联。可以通过这个信息来监控集群健康状况，并且服务发现组件可以使用它来避免将请求路由到不健康的主机上&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;KV 存储&lt;/strong&gt;：应用程序可以将 Consul 的分层键/值存储用于多种目的，包括动态配置、功能标记、协调、领导选举等。简单的 HTTP API 使其易于使用&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全服务通信&lt;/strong&gt;：Consul 可以为服务生成和分发 TLS 证书，以建立相互的 TLS 连接。 &lt;a href="https://www.consul.io/docs/connect/intentions"&gt;意图&lt;/a&gt; 可用于定义允许哪些服务进行通信。可以通过实时更改意图轻松管理服务分段，而不是使用复杂的网络拓扑和静态防火墙规则&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多数据中心&lt;/strong&gt;：Consul 支持开箱即用的多个数据中心。这意味着 Consul 的用户不必担心构建额外的抽象层以扩展到多个区域&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- more --&gt;
+&lt;h1 id="consul-agent"&gt;Consul Agent&lt;a class="anchor" href="#consul-agent"&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;每个为 Consul 提供服务的节点都会运行一个 Consul Agent，启动 Consul 必须运行 Agent（可以选择运行为 &lt;code&gt;Server&lt;/code&gt; 或 &lt;code&gt;Client&lt;/code&gt; 模式。每个数据中心至少要有一台 &lt;code&gt;Server&lt;/code&gt;，一个 &lt;code&gt;Client&lt;/code&gt;是一个非常轻量级的进程，用于注册服务，运行健康检查和转发对 &lt;code&gt;Server&lt;/code&gt; 的查询） 这个 Agent 功能主要在于：&lt;/p&gt;</description></item></channel></rss>

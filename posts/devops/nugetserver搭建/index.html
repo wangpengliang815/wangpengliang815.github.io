@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="背景介绍# NuGet 是用于微软.NET（包括 .NET Core）开发平台的软件包管理器。NuGet 能够使得在项目中添加、移除和更新引用的工作变得更加快捷方便
+通常使用 NuGet 都是官方的服务，也可以搭建针对自己公司或部门的私有 NuGet 托管一些自己的类库，公司内部的类库等。搭建私有 NuGet 的方法有很多，比如：NuGet.Server、ProGet 等。这里使用 BaGet。
+GitHub地址：https://loic-sharma.github.io/BaGet/， 安装方式选择 Docker。
+Configure BaGet# 在服务器上自定义创建目录，目录结构如下：
+projects ├─baget ├───baget.env ├───baget-databaget.env 文件用于存储BaGet的配置，内容如下：
+# The following config is the API Key used to publish packages. # You should change this to a secret value to secure your server. ApiKey=ApiKey # 推送包是需要提供这个ApiKey Storage__Type=FileSystem Storage__Path=/var/baget/packages Database__Type=Sqlite Database__ConnectionString=Data Source=/var/baget/baget.db Search__Type=Database配置指南介绍
+Run BaGet# Pull BaGet’s latest docker image docker pull loicsharma/baget run BaGet docker run -d --restart always --name nuget-server -p 80:80 --env-file /projects/baget/baget.env -v /projects/baget/baget-data:/var/baget loicsharma/baget:latestBrowse packages# You can browse packages by opening the URL http://localhost:80 in your browser.
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/devops/nugetserver%E6%90%AD%E5%BB%BA/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="背景介绍# NuGet 是用于微软.NET（包括 .NET Core）开发平台的软件包管理器。NuGet 能够使得在项目中添加、移除和更新引用的工作变得更加快捷方便
+通常使用 NuGet 都是官方的服务，也可以搭建针对自己公司或部门的私有 NuGet 托管一些自己的类库，公司内部的类库等。搭建私有 NuGet 的方法有很多，比如：NuGet.Server、ProGet 等。这里使用 BaGet。
+GitHub地址：https://loic-sharma.github.io/BaGet/， 安装方式选择 Docker。
+Configure BaGet# 在服务器上自定义创建目录，目录结构如下：
+projects ├─baget ├───baget.env ├───baget-databaget.env 文件用于存储BaGet的配置，内容如下：
+# The following config is the API Key used to publish packages. # You should change this to a secret value to secure your server. ApiKey=ApiKey # 推送包是需要提供这个ApiKey Storage__Type=FileSystem Storage__Path=/var/baget/packages Database__Type=Sqlite Database__ConnectionString=Data Source=/var/baget/baget.db Search__Type=Database配置指南介绍
+Run BaGet# Pull BaGet’s latest docker image docker pull loicsharma/baget run BaGet docker run -d --restart always --name nuget-server -p 80:80 --env-file /projects/baget/baget.env -v /projects/baget/baget-data:/var/baget loicsharma/baget:latestBrowse packages# You can browse packages by opening the URL http://localhost:80 in your browser.">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="背景介绍# NuGet 是用于微软.NET（包括 .NET Core）开发平台的软件包管理器。NuGet 能够使得在项目中添加、移除和更新引用的工作变得更加快捷方便
+通常使用 NuGet 都是官方的服务，也可以搭建针对自己公司或部门的私有 NuGet 托管一些自己的类库，公司内部的类库等。搭建私有 NuGet 的方法有很多，比如：NuGet.Server、ProGet 等。这里使用 BaGet。
+GitHub地址：https://loic-sharma.github.io/BaGet/， 安装方式选择 Docker。
+Configure BaGet# 在服务器上自定义创建目录，目录结构如下：
+projects ├─baget ├───baget.env ├───baget-databaget.env 文件用于存储BaGet的配置，内容如下：
+# The following config is the API Key used to publish packages. # You should change this to a secret value to secure your server. ApiKey=ApiKey # 推送包是需要提供这个ApiKey Storage__Type=FileSystem Storage__Path=/var/baget/packages Database__Type=Sqlite Database__ConnectionString=Data Source=/var/baget/baget.db Search__Type=Database配置指南介绍
+Run BaGet# Pull BaGet’s latest docker image docker pull loicsharma/baget run BaGet docker run -d --restart always --name nuget-server -p 80:80 --env-file /projects/baget/baget.env -v /projects/baget/baget-data:/var/baget loicsharma/baget:latestBrowse packages# You can browse packages by opening the URL http://localhost:80 in your browser.">
+  <meta itemprop="wordCount" content="194">
+
+<title>Nuget Server搭建 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/devops/nugetserver%E6%90%AD%E5%BB%BA/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Nuget Server搭建</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Nuget Server搭建
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="背景介绍">背景介绍<a class="anchor" href="#%e8%83%8c%e6%99%af%e4%bb%8b%e7%bb%8d">#</a></h1>
+<blockquote class='book-hint '>
+<p>NuGet 是用于微软.NET（包括 .NET Core）开发平台的软件包管理器。NuGet 能够使得在项目中添加、移除和更新引用的工作变得更加快捷方便</p>
+</blockquote><p>通常使用 NuGet 都是官方的服务，也可以搭建针对自己公司或部门的私有 NuGet 托管一些自己的类库，公司内部的类库等。搭建私有 NuGet 的方法有很多，比如：<code>NuGet.Server</code>、<code>ProGet</code> 等。这里使用 <code>BaGet</code>。</p>
+<p>GitHub地址：https://loic-sharma.github.io/BaGet/， 安装方式选择 Docker。</p>
+<h1 id="configure-baget">Configure BaGet<a class="anchor" href="#configure-baget">#</a></h1>
+<p>在服务器上自定义创建目录，目录结构如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>projects
+</span></span><span style="display:flex;"><span>├─baget 
+</span></span><span style="display:flex;"><span>├───baget.env
+</span></span><span style="display:flex;"><span>├───baget-data</span></span></code></pre></div><p><code>baget.env</code> 文件用于存储BaGet的配置，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># The following config is the API Key used to publish packages.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># You should change this to a secret value to secure your server.</span>
+</span></span><span style="display:flex;"><span>ApiKey<span style="color:#f92672">=</span>ApiKey <span style="color:#75715e"># 推送包是需要提供这个ApiKey</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Storage__Type<span style="color:#f92672">=</span>FileSystem
+</span></span><span style="display:flex;"><span>Storage__Path<span style="color:#f92672">=</span>/var/baget/packages
+</span></span><span style="display:flex;"><span>Database__Type<span style="color:#f92672">=</span>Sqlite
+</span></span><span style="display:flex;"><span>Database__ConnectionString<span style="color:#f92672">=</span>Data Source<span style="color:#f92672">=</span>/var/baget/baget.db
+</span></span><span style="display:flex;"><span>Search__Type<span style="color:#f92672">=</span>Database</span></span></code></pre></div><p><a href="https://loic-sharma.github.io/BaGet/configuration/">配置指南介绍</a></p>
+<h1 id="run-baget">Run BaGet<a class="anchor" href="#run-baget">#</a></h1>
+<ol>
+<li>Pull BaGet&rsquo;s latest docker image</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker pull loicsharma/baget</span></span></code></pre></div><ol start="2">
+<li>run BaGet</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d --restart always --name nuget-server -p 80:80 --env-file /projects/baget/baget.env -v /projects/baget/baget-data:/var/baget loicsharma/baget:latest</span></span></code></pre></div><h1 id="browse-packages">Browse packages<a class="anchor" href="#browse-packages">#</a></h1>
+<p>You can browse packages by opening the URL <a href="http://localhost:80/"><code>http://localhost:80</code></a> in your browser.</p>
+<h1 id="publish-packages">Publish packages<a class="anchor" href="#publish-packages">#</a></h1>
+<p>项目中右键打包生成 <code>you project.1.0.0.nupkg</code> 文件，包的具体描述和版本号可在项目属性中更改，在控制台中通过命令将包推送到 Baget，命令如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dotnet nuget push -s http://localhost:80/v3/index.json -k NUGET-SERVER-API-KEY you project.1.0.0.nupkg</span></span></code></pre></div><ul>
+<li><code>-k NUGET-SERVER-API-KEY</code> ：<code>baget.env</code> 中配置的ApiKey</li>
+<li><code>you project.1.0.0.nupkg</code>：要上传的包路径</li>
+<li><code>-s http://localhost:80/v3/index.json</code>：baget 地址</li>
+</ul>
+<h1 id="restore-packages">Restore packages<a class="anchor" href="#restore-packages">#</a></h1>
+<p>现在可以在 Visual Studio 使用以下包源还原包：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>http://localhost:80/v3/index.json</span></span></code></pre></div><h1 id="import-packages">Import packages<a class="anchor" href="#import-packages">#</a></h1>
+<p>将本地包源推送到 Baget，需要确保已安装 <a href="https://www.nuget.org/downloads">nuget.exe</a>。在 PowerShell 中，运行：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$source = <span style="color:#e6db74">&#34;C:\Users\Administrator\.nuget\packages&#34;</span>
+</span></span><span style="display:flex;"><span>$destination = <span style="color:#e6db74">&#34;http://localhost:80/v3/index.json&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&amp;D:\Nuget\nuget\nuget.exe setapikey <span style="color:#e6db74">&#34;NUGET-SERVER-API-KEY&#34;</span> -Source $destination
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$packages = D:\Nuget\nuget\nuget.exe list -AllVersions -Source $source
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$packages | % {
+</span></span><span style="display:flex;"><span>  $id, $version = $_ -Split <span style="color:#e6db74">&#34; &#34;</span>
+</span></span><span style="display:flex;"><span>  $nupkg = $id + <span style="color:#e6db74">&#34;.&#34;</span> + $version + <span style="color:#e6db74">&#34;.nupkg&#34;</span>
+</span></span><span style="display:flex;"><span>  $path = [<span style="color:#66d9ef">IO.Path</span>]::Combine($source, $id, $version, $nupkg)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  Write-Host <span style="color:#e6db74">&#34;D:\Nuget\nuget\nuget.exe push -Source </span>$destination<span style="color:#e6db74"> &#34;&#34;</span>$path<span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>  &amp; D:\Nuget\nuget\nuget.exe push -Source $destination $path
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Jenkins常见操作</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="flex align-center">
+      <span>1.1 Docker概念及安装</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

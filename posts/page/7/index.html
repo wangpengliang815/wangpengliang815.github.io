@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E6%A0%87%E5%87%86%E5%BA%93/log/">Log</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>Go语言内置的 <code>log</code> 包实现了简单的日志服务。</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E6%A0%87%E5%87%86%E5%BA%93/time/">Time</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>学习Go语言内置的 <code>time</code> 包的基本用法，<code>time</code> 包提供了时间的显示和计算用的函数。日历计算采用公历。</p>
+<p>时间可分为时间点与时间段，Go 提供了以下两种基础类型</p>
+<ul>
+<li>时间点 <code>Time</code></li>
+<li>时间段 <code>Duration</code></li>
+</ul>
+<p>除此之外也提供了以下类型，做一些特定的业务</p>
+<ul>
+<li>时区 <code>Location</code></li>
+<li><code>Ticker</code></li>
+<li>定时器 <code>Timer</code></li>
+</ul>
+<h1 id="时间点">时间点<a class="anchor" href="#%e6%97%b6%e9%97%b4%e7%82%b9">#</a></h1>
+<p>一般使用的所有与时间相关的业务都是基于点而延伸的，两点组成一个时间段，大多数应用也都是围绕这些点与面去做逻辑处理。</p>
+<h2 id="初始化">初始化<a class="anchor" href="#%e5%88%9d%e5%a7%8b%e5%8c%96">#</a></h2>
+<p>go 针对不同的参数类型提供了以下初始化的方式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#75715e">// …</span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">Kubernetes基础知识</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="服务器演变过程">服务器演变过程<a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%bc%94%e5%8f%98%e8%bf%87%e7%a8%8b">#</a></h1>
+<p>了解K8S之前，首先需要了解服务器的演变过程：</p>
+<ul>
+<li>物理机时代</li>
+<li>虚拟机时代</li>
+<li>容器化时代</li>
+</ul>
+<h2 id="物理机时代">物理机时代<a class="anchor" href="#%e7%89%a9%e7%90%86%e6%9c%ba%e6%97%b6%e4%bb%a3">#</a></h2>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li><strong>部署慢</strong> ：每台服务器都要安装操作系统、相关应用程序所需要的环境，各种配置</li>
+<li><strong>成本高</strong>：物理服务器的价格十分昂贵</li>
+<li><strong>资源浪费</strong>：硬件资源不能充分利用</li>
+<li><strong>扩展和迁移成本高</strong>：扩展和迁移需要重新配置一模一样的环境</li>
+</ul>
+<h2 id="虚拟机时代">虚拟机时代<a class="anchor" href="#%e8%99%9a%e6%8b%9f%e6%9c%ba%e6%97%b6%e4%bb%a3">#</a></h2>
+<p>虚拟机时代解决了物理机时代的缺点，虚拟机时代的优点是：</p>
+<ul>
+<li><strong>易部署</strong>：每台物理机可部署多台虚拟机，还可以通过模板，部署快，成本低</li>
+<li><strong>资源池</strong>：开出来的虚拟机可作为资源池备用，充分 …</li></ul></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/">Kubernetes集群安装</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="集群安装方式">集群安装方式<a class="anchor" href="#%e9%9b%86%e7%be%a4%e5%ae%89%e8%a3%85%e6%96%b9%e5%bc%8f">#</a></h1>
+<ul>
+<li>minikube
+K8S 集群模拟器，只有一个节点的集群，只为测试用，master 和 worker 都在一起</li>
+<li>直接用云平台 Kubernetes
+可视化搭建，只需简单几步就可以创建好一个集群
+优点：安装简单，生态齐全，负载均衡器、存储等都给你配套好，简单操作就搞定</li>
+<li>裸机安装（Bare Metal）
+至少需要两台机器（主节点、工作节点各一台），需要自己安装 Kubernetes 组件，配置会稍微麻烦点。
+可以到各云厂商按时租用服务器，费用低，用完就销毁
+缺点：配置麻烦，缺少生态支持，例如负 …</li></ul></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/">Centos7升级gcc版本</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>Centos 7 默认 <code>gcc</code> 版本为4.8，有时需要更高版本的，这里以升级至8.3.1版本为例，分别执行下面三条命令即可，无需手动<a href="http://ftp.gnu.org/gnu/gcc/">下载源码</a>编译。</p>
+<p>1、安装centos-release-scl</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install centos-release-scl</span></span></code></pre></div><p>2、安装devtoolset，注意：如果想安装7.* 版本的，就改成devtoolset-7-gcc，以此类推</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install devtoolset-8-gcc*</span></span></code></pre></div><p>3、激活对应的devtoolset，可以一次安装多个版本的 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/linux/centos%E5%AE%89%E8%A3%85hexo/">Centos安装 Hexo</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="nodejs-安装">Nodejs 安装<a class="anchor" href="#nodejs-%e5%ae%89%e8%a3%85">#</a></h1>
+<h2 id="下载">下载<a class="anchor" href="#%e4%b8%8b%e8%bd%bd">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> wget https://nodejs.org/dist/v16.14.0/node-v16.14.0-linux-x64.tar.gz
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> tar -xvf node-v16.14.0-linux-x64.tar.gz <span style="color:#75715e"># 将文件解压到当前目录</span></span></span></code></pre></div><h2 id="配置环境变量">配置环境变量<a class="anchor" href="#%e9%85%8d%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ln -s /hexo/node-v16.14.0-linux-x64/bin/node /usr/local/bin/node
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ln -s …</span></span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">Centos网络配置</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="网络模式">网络模式<a class="anchor" href="#%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%bc%8f">#</a></h1>
+<ul>
+<li><code>VMnet0</code>（桥接模式）</li>
+<li><code>VMnet1</code>（仅主机模式）</li>
+<li><code>VMnet8</code>（NAT模式）</li>
+</ul>
+<h2 id="nat-vmnet8">NAT-VMnet8<a class="anchor" href="#nat-vmnet8">#</a></h2>
+<p>NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
+<p><code>NAT</code> 模式下的虚拟系统的 <code>TCP/IP</code> 配置信息是由 <code>VMnet8(NAT)</code> 虚拟网络的 <code>DHCP</code> 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="系统级别">系统级别<a class="anchor" href="#%e7%b3%bb%e7%bb%9f%e7%ba%a7%e5%88%ab">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th>描述</th>
+          <th>示例</th>
+          <th>备注</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>显示机器的处理器架构</td>
+          <td><code>arch</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示机器的处理器架构</td>
+          <td><code>uname -m</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示正在使用的内核版本</td>
+          <td><code>uname -r …</code></td></tr></tbody></table></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/">Linux目录说明</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><table>
+  <thead>
+      <tr>
+          <th style="text-align: center">目录</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><code>/boot</code></td>
+          <td style="text-align: left">该目录默认下存放的是Linux的启动文件和内核</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/bin</code></td>
+          <td style="text-align: left">Binary的缩写，该目录中存放Linux的常用命令</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/sbin</code></td>
+          <td style="text-align: left">Supaer User；该目录用来存放系统管理员使用的管理程序 …</td></tr></tbody></table></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/linux/vmware%E5%AE%89%E8%A3%85centos/">Vmware安装 Centos</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="软件准备">软件准备<a class="anchor" href="#%e8%bd%af%e4%bb%b6%e5%87%86%e5%a4%87">#</a></h1>
+<ul>
+<li>软件：<code>VMware</code></li>
+<li>操作系统：<code>CentOS7</code></li>
+</ul>
+<h1 id="虚拟机准备">虚拟机准备<a class="anchor" href="#%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%87%86%e5%a4%87">#</a></h1>
+<p>打开 <code>VMware</code> 选择新建虚拟机</p>
+<p><img src="/images/2021-09-03-14-54-03.png" alt="" /></p>
+<p>典型安装与自定义安装</p>
+<ul>
+<li>典型安装：<code>VMware</code> 会将主流的配置应用在虚拟机的操作系统上，对于新手来很友好</li>
+<li>自定义安装：自定义安装可以针对性的把一些资源加强，把不需要的资源移除。避免资源浪费</li>
+</ul>
+<p><strong>这里选择典型安装</strong></p>
+<p><img src="/images/2021-09-03-14-54-59.png" alt="" /></p>
+<p><strong>选择稍后安装操作系统</strong></p>
+<p><img src="/images/2021-09-03-14-55-14.png" alt="" /></p>
+<p><strong>选择操作系统为Linux</strong></p>
+<p><img src="/images/2021-09-03-14-55-43.png" alt="" /></p>
+<p><strong>输入虚机名称和存储位置</strong></p>
+<p><img src="/images/2021-09-03-14-55-58.png" alt="" /></p>
+<p><strong>设置虚机磁盘大小</strong></p>
+<p><img src="/images/2021-09-03-14-56-11.png" alt="" /></p>
+<p><strong>自定义硬件</strong></p>
+<p><img src="/images/2021-09-03-14-56-26.png" alt="" /></p>
+<p><img src="/images/2021-09-03-14-56-53.png" alt="" /></p>
+<p>根据自己电脑实际情况分配</p>
+<ul>
+<li>内存：2G</li>
+<li>处理器数量：2 / 内核数量：2 …</li></ul></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/6/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/5/">5</a><a href="/posts/page/6/">6</a><a >7</a><a href="/posts/page/8/">8</a><a href="/posts/page/9/">9</a></span>
+  
+  <span>
+    <a href="/posts/page/8/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

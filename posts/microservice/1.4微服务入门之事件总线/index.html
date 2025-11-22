@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="前言# 上一篇中已经完成了 Ocelot &#43; Consul 的搭建，这篇简单说一下事件总线（EventBus)。
+事件总线# 什么是事件总线？
+事件总线是对观察者（发布-订阅）模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到解耦的目的
+为什么要使用事件总线？
+以当前项目举例，假设有一个订单服务，一个产品服务。客户端有一个下单功能，下单时调用订单服务的下单接口，下单接口需要调用产品服务的减库存接口，这涉及到服务与服务之间的调用。服务之间调用可以选择 RestAPI 或者效率更高的 gRPC。可能这两者各有各的使用场景，但是它们都存在服务之间的耦合问题，或者难以做到异步调用 假设下单调用订单服务，订单服务需要调用产品服务，产品服务又要调用物流服务，物流服务再去调用xx服务等等，如果每个服务处理时间需要2s，不使用异步处理的话，响应时间可想而知。如果使用EventBus的话，那么订单服务只需要向EventBus发一个“下单事件”就可以了。产品服务会订阅“下单事件”，当产品服务收到下单事件时，自己去减库存。这样就避免了两个服务之间直接调用的耦合性，并且真正做到了异步调用 既然涉及到多个服务之间的异步调用，那么就不得不提分布式事务。分布式事务并不是微服务独有的问题，而是所有的分布式系统都会存在的问题。关于分布式事务，可以查一下 “CAP原则” 和 “BASE理论” 了解更多。如今分布式系统更多时候会追求事务的最终一致性。
+下面使用开源框架 CAP来演示 EventBus 的基本使用。之所以使用 CAP 是因为它既能解决分布式系统的最终一致性，同时又是一个 EventBus，它具备EventBus 的所有功能。点击了解更多。
+CAP# 目前 CAP 支持使用 RabbitMQ ，Kafka，Azure Service Bus 等进行底层之间的消息发送，不需要具备这些消息队列的使用经验就可以轻松的集成到项目中。CAP 目前支持使用 Sql Server，MySql，PostgreSql，MongoDB 数据库的项目。这里选择：消息组件使用 RabbitMq，数据库存储使用 SqlServer。
+Nuget 安装 :
+Microsoft.EntityFrameworkCore Microsoft.EntityFrameworkCore.Tools Microsoft.EntityFrameworkCore.SqlServer DotNetCore.CAP DotNetCore.CAP.RabbitMQ DotNetCore.CAP.SqlServerProduct.Api# 新增 Product.Api 作为产品服务，代码结构与 Order.Api 结构类似：
+ProductsController.cs# 增加减库存接口：
+using DotNetCore.CAP; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using Microsoft.Extensions.Configuration; using Newtonsoft.Json; using Product.Api.Models; using System; using System.Threading.Tasks; namespace Product.Api.Controller { [Route(&#34;[Controller]&#34;)] [ApiController] public class ProductsController : ControllerBase { private readonly IConfiguration configuration; private readonly ICapPublisher capBus; private readonly ProductContext context; public ProductsController(IConfiguration configuration, ICapPublisher capBus, ProductContext context) { this.configuration = configuration; this.capBus = capBus; this.context = context; } [HttpGet] public IActionResult Index() { string result = $&#34;产品服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&#34;ConsulSetting:ServicePort&#34;]}&#34;; return Ok(result); } /// &lt;summary&gt; /// 减库存 订阅下单事件 /// &lt;/summary&gt; /// &lt;param name=&#34;message&#34;&gt;&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; [NonAction] [CapSubscribe(&#34;order.services.createorder&#34;)] public async Task ReduceStock(CreateOrderMessageDto message) { Console.WriteLine(&#34;message:&#34; &#43; JsonConvert.SerializeObject(message)); var product = await context.Products.FirstOrDefaultAsync(p =&gt; p.ID == message.ProductID); product.Stock -= message.Count; await context.SaveChangesAsync(); } } }CreateOrderMessageDto.cs# namespace Product.Api.Models { /// &lt;summary&gt; /// 下单事件消息 /// &lt;/summary&gt; public class CreateOrderMessageDto { /// &lt;summary&gt; /// 产品ID /// &lt;/summary&gt; public int ProductID { get; set; } /// &lt;summary&gt; /// 购买数量 /// &lt;/summary&gt; public int Count { get; set; } } }Product.cs# using System.ComponentModel.DataAnnotations; using System.ComponentModel.DataAnnotations.Schema; namespace Product.Api.Models { public class Product { [Key] public int ID { get; set; } /// &lt;summary&gt; /// 产品名称 /// &lt;/summary&gt; [Required] [Column(TypeName = &#34;VARCHAR(16)&#34;)] public string Name { get; set; } /// &lt;summary&gt; /// 库存 /// &lt;/summary&gt; [Required] public int Stock { get; set; } } }ProductContext.cs# using Microsoft.EntityFrameworkCore; namespace Product.Api { public class ProductContext : DbContext { public ProductContext(DbContextOptions&lt;ProductContext&gt; options) : base(options) { } public DbSet&lt;Models.Product&gt; Products { get; set; } protected override void OnModelCreating(ModelBuilder modelBuilder) { //初始化种子数据 modelBuilder.Entity&lt;Models.Product&gt;().HasData(new Models.Product { ID = 1, Name = &#34;ThinkPad&#34;, Stock = 100 }, new Models.Product { ID = 2, Name = &#34;Mac&#34;, Stock = 100 }); } } }appsettings.json# { &#34;Logging&#34;: { &#34;LogLevel&#34;: { &#34;Default&#34;: &#34;Information&#34;, &#34;Microsoft&#34;: &#34;Warning&#34;, &#34;Microsoft.Hosting.Lifetime&#34;: &#34;Information&#34; } }, &#34;AllowedHosts&#34;: &#34;*&#34;, &#34;ConsulSetting&#34;: { &#34;ServiceName&#34;: &#34;product.service&#34;, &#34;ServiceIP&#34;: &#34;192.168.31.191&#34;, &#34;ServiceHealthCheck&#34;: &#34;/healthcheck&#34;, &#34;ConsulAddress&#34;: &#34;http://192.168.31.191:8500&#34; }, &#34;ConnectionString&#34;: &#34;Server=192.168.31.210;Database=Microservice.Sample.Product;user id=sa;password=wpl19950815;MultipleActiveResultSets=true&#34; }Startup.cs# public void ConfigureServices(IServiceCollection services) { services.AddControllers(); services.AddDbContext&lt;ProductContext&gt;(opt =&gt; opt.UseSqlServer(Configuration[&#34;ConnectionString&#34;])); services.AddCap(x =&gt; { x.UseEntityFramework&lt;ProductContext&gt;().UseRabbitMQ(option =&gt; { option.HostName = &#34;192.168.31.191&#34;; option.UserName = &#34;guest&#34;; option.Password = &#34;guest&#34;; }); }); }Order.Api# OrdersController.cs# 增加下单接口：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="前言# 上一篇中已经完成了 Ocelot &#43; Consul 的搭建，这篇简单说一下事件总线（EventBus)。
+事件总线# 什么是事件总线？
+事件总线是对观察者（发布-订阅）模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到解耦的目的
+为什么要使用事件总线？
+以当前项目举例，假设有一个订单服务，一个产品服务。客户端有一个下单功能，下单时调用订单服务的下单接口，下单接口需要调用产品服务的减库存接口，这涉及到服务与服务之间的调用。服务之间调用可以选择 RestAPI 或者效率更高的 gRPC。可能这两者各有各的使用场景，但是它们都存在服务之间的耦合问题，或者难以做到异步调用 假设下单调用订单服务，订单服务需要调用产品服务，产品服务又要调用物流服务，物流服务再去调用xx服务等等，如果每个服务处理时间需要2s，不使用异步处理的话，响应时间可想而知。如果使用EventBus的话，那么订单服务只需要向EventBus发一个“下单事件”就可以了。产品服务会订阅“下单事件”，当产品服务收到下单事件时，自己去减库存。这样就避免了两个服务之间直接调用的耦合性，并且真正做到了异步调用 既然涉及到多个服务之间的异步调用，那么就不得不提分布式事务。分布式事务并不是微服务独有的问题，而是所有的分布式系统都会存在的问题。关于分布式事务，可以查一下 “CAP原则” 和 “BASE理论” 了解更多。如今分布式系统更多时候会追求事务的最终一致性。
+下面使用开源框架 CAP来演示 EventBus 的基本使用。之所以使用 CAP 是因为它既能解决分布式系统的最终一致性，同时又是一个 EventBus，它具备EventBus 的所有功能。点击了解更多。
+CAP# 目前 CAP 支持使用 RabbitMQ ，Kafka，Azure Service Bus 等进行底层之间的消息发送，不需要具备这些消息队列的使用经验就可以轻松的集成到项目中。CAP 目前支持使用 Sql Server，MySql，PostgreSql，MongoDB 数据库的项目。这里选择：消息组件使用 RabbitMq，数据库存储使用 SqlServer。
+Nuget 安装 :
+Microsoft.EntityFrameworkCore Microsoft.EntityFrameworkCore.Tools Microsoft.EntityFrameworkCore.SqlServer DotNetCore.CAP DotNetCore.CAP.RabbitMQ DotNetCore.CAP.SqlServerProduct.Api# 新增 Product.Api 作为产品服务，代码结构与 Order.Api 结构类似：
+ProductsController.cs# 增加减库存接口：
+using DotNetCore.CAP; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using Microsoft.Extensions.Configuration; using Newtonsoft.Json; using Product.Api.Models; using System; using System.Threading.Tasks; namespace Product.Api.Controller { [Route(&#34;[Controller]&#34;)] [ApiController] public class ProductsController : ControllerBase { private readonly IConfiguration configuration; private readonly ICapPublisher capBus; private readonly ProductContext context; public ProductsController(IConfiguration configuration, ICapPublisher capBus, ProductContext context) { this.configuration = configuration; this.capBus = capBus; this.context = context; } [HttpGet] public IActionResult Index() { string result = $&#34;产品服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&#34;ConsulSetting:ServicePort&#34;]}&#34;; return Ok(result); } /// &lt;summary&gt; /// 减库存 订阅下单事件 /// &lt;/summary&gt; /// &lt;param name=&#34;message&#34;&gt;&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; [NonAction] [CapSubscribe(&#34;order.services.createorder&#34;)] public async Task ReduceStock(CreateOrderMessageDto message) { Console.WriteLine(&#34;message:&#34; &#43; JsonConvert.SerializeObject(message)); var product = await context.Products.FirstOrDefaultAsync(p =&gt; p.ID == message.ProductID); product.Stock -= message.Count; await context.SaveChangesAsync(); } } }CreateOrderMessageDto.cs# namespace Product.Api.Models { /// &lt;summary&gt; /// 下单事件消息 /// &lt;/summary&gt; public class CreateOrderMessageDto { /// &lt;summary&gt; /// 产品ID /// &lt;/summary&gt; public int ProductID { get; set; } /// &lt;summary&gt; /// 购买数量 /// &lt;/summary&gt; public int Count { get; set; } } }Product.cs# using System.ComponentModel.DataAnnotations; using System.ComponentModel.DataAnnotations.Schema; namespace Product.Api.Models { public class Product { [Key] public int ID { get; set; } /// &lt;summary&gt; /// 产品名称 /// &lt;/summary&gt; [Required] [Column(TypeName = &#34;VARCHAR(16)&#34;)] public string Name { get; set; } /// &lt;summary&gt; /// 库存 /// &lt;/summary&gt; [Required] public int Stock { get; set; } } }ProductContext.cs# using Microsoft.EntityFrameworkCore; namespace Product.Api { public class ProductContext : DbContext { public ProductContext(DbContextOptions&lt;ProductContext&gt; options) : base(options) { } public DbSet&lt;Models.Product&gt; Products { get; set; } protected override void OnModelCreating(ModelBuilder modelBuilder) { //初始化种子数据 modelBuilder.Entity&lt;Models.Product&gt;().HasData(new Models.Product { ID = 1, Name = &#34;ThinkPad&#34;, Stock = 100 }, new Models.Product { ID = 2, Name = &#34;Mac&#34;, Stock = 100 }); } } }appsettings.json# { &#34;Logging&#34;: { &#34;LogLevel&#34;: { &#34;Default&#34;: &#34;Information&#34;, &#34;Microsoft&#34;: &#34;Warning&#34;, &#34;Microsoft.Hosting.Lifetime&#34;: &#34;Information&#34; } }, &#34;AllowedHosts&#34;: &#34;*&#34;, &#34;ConsulSetting&#34;: { &#34;ServiceName&#34;: &#34;product.service&#34;, &#34;ServiceIP&#34;: &#34;192.168.31.191&#34;, &#34;ServiceHealthCheck&#34;: &#34;/healthcheck&#34;, &#34;ConsulAddress&#34;: &#34;http://192.168.31.191:8500&#34; }, &#34;ConnectionString&#34;: &#34;Server=192.168.31.210;Database=Microservice.Sample.Product;user id=sa;password=wpl19950815;MultipleActiveResultSets=true&#34; }Startup.cs# public void ConfigureServices(IServiceCollection services) { services.AddControllers(); services.AddDbContext&lt;ProductContext&gt;(opt =&gt; opt.UseSqlServer(Configuration[&#34;ConnectionString&#34;])); services.AddCap(x =&gt; { x.UseEntityFramework&lt;ProductContext&gt;().UseRabbitMQ(option =&gt; { option.HostName = &#34;192.168.31.191&#34;; option.UserName = &#34;guest&#34;; option.Password = &#34;guest&#34;; }); }); }Order.Api# OrdersController.cs# 增加下单接口：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="前言# 上一篇中已经完成了 Ocelot &#43; Consul 的搭建，这篇简单说一下事件总线（EventBus)。
+事件总线# 什么是事件总线？
+事件总线是对观察者（发布-订阅）模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到解耦的目的
+为什么要使用事件总线？
+以当前项目举例，假设有一个订单服务，一个产品服务。客户端有一个下单功能，下单时调用订单服务的下单接口，下单接口需要调用产品服务的减库存接口，这涉及到服务与服务之间的调用。服务之间调用可以选择 RestAPI 或者效率更高的 gRPC。可能这两者各有各的使用场景，但是它们都存在服务之间的耦合问题，或者难以做到异步调用 假设下单调用订单服务，订单服务需要调用产品服务，产品服务又要调用物流服务，物流服务再去调用xx服务等等，如果每个服务处理时间需要2s，不使用异步处理的话，响应时间可想而知。如果使用EventBus的话，那么订单服务只需要向EventBus发一个“下单事件”就可以了。产品服务会订阅“下单事件”，当产品服务收到下单事件时，自己去减库存。这样就避免了两个服务之间直接调用的耦合性，并且真正做到了异步调用 既然涉及到多个服务之间的异步调用，那么就不得不提分布式事务。分布式事务并不是微服务独有的问题，而是所有的分布式系统都会存在的问题。关于分布式事务，可以查一下 “CAP原则” 和 “BASE理论” 了解更多。如今分布式系统更多时候会追求事务的最终一致性。
+下面使用开源框架 CAP来演示 EventBus 的基本使用。之所以使用 CAP 是因为它既能解决分布式系统的最终一致性，同时又是一个 EventBus，它具备EventBus 的所有功能。点击了解更多。
+CAP# 目前 CAP 支持使用 RabbitMQ ，Kafka，Azure Service Bus 等进行底层之间的消息发送，不需要具备这些消息队列的使用经验就可以轻松的集成到项目中。CAP 目前支持使用 Sql Server，MySql，PostgreSql，MongoDB 数据库的项目。这里选择：消息组件使用 RabbitMq，数据库存储使用 SqlServer。
+Nuget 安装 :
+Microsoft.EntityFrameworkCore Microsoft.EntityFrameworkCore.Tools Microsoft.EntityFrameworkCore.SqlServer DotNetCore.CAP DotNetCore.CAP.RabbitMQ DotNetCore.CAP.SqlServerProduct.Api# 新增 Product.Api 作为产品服务，代码结构与 Order.Api 结构类似：
+ProductsController.cs# 增加减库存接口：
+using DotNetCore.CAP; using Microsoft.AspNetCore.Mvc; using Microsoft.EntityFrameworkCore; using Microsoft.Extensions.Configuration; using Newtonsoft.Json; using Product.Api.Models; using System; using System.Threading.Tasks; namespace Product.Api.Controller { [Route(&#34;[Controller]&#34;)] [ApiController] public class ProductsController : ControllerBase { private readonly IConfiguration configuration; private readonly ICapPublisher capBus; private readonly ProductContext context; public ProductsController(IConfiguration configuration, ICapPublisher capBus, ProductContext context) { this.configuration = configuration; this.capBus = capBus; this.context = context; } [HttpGet] public IActionResult Index() { string result = $&#34;产品服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&#34;ConsulSetting:ServicePort&#34;]}&#34;; return Ok(result); } /// &lt;summary&gt; /// 减库存 订阅下单事件 /// &lt;/summary&gt; /// &lt;param name=&#34;message&#34;&gt;&lt;/param&gt; /// &lt;returns&gt;&lt;/returns&gt; [NonAction] [CapSubscribe(&#34;order.services.createorder&#34;)] public async Task ReduceStock(CreateOrderMessageDto message) { Console.WriteLine(&#34;message:&#34; &#43; JsonConvert.SerializeObject(message)); var product = await context.Products.FirstOrDefaultAsync(p =&gt; p.ID == message.ProductID); product.Stock -= message.Count; await context.SaveChangesAsync(); } } }CreateOrderMessageDto.cs# namespace Product.Api.Models { /// &lt;summary&gt; /// 下单事件消息 /// &lt;/summary&gt; public class CreateOrderMessageDto { /// &lt;summary&gt; /// 产品ID /// &lt;/summary&gt; public int ProductID { get; set; } /// &lt;summary&gt; /// 购买数量 /// &lt;/summary&gt; public int Count { get; set; } } }Product.cs# using System.ComponentModel.DataAnnotations; using System.ComponentModel.DataAnnotations.Schema; namespace Product.Api.Models { public class Product { [Key] public int ID { get; set; } /// &lt;summary&gt; /// 产品名称 /// &lt;/summary&gt; [Required] [Column(TypeName = &#34;VARCHAR(16)&#34;)] public string Name { get; set; } /// &lt;summary&gt; /// 库存 /// &lt;/summary&gt; [Required] public int Stock { get; set; } } }ProductContext.cs# using Microsoft.EntityFrameworkCore; namespace Product.Api { public class ProductContext : DbContext { public ProductContext(DbContextOptions&lt;ProductContext&gt; options) : base(options) { } public DbSet&lt;Models.Product&gt; Products { get; set; } protected override void OnModelCreating(ModelBuilder modelBuilder) { //初始化种子数据 modelBuilder.Entity&lt;Models.Product&gt;().HasData(new Models.Product { ID = 1, Name = &#34;ThinkPad&#34;, Stock = 100 }, new Models.Product { ID = 2, Name = &#34;Mac&#34;, Stock = 100 }); } } }appsettings.json# { &#34;Logging&#34;: { &#34;LogLevel&#34;: { &#34;Default&#34;: &#34;Information&#34;, &#34;Microsoft&#34;: &#34;Warning&#34;, &#34;Microsoft.Hosting.Lifetime&#34;: &#34;Information&#34; } }, &#34;AllowedHosts&#34;: &#34;*&#34;, &#34;ConsulSetting&#34;: { &#34;ServiceName&#34;: &#34;product.service&#34;, &#34;ServiceIP&#34;: &#34;192.168.31.191&#34;, &#34;ServiceHealthCheck&#34;: &#34;/healthcheck&#34;, &#34;ConsulAddress&#34;: &#34;http://192.168.31.191:8500&#34; }, &#34;ConnectionString&#34;: &#34;Server=192.168.31.210;Database=Microservice.Sample.Product;user id=sa;password=wpl19950815;MultipleActiveResultSets=true&#34; }Startup.cs# public void ConfigureServices(IServiceCollection services) { services.AddControllers(); services.AddDbContext&lt;ProductContext&gt;(opt =&gt; opt.UseSqlServer(Configuration[&#34;ConnectionString&#34;])); services.AddCap(x =&gt; { x.UseEntityFramework&lt;ProductContext&gt;().UseRabbitMQ(option =&gt; { option.HostName = &#34;192.168.31.191&#34;; option.UserName = &#34;guest&#34;; option.Password = &#34;guest&#34;; }); }); }Order.Api# OrdersController.cs# 增加下单接口：">
+  <meta itemprop="wordCount" content="1074">
+
+<title>1.4微服务入门之事件总线 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.4微服务入门之事件总线</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#productscontrollercs">ProductsController.cs</a></li>
+    <li><a href="#createordermessagedtocs">CreateOrderMessageDto.cs</a></li>
+    <li><a href="#productcs">Product.cs</a></li>
+    <li><a href="#productcontextcs">ProductContext.cs</a></li>
+    <li><a href="#appsettingsjson">appsettings.json</a></li>
+    <li><a href="#startupcs">Startup.cs</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#orderscontrollercs">OrdersController.cs</a></li>
+    <li><a href="#createordermessagedtocs-1">CreateOrderMessageDto.cs</a></li>
+    <li><a href="#ordercs">Order.cs</a></li>
+    <li><a href="#ordercontextcs">OrderContext.cs</a></li>
+    <li><a href="#appsettingsjson-1">appsettings.json</a></li>
+    <li><a href="#startupcs-1">Startup.cs</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.4微服务入门之事件总线
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇中已经完成了 Ocelot + Consul 的搭建，这篇简单说一下事件总线（<code>EventBus</code>)。</p>
+<!-- more -->
+<h1 id="事件总线">事件总线<a class="anchor" href="#%e4%ba%8b%e4%bb%b6%e6%80%bb%e7%ba%bf">#</a></h1>
+<p>什么是事件总线？</p>
+<blockquote class='book-hint '>
+<p>事件总线是对观察者（发布-订阅）模式的一种实现。它是一种集中式事件处理机制，允许不同的组件之间进行彼此通信而又不需要相互依赖，达到解耦的目的</p>
+</blockquote><p>为什么要使用事件总线？</p>
+<blockquote class='book-hint '>
+<ol>
+<li>以当前项目举例，假设有一个订单服务，一个产品服务。客户端有一个下单功能，下单时调用订单服务的下单接口，下单接口需要调用产品服务的减库存接口，这涉及到服务与服务之间的调用。服务之间调用可以选择 <code>RestAPI</code> 或者效率更高的 <code>gRPC</code>。可能这两者各有各的使用场景，但是它们都存在服务之间的耦合问题，或者难以做到异步调用</li>
+<li>假设下单调用订单服务，订单服务需要调用产品服务，产品服务又要调用物流服务，物流服务再去调用xx服务等等，如果每个服务处理时间需要2s，不使用异步处理的话，响应时间可想而知。如果使用EventBus的话，那么订单服务只需要向EventBus发一个“下单事件”就可以了。产品服务会订阅“下单事件”，当产品服务收到下单事件时，自己去减库存。这样就避免了两个服务之间直接调用的耦合性，并且真正做到了异步调用</li>
+</ol>
+</blockquote><p>既然涉及到多个服务之间的异步调用，那么就不得不提分布式事务。分布式事务并不是微服务独有的问题，而是所有的分布式系统都会存在的问题。关于分布式事务，可以查一下 “CAP原则” 和 “BASE理论” 了解更多。如今分布式系统更多时候会追求事务的最终一致性。</p>
+<p>下面使用开源框架 <code>CAP</code>来演示 <code>EventBus</code> 的基本使用。之所以使用 <code>CAP</code> 是因为它既能解决分布式系统的最终一致性，同时又是一个 <code>EventBus</code>，它具备<code>EventBus</code> 的所有功能。<a href="https://www.cnblogs.com/savorboard/p/cap.html">点击了解更多</a>。</p>
+<h1 id="cap">CAP<a class="anchor" href="#cap">#</a></h1>
+<p>目前 CAP 支持使用 <code>RabbitMQ</code> ，<code>Kafka</code>，<code>Azure Service Bus</code> 等进行底层之间的消息发送，不需要具备这些消息队列的使用经验就可以轻松的集成到项目中。CAP 目前支持使用 <code>Sql Server</code>，<code>MySql</code>，<code>PostgreSql</code>，<code>MongoDB</code> 数据库的项目。这里选择：消息组件使用 <code>RabbitMq</code>，数据库存储使用 <code>SqlServer</code>。</p>
+<p><code>Nuget</code> 安装 :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Microsoft.EntityFrameworkCore
+</span></span><span style="display:flex;"><span>Microsoft.EntityFrameworkCore.Tools
+</span></span><span style="display:flex;"><span>Microsoft.EntityFrameworkCore.SqlServer
+</span></span><span style="display:flex;"><span>DotNetCore.CAP
+</span></span><span style="display:flex;"><span>DotNetCore.CAP.RabbitMQ
+</span></span><span style="display:flex;"><span>DotNetCore.CAP.SqlServer</span></span></code></pre></div><h1 id="productapi">Product.Api<a class="anchor" href="#productapi">#</a></h1>
+<p>新增 <code>Product.Api</code> 作为产品服务，代码结构与 <code>Order.Api</code> 结构类似：</p>
+<p><img src="/images/2021-09-19-01-07-00.png" alt="" /></p>
+<h2 id="productscontrollercs">ProductsController.cs<a class="anchor" href="#productscontrollercs">#</a></h2>
+<p>增加减库存接口：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> DotNetCore.CAP;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Mvc;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.EntityFrameworkCore;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.Configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Newtonsoft.Json;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Product.Api.Models;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading.Tasks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Product.Api.Controller
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;[Controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">    [ApiController]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductsController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration configuration;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICapPublisher capBus;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ProductContext context;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> ProductsController(IConfiguration configuration, ICapPublisher capBus, ProductContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.configuration = configuration;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.capBus = capBus;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.context = context;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [HttpGet]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> IActionResult Index()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> result = <span style="color:#e6db74">$&#34;产品服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&#34;</span>ConsulSetting:ServicePort<span style="color:#e6db74">&#34;]}&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(result);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 减库存 订阅下单事件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;message&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [NonAction]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [CapSubscribe(&#34;order.services.createorder&#34;)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task ReduceStock(CreateOrderMessageDto message)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;message:&#34;</span> + JsonConvert.SerializeObject(message));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> product = <span style="color:#66d9ef">await</span> context.Products.FirstOrDefaultAsync(p =&gt; p.ID == message.ProductID);
+</span></span><span style="display:flex;"><span>            product.Stock -= message.Count;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> context.SaveChangesAsync();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="createordermessagedtocs">CreateOrderMessageDto.cs<a class="anchor" href="#createordermessagedtocs">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Product.Api.Models
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 下单事件消息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CreateOrderMessageDto</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 产品ID</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ProductID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 购买数量</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Count { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="productcs">Product.cs<a class="anchor" href="#productcs">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ComponentModel.DataAnnotations;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ComponentModel.DataAnnotations.Schema;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Product.Api.Models
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Product</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Key]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 产品名称</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Required]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Column(TypeName = &#34;VARCHAR(16)&#34;)]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 库存</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Required]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Stock { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="productcontextcs">ProductContext.cs<a class="anchor" href="#productcontextcs">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.EntityFrameworkCore;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Product.Api
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductContext</span> : DbContext
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> ProductContext(DbContextOptions&lt;ProductContext&gt; options)
+</span></span><span style="display:flex;"><span>           : <span style="color:#66d9ef">base</span>(options)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> DbSet&lt;Models.Product&gt; Products { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> OnModelCreating(ModelBuilder modelBuilder)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//初始化种子数据</span>
+</span></span><span style="display:flex;"><span>            modelBuilder.Entity&lt;Models.Product&gt;().HasData(<span style="color:#66d9ef">new</span> Models.Product
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                ID = <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                Name = <span style="color:#e6db74">&#34;ThinkPad&#34;</span>,
+</span></span><span style="display:flex;"><span>                Stock = <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> Models.Product
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                ID = <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>                Name = <span style="color:#e6db74">&#34;Mac&#34;</span>,
+</span></span><span style="display:flex;"><span>                Stock = <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="appsettingsjson">appsettings.json<a class="anchor" href="#appsettingsjson">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Logging&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;LogLevel&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Default&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft&#34;</span>: <span style="color:#e6db74">&#34;Warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft.Hosting.Lifetime&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;AllowedHosts&#34;</span>: <span style="color:#e6db74">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ConsulSetting&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;product.service&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceIP&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceHealthCheck&#34;</span>: <span style="color:#e6db74">&#34;/healthcheck&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ConsulAddress&#34;</span>: <span style="color:#e6db74">&#34;http://192.168.31.191:8500&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ConnectionString&#34;</span>: <span style="color:#e6db74">&#34;Server=192.168.31.210;Database=Microservice.Sample.Product;user id=sa;password=wpl19950815;MultipleActiveResultSets=true&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="startupcs">Startup.cs<a class="anchor" href="#startupcs">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">public</span> <span style="color:#f92672">void</span> <span style="color:#f92672">ConfigureServices</span><span style="color:#f92672">(</span><span style="color:#f92672">IServiceCollection</span> <span style="color:#f92672">services</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">services.AddControllers()</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">services.AddDbContext&lt;ProductContext&gt;(opt</span> <span style="color:#960050;background-color:#1e0010">=&gt;</span> <span style="color:#960050;background-color:#1e0010">opt.UseSqlServer(Configuration[&#34;ConnectionString&#34;]))</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">services.AddCap(x</span> <span style="color:#960050;background-color:#1e0010">=&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#960050;background-color:#1e0010">x.UseEntityFramework&lt;ProductContext&gt;().UseRabbitMQ(option</span> <span style="color:#960050;background-color:#1e0010">=&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">option.HostName</span> <span style="color:#960050;background-color:#1e0010">=</span> <span style="color:#960050;background-color:#1e0010">&#34;192.168.31.191&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">option.UserName</span> <span style="color:#960050;background-color:#1e0010">=</span> <span style="color:#960050;background-color:#1e0010">&#34;guest&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">option.Password</span> <span style="color:#960050;background-color:#1e0010">=</span> <span style="color:#960050;background-color:#1e0010">&#34;guest&#34;</span>;
+</span></span><span style="display:flex;"><span>        }<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">}</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">}</span></span></span></code></pre></div><h1 id="orderapi">Order.Api<a class="anchor" href="#orderapi">#</a></h1>
+<h2 id="orderscontrollercs">OrdersController.cs<a class="anchor" href="#orderscontrollercs">#</a></h2>
+<p>增加下单接口：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> DotNetCore.CAP;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.AspNetCore.Mvc;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.Extensions.Configuration;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Order.Api.Models;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading.Tasks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Order.Api.Controller
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;[Controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#a6e22e">    [ApiController]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrdersController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IConfiguration configuration;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICapPublisher capBus;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> OrderContext context;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> OrdersController(IConfiguration configuration, ICapPublisher capBus, OrderContext context)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.configuration = configuration;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.capBus = capBus;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.context = context;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [HttpGet]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> IActionResult Index()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> result = <span style="color:#e6db74">$&#34;订单服务：{DateTime.Now:yyyy-MM-dd HH:mm:ss},-{Request.HttpContext.Connection.LocalIpAddress}:{configuration[&#34;</span>ConsulSetting:ServicePort<span style="color:#e6db74">&#34;]}&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(result);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 创建订单</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;order&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Route(&#34;Create&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [HttpPost]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; CreateOrder(Models.Order order)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> trans = context.Database.BeginTransaction(capBus, autoCommit: <span style="color:#66d9ef">true</span>))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                order.CreateTime = DateTime.Now;
+</span></span><span style="display:flex;"><span>                context.Orders.Add(order);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">await</span> context.SaveChangesAsync() &gt; <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (result)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 发布下单事件</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">await</span> capBus.PublishAsync(<span style="color:#e6db74">&#34;order.services.createorder&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> CreateOrderMessageDto() { Count = order.Count, ProductID = order.ProductID });
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> BadRequest();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="createordermessagedtocs-1">CreateOrderMessageDto.cs<a class="anchor" href="#createordermessagedtocs-1">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Order.Api.Models
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 下单事件消息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CreateOrderMessageDto</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 产品ID</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ProductID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 购买数量</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Count { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="ordercs">Order.cs<a class="anchor" href="#ordercs">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.ComponentModel.DataAnnotations;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Order.Api.Models
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Order</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Key]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 下单时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Required]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> DateTime CreateTime { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 产品ID</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Required]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ProductID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 购买数量</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Required]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Count { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="ordercontextcs">OrderContext.cs<a class="anchor" href="#ordercontextcs">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Microsoft.EntityFrameworkCore;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Order.Api
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OrderContext</span> : DbContext
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> OrderContext(DbContextOptions&lt;OrderContext&gt; options)
+</span></span><span style="display:flex;"><span>           : <span style="color:#66d9ef">base</span>(options)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> DbSet&lt;Models.Order&gt; Orders { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> OnModelCreating(ModelBuilder modelBuilder)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="appsettingsjson-1">appsettings.json<a class="anchor" href="#appsettingsjson-1">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Logging&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;LogLevel&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Default&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft&#34;</span>: <span style="color:#e6db74">&#34;Warning&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Microsoft.Hosting.Lifetime&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;AllowedHosts&#34;</span>: <span style="color:#e6db74">&#34;*&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ConsulSetting&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceIP&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceHealthCheck&#34;</span>: <span style="color:#e6db74">&#34;/healthcheck&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ConsulAddress&#34;</span>: <span style="color:#e6db74">&#34;http://192.168.31.191:8500&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ConnectionString&#34;</span>: <span style="color:#e6db74">&#34;Server=192.168.31.210;Database=Microservice.Sample.Order;user id=sa;password=wpl19950815;MultipleActiveResultSets=true&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="startupcs-1">Startup.cs<a class="anchor" href="#startupcs-1">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     services.AddControllers();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     services.AddDbContext&lt;OrderContext&gt;(opt =&gt; opt.UseSqlServer(Configuration[<span style="color:#e6db74">&#34;ConnectionString&#34;</span>]));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     services.AddCap(x =&gt;
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         x.UseEntityFramework&lt;OrderContext&gt;().UseRabbitMQ(option =&gt;
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             option.HostName = <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>;
+</span></span><span style="display:flex;"><span>             option.UserName = <span style="color:#e6db74">&#34;guest&#34;</span>;
+</span></span><span style="display:flex;"><span>             option.Password = <span style="color:#e6db74">&#34;guest&#34;</span>;
+</span></span><span style="display:flex;"><span>         });
+</span></span><span style="display:flex;"><span>     });
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><p><img src="/images/2021-09-19-01-20-20.png" alt="" /></p>
+<p>以上就是产品服务的新增以及订单服务的部分代码调整，功能很简单：各自添加自己的数据库表，订单服务增加下单接口，下单接口会发出“下单事件”。产品服务增加减库存接口，减库存接口会订阅“下单事件”。然后客户端调用下单接口下单时，产品服务会减去相应的库存。关于EF数据库迁移之类的基本使用不做介绍。</p>
+<h1 id="重新构建镜像">重新构建镜像<a class="anchor" href="#%e9%87%8d%e6%96%b0%e6%9e%84%e5%bb%ba%e9%95%9c%e5%83%8f">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 dotnetcore_src<span style="color:#f92672">]</span><span style="color:#75715e"># cd order.api.release/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker build -t order.api .</span>
+</span></span><span style="display:flex;"><span>Sending build context to Docker daemon  16.05MB
+</span></span><span style="display:flex;"><span>Step 1/4 : FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+</span></span><span style="display:flex;"><span> ---&gt; a2be3e478ffa
+</span></span><span style="display:flex;"><span>Step 2/4 : WORKDIR /app
+</span></span><span style="display:flex;"><span> ---&gt; Using cache
+</span></span><span style="display:flex;"><span> ---&gt; 9f551bd1698a
+</span></span><span style="display:flex;"><span>Step 3/4 : COPY . /app
+</span></span><span style="display:flex;"><span> ---&gt; e19ab440e8a5
+</span></span><span style="display:flex;"><span>Step 4/4 : ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;Order.Api.dll&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> ---&gt; Running in 3d1e4110f02e
+</span></span><span style="display:flex;"><span>Removing intermediate container 3d1e4110f02e
+</span></span><span style="display:flex;"><span> ---&gt; 06322a6c6e83
+</span></span><span style="display:flex;"><span>Successfully built 06322a6c6e83
+</span></span><span style="display:flex;"><span>Successfully tagged order.api:latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 order.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># cd ../product.api.release/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 product.api.release<span style="color:#f92672">]</span><span style="color:#75715e"># docker build -t product.api .</span>
+</span></span><span style="display:flex;"><span>Sending build context to Docker daemon  16.38MB
+</span></span><span style="display:flex;"><span>Step 1/4 : FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+</span></span><span style="display:flex;"><span> ---&gt; a2be3e478ffa
+</span></span><span style="display:flex;"><span>Step 2/4 : WORKDIR /app
+</span></span><span style="display:flex;"><span> ---&gt; Using cache
+</span></span><span style="display:flex;"><span> ---&gt; 9f551bd1698a
+</span></span><span style="display:flex;"><span>Step 3/4 : COPY . /app
+</span></span><span style="display:flex;"><span> ---&gt; 6f6d08e02d78
+</span></span><span style="display:flex;"><span>Step 4/4 : ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;dotnet&#34;</span>, <span style="color:#e6db74">&#34;Product.Api.dll&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> ---&gt; Running in 7616a505741e
+</span></span><span style="display:flex;"><span>Removing intermediate container 7616a505741e
+</span></span><span style="display:flex;"><span> ---&gt; 6be08521c6fe
+</span></span><span style="display:flex;"><span>Successfully built 6be08521c6fe
+</span></span><span style="display:flex;"><span>Successfully tagged product.api:latest</span></span></code></pre></div><p>运行订单服务，产品服务：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d --name order.api -p 80:80 order.api  --ConsulSetting:ServicePort<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;80&#34;</span>
+</span></span><span style="display:flex;"><span>docker run -d --name order.api1 -p 81:80 order.api --ConsulSetting:ServicePort<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;81&#34;</span>
+</span></span><span style="display:flex;"><span>docker run -d --name order.api2 -p 82:80 order.api --ConsulSetting:ServicePort<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;82&#34;</span>
+</span></span><span style="display:flex;"><span>docker run -d --name product.api -p 85:80 product.api --ConsulSetting:ServicePort<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;85&#34;</span>
+</span></span><span style="display:flex;"><span>docker run -d --name product.api1 -p 86:80 product.api --ConsulSetting:ServicePort<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;86&#34;</span>
+</span></span><span style="display:flex;"><span>docker run -d --name product.api2 -p 87:80 product.api --ConsulSetting:ServicePort<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;87&#34;</span></span></span></code></pre></div><p><img src="/images/2021-09-19-01-51-19.png" alt="" /></p>
+<p><code>ocelot.json</code> 增加路由配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Routes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 路由规则匹配
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders/{url}&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders/{url}&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 增加Post请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [ <span style="color:#e6db74">&#34;Get&#34;</span>, <span style="color:#e6db74">&#34;Post&#34;</span> ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;FileCacheOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TtlSeconds&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Region&#34;</span>: <span style="color:#e6db74">&#34;regionname&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 限流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ClientWhitelist&#34;</span>: [ <span style="color:#e6db74">&#34;SuperClient&#34;</span> ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;EnableRateLimiting&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Period&#34;</span>: <span style="color:#e6db74">&#34;2s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;PeriodTimespan&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Limit&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 超时熔断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;QoSOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ExceptionsAllowedBeforeBreaking&#34;</span>: <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;DurationOfBreak&#34;</span>: <span style="color:#ae81ff">10000</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TimeoutValue&#34;</span>: <span style="color:#ae81ff">5000</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/products&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/products&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [ <span style="color:#e6db74">&#34;Get&#34;</span> ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;product.service&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;FileCacheOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TtlSeconds&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Region&#34;</span>: <span style="color:#e6db74">&#34;regionname&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 限流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ClientWhitelist&#34;</span>: [ <span style="color:#e6db74">&#34;SuperClient&#34;</span> ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;EnableRateLimiting&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Period&#34;</span>: <span style="color:#e6db74">&#34;2s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;PeriodTimespan&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Limit&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 超时熔断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;QoSOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ExceptionsAllowedBeforeBreaking&#34;</span>: <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;DurationOfBreak&#34;</span>: <span style="color:#ae81ff">10000</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TimeoutValue&#34;</span>: <span style="color:#ae81ff">5000</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;GlobalConfiguration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BaseUrl&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceDiscoveryProvider&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Scheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">8500</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Consul&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DisableRateLimitHeaders&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;QuotaExceededMessage&#34;</span>: <span style="color:#e6db74">&#34;too many requests...&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;HttpStatusCode&#34;</span>: <span style="color:#ae81ff">999</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ClientIdHeader&#34;</span>: <span style="color:#e6db74">&#34;Test&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>至此整个环境就有点复杂了。要确保 SqlServer，RabbitMQ，Consul，服务实例、Gateway都正常运行：</p>
+<p><img src="/images/2021-09-19-02-13-24.png" alt="" /></p>
+<p><img src="/images/2021-09-19-02-00-46.png" alt="" /></p>
+<p><img src="/images/2021-09-19-02-01-06.png" alt="" /></p>
+<p><code>cap.published</code> 表和 <code>cap.received</code> 表由 <code>CAP</code> 自动生成，内部使用本地消息表+MQ来实现异步确保。</p>
+<h1 id="测试">测试<a class="anchor" href="#%e6%b5%8b%e8%af%95">#</a></h1>
+<p>使用Postman作为客户端调用下单接口（5000是Ocelot网关端口）：</p>
+<p><img src="/images/2021-09-19-02-19-58.png" alt="" /></p>
+<p>订单库：
+<img src="/images/2021-09-19-02-30-39.png" alt="" /></p>
+<p>产品库：
+<img src="/images/2021-09-19-02-30-59.png" alt="" /></p>
+<p>至此虽然功能很简单，但是实现了服务的解耦，异步调用，和最终一致性。要注意的是：</p>
+<ol>
+<li>这里的事务是指：订单持久化到数据库/和下单事件保存到 <code>cap.published</code>表（保存到 <code>cap.published</code> 表理论上代表消息正常发送到MQ），要么一同成功，要么一同失败。如果这个事务成功，那么就可以认为这个业务流程是成功的</li>
+<li>产品服务的减库存是否成功那是产品服务的事，理论上也应该是成功的。因为消息已经确保发到了MQ，产品服务必然会收到消息。CAP也提供了失败重试，和失败回调机制，要理解 “CAP 是基于MQ加本地消息表来实现异步确保”</li>
+<li>如果下单成功但是库存不足导致减库存失败了怎么办，是否需要回滚订单表的数据？如果产生这种想法，说明还没有真正理解最终一致性的思想。首先下单前肯定会检查一下库存数量，既然允许下单那么必然是库存充足的。（高并发下保证不超卖是另一个问题这里不考虑）如果非要数据回滚也是能实现的，CAP的 <code>ICapPublisher.Publish</code> 方法提供一个<code>callbackName</code> 参数，当减库存时，可以触发这个回调。其本质也是通过发布订阅完成，但不推荐</li>
+<li>CAP无法保证消息不重复，实际使用中需要自己考虑一下实现消息的重复过滤和幂等</li>
+</ol>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.3微服务入门之网关</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="flex align-center">
+      <span>1.5微服务入门之 Docker Compose</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#productscontrollercs">ProductsController.cs</a></li>
+    <li><a href="#createordermessagedtocs">CreateOrderMessageDto.cs</a></li>
+    <li><a href="#productcs">Product.cs</a></li>
+    <li><a href="#productcontextcs">ProductContext.cs</a></li>
+    <li><a href="#appsettingsjson">appsettings.json</a></li>
+    <li><a href="#startupcs">Startup.cs</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#orderscontrollercs">OrdersController.cs</a></li>
+    <li><a href="#createordermessagedtocs-1">CreateOrderMessageDto.cs</a></li>
+    <li><a href="#ordercs">Order.cs</a></li>
+    <li><a href="#ordercontextcs">OrderContext.cs</a></li>
+    <li><a href="#appsettingsjson-1">appsettings.json</a></li>
+    <li><a href="#startupcs-1">Startup.cs</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

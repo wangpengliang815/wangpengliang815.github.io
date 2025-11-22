@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="系统级别# 描述 示例 备注 显示机器的处理器架构 arch 显示机器的处理器架构 uname -m 显示正在使用的内核版本 uname -r 显示硬件系统部件 - (SMBIOS / DMI) dmidecode -q 罗列一个磁盘的架构特性 hdparm -i /dev/hda 在磁盘上执行测试性读取操作 hdparm -tT /dev/sda 显示CPU info的信息 cat /proc/cpuinfo 显示中断 cat /proc/interrupts 校验内存使用 cat /proc/meminfo 显示哪些swap被使用 cat /proc/swaps 显示内核的版本 cat /proc/version 显示网络适配器及统计 cat /proc/net/dev 显示已加载的文件系统 cat /proc/mounts 罗列 PCI 设备 lspci -tv 显示 USB 设备 lsusb -tv 显示系统日期 date 显示2007年的日历表 cal 2007 设置日期和时间 - 月日时分年.秒 date 041217002007.00 将时间修改保存到 BIOS clock -w 关闭系统 shutdown -h now 关闭系统 telinit 0 取消按预定时间关闭系统 shutdown -c 重启 shutdown -r now 重启 reboot 注销 logout 目录相关# 描述 示例 备注 进入指定目录 cd /home 返回上一级目录 cd .. 返回上两级目录 cd ../.. 进入个人主目录 cd 进入上次操作所在目录 cd - 显示当前工作路径 pwd 查看目录中的文件 ls 查看目录中的文件 ls -F 显示文件和目录的详细信息 ls -l 显示隐藏文件 ls -a 显示包含数字的文件名和目录名 ls *[0-9]* 显示文件和目录由根目录开始的树形结构 tree yum install tree -y 创建目录 mkdir dir 创建多个目录 mkdir dir1 dir2 创建目录树 mkdir -p /tmp/dir1/dir2 删除文件 rm -f file1 删除目录 rmdir dir1 删除目录并同时删除内容 rm -rf dir1 同时删除多个目录及内容 rm -rf dir1 dir2 重命名/移动 目录 mv dir1 new_dir 复制文件 cp file1 file2 复制目录下的所有文件到当前工作目录 cp dir/* . 复制目录到当前工作目录 cp -a /tmp/dir1. 复制目录 cp -a dir1 dir2 创建一个指向文件或目录的软链接 ln -s file1 lnk1 创建一个指向文件或目录的物理链接 ln file1 lnk1 修改一个文件或目录的时间戳 - (YYMMDDhhmm) touch -t 0712250000 file1 网络相关# 描述 示例 备注 查看本机IP及网卡信息 ip addr 重启网络 service network restart 防火墙添加端口例外 firewall-cmd --add-port=8080/tcp --permanent 重新加载防火墙 firewall-cmd --reload 启动防火墙，也可以使用 service firewalld start systemctl start firewalld.service 停止防火墙，也可以使用 service firewalld stop systemctl stop firewalld.service 启用防火墙 systemctl enable firewalld.service 重启防火墙 service firewalld restart 查看端口列表，也可以使用 firewall-cmd --list-all firewall-cmd --permanent --list-port 查看防火墙状态 firewall-cmd --state ">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="系统级别# 描述 示例 备注 显示机器的处理器架构 arch 显示机器的处理器架构 uname -m 显示正在使用的内核版本 uname -r 显示硬件系统部件 - (SMBIOS / DMI) dmidecode -q 罗列一个磁盘的架构特性 hdparm -i /dev/hda 在磁盘上执行测试性读取操作 hdparm -tT /dev/sda 显示CPU info的信息 cat /proc/cpuinfo 显示中断 cat /proc/interrupts 校验内存使用 cat /proc/meminfo 显示哪些swap被使用 cat /proc/swaps 显示内核的版本 cat /proc/version 显示网络适配器及统计 cat /proc/net/dev 显示已加载的文件系统 cat /proc/mounts 罗列 PCI 设备 lspci -tv 显示 USB 设备 lsusb -tv 显示系统日期 date 显示2007年的日历表 cal 2007 设置日期和时间 - 月日时分年.秒 date 041217002007.00 将时间修改保存到 BIOS clock -w 关闭系统 shutdown -h now 关闭系统 telinit 0 取消按预定时间关闭系统 shutdown -c 重启 shutdown -r now 重启 reboot 注销 logout 目录相关# 描述 示例 备注 进入指定目录 cd /home 返回上一级目录 cd .. 返回上两级目录 cd ../.. 进入个人主目录 cd 进入上次操作所在目录 cd - 显示当前工作路径 pwd 查看目录中的文件 ls 查看目录中的文件 ls -F 显示文件和目录的详细信息 ls -l 显示隐藏文件 ls -a 显示包含数字的文件名和目录名 ls *[0-9]* 显示文件和目录由根目录开始的树形结构 tree yum install tree -y 创建目录 mkdir dir 创建多个目录 mkdir dir1 dir2 创建目录树 mkdir -p /tmp/dir1/dir2 删除文件 rm -f file1 删除目录 rmdir dir1 删除目录并同时删除内容 rm -rf dir1 同时删除多个目录及内容 rm -rf dir1 dir2 重命名/移动 目录 mv dir1 new_dir 复制文件 cp file1 file2 复制目录下的所有文件到当前工作目录 cp dir/* . 复制目录到当前工作目录 cp -a /tmp/dir1. 复制目录 cp -a dir1 dir2 创建一个指向文件或目录的软链接 ln -s file1 lnk1 创建一个指向文件或目录的物理链接 ln file1 lnk1 修改一个文件或目录的时间戳 - (YYMMDDhhmm) touch -t 0712250000 file1 网络相关# 描述 示例 备注 查看本机IP及网卡信息 ip addr 重启网络 service network restart 防火墙添加端口例外 firewall-cmd --add-port=8080/tcp --permanent 重新加载防火墙 firewall-cmd --reload 启动防火墙，也可以使用 service firewalld start systemctl start firewalld.service 停止防火墙，也可以使用 service firewalld stop systemctl stop firewalld.service 启用防火墙 systemctl enable firewalld.service 重启防火墙 service firewalld restart 查看端口列表，也可以使用 firewall-cmd --list-all firewall-cmd --permanent --list-port 查看防火墙状态 firewall-cmd --state">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="系统级别# 描述 示例 备注 显示机器的处理器架构 arch 显示机器的处理器架构 uname -m 显示正在使用的内核版本 uname -r 显示硬件系统部件 - (SMBIOS / DMI) dmidecode -q 罗列一个磁盘的架构特性 hdparm -i /dev/hda 在磁盘上执行测试性读取操作 hdparm -tT /dev/sda 显示CPU info的信息 cat /proc/cpuinfo 显示中断 cat /proc/interrupts 校验内存使用 cat /proc/meminfo 显示哪些swap被使用 cat /proc/swaps 显示内核的版本 cat /proc/version 显示网络适配器及统计 cat /proc/net/dev 显示已加载的文件系统 cat /proc/mounts 罗列 PCI 设备 lspci -tv 显示 USB 设备 lsusb -tv 显示系统日期 date 显示2007年的日历表 cal 2007 设置日期和时间 - 月日时分年.秒 date 041217002007.00 将时间修改保存到 BIOS clock -w 关闭系统 shutdown -h now 关闭系统 telinit 0 取消按预定时间关闭系统 shutdown -c 重启 shutdown -r now 重启 reboot 注销 logout 目录相关# 描述 示例 备注 进入指定目录 cd /home 返回上一级目录 cd .. 返回上两级目录 cd ../.. 进入个人主目录 cd 进入上次操作所在目录 cd - 显示当前工作路径 pwd 查看目录中的文件 ls 查看目录中的文件 ls -F 显示文件和目录的详细信息 ls -l 显示隐藏文件 ls -a 显示包含数字的文件名和目录名 ls *[0-9]* 显示文件和目录由根目录开始的树形结构 tree yum install tree -y 创建目录 mkdir dir 创建多个目录 mkdir dir1 dir2 创建目录树 mkdir -p /tmp/dir1/dir2 删除文件 rm -f file1 删除目录 rmdir dir1 删除目录并同时删除内容 rm -rf dir1 同时删除多个目录及内容 rm -rf dir1 dir2 重命名/移动 目录 mv dir1 new_dir 复制文件 cp file1 file2 复制目录下的所有文件到当前工作目录 cp dir/* . 复制目录到当前工作目录 cp -a /tmp/dir1. 复制目录 cp -a dir1 dir2 创建一个指向文件或目录的软链接 ln -s file1 lnk1 创建一个指向文件或目录的物理链接 ln file1 lnk1 修改一个文件或目录的时间戳 - (YYMMDDhhmm) touch -t 0712250000 file1 网络相关# 描述 示例 备注 查看本机IP及网卡信息 ip addr 重启网络 service network restart 防火墙添加端口例外 firewall-cmd --add-port=8080/tcp --permanent 重新加载防火墙 firewall-cmd --reload 启动防火墙，也可以使用 service firewalld start systemctl start firewalld.service 停止防火墙，也可以使用 service firewalld stop systemctl stop firewalld.service 启用防火墙 systemctl enable firewalld.service 重启防火墙 service firewalld restart 查看端口列表，也可以使用 firewall-cmd --list-all firewall-cmd --permanent --list-port 查看防火墙状态 firewall-cmd --state">
+  <meta itemprop="wordCount" content="245">
+
+<title>Linux常用命令 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Linux常用命令</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Linux常用命令
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="系统级别">系统级别<a class="anchor" href="#%e7%b3%bb%e7%bb%9f%e7%ba%a7%e5%88%ab">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th>描述</th>
+          <th>示例</th>
+          <th>备注</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>显示机器的处理器架构</td>
+          <td><code>arch</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示机器的处理器架构</td>
+          <td><code>uname -m</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示正在使用的内核版本</td>
+          <td><code>uname -r</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示硬件系统部件 - (SMBIOS / DMI)</td>
+          <td><code>dmidecode -q</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>罗列一个磁盘的架构特性</td>
+          <td><code>hdparm -i /dev/hda</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>在磁盘上执行测试性读取操作</td>
+          <td><code>hdparm -tT /dev/sda</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示CPU info的信息</td>
+          <td><code>cat /proc/cpuinfo</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示中断</td>
+          <td><code>cat /proc/interrupts</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>校验内存使用</td>
+          <td><code>cat /proc/meminfo</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示哪些swap被使用</td>
+          <td><code>cat /proc/swaps</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示内核的版本</td>
+          <td><code>cat /proc/version</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示网络适配器及统计</td>
+          <td><code>cat /proc/net/dev</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示已加载的文件系统</td>
+          <td><code>cat /proc/mounts</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>罗列 PCI 设备</td>
+          <td><code>lspci -tv</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示 USB 设备</td>
+          <td><code>lsusb -tv</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示系统日期</td>
+          <td><code>date</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示2007年的日历表</td>
+          <td><code>cal 2007</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>设置日期和时间 - 月日时分年.秒</td>
+          <td><code>date 041217002007.00</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>将时间修改保存到 BIOS</td>
+          <td><code>clock -w</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>关闭系统</td>
+          <td><code>shutdown -h now</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>关闭系统</td>
+          <td><code>telinit 0</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>取消按预定时间关闭系统</td>
+          <td><code>shutdown -c</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>重启</td>
+          <td><code>shutdown -r now</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>重启</td>
+          <td><code>reboot</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>注销</td>
+          <td><code>logout</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="目录相关">目录相关<a class="anchor" href="#%e7%9b%ae%e5%bd%95%e7%9b%b8%e5%85%b3">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th>描述</th>
+          <th>示例</th>
+          <th>备注</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>进入指定目录</td>
+          <td><code>cd /home</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>返回上一级目录</td>
+          <td><code>cd ..</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>返回上两级目录</td>
+          <td><code>cd ../..</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>进入个人主目录</td>
+          <td><code>cd</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>进入上次操作所在目录</td>
+          <td><code>cd -</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示当前工作路径</td>
+          <td><code>pwd</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>查看目录中的文件</td>
+          <td><code>ls</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>查看目录中的文件</td>
+          <td><code>ls -F</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示文件和目录的详细信息</td>
+          <td><code>ls -l</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示隐藏文件</td>
+          <td><code>ls -a</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示包含数字的文件名和目录名</td>
+          <td><code>ls *[0-9]*</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>显示文件和目录由根目录开始的树形结构</td>
+          <td><code>tree</code></td>
+          <td><code>yum install tree -y</code></td>
+      </tr>
+      <tr>
+          <td>创建目录</td>
+          <td><code>mkdir dir</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>创建多个目录</td>
+          <td><code>mkdir dir1 dir2</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>创建目录树</td>
+          <td><code>mkdir -p /tmp/dir1/dir2</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>删除文件</td>
+          <td><code>rm -f file1</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>删除目录</td>
+          <td><code>rmdir dir1</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>删除目录并同时删除内容</td>
+          <td><code>rm -rf dir1</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>同时删除多个目录及内容</td>
+          <td><code>rm -rf dir1 dir2</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>重命名/移动 目录</td>
+          <td><code>mv dir1 new_dir</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>复制文件</td>
+          <td><code>cp file1 file2</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>复制目录下的所有文件到当前工作目录</td>
+          <td><code>cp dir/* .</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>复制目录到当前工作目录</td>
+          <td><code>cp -a /tmp/dir1.</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>复制目录</td>
+          <td><code>cp -a dir1 dir2</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>创建一个指向文件或目录的软链接</td>
+          <td><code>ln -s file1 lnk1</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>创建一个指向文件或目录的物理链接</td>
+          <td><code>ln file1 lnk1</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>修改一个文件或目录的时间戳 - (YYMMDDhhmm)</td>
+          <td><code>touch -t 0712250000 file1</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="网络相关">网络相关<a class="anchor" href="#%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th>描述</th>
+          <th>示例</th>
+          <th>备注</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>查看本机IP及网卡信息</td>
+          <td><code>ip addr</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>重启网络</td>
+          <td><code>service network restart</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>防火墙添加端口例外</td>
+          <td><code>firewall-cmd --add-port=8080/tcp --permanent</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>重新加载防火墙</td>
+          <td><code>firewall-cmd --reload</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>启动防火墙，也可以使用 <code>service firewalld start</code></td>
+          <td><code>systemctl start firewalld.service</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>停止防火墙，也可以使用 <code>service firewalld stop</code></td>
+          <td><code>systemctl stop firewalld.service</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>启用防火墙</td>
+          <td><code>systemctl enable firewalld.service</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>重启防火墙</td>
+          <td><code>service firewalld restart</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>查看端口列表，也可以使用 <code>firewall-cmd --list-all</code></td>
+          <td><code>firewall-cmd --permanent --list-port</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>查看防火墙状态</td>
+          <td><code>firewall-cmd --state</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Centos网络配置</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="flex align-center">
+      <span>Linux目录说明</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
