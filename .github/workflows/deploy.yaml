@@ -1,16 +1,13 @@
-name: Deploy Hugo site to GitHub Pages
+name: Deploy Hugo to GitHub Pages
 
 on:
-  # 在目标为默认分支的推送上运行
   push:
-    branches:
-      - master  # 👈 每次推送到 main 分支就会自动部署
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  # 构建作业
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,12 +19,13 @@ jobs:
         with:
           hugo-version: 'latest'
           extended: true
-
-      - name: Build Hugo site
+          
+      - name: Build
         run: hugo --minify
-
-      - name: Deploy to GitHub Pages 🚀
+        
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+          force_orphan: true
