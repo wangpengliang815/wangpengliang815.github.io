@@ -1,6 +1,6 @@
 # ✨ Hello
 
-使用Hugo构建的Blog，旨在将学习过程中的知识点记录下来以便查阅.   [☘️ Github](https://github.com/wangpengliang815)
+使用Hugo构建的Blog，旨在将学习过程中的知识点记录下来以便查阅.  [☘️ Github](https://github.com/wangpengliang815)
 
 # 🏷️ Technology Stack
 
