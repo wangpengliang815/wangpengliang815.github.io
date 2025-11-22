@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="概念# Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境，基于 Go 语言实现。
+安装# Docker Machine 可以在多种操作系统平台上安装，包括 Linux、MacOS，以及 Windows。
+MacOS、Windows# Docker for Mac、Docker for Windows 自带 docker-machine 二进制包，安装之后即可使用。 查看版本信息
+docker-machine -v docker-machine version 0.13.0, build 9ba6da9Linux# 在 Linux 上的安装十分简单，从 官方 GitHub Release 处直接下载编译好的二进制文件即可。 在 Linux 64 位系统上直接下载对应的二进制包
+curl -L https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-`uname -s`-`uname -m` &gt;/tmp/docker-machine &amp;&amp; chmod &#43;x /tmp/docker-machine &amp;&amp; sudo cp /tmp/docker-machine /usr/local/bin/docker-machine这里因为下载太慢选择翻墙直接下载 releases 版本后copy到主机 /usr/local/bin/ 目录中。然后执行
+chmod &#43;x /usr/local/bin/docker-machine完成后，查看版本信息
+[root@wangpengliang bin]# docker-machine -v docker-machine version 0.16.2, build bd45ab13使用# Docker Machine 支持多种后端驱动，包括虚拟机、本地主机和云平台等。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/docker/2.0dockermachine/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="概念# Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境，基于 Go 语言实现。
+安装# Docker Machine 可以在多种操作系统平台上安装，包括 Linux、MacOS，以及 Windows。
+MacOS、Windows# Docker for Mac、Docker for Windows 自带 docker-machine 二进制包，安装之后即可使用。 查看版本信息
+docker-machine -v docker-machine version 0.13.0, build 9ba6da9Linux# 在 Linux 上的安装十分简单，从 官方 GitHub Release 处直接下载编译好的二进制文件即可。 在 Linux 64 位系统上直接下载对应的二进制包
+curl -L https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-`uname -s`-`uname -m` &gt;/tmp/docker-machine &amp;&amp; chmod &#43;x /tmp/docker-machine &amp;&amp; sudo cp /tmp/docker-machine /usr/local/bin/docker-machine这里因为下载太慢选择翻墙直接下载 releases 版本后copy到主机 /usr/local/bin/ 目录中。然后执行
+chmod &#43;x /usr/local/bin/docker-machine完成后，查看版本信息
+[root@wangpengliang bin]# docker-machine -v docker-machine version 0.16.2, build bd45ab13使用# Docker Machine 支持多种后端驱动，包括虚拟机、本地主机和云平台等。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="概念# Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境，基于 Go 语言实现。
+安装# Docker Machine 可以在多种操作系统平台上安装，包括 Linux、MacOS，以及 Windows。
+MacOS、Windows# Docker for Mac、Docker for Windows 自带 docker-machine 二进制包，安装之后即可使用。 查看版本信息
+docker-machine -v docker-machine version 0.13.0, build 9ba6da9Linux# 在 Linux 上的安装十分简单，从 官方 GitHub Release 处直接下载编译好的二进制文件即可。 在 Linux 64 位系统上直接下载对应的二进制包
+curl -L https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-`uname -s`-`uname -m` &gt;/tmp/docker-machine &amp;&amp; chmod &#43;x /tmp/docker-machine &amp;&amp; sudo cp /tmp/docker-machine /usr/local/bin/docker-machine这里因为下载太慢选择翻墙直接下载 releases 版本后copy到主机 /usr/local/bin/ 目录中。然后执行
+chmod &#43;x /usr/local/bin/docker-machine完成后，查看版本信息
+[root@wangpengliang bin]# docker-machine -v docker-machine version 0.16.2, build bd45ab13使用# Docker Machine 支持多种后端驱动，包括虚拟机、本地主机和云平台等。">
+  <meta itemprop="wordCount" content="331">
+
+<title>2.0 Docker Machine | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/docker/2.0dockermachine/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>2.0 Docker Machine</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#macoswindows">MacOS、Windows</a></li>
+    <li><a href="#linux">Linux</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#virtualbox-驱动">Virtualbox 驱动</a></li>
+    <li><a href="#macos-xhyve-驱动">macOS xhyve 驱动</a></li>
+    <li><a href="#windows-10">Windows 10</a></li>
+    <li><a href="#使用介绍">使用介绍</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    2.0 Docker Machine
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="概念">概念<a class="anchor" href="#%e6%a6%82%e5%bf%b5">#</a></h1>
+<p>Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境，基于 Go 语言实现。</p>
+<h1 id="安装">安装<a class="anchor" href="#%e5%ae%89%e8%a3%85">#</a></h1>
+<p>Docker Machine 可以在多种操作系统平台上安装，包括 Linux、MacOS，以及 Windows。</p>
+<h2 id="macoswindows">MacOS、Windows<a class="anchor" href="#macoswindows">#</a></h2>
+<p>Docker for Mac、Docker for Windows 自带 <code>docker-machine</code> 二进制包，安装之后即可使用。
+<strong>查看版本信息</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine -v
+</span></span><span style="display:flex;"><span>docker-machine version 0.13.0, build 9ba6da9</span></span></code></pre></div><h2 id="linux">Linux<a class="anchor" href="#linux">#</a></h2>
+<p>在 Linux 上的安装十分简单，从 <a href="https://github.com/docker/machine/releases">官方 GitHub Release</a> 处直接下载编译好的二进制文件即可。
+在 Linux 64 位系统上直接下载对应的二进制包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -L https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-<span style="color:#e6db74">`</span>uname -s<span style="color:#e6db74">`</span>-<span style="color:#e6db74">`</span>uname -m<span style="color:#e6db74">`</span> &gt;/tmp/docker-machine <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>    chmod +x /tmp/docker-machine <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine</span></span></code></pre></div><p>这里因为下载太慢选择翻墙直接下载 <code>releases</code> 版本后copy到主机 <code>/usr/local/bin/</code> 目录中。然后执行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chmod +x /usr/local/bin/docker-machine</span></span></code></pre></div><p>完成后，查看版本信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># docker-machine -v</span>
+</span></span><span style="display:flex;"><span>docker-machine version 0.16.2, build bd45ab13</span></span></code></pre></div><h1 id="使用">使用<a class="anchor" href="#%e4%bd%bf%e7%94%a8">#</a></h1>
+<p>Docker Machine 支持多种后端驱动，包括虚拟机、本地主机和云平台等。</p>
+<h2 id="virtualbox-驱动">Virtualbox 驱动<a class="anchor" href="#virtualbox-%e9%a9%b1%e5%8a%a8">#</a></h2>
+<p>使用 <code>virtualbox</code> 类型的驱动，创建一台 Docker 主机，命名为 test。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine create -d virtualbox test</span></span></code></pre></div><p>也可以在创建时加上如下参数，来配置主机或者主机上的 Docker</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>--engine-opt dns<span style="color:#f92672">=</span>114.114.114.114 配置 Docker 的默认 DNS
+</span></span><span style="display:flex;"><span>--engine-registry-mirror https://registry.docker-cn.com 配置 Docker 的仓库镜像
+</span></span><span style="display:flex;"><span>--virtualbox-memory <span style="color:#ae81ff">2048</span> 配置主机内存
+</span></span><span style="display:flex;"><span>--virtualbox-cpu-count <span style="color:#ae81ff">2</span> 配置主机 CPU</span></span></code></pre></div><p>更多参数使用 <code>docker-machine create --driver virtualbox --help</code> 命令查看</p>
+<h2 id="macos-xhyve-驱动">macOS xhyve 驱动<a class="anchor" href="#macos-xhyve-%e9%a9%b1%e5%8a%a8">#</a></h2>
+<p><code>xhyve</code> 驱动 GitHub: <a href="https://github.com/zchee/docker-machine-driver-xhyve">https://github.com/zchee/docker-machine-driver-xhyve</a>，<a href="https://github.com/mist64/xhyve"><code>xhyve</code></a> 是 macOS 上轻量化的虚拟引擎，使用其创建的 Docker Machine 较 <code>VirtualBox</code> 驱动创建的运行效率要高。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>brew install docker-machine-driver-xhyve
+</span></span><span style="display:flex;"><span>docker-machine create <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -d xhyve <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      <span style="color:#75715e"># --xhyve-boot2docker-url ~/.docker/machine/cache/boot2docker.iso \</span>
+</span></span><span style="display:flex;"><span>      --engine-opt dns<span style="color:#f92672">=</span>114.114.114.114 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --engine-registry-mirror https://registry.docker-cn.com <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --xhyve-memory-size <span style="color:#ae81ff">2048</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --xhyve-rawdisk <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --xhyve-cpu-count <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      xhyve</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：非首次创建时建议加上 <code>--xhyve-boot2docker-url ~/.docker/machine/cache/boot2docker.iso</code> 参数，避免每次创建时都从 GitHub 下载 ISO 镜像。</p>
+</blockquote><p>更多参数请使用 <code>docker-machine create --driver xhyve --help</code> 命令查看。</p>
+<h2 id="windows-10">Windows 10<a class="anchor" href="#windows-10">#</a></h2>
+<p>Windows 10 安装 Docker for Windows 之后不能再安装 VirtualBox，也就不能使用 <code>virtualbox</code> 驱动来创建 Docker Machine，可以选择使用 <code>hyperv</code> 驱动。</p>
+<blockquote class='book-hint '>
+<p>注意，必须事先在 <code>Hyper-V</code> 管理器中新建一个 <strong>外部虚拟交换机</strong> 执行下面的命令时，使用 <code>--hyperv-virtual-switch=MY_SWITCH</code> 指定虚拟交换机名称</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine create --driver hyperv --hyperv-virtual-switch<span style="color:#f92672">=</span>MY_SWITCH vm</span></span></code></pre></div><p>更多参数使用 <code>docker-machine create --driver hyperv --help</code> 命令查看。</p>
+<h2 id="使用介绍">使用介绍<a class="anchor" href="#%e4%bd%bf%e7%94%a8%e4%bb%8b%e7%bb%8d">#</a></h2>
+<p>创建好主机之后，查看主机</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine ls
+</span></span><span style="display:flex;"><span>NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER       ERRORS
+</span></span><span style="display:flex;"><span>test      -        virtualbox   Running   tcp://192.168.99.187:2376           v17.10.0-ce</span></span></code></pre></div><p>创建主机成功后，可以通过 <code>env</code> 命令来让后续操作对象都是目标主机</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine env test</span></span></code></pre></div><p>后续根据提示在命令行输入命令之后就可以操作 test 主机。也可以通过 <code>SSH</code> 登录到主机</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine ssh test
+</span></span><span style="display:flex;"><span>docker@test:~$ docker --version
+</span></span><span style="display:flex;"><span>Docker version 17.10.0-ce, build f4ffd25</span></span></code></pre></div><p>连接到主机之后就可以在其上使用 Docker 了</p>
+<h1 id="官方支持驱动">官方支持驱动<a class="anchor" href="#%e5%ae%98%e6%96%b9%e6%94%af%e6%8c%81%e9%a9%b1%e5%8a%a8">#</a></h1>
+<p>通过 <code>-d</code> 选项可以选择支持的驱动类型。</p>
+<ul>
+<li>amazonec2</li>
+<li>azure</li>
+<li>digitalocean</li>
+<li>exoscale</li>
+<li>generic</li>
+<li>google</li>
+<li>hyperv</li>
+<li>none</li>
+<li>openstack</li>
+<li>rackspace</li>
+<li>softlayer</li>
+<li>virtualbox</li>
+<li>vmwarevcloudair</li>
+<li>vmwarefusion</li>
+<li>vmwarevsphere</li>
+</ul>
+<h1 id="第三方驱动">第三方驱动<a class="anchor" href="#%e7%ac%ac%e4%b8%89%e6%96%b9%e9%a9%b1%e5%8a%a8">#</a></h1>
+<p>参考：<a href="https://github.com/docker/docker.github.io/blob/master/machine/AVAILABLE_DRIVER_PLUGINS.md">第三方驱动列表</a></p>
+<h1 id="操作命令">操作命令<a class="anchor" href="#%e6%93%8d%e4%bd%9c%e5%91%bd%e4%bb%a4">#</a></h1>
+<ul>
+<li><code>active</code> 查看活跃的 Docker 主机</li>
+<li><code>config</code> 输出连接的配置信息</li>
+<li><code>create</code> 创建一个 Docker 主机</li>
+<li><code>env</code> 显示连接到某个主机需要的环境变量</li>
+<li><code>inspect</code> 输出主机更多信息</li>
+<li><code>ip</code> 获取主机地址</li>
+<li><code>kill</code> 停止某个主机</li>
+<li><code>ls</code> 列出所有管理的主机</li>
+<li><code>provision</code> 重新设置一个已存在的主机</li>
+<li><code>regenerate-certs</code> 为某个主机重新生成 TLS 认证信息</li>
+<li><code>restart</code> 重启主机</li>
+<li><code>rm</code> 删除某台主机</li>
+<li><code>ssh</code> SSH 到主机上执行命令</li>
+<li><code>scp</code> 在主机之间复制文件</li>
+<li><code>mount</code> 挂载主机目录到本地</li>
+<li><code>start</code> 启动一个主机</li>
+<li><code>status</code> 查看主机状态</li>
+<li><code>stop</code> 停止一个主机</li>
+<li><code>upgrade</code> 更新主机 Docker 版本为最新</li>
+<li><code>url</code> 获取主机的 URL</li>
+<li><code>version</code> 输出 docker-machine 版本信息</li>
+<li><code>help</code> 输出帮助信息</li>
+</ul>
+<p>每个命令，又带有不同的参数，可以通过<code>$ docker-machine COMMAND --help</code>查看具体用法</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/docker/1.9dockercompose/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.9 Docker Compose</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/docker/2.1dockerswarm/" class="flex align-center">
+      <span>2.1 Docker Swarm</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#macoswindows">MacOS、Windows</a></li>
+    <li><a href="#linux">Linux</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#virtualbox-驱动">Virtualbox 驱动</a></li>
+    <li><a href="#macos-xhyve-驱动">macOS xhyve 驱动</a></li>
+    <li><a href="#windows-10">Windows 10</a></li>
+    <li><a href="#使用介绍">使用介绍</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

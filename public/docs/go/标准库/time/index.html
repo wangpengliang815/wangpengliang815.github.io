@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="学习Go语言内置的 time 包的基本用法，time 包提供了时间的显示和计算用的函数。日历计算采用公历。
+时间可分为时间点与时间段，Go 提供了以下两种基础类型
+时间点 Time 时间段 Duration 除此之外也提供了以下类型，做一些特定的业务
+时区 Location Ticker 定时器 Timer 时间点# 一般使用的所有与时间相关的业务都是基于点而延伸的，两点组成一个时间段，大多数应用也都是围绕这些点与面去做逻辑处理。
+初始化# go 针对不同的参数类型提供了以下初始化的方式
+// func Now() Time fmt.Println(time.Now()) // func Parse(layout, value string) (Time, error) time.Parse(&#34;2016-01-02 15:04:05&#34;, &#34;2018-04-23 12:24:51&#34;) // func ParseInLocation(layout, value string, loc *Location) (Time, error) (layout已带时区时可直接用Parse) time.ParseInLocation(&#34;2006-01-02 15:04:05&#34;, &#34;2017-05-11 14:06:06&#34;, time.Local) // func Unix(sec int64, nsec int64) Time time.Unix(1e9, 0) // func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time time.Date(2018, 1, 2, 15, 30, 10, 0, time.Local) // func (t Time) In(loc *Location) Time 当前时间对应指定时区的时间 loc, _ := time.LoadLocation(&#34;America/Los_Angeles&#34;) fmt.Println(time.Now().In(loc)) // func (t Time) Local() Time获取到时间点之后为了满足业务和设计，需要转换成需要的格式，也就是所谓的时间格式化。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="学习Go语言内置的 time 包的基本用法，time 包提供了时间的显示和计算用的函数。日历计算采用公历。
+时间可分为时间点与时间段，Go 提供了以下两种基础类型
+时间点 Time 时间段 Duration 除此之外也提供了以下类型，做一些特定的业务
+时区 Location Ticker 定时器 Timer 时间点# 一般使用的所有与时间相关的业务都是基于点而延伸的，两点组成一个时间段，大多数应用也都是围绕这些点与面去做逻辑处理。
+初始化# go 针对不同的参数类型提供了以下初始化的方式
+// func Now() Time fmt.Println(time.Now()) // func Parse(layout, value string) (Time, error) time.Parse(&#34;2016-01-02 15:04:05&#34;, &#34;2018-04-23 12:24:51&#34;) // func ParseInLocation(layout, value string, loc *Location) (Time, error) (layout已带时区时可直接用Parse) time.ParseInLocation(&#34;2006-01-02 15:04:05&#34;, &#34;2017-05-11 14:06:06&#34;, time.Local) // func Unix(sec int64, nsec int64) Time time.Unix(1e9, 0) // func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time time.Date(2018, 1, 2, 15, 30, 10, 0, time.Local) // func (t Time) In(loc *Location) Time 当前时间对应指定时区的时间 loc, _ := time.LoadLocation(&#34;America/Los_Angeles&#34;) fmt.Println(time.Now().In(loc)) // func (t Time) Local() Time获取到时间点之后为了满足业务和设计，需要转换成需要的格式，也就是所谓的时间格式化。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="学习Go语言内置的 time 包的基本用法，time 包提供了时间的显示和计算用的函数。日历计算采用公历。
+时间可分为时间点与时间段，Go 提供了以下两种基础类型
+时间点 Time 时间段 Duration 除此之外也提供了以下类型，做一些特定的业务
+时区 Location Ticker 定时器 Timer 时间点# 一般使用的所有与时间相关的业务都是基于点而延伸的，两点组成一个时间段，大多数应用也都是围绕这些点与面去做逻辑处理。
+初始化# go 针对不同的参数类型提供了以下初始化的方式
+// func Now() Time fmt.Println(time.Now()) // func Parse(layout, value string) (Time, error) time.Parse(&#34;2016-01-02 15:04:05&#34;, &#34;2018-04-23 12:24:51&#34;) // func ParseInLocation(layout, value string, loc *Location) (Time, error) (layout已带时区时可直接用Parse) time.ParseInLocation(&#34;2006-01-02 15:04:05&#34;, &#34;2017-05-11 14:06:06&#34;, time.Local) // func Unix(sec int64, nsec int64) Time time.Unix(1e9, 0) // func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time time.Date(2018, 1, 2, 15, 30, 10, 0, time.Local) // func (t Time) In(loc *Location) Time 当前时间对应指定时区的时间 loc, _ := time.LoadLocation(&#34;America/Los_Angeles&#34;) fmt.Println(time.Now().In(loc)) // func (t Time) Local() Time获取到时间点之后为了满足业务和设计，需要转换成需要的格式，也就是所谓的时间格式化。">
+  <meta itemprop="wordCount" content="705">
+
+<title>Time | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle" checked />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="active">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Time</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#初始化">初始化</a></li>
+    <li><a href="#格式化">格式化</a>
+      <ul>
+        <li><a href="#to-string">to string</a></li>
+        <li><a href="#to-time-stamp">to time stamp</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#add">Add</a></li>
+    <li><a href="#sub">Sub</a></li>
+    <li><a href="#equal">Equal</a></li>
+    <li><a href="#before">Before</a></li>
+    <li><a href="#after">After</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>学习Go语言内置的 <code>time</code> 包的基本用法，<code>time</code> 包提供了时间的显示和计算用的函数。日历计算采用公历。</p>
+<p>时间可分为时间点与时间段，Go 提供了以下两种基础类型</p>
+<ul>
+<li>时间点 <code>Time</code></li>
+<li>时间段 <code>Duration</code></li>
+</ul>
+<p>除此之外也提供了以下类型，做一些特定的业务</p>
+<ul>
+<li>时区 <code>Location</code></li>
+<li><code>Ticker</code></li>
+<li>定时器 <code>Timer</code></li>
+</ul>
+<h1 id="时间点">时间点<a class="anchor" href="#%e6%97%b6%e9%97%b4%e7%82%b9">#</a></h1>
+<p>一般使用的所有与时间相关的业务都是基于点而延伸的，两点组成一个时间段，大多数应用也都是围绕这些点与面去做逻辑处理。</p>
+<h2 id="初始化">初始化<a class="anchor" href="#%e5%88%9d%e5%a7%8b%e5%8c%96">#</a></h2>
+<p>go 针对不同的参数类型提供了以下初始化的方式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#75715e">// func Now() Time</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// func Parse(layout, value string) (Time, error)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Parse</span>(<span style="color:#e6db74">&#34;2016-01-02 15:04:05&#34;</span>, <span style="color:#e6db74">&#34;2018-04-23 12:24:51&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// func ParseInLocation(layout, value string, loc *Location) (Time, error) (layout已带时区时可直接用Parse)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">ParseInLocation</span>(<span style="color:#e6db74">&#34;2006-01-02 15:04:05&#34;</span>, <span style="color:#e6db74">&#34;2017-05-11 14:06:06&#34;</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Local</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// func Unix(sec int64, nsec int64) Time</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Unix</span>(<span style="color:#ae81ff">1e9</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2018</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Local</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// func (t Time) In(loc *Location) Time 当前时间对应指定时区的时间</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">loc</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">LoadLocation</span>(<span style="color:#e6db74">&#34;America/Los_Angeles&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">In</span>(<span style="color:#a6e22e">loc</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// func (t Time) Local() Time</span></span></span></code></pre></div><p>获取到时间点之后为了满足业务和设计，需要转换成需要的格式，也就是所谓的时间格式化。</p>
+<h2 id="格式化">格式化<a class="anchor" href="#%e6%a0%bc%e5%bc%8f%e5%8c%96">#</a></h2>
+<h3 id="to-string">to string<a class="anchor" href="#to-string">#</a></h3>
+<p>格式化为字符串我们需要使用 time.Format 方法来转换成我们想要的格式</p>
+<pre><code>  fmt.Println(time.Now().Format(&quot;2006-01-02 15:04:05&quot;))  // 2018-04-24 10:11:20
+  fmt.Println(time.Now().Format(time.UnixDate))         // Tue Apr 24 09:59:02 CST 2018
+</code></pre>
+<p>Format 函数中可以指定你想使用的格式，同时 time 包中也给了一些我们常用的格式</p>
+<pre tabindex="0"><code>const (
+    ANSIC       = &#34;Mon Jan _2 15:04:05 2006&#34;
+    UnixDate    = &#34;Mon Jan _2 15:04:05 MST 2006&#34;
+    RubyDate    = &#34;Mon Jan 02 15:04:05 -0700 2006&#34;
+    RFC822      = &#34;02 Jan 06 15:04 MST&#34;
+    RFC822Z     = &#34;02 Jan 06 15:04 -0700&#34; // RFC822 with numeric zone
+    RFC850      = &#34;Monday, 02-Jan-06 15:04:05 MST&#34;
+    RFC1123     = &#34;Mon, 02 Jan 2006 15:04:05 MST&#34;
+    RFC1123Z    = &#34;Mon, 02 Jan 2006 15:04:05 -0700&#34; // RFC1123 with numeric zone
+    RFC3339     = &#34;2006-01-02T15:04:05Z07:00&#34;
+    RFC3339Nano = &#34;2006-01-02T15:04:05.999999999Z07:00&#34;
+    Kitchen     = &#34;3:04PM&#34;
+    // Handy time stamps.
+    Stamp      = &#34;Jan _2 15:04:05&#34;
+    StampMilli = &#34;Jan _2 15:04:05.000&#34;
+    StampMicro = &#34;Jan _2 15:04:05.000000&#34;
+    StampNano  = &#34;Jan _2 15:04:05.000000000&#34;
+)     </code></pre><p>注意: galang 中指定的特定时间格式为 &ldquo;2006-01-02 15:04:05 -0700 MST&rdquo;， 为了记忆方便，按照美式时间格式 月日时分秒年 外加时区 排列起来依次是 01/02 03:04:05PM ‘06 -0700，刚开始使用时需要注意。</p>
+<h3 id="to-time-stamp">to time stamp<a class="anchor" href="#to-time-stamp">#</a></h3>
+<p>​      func (t Time) Unix() int64
+​      func (t Time) UnixNano() int64</p>
+<pre><code>  fmt.Println(time.Now().Unix())
+
+  // 获取指定日期的时间戳
+  dt, _ := time.Parse(&quot;2016-01-02 15:04:05&quot;, &quot;2018-04-23 12:24:51&quot;)
+  fmt.Println(dt.Unix())
+
+  fmt.Println(time.Date(2018, 1,2,15,30,10,0, time.Local).Unix())
+</code></pre>
+<h3 id="其他">其他<a class="anchor" href="#%e5%85%b6%e4%bb%96">#</a></h3>
+<p>time 包还提供了一些常用的方法，基本覆盖了大多数业务，从方法名就能知道代表的含义就不一一说明了。</p>
+<pre><code>  func (t Time) Date() (year int, month Month, day int)
+  func (t Time) Clock() (hour, min, sec int)
+  func (t Time) Year() int
+  func (t Time) Month() Month
+  func (t Time) Day() int
+  func (t Time) Hour() int
+  func (t Time) Minute() int
+  func (t Time) Second() int
+  func (t Time) Nanosecond() int
+  func (t Time) YearDay() int
+  func (t Time) Weekday() Weekday
+  func (t Time) ISOWeek() (year, week int)
+  func (t Time) IsZero() bool
+  func (t Time) Local() Time
+  func (t Time) Location() *Location
+  func (t Time) Zone() (name string, offset int)
+  func (t Time) Unix() int64
+</code></pre>
+<h1 id="时间类型">时间类型<a class="anchor" href="#%e6%97%b6%e9%97%b4%e7%b1%bb%e5%9e%8b">#</a></h1>
+<p><code>time.Time</code> 类型表示时间。可以通过 <code>time.Now()</code> 函数获取当前的时间对象，然后获取时间对象的年月日时分秒等信息。</p>
+<p>示例代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getTimeNow</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">now</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>() <span style="color:#75715e">//获取当前时间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;current time:%v\n&#34;</span>, <span style="color:#a6e22e">now</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">year</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Year</span>()     <span style="color:#75715e">//年</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">month</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Month</span>()   <span style="color:#75715e">//月</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">day</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Day</span>()       <span style="color:#75715e">//日</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">hour</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Hour</span>()     <span style="color:#75715e">//小时</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">minute</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Minute</span>() <span style="color:#75715e">//分钟</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">second</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Second</span>() <span style="color:#75715e">//秒</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d-%02d-%02d %02d:%02d:%02d\n&#34;</span>, <span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">month</span>, <span style="color:#a6e22e">day</span>, <span style="color:#a6e22e">hour</span>, <span style="color:#a6e22e">minute</span>, <span style="color:#a6e22e">second</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="时间戳">时间戳<a class="anchor" href="#%e6%97%b6%e9%97%b4%e6%88%b3">#</a></h1>
+<p>时间戳是自 <code>1970年1月1日（08:00:00GMT）</code>至当前时间的总毫秒数。也被称为 <code>Unix时间戳</code>。</p>
+<p>示例代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 获取时间戳</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getUnix</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取时间戳</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">timestamp1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Unix</span>()     <span style="color:#75715e">//时间戳</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">timestamp2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>() <span style="color:#75715e">//纳秒时间戳</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;current timestamp1:%v\n&#34;</span>, <span style="color:#a6e22e">timestamp1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;current timestamp2:%v\n&#34;</span>, <span style="color:#a6e22e">timestamp2</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>使用 <code>time.Unix()</code> 函数可以将时间戳转为时间格式。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">unixConverTime</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 将时间戳转换为时间格式</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Unix</span>() <span style="color:#75715e">//时间戳</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;current timestamp1:%v\n&#34;</span>, <span style="color:#a6e22e">timestamp</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">timeObj</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Unix</span>(<span style="color:#a6e22e">timestamp</span>, <span style="color:#ae81ff">0</span>) <span style="color:#75715e">//将时间戳转为时间格式</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">timeObj</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">year</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Year</span>()     <span style="color:#75715e">//年</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">month</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Month</span>()   <span style="color:#75715e">//月</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">day</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Day</span>()       <span style="color:#75715e">//日</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">hour</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Hour</span>()     <span style="color:#75715e">//小时</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">minute</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Minute</span>() <span style="color:#75715e">//分钟</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">second</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Second</span>() <span style="color:#75715e">//秒</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d-%02d-%02d %02d:%02d:%02d\n&#34;</span>, <span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">month</span>, <span style="color:#a6e22e">day</span>, <span style="color:#a6e22e">hour</span>, <span style="color:#a6e22e">minute</span>, <span style="color:#a6e22e">second</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="时间间隔">时间间隔<a class="anchor" href="#%e6%97%b6%e9%97%b4%e9%97%b4%e9%9a%94">#</a></h1>
+<p><code>time.Duration</code> 是 <code>time</code> 包定义的一个类型，它代表两个时间点之间经过的时间，以纳秒为单位。<code>time.Duration</code> 表示一段时间间隔，可表示的最长时间段大约290年。</p>
+<p><code>time</code> 包中定义的时间间隔类型的常量如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Nanosecond</span>  <span style="color:#a6e22e">Duration</span> = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Microsecond</span>          = <span style="color:#ae81ff">1000</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">Nanosecond</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Millisecond</span>          = <span style="color:#ae81ff">1000</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">Microsecond</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Second</span>               = <span style="color:#ae81ff">1000</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">Millisecond</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Minute</span>               = <span style="color:#ae81ff">60</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">Second</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Hour</span>                 = <span style="color:#ae81ff">60</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">Minute</span>
+</span></span><span style="display:flex;"><span>)</span></span></code></pre></div><p>例如：<code>time.Duration</code> 表示1纳秒，<code>time.Second</code> 表示1秒。</p>
+<h1 id="时间操作">时间操作<a class="anchor" href="#%e6%97%b6%e9%97%b4%e6%93%8d%e4%bd%9c">#</a></h1>
+<h2 id="add">Add<a class="anchor" href="#add">#</a></h2>
+<p>求时间+n后的时间：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Duration</span>) <span style="color:#a6e22e">Time</span></span></span></code></pre></div><p>示例代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">timeAdd</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">now</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">value</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Hour</span>) <span style="color:#75715e">// 当前时间加1小时后的时间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">value</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="sub">Sub<a class="anchor" href="#sub">#</a></h2>
+<p>求两个时间之间的差值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">Sub</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">Duration</span></span></span></code></pre></div><p>示例代码如下：</p>
+<pre tabindex="0"><code>func timeSub() {
+	now := time.Now()
+	value := now.Sub(now.Add(time.Hour))
+	fmt.Println(value)
+}</code></pre><p>返回一个时间段 <code>t-u</code>。如果结果超出了 <code>Duration</code> 可以表示的最大值/最小值，将返回最大值/最小值。要获取时间点 <code>t-d</code>（d为Duration），可以使用 <code>t.Add(-d)</code>。</p>
+<h2 id="equal">Equal<a class="anchor" href="#equal">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">Equal</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Time</span>) <span style="color:#66d9ef">bool</span></span></span></code></pre></div><p>判断两个时间是否相同，会考虑时区的影响，因此不同时区标准的时间也可以正确比较。本方法和用 <code>t==u</code> 不同，这种方法还会比较地点和时区信息。</p>
+<h2 id="before">Before<a class="anchor" href="#before">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">Before</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Time</span>) <span style="color:#66d9ef">bool</span></span></span></code></pre></div><p>如果t代表的时间点在u之前，返回真；否则返回假。</p>
+<h2 id="after">After<a class="anchor" href="#after">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Time</span>) <span style="color:#a6e22e">After</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Time</span>) <span style="color:#66d9ef">bool</span></span></span></code></pre></div><p>如果t代表的时间点在u之后，返回真；否则返回假。</p>
+<p>定时器</p>
+<p>使用<code>time.Tick(时间间隔)</code>来设置定时器，定时器的本质上是一个通道（channel）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">tickDemo</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ticker</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tick</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>) <span style="color:#75715e">//定义一个1秒间隔的定时器</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">ticker</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)<span style="color:#75715e">//每秒都会执行的任务</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="时间格式化">时间格式化<a class="anchor" href="#%e6%97%b6%e9%97%b4%e6%a0%bc%e5%bc%8f%e5%8c%96">#</a></h1>
+<p>时间类型有一个自带的方法<code>Format</code>进行格式化，需要注意的是Go语言中格式化时间模板不是常见的<code>Y-m-d H:M:S</code>而是使用Go的诞生时间2006年1月2号15点04分（记忆口诀为2006 1 2 3 4）。也许这就是技术人员的浪漫吧。</p>
+<p>补充：如果想格式化为12小时方式，需指定<code>PM</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">formatDemo</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">now</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 格式化的模板为Go的出生时间2006年1月2号15点04分 Mon Jan</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 24小时制</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006-01-02 15:04:05.000 Mon Jan&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 12小时制</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006-01-02 03:04:05.000 PM Mon Jan&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006/01/02 15:04&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;15:04 2006/01/02&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">now</span>.<span style="color:#a6e22e">Format</span>(<span style="color:#e6db74">&#34;2006/01/02&#34;</span>))
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="解析字符串格式的时间">解析字符串格式的时间<a class="anchor" href="#%e8%a7%a3%e6%9e%90%e5%ad%97%e7%ac%a6%e4%b8%b2%e6%a0%bc%e5%bc%8f%e7%9a%84%e6%97%b6%e9%97%b4">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">now</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">now</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加载时区</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">loc</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">LoadLocation</span>(<span style="color:#e6db74">&#34;Asia/Shanghai&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 按照指定时区和指定格式解析字符串时间</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">timeObj</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">ParseInLocation</span>(<span style="color:#e6db74">&#34;2006/01/02 15:04:05&#34;</span>, <span style="color:#e6db74">&#34;2019/08/04 14:15:20&#34;</span>, <span style="color:#a6e22e">loc</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">timeObj</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">timeObj</span>.<span style="color:#a6e22e">Sub</span>(<span style="color:#a6e22e">now</span>))</span></span></code></pre></div><p>练习题：</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>Log</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="flex align-center">
+        <span>1.1微服务入门之项目搭建</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#初始化">初始化</a></li>
+    <li><a href="#格式化">格式化</a>
+      <ul>
+        <li><a href="#to-string">to string</a></li>
+        <li><a href="#to-time-stamp">to time stamp</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#add">Add</a></li>
+    <li><a href="#sub">Sub</a></li>
+    <li><a href="#equal">Equal</a></li>
+    <li><a href="#before">Before</a></li>
+    <li><a href="#after">After</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

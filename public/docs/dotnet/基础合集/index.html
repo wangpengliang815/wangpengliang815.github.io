@@ -1,0 +1,2435 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="C# 是面向对象的强类型高级语言，内置用于存储不同类型数据的内置数据类型。每种数据类型包含特定的取值范围，使用这些数据类型来表示在应用程序中存储的数据。数据类型进一步又被分为：
+值类型 Value types 引用类型 Reference types 指针类型 Pointer types 基础概念# 值类型# 值类型特点：变量直接存储其值，派生于 System.ValueType。值类型又细分为简单类型、枚举类型、结构类型、可以为 null 的值类型。
+简单类型：
+有符号的整型：sbyte、short、int、long 无符号的整型：byte、ushort、uint、ulong Unicode 字符：char IEEE 二进制浮点：float、double 高精度十进制浮点数：decimal 布尔：bool 引用类型# 引用类型特点：引用类型不直接存储其值，派生于 System.Object，它存储值的引用内存地址。多个变量指向一个内存位置时，如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。
+类类型描述：
+所有类型的最终基类：object Unicode 字符串：string 格式为：class C {…} 的用户定义类型 接口类型、数组类型、委托类型，有关数值类型的详细信息。参考：整型类型 / 浮点类型表
+变量# 编译器需要用某个初始值对变量进行初始化之后才能在操作中使用该变量。
+// 语法 &lt;datatype&gt;&lt;variablename&gt;=&lt;value&gt;; // 示例 string name = &#34;wang&#34;; // 同时声明多个 string name1,name2 = &#34;wang&#34;;注意：
+变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，默认值就是类型默认值 方法的局部变量必须在代码中显式初始化才能在语句中使用 在C#中实例化一个引用对象需要使用 new 关键字把该引用指向存储在堆上的一个对象 变量作用域# 变量作用域指：可以访问该变量的代码区域
+注意：
+只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内 局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内 在 for、 while 或类似语句中声明的局部变量存在于该循环体内 类型推断# 使用 var 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="C# 是面向对象的强类型高级语言，内置用于存储不同类型数据的内置数据类型。每种数据类型包含特定的取值范围，使用这些数据类型来表示在应用程序中存储的数据。数据类型进一步又被分为：
+值类型 Value types 引用类型 Reference types 指针类型 Pointer types 基础概念# 值类型# 值类型特点：变量直接存储其值，派生于 System.ValueType。值类型又细分为简单类型、枚举类型、结构类型、可以为 null 的值类型。
+简单类型：
+有符号的整型：sbyte、short、int、long 无符号的整型：byte、ushort、uint、ulong Unicode 字符：char IEEE 二进制浮点：float、double 高精度十进制浮点数：decimal 布尔：bool 引用类型# 引用类型特点：引用类型不直接存储其值，派生于 System.Object，它存储值的引用内存地址。多个变量指向一个内存位置时，如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。
+类类型描述：
+所有类型的最终基类：object Unicode 字符串：string 格式为：class C {…} 的用户定义类型 接口类型、数组类型、委托类型，有关数值类型的详细信息。参考：整型类型 / 浮点类型表
+变量# 编译器需要用某个初始值对变量进行初始化之后才能在操作中使用该变量。
+// 语法 &lt;datatype&gt;&lt;variablename&gt;=&lt;value&gt;; // 示例 string name = &#34;wang&#34;; // 同时声明多个 string name1,name2 = &#34;wang&#34;;注意：
+变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，默认值就是类型默认值 方法的局部变量必须在代码中显式初始化才能在语句中使用 在C#中实例化一个引用对象需要使用 new 关键字把该引用指向存储在堆上的一个对象 变量作用域# 变量作用域指：可以访问该变量的代码区域
+注意：
+只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内 局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内 在 for、 while 或类似语句中声明的局部变量存在于该循环体内 类型推断# 使用 var 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="C# 是面向对象的强类型高级语言，内置用于存储不同类型数据的内置数据类型。每种数据类型包含特定的取值范围，使用这些数据类型来表示在应用程序中存储的数据。数据类型进一步又被分为：
+值类型 Value types 引用类型 Reference types 指针类型 Pointer types 基础概念# 值类型# 值类型特点：变量直接存储其值，派生于 System.ValueType。值类型又细分为简单类型、枚举类型、结构类型、可以为 null 的值类型。
+简单类型：
+有符号的整型：sbyte、short、int、long 无符号的整型：byte、ushort、uint、ulong Unicode 字符：char IEEE 二进制浮点：float、double 高精度十进制浮点数：decimal 布尔：bool 引用类型# 引用类型特点：引用类型不直接存储其值，派生于 System.Object，它存储值的引用内存地址。多个变量指向一个内存位置时，如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。
+类类型描述：
+所有类型的最终基类：object Unicode 字符串：string 格式为：class C {…} 的用户定义类型 接口类型、数组类型、委托类型，有关数值类型的详细信息。参考：整型类型 / 浮点类型表
+变量# 编译器需要用某个初始值对变量进行初始化之后才能在操作中使用该变量。
+// 语法 &lt;datatype&gt;&lt;variablename&gt;=&lt;value&gt;; // 示例 string name = &#34;wang&#34;; // 同时声明多个 string name1,name2 = &#34;wang&#34;;注意：
+变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，默认值就是类型默认值 方法的局部变量必须在代码中显式初始化才能在语句中使用 在C#中实例化一个引用对象需要使用 new 关键字把该引用指向存储在堆上的一个对象 变量作用域# 变量作用域指：可以访问该变量的代码区域
+注意：
+只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内 局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内 在 for、 while 或类似语句中声明的局部变量存在于该循环体内 类型推断# 使用 var 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。">
+  <meta itemprop="wordCount" content="639">
+
+<title>基础合集 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle" checked />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="active">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>基础合集</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#值类型">值类型</a></li>
+    <li><a href="#引用类型">引用类型</a></li>
+    <li><a href="#变量">变量</a></li>
+    <li><a href="#变量作用域">变量作用域</a></li>
+    <li><a href="#类型推断">类型推断</a></li>
+    <li><a href="#常量">常量</a></li>
+    <li><a href="#只读字段">只读字段</a></li>
+    <li><a href="#常量和只读字段的区别">常量和只读字段的区别</a></li>
+    <li><a href="#值类型和引用类型空值">值类型和引用类型空值</a></li>
+    <li><a href="#可空类型">可空类型</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#隐式转换">隐式转换</a></li>
+    <li><a href="#显式转换">显式转换</a></li>
+    <li><a href="#通过方法进行转换">通过方法进行转换</a></li>
+    <li><a href="#自定义转换">自定义转换</a></li>
+    <li><a href="#使用-as-运算符转换">使用 as 运算符转换</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#装箱">装箱</a></li>
+    <li><a href="#拆箱">拆箱</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#三元运算符">三元运算符</a></li>
+    <li><a href="#可空类型和运算符">可空类型和运算符</a></li>
+    <li><a href="#空合并运算符">空合并运算符</a></li>
+    <li><a href="#checkedunchecked">checked/unchecked</a></li>
+    <li><a href="#is">is</a></li>
+    <li><a href="#as">as</a></li>
+    <li><a href="#sizeof">sizeof</a></li>
+    <li><a href="#typeof">typeof</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>C# 是面向对象的强类型高级语言，内置用于存储不同类型数据的内置数据类型。每种数据类型包含特定的取值范围，使用这些数据类型来表示在应用程序中存储的数据。数据类型进一步又被分为：</p>
+<ul>
+<li>值类型  <code>Value types</code></li>
+<li>引用类型 <code>Reference types</code></li>
+<li>指针类型 <code>Pointer types</code></li>
+</ul>
+<h1 id="基础概念">基础概念<a class="anchor" href="#%e5%9f%ba%e7%a1%80%e6%a6%82%e5%bf%b5">#</a></h1>
+<h2 id="值类型">值类型<a class="anchor" href="#%e5%80%bc%e7%b1%bb%e5%9e%8b">#</a></h2>
+<p>值类型特点：<strong>变量直接存储其值，派生于 <code>System.ValueType</code></strong>。值类型又细分为简单类型、枚举类型、结构类型、可以为 <code>null</code> 的值类型。</p>
+<p><strong>简单类型：</strong></p>
+<ul>
+<li>有符号的整型：<code>sbyte</code>、<code>short</code>、<code>int</code>、<code>long</code></li>
+<li>无符号的整型：<code>byte</code>、<code>ushort</code>、<code>uint</code>、<code>ulong</code></li>
+<li>Unicode 字符：<code>char</code></li>
+<li>IEEE 二进制浮点：<code>float</code>、<code>double</code></li>
+<li>高精度十进制浮点数：<code>decimal</code></li>
+<li>布尔：<code>bool</code></li>
+</ul>
+<h2 id="引用类型">引用类型<a class="anchor" href="#%e5%bc%95%e7%94%a8%e7%b1%bb%e5%9e%8b">#</a></h2>
+<p>引用类型特点：<strong>引用类型不直接存储其值，派生于 <code>System.Object</code></strong>，它存储值的引用内存地址。多个变量指向一个内存位置时，如果内存位置的数据是由一个变量改变的，其他变量会自动反映这种值的变化。</p>
+<p><strong>类类型描述</strong>：</p>
+<ul>
+<li>所有类型的最终基类：<code>object</code></li>
+<li>Unicode 字符串：<code>string</code></li>
+<li>格式为：<code>class C {…}</code> 的用户定义类型</li>
+</ul>
+<p>接口类型、数组类型、委托类型，有关数值类型的详细信息。参考：<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/integral-numeric-types">整型类型</a> / <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types">浮点类型表</a></p>
+<h2 id="变量">变量<a class="anchor" href="#%e5%8f%98%e9%87%8f">#</a></h2>
+<p>编译器需要用某个初始值对变量进行初始化之后才能在操作中使用该变量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 语法</span>
+</span></span><span style="display:flex;"><span>&lt;datatype&gt;&lt;variablename&gt;=&lt;<span style="color:#66d9ef">value</span>&gt;;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 示例</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> name = <span style="color:#e6db74">&#34;wang&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 同时声明多个</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> name1,name2 = <span style="color:#e6db74">&#34;wang&#34;</span>;</span></span></code></pre></div><p><strong>注意</strong>：</p>
+<ul>
+<li>变量是类或结构中的字段，如果没有显式初始化，创建这些变量时，默认值就是类型默认值</li>
+<li>方法的局部变量必须在代码中显式初始化才能在语句中使用</li>
+<li>在C#中实例化一个引用对象需要使用 <code>new</code> 关键字把该引用指向存储在堆上的一个对象</li>
+</ul>
+<h2 id="变量作用域">变量作用域<a class="anchor" href="#%e5%8f%98%e9%87%8f%e4%bd%9c%e7%94%a8%e5%9f%9f">#</a></h2>
+<p>变量作用域指：可以访问该变量的代码区域</p>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>只要类在某个作用域内，其字段(也称为成员变量)也在该作用域内</li>
+<li>局部变量存在于表示声明该变量的块语句或方法结束的右花括号之前的作用域内</li>
+<li>在 <code>for</code>、 <code>while</code> 或类似语句中声明的局部变量存在于该循环体内</li>
+</ul>
+<h2 id="类型推断">类型推断<a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e6%8e%a8%e6%96%ad">#</a></h2>
+<p>使用 <code>var</code> 类型预先不用知道变量的类型，编译器可以根据变量的初始化值“推断”变量类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> name =<span style="color:#e6db74">&#34;wang&#34;</span>;</span></span></code></pre></div><p><strong>注意</strong>：</p>
+<ul>
+<li>变量必须初始化，否则编译器就没有推断变量类型的依据</li>
+<li>初始化器不能为空</li>
+<li>初始化器必须放在表达式中</li>
+<li>不能把初始化器设置为一个对象，除非在初始化器中创建了一个新对象</li>
+</ul>
+<h2 id="常量">常量<a class="anchor" href="#%e5%b8%b8%e9%87%8f">#</a></h2>
+<p>常量指：其值在使用过程中不会发生变化的变量。在声明和初始化变量时，在变量的前面加上关键字 <code>const</code>，就可以把该变量指定为一个常量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> conntionName = <span style="color:#e6db74">&#34;testConntion&#34;</span>;</span></span></code></pre></div><p>常量具有如下特点：</p>
+<ul>
+<li>常量必须在声明时初始化。指定其值后就不能再改写</li>
+<li>常量的值必须能在编译时用于计算。因此不能用从一个变量中提取的值来初始化常量。如果需要这么做，应使用只读字段 <code>readonly</code></li>
+<li>常量总是静态的，但注意：不必(实际上，是不允许)在常量声明中包含修饰符</li>
+</ul>
+<p>使用常量的好处：</p>
+<ul>
+<li>常量使程序变得更易于阅读（使用易于读取理解的名称替代了较难读取的数字或字符串）</li>
+<li>常量使程序更易于修改</li>
+<li>常量更容易避免程序出现错误，如果在声明常量的位置以外将另一个值赋给常量，编译器就会报错</li>
+</ul>
+<h2 id="只读字段">只读字段<a class="anchor" href="#%e5%8f%aa%e8%af%bb%e5%ad%97%e6%ae%b5">#</a></h2>
+<p>常量的概念是包含不能修改的值的变量。但有时可能需要一些变量，其值不应改变，但在运行前其值是未知的。C#为这种情形提供了另一种类型的变量：只读字段。</p>
+<blockquote class='book-hint '>
+<p>readonly 关键字比 const 灵活，允许把一个字段设置为常量，但还需要执行一些计算，以确定它的初始值。其规则是：可以在构造函数中给只读字段赋值，但不能在其他地方赋值。只读字段可以是一个实例字段，而不是静态字段，类的每个实例可以有不同的值。与const 字段不同，如果要把只读字段设置为静态，就必须显式声明</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 实例只读字段</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">double</span> taxRate;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 静态字段字段</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">double</span> taxRate1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BasicsTest()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 只读字段可以在声明时赋值，也可以在构造函数中赋值</span>
+</span></span><span style="display:flex;"><span>    taxRate = <span style="color:#ae81ff">0.8</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> BasicsTest()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 静态只读字段在类的静态构造函数中赋值</span>
+</span></span><span style="display:flex;"><span>    taxRate1 = <span style="color:#ae81ff">0.9</span>;
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="常量和只读字段的区别">常量和只读字段的区别<a class="anchor" href="#%e5%b8%b8%e9%87%8f%e5%92%8c%e5%8f%aa%e8%af%bb%e5%ad%97%e6%ae%b5%e7%9a%84%e5%8c%ba%e5%88%ab">#</a></h2>
+<ol>
+<li>常量只能在声明语句中初始化，而且必须初始化，初始化之后在任何地方都不能改变。 <code>readonly</code> 字段既可以在声明时初始化，也可以在构造函数中改变它的值。（如果是 <strong>实例只读字段</strong> 可以在实例构造函数中改变它的值，如果是 <strong>静态只读字段</strong> 则可以在静态构造函数中改变它的值）</li>
+<li>常量的值必须在编译时决定，编译完成之后它的值就被替换为字面量。 <code>readonly</code> 字段的值可以在运行时决定，可以在不同的构造函数中设置不同的值</li>
+<li>常量总是像静态字段，在类的外部要通过 <strong>类名.常量名</strong> 的方式访问。<code>readonly</code> 字段既可以是静态字段，也可以是实例字段</li>
+<li>常量在内存中没有存储位置，而 <code>readonly</code> 字段在内存中有存储位置</li>
+</ol>
+<h2 id="值类型和引用类型空值">值类型和引用类型空值<a class="anchor" href="#%e5%80%bc%e7%b1%bb%e5%9e%8b%e5%92%8c%e5%bc%95%e7%94%a8%e7%b1%bb%e5%9e%8b%e7%a9%ba%e5%80%bc">#</a></h2>
+<p>默认情况下，引用类型在未初始化时具有空值。</p>
+<ul>
+<li>一个字符串变量(或引用类型数据类型的任何其他变量)，但没有赋值。这种情况下它具有空值，这意味着它不指向任何其他内存位置</li>
+<li>值类型变量不能为 <code>null </code>，因为它包含值而不是内存地址。所以必须在使用前为值类型变量分配值</li>
+</ul>
+<h2 id="可空类型">可空类型<a class="anchor" href="#%e5%8f%af%e7%a9%ba%e7%b1%bb%e5%9e%8b">#</a></h2>
+<p>C#2.0 为值类型引入了可空类型，允许为值类型变量赋值 <code>null</code> 或声明值类型变量而不为其赋值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int?</span> age = <span style="color:#66d9ef">null</span>;</span></span></code></pre></div><h1 id="类型转换">类型转换<a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e8%bd%ac%e6%8d%a2">#</a></h1>
+<p>C# 是一门强类型语言，对类型要求比较严格。但是在一定的条件下是可以相互转换的，如将 <code>int</code> 型数据转换成 <code>double</code> 型数据。C# 允许使用两种转换方式：隐式转换、显式转换。</p>
+<h2 id="隐式转换">隐式转换<a class="anchor" href="#%e9%9a%90%e5%bc%8f%e8%bd%ac%e6%8d%a2">#</a></h2>
+<p>隐式转换是系统默认的，不需要加以声明就会自动执行隐式类型转换，在隐式转换过程，编译器无需对转换进行详细检查就能够安全的执行。隐式类型转换是 <strong>从低精度数值类型=&gt;高精度数值类型</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a = <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">double</span> b = a;<span style="color:#75715e">// 自动隐式类型转换</span></span></span></code></pre></div><h2 id="显式转换">显式转换<a class="anchor" href="#%e6%98%be%e5%bc%8f%e8%bd%ac%e6%8d%a2">#</a></h2>
+<p><strong>高精度值=&gt;低精度</strong> 进行数据转换时，可能会丢失数据，这时候需要使用显式转换。并且要考虑到可能出现算术溢出。显式转换需要明确指出要转换的类型。显式转换可能导致错误，进行这种转换时编译器会对转换进行溢出检测，如果有溢出说明转换失败，表示源类型不是一个合法的目标类型无法进行类型转换，强制类型转换会造成数据精度丢失。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">double</span> a = <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> b = (<span style="color:#66d9ef">int</span>)a;<span style="color:#75715e">// 显式将double类型转换为int</span></span></span></code></pre></div><p>可空类型数据转换=&gt;非可空类型或者另一个可空类型，其中可能会丢失数据，就必须使用显式类型转换。并且如果从可空类型转换为非可空类型时变量值为 <code>null</code>，会抛出 <code>InvalidOperationException</code> 异常。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int?</span> a = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> b = (<span style="color:#66d9ef">int</span>)a;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// System.InvalidOperationException:“可为空的对象必须具有一个值。</span></span></span></code></pre></div><h2 id="通过方法进行转换">通过方法进行转换<a class="anchor" href="#%e9%80%9a%e8%bf%87%e6%96%b9%e6%b3%95%e8%bf%9b%e8%a1%8c%e8%bd%ac%e6%8d%a2">#</a></h2>
+<p><strong>ToString()</strong></p>
+<p>C#中的类型基类都继承自 <code>Object</code> 类，所以都可以使用 <code>ToString()</code> 来转换成字符串。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a = <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s = a.ToString();</span></span></code></pre></div><p><strong>Int.Parse()</strong></p>
+<p>将 <code>string</code> 类型参数转换为 <code>int</code> ，注意： <code>string</code> 类型参数不能为 <code>null</code> ，并且也只能是各种整型，不能是浮点型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> a = <span style="color:#e6db74">&#34;2&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> b = <span style="color:#e6db74">&#34;2.6&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> c = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a1 = <span style="color:#66d9ef">int</span>.Parse(a);<span style="color:#75715e">//正常</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a2 = <span style="color:#66d9ef">int</span>.Parse(b);<span style="color:#75715e">//错误:输入字符串格式错误</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a3 = <span style="color:#66d9ef">int</span>.Parse(c);<span style="color:#75715e">//值不能为null</span></span></span></code></pre></div><p><strong>Int.TryParse()</strong></p>
+<p>该方法与 <code>Int.Parse()</code> 方法类似，不同点在于 <code>Int.Parse()</code> 方法无法转换成功时会抛出异常。而 <code>Int.TryParse()</code> 方法在无法进行转换时会返回 <code>false</code> ， <code>Int.TryParse()</code> 方法需要一个 <code>out</code> 类型的参数，如果转换成功， <code>out</code> 参数的值就是正常转换的值，否则返回 <code>false</code> 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> a = <span style="color:#e6db74">&#34;2&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> b = <span style="color:#e6db74">&#34;2.6&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> c = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> a1 = <span style="color:#66d9ef">int</span>.TryParse(a<span style="color:#960050;background-color:#1e0010">，</span><span style="color:#66d9ef">out</span> i);<span style="color:#75715e">//转换成功，i=2</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> a2 = <span style="color:#66d9ef">int</span>.TryParse(b<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">out</span> i);<span style="color:#75715e">//转换失败，a2=false</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> a3 = <span style="color:#66d9ef">int</span>.TryParse(c<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">out</span> i);<span style="color:#75715e">//转换失败，a3=false</span></span></span></code></pre></div><p><strong>Convert()</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> a = <span style="color:#e6db74">&#34;2&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a1 = Convert.ToInt32(a);</span></span></code></pre></div><table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>说明</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Convert.ToInt32()</td>
+          <td>转换为整型(int)</td>
+      </tr>
+      <tr>
+          <td>Convert.ToChar()</td>
+          <td>转换为字符型(char)</td>
+      </tr>
+      <tr>
+          <td>Convert.ToString()</td>
+          <td>转换为字符串型(string)</td>
+      </tr>
+      <tr>
+          <td>Convert.ToDateTime()</td>
+          <td>转换为日期型(datetime)</td>
+      </tr>
+      <tr>
+          <td>Convert.ToDouble()</td>
+          <td>转换为双精度浮点型(double)</td>
+      </tr>
+      <tr>
+          <td>Conert.ToSingle()</td>
+          <td>转换为单精度浮点型(float)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="自定义转换">自定义转换<a class="anchor" href="#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%bd%ac%e6%8d%a2">#</a></h2>
+<p>通过继承接口 <code>IConventible</code> 或者 <code>TypeConventer</code> 类，可以实现自定义转换。</p>
+<h2 id="使用-as-运算符转换">使用 as 运算符转换<a class="anchor" href="#%e4%bd%bf%e7%94%a8-as-%e8%bf%90%e7%ae%97%e7%ac%a6%e8%bd%ac%e6%8d%a2">#</a></h2>
+<p><code>as</code> 只能用于引用类型和可为空的类型。使用 <code>as</code> 有很多好处，当无法进行类型转换时，会将对象赋值为 <code>NULL</code> ，避免类型转换时报错或是抛出异常。C# 抛出异常在进行捕获异常并进行处理是很消耗资源的，如果只是将对象赋值为 <code>NULL</code> 的话是几乎不消耗资源的(消耗很小的资源)。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">object</span> o = <span style="color:#e6db74">&#34;abc&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s = o <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">string</span>; <span style="color:#75715e">//执行第一次类型兼容性检查，并返回结果</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (s != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#e6db74">&#34;转换成功！&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#e6db74">&#34;转换失败！&#34;</span>);</span></span></code></pre></div><h1 id="装箱和拆箱">装箱和拆箱<a class="anchor" href="#%e8%a3%85%e7%ae%b1%e5%92%8c%e6%8b%86%e7%ae%b1">#</a></h1>
+<p>C#通过装箱和拆箱来实现值类型和引用类型的相互转换，使得任何 <code>value-type</code> 的值都可以转换为 <code>object</code> 类型的值，反之亦可。</p>
+<h2 id="装箱">装箱<a class="anchor" href="#%e8%a3%85%e7%ae%b1">#</a></h2>
+<p>装箱是指：将值类型的数据隐式地转换成一个对象类型(<code>object</code>)的数据。执行装箱操作时不可避免的要在堆上申请内存空间，并将堆栈上的值类型数据复制到申请的堆内存空间上，这是要消耗内存和cpu资源的。在执行装箱转换时，也可以使用显式转换。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = i;   <span style="color:#75715e">//装箱：值类型转换为引用类型</span></span></span></code></pre></div><h2 id="拆箱">拆箱<a class="anchor" href="#%e6%8b%86%e7%ae%b1">#</a></h2>
+<p>拆箱是指：将一个对象类型的数据显式地转换成一个值类型数据。拆箱过程是装箱的逆过程，是将存储在堆上的引用类型值转换为值类型并赋给值类型变量。</p>
+<p>拆箱操作分为两步：</p>
+<ol>
+<li>检查对象实例，确保它是给定值类型的一个装箱值</li>
+<li>将该值从实例复制到值类型变量中</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = i;    <span style="color:#75715e">//装箱：值类型转换为引用类型</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> j = (<span style="color:#66d9ef">int</span>)obj;  <span style="color:#75715e">//拆箱：引用类型转换为值类型</span></span></span></code></pre></div><p>注意</p>
+<ul>
+<li>装箱可以隐式进行，但拆箱必须显式</li>
+<li>在装箱的时候，并不需要显式类型转换。但在拆箱时需要类型转换。因为在拆箱时对象可以被转换为任何类型</li>
+<li>装什么拆什么，装箱就是要在托管堆重开辟空间，不但要装数值而且还要装类型。所以说装什么拆什么，也就是用什么值类型装箱，就要用什么值类型拆箱</li>
+</ul>
+<h1 id="运算符">运算符<a class="anchor" href="#%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h1>
+<h2 id="三元运算符">三元运算符<a class="anchor" href="#%e4%b8%89%e5%85%83%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<p><code>if/else</code> 的简化形式。首先判断一个条件，如果为真返回第一个值，为假返回后一个值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> result = a &gt; <span style="color:#ae81ff">10</span> ? <span style="color:#66d9ef">true</span> : <span style="color:#66d9ef">false</span>; <span style="color:#75715e">//a&gt;10?如果大于返回true否则返回false</span></span></span></code></pre></div><h2 id="可空类型和运算符">可空类型和运算符<a class="anchor" href="#%e5%8f%af%e7%a9%ba%e7%b1%bb%e5%9e%8b%e5%92%8c%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<p>在 <code>C# 2.0</code> 中出现了可空类型，允许值类型也可以为空 <code>null</code>，可空类型的实现基于 C#泛型。</p>
+<p>注意：在程序中使用可空类型就必须考虑 <code>null</code> 值在各种运算符一起使用的影响，通常可空类型与一元或二元运算符一起使用时，如果一个操作数为 <code>null</code> 或两个操作数为 <code>null</code> ，结果就是 <code>null</code> 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">int?</span> a = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">int?</span> c = a + <span style="color:#ae81ff">4</span>; <span style="color:#75715e">//c=null</span></span></span></code></pre></div><h2 id="空合并运算符">空合并运算符<a class="anchor" href="#%e7%a9%ba%e5%90%88%e5%b9%b6%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<p>空合并运算符 <code>??</code> 提供了快捷方式处理可空类型和引用类型时表示 <code>null</code> 可能的值。</p>
+<p>注意： 只能针对引用类型处理，规则是：</p>
+<ul>
+<li>如果第一个操作数不是<code>null</code>，值就等于第一个操作数的值</li>
+<li>如果第一个操作数是<code>null</code>，值就等于第二个操作数的值</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int?</span> a = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> b;
+</span></span><span style="display:flex;"><span>b = a ?? <span style="color:#ae81ff">10</span>;<span style="color:#75715e">//第一个操作数是null，值为第二个操作数.10</span>
+</span></span><span style="display:flex;"><span>a = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>b = a ?? <span style="color:#ae81ff">10</span>;<span style="color:#75715e">//第一个操作数不是null，值为第一个操作数.3</span></span></span></code></pre></div><h2 id="checkedunchecked">checked/unchecked<a class="anchor" href="#checkedunchecked">#</a></h2>
+<p>如果把代码块标记为 <code>checked</code> ， <code>CLR</code> 就会执行栈溢出检测，如果要禁止栈溢出，则可以把代码标记 <code>unchecked</code> 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">//byte类型最大取值255</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">byte</span> a = <span style="color:#ae81ff">255</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">checked</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>     a++;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//这里如果不加checed.++后输出0(不会抛异常，但会丢失数据，溢出的位会被舍弃，所以值为0)，加上后会抛出栈溢出异常</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(a);</span></span></code></pre></div><h2 id="is">is<a class="anchor" href="#is">#</a></h2>
+<p><code>is</code>  运算符可以检测对象是否与特定类型兼容，兼容表示对象是该类型或者派生自该类型。</p>
+<p>转换规则如下：</p>
+<ul>
+<li>检查对象类型的兼容性，并返回结果 <code>true/false</code> 。</li>
+<li>不会抛出异常</li>
+<li>如果对象为 <code>null</code>，返回 <code>false</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">object</span> o = <span style="color:#e6db74">&#34;abc&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (o <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">string</span>) <span style="color:#75715e">//执行第一次类型兼容性检查</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> s = (<span style="color:#66d9ef">string</span>)o; <span style="color:#75715e">//执行第二次类型兼容性检查，并转换</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;转换成功！&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;转换失败！&#34;</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="as">as<a class="anchor" href="#as">#</a></h2>
+<p>转换规则如下：</p>
+<ul>
+<li>检查对象类型的兼容性并返回转换结果，如果不兼容则返回 <code>null</code></li>
+<li>不会抛出异常</li>
+<li>如果结果判断为空，则强制执行类型转换将抛出 <code>NullReferenceException</code> 异常</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">object</span> o = <span style="color:#e6db74">&#34;abc&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s = o <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">string</span>; <span style="color:#75715e">//执行第一次类型兼容性检查，并返回结果</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (s != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;转换成功！&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;转换失败！&#34;</span>);</span></span></code></pre></div><h2 id="sizeof">sizeof<a class="anchor" href="#sizeof">#</a></h2>
+<p><code>sizeof</code> 运算符可以确定栈中值类型需要的长度(单位为字节)。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> Console.WriteLine(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">int</span>));<span style="color:#75715e">//4个字节</span>
+</span></span><span style="display:flex;"><span> Console.WriteLine(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">byte</span>));<span style="color:#75715e">//1个字节</span></span></span></code></pre></div><h2 id="typeof">typeof<a class="anchor" href="#typeof">#</a></h2>
+<p>返回一个表示特定类型的 <code>System.Type</code> 对象。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Console.WriteLine(<span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">int</span>));<span style="color:#75715e">//System.Int32</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">byte</span>));<span style="color:#75715e">//System.Byte</span></span></span></code></pre></div><h1 id="关键字">关键字<a class="anchor" href="#%e5%85%b3%e9%94%ae%e5%ad%97">#</a></h1>
+<p><code>C#</code> 包含保留字，对编译器有特殊意义。这些保留字称为“关键字”。关键字不能用作变量，类，接口等的名称(标识符)，关键字不能用作标识符(变量名，类，接口等)。但是，它们可以与前缀“@”一起使用。例如，class 是保留关键字，因此不能用作标识符，但可以使用 <code>@class</code> 。</p>
+<p>🎨 <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/index"><strong>关键字的更多信息，访问 MSDN</strong></a></p>
+<h1 id="枚举">枚举<a class="anchor" href="#%e6%9e%9a%e4%b8%be">#</a></h1>
+<p><code>enum</code> 是值类型数据类型。枚举用于声明命名整数常量的列表。可以直接在命名空间，类或结构中使用 <code>enum</code> 关键字定义。</p>
+<ul>
+<li>枚举用于为每个常量指定一个名称，以便可以使用其名称引用常量整数默认情况下，枚举的第一个成员的值为 0，每个连续的枚举成员的值增加 1</li>
+<li>枚举可以包括数字数据类型的命名常量，例如 <code>byte</code>，<code>sbyte</code>，<code>short</code>，<code>ushort</code>，<code>int</code>，<code>uint</code>，<code>long</code> 或 <code>ulong</code></li>
+<li>枚举不能与字符串类型一起使用</li>
+</ul>
+<p><code>Enum</code> 是一个抽象类，包含用于枚举的静态帮助器方法</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Enum method</strong></th>
+          <th><strong>Description</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Format</code></td>
+          <td>将指定的枚举类型值转换为指定的字符串格式</td>
+      </tr>
+      <tr>
+          <td><code>GetName</code></td>
+          <td>返回指定枚举的指定值的常量的名称</td>
+      </tr>
+      <tr>
+          <td><code>GetNames</code></td>
+          <td>返回指定枚举的所有常量的字符串名称数组</td>
+      </tr>
+      <tr>
+          <td><code>GetValues</code></td>
+          <td>返回指定枚举的所有常量值的数组</td>
+      </tr>
+      <tr>
+          <td><code>object Parse(type, string)</code></td>
+          <td>将一个或多个枚举常量的名称或数值的字符串表示形式转换为等效的枚举对象</td>
+      </tr>
+      <tr>
+          <td><code>bool TryParse(string, out TEnum)</code></td>
+          <td>将一个或多个枚举常量的名称或数值的字符串表示形式转换为等效的枚举对象，返回值表示转换是否成功</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">enum</span> Color
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Red<span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>    Green<span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>    Blue
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="预处理器指令">预处理器指令<a class="anchor" href="#%e9%a2%84%e5%a4%84%e7%90%86%e5%99%a8%e6%8c%87%e4%bb%a4">#</a></h1>
+<ul>
+<li>
+<p><code>#region/#endregion</code> 指令用于把一段代码标记为有给定名称的一个块</p>
+</li>
+<li>
+<p><code>define/#undef</code>   结合 <code>#if/#elif/endif</code>  实现条件编译</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">#define</span> debug
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> CSharp.Study.Test
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if</span> debug
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;debug&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#else</span>
+</span></span><span style="display:flex;"><span>          Console.WriteLine(<span style="color:#e6db74">&#34;other&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}	</span></span></code></pre></div><ul>
+<li><code>#if/#elif/#else/#endif</code> 告知编译器是否要编译代码块</li>
+<li><code>#warning/#error</code> 如果编译器遇到<code>#warning</code>指令会向用户显示指令后的文本，之后编译继续。如果是<code>#error</code> 会在显示文本后，编译退出，不会生成IL代码</li>
+</ul>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>反射技术</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="flex align-center">
+        <span>多线程</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#值类型">值类型</a></li>
+    <li><a href="#引用类型">引用类型</a></li>
+    <li><a href="#变量">变量</a></li>
+    <li><a href="#变量作用域">变量作用域</a></li>
+    <li><a href="#类型推断">类型推断</a></li>
+    <li><a href="#常量">常量</a></li>
+    <li><a href="#只读字段">只读字段</a></li>
+    <li><a href="#常量和只读字段的区别">常量和只读字段的区别</a></li>
+    <li><a href="#值类型和引用类型空值">值类型和引用类型空值</a></li>
+    <li><a href="#可空类型">可空类型</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#隐式转换">隐式转换</a></li>
+    <li><a href="#显式转换">显式转换</a></li>
+    <li><a href="#通过方法进行转换">通过方法进行转换</a></li>
+    <li><a href="#自定义转换">自定义转换</a></li>
+    <li><a href="#使用-as-运算符转换">使用 as 运算符转换</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#装箱">装箱</a></li>
+    <li><a href="#拆箱">拆箱</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#三元运算符">三元运算符</a></li>
+    <li><a href="#可空类型和运算符">可空类型和运算符</a></li>
+    <li><a href="#空合并运算符">空合并运算符</a></li>
+    <li><a href="#checkedunchecked">checked/unchecked</a></li>
+    <li><a href="#is">is</a></li>
+    <li><a href="#as">as</a></li>
+    <li><a href="#sizeof">sizeof</a></li>
+    <li><a href="#typeof">typeof</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

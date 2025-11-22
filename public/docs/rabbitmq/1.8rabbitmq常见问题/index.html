@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="rabbitMq常见问题记录
+为什么要使用消息队列# 解耦# 传统模式：系统间耦合度强 如系统A直接调用系统B系统C的代码，如果再有系统D接入，则系统A还要修改代码。 中间件模式：系统A将消息写入消息队列，系统B、系统C 订阅消息队列，如果再有系统D介入，直接订阅消息队列即可 系统A不必修改代码。
+异步# 传统模式：一些非必的业务逻辑以同步得方式运行浪费时间。 中间件模式：将消息写入消息队列 一些非必要的业务逻辑以异步得方式运行提高响应速度。
+削峰/限流# 传统模式：并发量大得时候所有请求全部到数据库，造成数据库连接异常。 中间件模式：系统按照数据库能处理得并发量从消息队列中慢慢拉取消息。在生产环境中这种短暂得高峰期积压是允许的。
+消息队列的使用场景# 消息队列常见的使用场景很多，比较核心的有3个：解耦、异步、削峰。
+什么是RabbitMQ# 即一个消息队列，主要是用来实现应用程序的异步和解耦，同时也能起到消息缓冲，消息分发的作用。RabbitMQ使用的是AMQP协议，它是一种二进制协议
+AMQP，即Advanced Message Queuing Protocol(高级消息排队协议),一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制。
+为什么使用RabbitMQ# 这里涉及一个消息中间件选型的问题
+特性 ActiveMQ RabbitMQ RocketMQ kafka 开发语言 java erlang java scala 单机吞吐量 万级 万级 10万级 10万级 时效性 ms级 us级 ms级 ms级以内 可用性 高(主从架构) 高(主从架构) 非常高(分布式架构) 非常高(分布式架构) 功能特性 成熟的产品，在很多公司得到应用；有较多的文档；各种协议支持较好 基于erlang开发，所以并发能力很强，性能极其好，延时很低;管理界面较丰富 MQ功能比较完备，扩展性佳 只支持主要的MQ功能，像消息查询，消息回溯等功能没有提供，在大数据领域应用广泛 中小型软件公司，建议选RabbitMQ.一方面，erlang语言天生具备高并发的特性，而且他的管理界面用起来十分方便。正所谓，成也萧何，败也萧何！他的弊端也在这里，虽然RabbitMQ是开源的，然而国内有几个能定制化开发erlang的程序员呢？所幸，RabbitMQ的社区十分活跃，可以解决开发过程中遇到的bug，这点对于中小型公司来说十分重要。不考虑rocketmq和kafka的原因是，一方面中小型软件公司不如互联网公司，数据量没那么大，选消息中间件，应首选功能比较完备的，所以kafka排除。不考虑rocketmq的原因是，rocketmq是阿里出品，如果阿里放弃维护rocketmq，中小型公司一般抽不出人来进行rocketmq的定制化开发，因此不推荐 大型软件公司，根据具体使用在rocketMq和kafka之间二选一。一方面，大型软件公司，具备足够的资金搭建分布式环境，也具备足够大的数据量。针对rocketMQ,大型软件公司也可以抽出人手对rocketMQ进行定制化开发，毕竟国内有能力改JAVA源码的人，还是相当多的。至于kafka，根据业务场景选择，如果有日志采集功能，肯定首选kafka 具体该选哪个，应该根据实际场景考虑，不能为了用而用
+使用消息队列的缺点# 系统可用性降低：本来其他系统只要运行好好的，那你的系统就是正常的。现在加了消息队列进去，那消息队列挂了，你的系统也就挂了。因此，系统可用性降低 系统复杂性增加：要多考虑很多方面的问题，比如一致性问题、如何保证消息不被重复消费，如何保证保证消息可靠传输。因此，需要考虑的东西更多，系统复杂性增大
+如何实现高可用# 参考：搭建RabbitMQ高可用集群
+重要角色有哪些# 生产者：消费的创建者，负责创建和推送数据到消息服务器 消费者：消息的接收方，用于处理数据和确认消息 代理：指RabbitMQ本身，本身不生产消息，只扮演“快递”的角色
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="rabbitMq常见问题记录
+为什么要使用消息队列# 解耦# 传统模式：系统间耦合度强 如系统A直接调用系统B系统C的代码，如果再有系统D接入，则系统A还要修改代码。 中间件模式：系统A将消息写入消息队列，系统B、系统C 订阅消息队列，如果再有系统D介入，直接订阅消息队列即可 系统A不必修改代码。
+异步# 传统模式：一些非必的业务逻辑以同步得方式运行浪费时间。 中间件模式：将消息写入消息队列 一些非必要的业务逻辑以异步得方式运行提高响应速度。
+削峰/限流# 传统模式：并发量大得时候所有请求全部到数据库，造成数据库连接异常。 中间件模式：系统按照数据库能处理得并发量从消息队列中慢慢拉取消息。在生产环境中这种短暂得高峰期积压是允许的。
+消息队列的使用场景# 消息队列常见的使用场景很多，比较核心的有3个：解耦、异步、削峰。
+什么是RabbitMQ# 即一个消息队列，主要是用来实现应用程序的异步和解耦，同时也能起到消息缓冲，消息分发的作用。RabbitMQ使用的是AMQP协议，它是一种二进制协议
+AMQP，即Advanced Message Queuing Protocol(高级消息排队协议),一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制。
+为什么使用RabbitMQ# 这里涉及一个消息中间件选型的问题
+特性 ActiveMQ RabbitMQ RocketMQ kafka 开发语言 java erlang java scala 单机吞吐量 万级 万级 10万级 10万级 时效性 ms级 us级 ms级 ms级以内 可用性 高(主从架构) 高(主从架构) 非常高(分布式架构) 非常高(分布式架构) 功能特性 成熟的产品，在很多公司得到应用；有较多的文档；各种协议支持较好 基于erlang开发，所以并发能力很强，性能极其好，延时很低;管理界面较丰富 MQ功能比较完备，扩展性佳 只支持主要的MQ功能，像消息查询，消息回溯等功能没有提供，在大数据领域应用广泛 中小型软件公司，建议选RabbitMQ.一方面，erlang语言天生具备高并发的特性，而且他的管理界面用起来十分方便。正所谓，成也萧何，败也萧何！他的弊端也在这里，虽然RabbitMQ是开源的，然而国内有几个能定制化开发erlang的程序员呢？所幸，RabbitMQ的社区十分活跃，可以解决开发过程中遇到的bug，这点对于中小型公司来说十分重要。不考虑rocketmq和kafka的原因是，一方面中小型软件公司不如互联网公司，数据量没那么大，选消息中间件，应首选功能比较完备的，所以kafka排除。不考虑rocketmq的原因是，rocketmq是阿里出品，如果阿里放弃维护rocketmq，中小型公司一般抽不出人来进行rocketmq的定制化开发，因此不推荐 大型软件公司，根据具体使用在rocketMq和kafka之间二选一。一方面，大型软件公司，具备足够的资金搭建分布式环境，也具备足够大的数据量。针对rocketMQ,大型软件公司也可以抽出人手对rocketMQ进行定制化开发，毕竟国内有能力改JAVA源码的人，还是相当多的。至于kafka，根据业务场景选择，如果有日志采集功能，肯定首选kafka 具体该选哪个，应该根据实际场景考虑，不能为了用而用
+使用消息队列的缺点# 系统可用性降低：本来其他系统只要运行好好的，那你的系统就是正常的。现在加了消息队列进去，那消息队列挂了，你的系统也就挂了。因此，系统可用性降低 系统复杂性增加：要多考虑很多方面的问题，比如一致性问题、如何保证消息不被重复消费，如何保证保证消息可靠传输。因此，需要考虑的东西更多，系统复杂性增大
+如何实现高可用# 参考：搭建RabbitMQ高可用集群
+重要角色有哪些# 生产者：消费的创建者，负责创建和推送数据到消息服务器 消费者：消息的接收方，用于处理数据和确认消息 代理：指RabbitMQ本身，本身不生产消息，只扮演“快递”的角色">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="rabbitMq常见问题记录
+为什么要使用消息队列# 解耦# 传统模式：系统间耦合度强 如系统A直接调用系统B系统C的代码，如果再有系统D接入，则系统A还要修改代码。 中间件模式：系统A将消息写入消息队列，系统B、系统C 订阅消息队列，如果再有系统D介入，直接订阅消息队列即可 系统A不必修改代码。
+异步# 传统模式：一些非必的业务逻辑以同步得方式运行浪费时间。 中间件模式：将消息写入消息队列 一些非必要的业务逻辑以异步得方式运行提高响应速度。
+削峰/限流# 传统模式：并发量大得时候所有请求全部到数据库，造成数据库连接异常。 中间件模式：系统按照数据库能处理得并发量从消息队列中慢慢拉取消息。在生产环境中这种短暂得高峰期积压是允许的。
+消息队列的使用场景# 消息队列常见的使用场景很多，比较核心的有3个：解耦、异步、削峰。
+什么是RabbitMQ# 即一个消息队列，主要是用来实现应用程序的异步和解耦，同时也能起到消息缓冲，消息分发的作用。RabbitMQ使用的是AMQP协议，它是一种二进制协议
+AMQP，即Advanced Message Queuing Protocol(高级消息排队协议),一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制。
+为什么使用RabbitMQ# 这里涉及一个消息中间件选型的问题
+特性 ActiveMQ RabbitMQ RocketMQ kafka 开发语言 java erlang java scala 单机吞吐量 万级 万级 10万级 10万级 时效性 ms级 us级 ms级 ms级以内 可用性 高(主从架构) 高(主从架构) 非常高(分布式架构) 非常高(分布式架构) 功能特性 成熟的产品，在很多公司得到应用；有较多的文档；各种协议支持较好 基于erlang开发，所以并发能力很强，性能极其好，延时很低;管理界面较丰富 MQ功能比较完备，扩展性佳 只支持主要的MQ功能，像消息查询，消息回溯等功能没有提供，在大数据领域应用广泛 中小型软件公司，建议选RabbitMQ.一方面，erlang语言天生具备高并发的特性，而且他的管理界面用起来十分方便。正所谓，成也萧何，败也萧何！他的弊端也在这里，虽然RabbitMQ是开源的，然而国内有几个能定制化开发erlang的程序员呢？所幸，RabbitMQ的社区十分活跃，可以解决开发过程中遇到的bug，这点对于中小型公司来说十分重要。不考虑rocketmq和kafka的原因是，一方面中小型软件公司不如互联网公司，数据量没那么大，选消息中间件，应首选功能比较完备的，所以kafka排除。不考虑rocketmq的原因是，rocketmq是阿里出品，如果阿里放弃维护rocketmq，中小型公司一般抽不出人来进行rocketmq的定制化开发，因此不推荐 大型软件公司，根据具体使用在rocketMq和kafka之间二选一。一方面，大型软件公司，具备足够的资金搭建分布式环境，也具备足够大的数据量。针对rocketMQ,大型软件公司也可以抽出人手对rocketMQ进行定制化开发，毕竟国内有能力改JAVA源码的人，还是相当多的。至于kafka，根据业务场景选择，如果有日志采集功能，肯定首选kafka 具体该选哪个，应该根据实际场景考虑，不能为了用而用
+使用消息队列的缺点# 系统可用性降低：本来其他系统只要运行好好的，那你的系统就是正常的。现在加了消息队列进去，那消息队列挂了，你的系统也就挂了。因此，系统可用性降低 系统复杂性增加：要多考虑很多方面的问题，比如一致性问题、如何保证消息不被重复消费，如何保证保证消息可靠传输。因此，需要考虑的东西更多，系统复杂性增大
+如何实现高可用# 参考：搭建RabbitMQ高可用集群
+重要角色有哪些# 生产者：消费的创建者，负责创建和推送数据到消息服务器 消费者：消息的接收方，用于处理数据和确认消息 代理：指RabbitMQ本身，本身不生产消息，只扮演“快递”的角色">
+  <meta itemprop="wordCount" content="181">
+
+<title>1.8 Rabbit Mq常见问题 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle" checked />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="active">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.8 Rabbit Mq常见问题</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#解耦">解耦</a></li>
+    <li><a href="#异步">异步</a></li>
+    <li><a href="#削峰限流">削峰/限流</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#生产者丢失数据">生产者丢失数据</a></li>
+    <li><a href="#消息队列丢失数据">消息队列丢失数据</a></li>
+    <li><a href="#消费者丢数据">消费者丢数据</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#应用场景方面">应用场景方面</a></li>
+    <li><a href="#架构模型方面">架构模型方面</a></li>
+    <li><a href="#吞吐量方面">吞吐量方面</a></li>
+    <li><a href="#集群负载均衡方面">集群负载均衡方面</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>rabbitMq常见问题记录</p>
+<!-- more -->
+<h1 id="为什么要使用消息队列">为什么要使用消息队列<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e4%bd%bf%e7%94%a8%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97">#</a></h1>
+<h2 id="解耦">解耦<a class="anchor" href="#%e8%a7%a3%e8%80%a6">#</a></h2>
+<p><strong>传统模式</strong>：系统间耦合度强 如系统A直接调用系统B系统C的代码，如果再有系统D接入，则系统A还要修改代码。
+<strong>中间件模式</strong>：系统A将消息写入消息队列，系统B、系统C 订阅消息队列，如果再有系统D介入，直接订阅消息队列即可 系统A不必修改代码。</p>
+<h2 id="异步">异步<a class="anchor" href="#%e5%bc%82%e6%ad%a5">#</a></h2>
+<p><strong>传统模式</strong>：一些非必的业务逻辑以同步得方式运行浪费时间。
+<strong>中间件模式</strong>：将消息写入消息队列 一些非必要的业务逻辑以异步得方式运行提高响应速度。</p>
+<h2 id="削峰限流">削峰/限流<a class="anchor" href="#%e5%89%8a%e5%b3%b0%e9%99%90%e6%b5%81">#</a></h2>
+<p><strong>传统模式</strong>：并发量大得时候所有请求全部到数据库，造成数据库连接异常。
+<strong>中间件模式</strong>：系统按照数据库能处理得并发量从消息队列中慢慢拉取消息。在生产环境中这种短暂得高峰期积压是允许的。</p>
+<h1 id="消息队列的使用场景">消息队列的使用场景<a class="anchor" href="#%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e7%9a%84%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">#</a></h1>
+<p>消息队列常见的使用场景很多，比较核心的有3个：<code>解耦</code>、<code>异步</code>、<code>削峰</code>。</p>
+<h1 id="什么是rabbitmq">什么是RabbitMQ<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afrabbitmq">#</a></h1>
+<p>即一个消息队列，主要是用来实现应用程序的异步和解耦，同时也能起到消息缓冲，消息分发的作用。RabbitMQ使用的是<code>AMQP</code>协议，它是一种二进制协议</p>
+<p><code>AMQP</code>，即<code>Advanced Message Queuing Protocol</code>(高级消息排队协议),一个提供统一消息服务的应用层标准高级消息队列协议,是应用层协议的一个开放标准,为面向消息的中间件设计。基于此协议的客户端与消息中间件可传递消息，并不受客户端/中间件不同产品，不同的开发语言等条件的限制。</p>
+<h1 id="为什么使用rabbitmq">为什么使用RabbitMQ<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8rabbitmq">#</a></h1>
+<p>这里涉及一个消息中间件选型的问题</p>
+<p><img src="/images/2021-09-05-23-07-23.png" alt="" /></p>
+<table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th style="text-align: center">ActiveMQ</th>
+          <th style="text-align: left">RabbitMQ</th>
+          <th>RocketMQ</th>
+          <th style="text-align: center">kafka</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>开发语言</td>
+          <td style="text-align: center">java</td>
+          <td style="text-align: left">erlang</td>
+          <td>java</td>
+          <td style="text-align: center">scala</td>
+      </tr>
+      <tr>
+          <td>单机吞吐量</td>
+          <td style="text-align: center">万级</td>
+          <td style="text-align: left">万级</td>
+          <td>10万级</td>
+          <td style="text-align: center">10万级</td>
+      </tr>
+      <tr>
+          <td>时效性</td>
+          <td style="text-align: center">ms级</td>
+          <td style="text-align: left">us级</td>
+          <td>ms级</td>
+          <td style="text-align: center">ms级以内</td>
+      </tr>
+      <tr>
+          <td>可用性</td>
+          <td style="text-align: center">高(主从架构)</td>
+          <td style="text-align: left">高(主从架构)</td>
+          <td>非常高(分布式架构)</td>
+          <td style="text-align: center">非常高(分布式架构)</td>
+      </tr>
+      <tr>
+          <td>功能特性</td>
+          <td style="text-align: center">成熟的产品，在很多公司得到应用；有较多的文档；各种协议支持较好</td>
+          <td style="text-align: left">基于erlang开发，所以并发能力很强，性能极其好，延时很低;管理界面较丰富</td>
+          <td>MQ功能比较完备，扩展性佳</td>
+          <td style="text-align: center">只支持主要的MQ功能，像消息查询，消息回溯等功能没有提供，在大数据领域应用广泛</td>
+      </tr>
+  </tbody>
+</table>
+<ul>
+<li>中小型软件公司，建议选<code>RabbitMQ</code>.一方面，<code>erlang</code>语言天生具备高并发的特性，而且他的管理界面用起来十分方便。正所谓，成也萧何，败也萧何！他的弊端也在这里，虽然<code>RabbitMQ</code>是开源的，然而国内有几个能定制化开发erlang的程序员呢？所幸，RabbitMQ的社区十分活跃，可以解决开发过程中遇到的bug，这点对于中小型公司来说十分重要。不考虑rocketmq和kafka的原因是，一方面中小型软件公司不如互联网公司，数据量没那么大，选消息中间件，应首选功能比较完备的，所以kafka排除。不考虑rocketmq的原因是，rocketmq是阿里出品，如果阿里放弃维护rocketmq，中小型公司一般抽不出人来进行rocketmq的定制化开发，因此不推荐</li>
+<li>大型软件公司，根据具体使用在rocketMq和kafka之间二选一。一方面，大型软件公司，具备足够的资金搭建分布式环境，也具备足够大的数据量。针对rocketMQ,大型软件公司也可以抽出人手对rocketMQ进行定制化开发，毕竟国内有能力改JAVA源码的人，还是相当多的。至于kafka，根据业务场景选择，如果有日志采集功能，肯定首选kafka</li>
+</ul>
+<blockquote class='book-hint '>
+<p>具体该选哪个，应该根据实际场景考虑，不能为了用而用</p>
+</blockquote><h1 id="使用消息队列的缺点">使用消息队列的缺点<a class="anchor" href="#%e4%bd%bf%e7%94%a8%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e7%9a%84%e7%bc%ba%e7%82%b9">#</a></h1>
+<p><strong>系统可用性降低</strong>：本来其他系统只要运行好好的，那你的系统就是正常的。现在加了消息队列进去，那消息队列挂了，你的系统也就挂了。因此，系统可用性降低
+<strong>系统复杂性增加</strong>：要多考虑很多方面的问题，比如一致性问题、如何保证消息不被重复消费，如何保证保证消息可靠传输。因此，需要考虑的东西更多，系统复杂性增大</p>
+<h1 id="如何实现高可用">如何实现高可用<a class="anchor" href="#%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e9%ab%98%e5%8f%af%e7%94%a8">#</a></h1>
+<p>参考：搭建RabbitMQ高可用集群</p>
+<h1 id="重要角色有哪些">重要角色有哪些<a class="anchor" href="#%e9%87%8d%e8%a6%81%e8%a7%92%e8%89%b2%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h1>
+<p><strong>生产者</strong>：消费的创建者，负责创建和推送数据到消息服务器
+<strong>消费者</strong>：消息的接收方，用于处理数据和确认消息
+<strong>代理</strong>：指RabbitMQ本身，本身不生产消息，只扮演“快递”的角色</p>
+<h1 id="重要组件有哪些">重要组件有哪些<a class="anchor" href="#%e9%87%8d%e8%a6%81%e7%bb%84%e4%bb%b6%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h1>
+<p><code>ConnectionFactory</code>（连接管理器）：应用程序与Rabbit之间建立连接的管理器，程序代码中使用
+<code>Channel</code>（信道）：消息推送使用的通道
+<code>Exchange</code>（交换器）：用于接收，分配消息
+<code>Queue</code>（队列）：用于存储生产者的消息
+<code>RoutingKey</code>（路由键）：用于把生产者的数据分配到交换器上
+<code>BindingKey</code>（绑定键）：用于把交换器的消息绑定到队列上</p>
+<h1 id="vhost作用">vhost作用<a class="anchor" href="#vhost%e4%bd%9c%e7%94%a8">#</a></h1>
+<p>每个RabbitMQ都能创建多个<code>vhost</code>，称为虚拟主机，每个虚拟主机都是mini版的RabbitMQ，它拥有自己的队列，交换器和绑定，拥有自己的权限机制。</p>
+<h1 id="消息如何发送">消息如何发送<a class="anchor" href="#%e6%b6%88%e6%81%af%e5%a6%82%e4%bd%95%e5%8f%91%e9%80%81">#</a></h1>
+<p>首先客户端必须连接到RabbitMQ服务器才能发布和消费消息，客户端和 rabbit server 之间会创建一个tcp连接，一旦tcp打开并通过了认证（认证就是你发送给rabbit服务器的用户名和密码），你的客户端和 就创建一条 amqp 信道（channel），信道是创建在“真实”tcp上的虚拟连接，amqp命令都是通过信道发送出去的，每个信道都会有唯一的id，不论是发布消息，订阅队列都是通过这个信道完成。</p>
+<h1 id="怎么保证消息可靠性">怎么保证消息可靠性<a class="anchor" href="#%e6%80%8e%e4%b9%88%e4%bf%9d%e8%af%81%e6%b6%88%e6%81%af%e5%8f%af%e9%9d%a0%e6%80%a7">#</a></h1>
+<p>从三个角度分析：生产者弄丢数据 消息队列弄丢数据 消费者弄丢数据。</p>
+<h2 id="生产者丢失数据">生产者丢失数据<a class="anchor" href="#%e7%94%9f%e4%ba%a7%e8%80%85%e4%b8%a2%e5%a4%b1%e6%95%b0%e6%8d%ae">#</a></h2>
+<p>提供 <code>Transacton</code> 和 <code>confirm</code> 机制来确保生产者不丢消息。</p>
+<p><code>Transacton</code>: 发消息前开启事务（channel.txSelect()),然后发送消息，如果发送过程中有什么异常，事务就会回滚（channel,txRollback()),如果发送成功则提交事务（channel.txCommit()).然而缺点是吞吐量下降了。因此生产用<code>confirm</code>模式居多。一但channel 进入confirm 模式，所有该信道上面发送的消息都将会指派一个唯一的ID（从1开始），一但消息被投递到所有匹配的队列之后，rabbitMQ就会发送一个ACK给生产者（包含消息的唯一ID),这就使生产这知道消息已经到达消息队列了。如果RabbitMQ没有处理该消息，则会发送一个Nack消息给你，你可以进行重试操作。</p>
+<h2 id="消息队列丢失数据">消息队列丢失数据<a class="anchor" href="#%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e4%b8%a2%e5%a4%b1%e6%95%b0%e6%8d%ae">#</a></h2>
+<p>处理消息队列丢失数据的情况，一把是开启持久化磁盘的配置。这个持久话配置可以和 <code>confirm</code> 机制配合使用，你可以在持久化磁盘之后，再给生产这发送一个Ack信号。这样如果持久化磁盘之前，rabbitMQ阵亡了，那么生产者收不到Ack信号，生产者会自动重发。</p>
+<p>持久化一般分两步</p>
+<ol>
+<li>将<code>queue</code> 的持久化标识 <code>durable</code>设置为 <code>true</code>,则代表一个持久化队列</li>
+<li>发送消息的时候将 <code>deliveryMode=2</code></li>
+</ol>
+<p>这样设置之后，rabbitMQ就算挂掉了，重启后也能恢复数据。</p>
+<h2 id="消费者丢数据">消费者丢数据<a class="anchor" href="#%e6%b6%88%e8%b4%b9%e8%80%85%e4%b8%a2%e6%95%b0%e6%8d%ae">#</a></h2>
+<p>消费者丢数据一般是因为采用了自动确认消息模式，这种模式下，消费者会自动确认收到信息。这时rabbitMQ会立即将消息删除，这种情况下如果消费者出现异常而没能处理该消息，就会丢失该消息。</p>
+<p><strong>解决方案</strong>：采用手动确认消息即可，在处理完消息后才发送 <code>ack</code></p>
+<h1 id="怎么避免消息丢失">怎么避免消息丢失<a class="anchor" href="#%e6%80%8e%e4%b9%88%e9%81%bf%e5%85%8d%e6%b6%88%e6%81%af%e4%b8%a2%e5%a4%b1">#</a></h1>
+<p>将数据写到消息队列上，系统B和C还没来得及取消息队列的数据，就挂掉了。如果没有做任何的措施，数据就丢了，这时候就要考虑数据的持久化，<code>磁盘</code>、<code>数据库</code>、<code>Redis</code>等，是同步存储还是异步存储。</p>
+<h1 id="消息持久化成功的条件">消息持久化成功的条件<a class="anchor" href="#%e6%b6%88%e6%81%af%e6%8c%81%e4%b9%85%e5%8c%96%e6%88%90%e5%8a%9f%e7%9a%84%e6%9d%a1%e4%bb%b6">#</a></h1>
+<ul>
+<li>声明队列必须设置持久化 <code>durable</code>设置为 <code>true</code></li>
+<li>消息推送投递模式必须设置持久化， <code>deliveryMode</code> 设置为2（持久）</li>
+<li>消息已经到达持久化交换器</li>
+<li>消息已经到达持久化队列</li>
+</ul>
+<h1 id="持久化有什么缺点">持久化有什么缺点<a class="anchor" href="#%e6%8c%81%e4%b9%85%e5%8c%96%e6%9c%89%e4%bb%80%e4%b9%88%e7%bc%ba%e7%82%b9">#</a></h1>
+<p>持久化的缺点就是降低了服务器的吞吐量，因为使用的是磁盘而非内存存储，从而降低了吞吐量。可使用SSD硬盘来缓解吞吐量的问题。</p>
+<h1 id="有几种广播类型">有几种广播类型<a class="anchor" href="#%e6%9c%89%e5%87%a0%e7%a7%8d%e5%b9%bf%e6%92%ad%e7%b1%bb%e5%9e%8b">#</a></h1>
+<ul>
+<li><code>direct</code>（默认）：最基础最简单的模式，发送方把消息发送给订阅方，如果有多个订阅者，默认采用轮询的方式进行消息发送</li>
+<li><code>headers</code>：与 <code>direct</code>类似，只是性能很差，实际开发使用很少</li>
+<li><code>fanout</code>：分发模式，把消费分发给所有订阅者</li>
+<li><code>topic</code>：匹配订阅模式，使用正则匹配到消息队列，能匹配到的都能接收到</li>
+</ul>
+<h1 id="延迟消息队列如何实现">延迟消息队列如何实现<a class="anchor" href="#%e5%bb%b6%e8%bf%9f%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0">#</a></h1>
+<p>消息过期后进入<code>死信交换器</code>，再由交换器转发到延迟消费队列，实现延迟功能，使用 <code>RabbitMQ-delayed-message-exchange</code> 插件实现延迟功能。</p>
+<h1 id="集群有什么用">集群有什么用<a class="anchor" href="#%e9%9b%86%e7%be%a4%e6%9c%89%e4%bb%80%e4%b9%88%e7%94%a8">#</a></h1>
+<p><strong>高可用</strong>：某个服务器出现问题，整个RabbitMQ还可以继续使用
+<strong>高容量</strong>：集群可以承载更多的消息量</p>
+<h1 id="节点的类型有哪些">节点的类型有哪些<a class="anchor" href="#%e8%8a%82%e7%82%b9%e7%9a%84%e7%b1%bb%e5%9e%8b%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h1>
+<p><strong>磁盘节点</strong>：消息会存储到磁盘
+<strong>内存节点</strong>：消息都存储到内存中，重启服务器消息丢失，性能高于磁盘类型</p>
+<h1 id="集群搭建需要注意哪些问题">集群搭建需要注意哪些问题<a class="anchor" href="#%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba%e9%9c%80%e8%a6%81%e6%b3%a8%e6%84%8f%e5%93%aa%e4%ba%9b%e9%97%ae%e9%a2%98">#</a></h1>
+<ul>
+<li>各节点之间使用<code>-link</code> 连接，此属性不能忽略</li>
+<li>各节点使用的 <code>erlang cookie</code>值必须相同，此值相当于“秘钥”的功能，用于各节点的认证</li>
+<li>整个集群必须包含一个磁盘节点</li>
+</ul>
+<h1 id="节点拷贝问题">节点拷贝问题<a class="anchor" href="#%e8%8a%82%e7%82%b9%e6%8b%b7%e8%b4%9d%e9%97%ae%e9%a2%98">#</a></h1>
+<p>每个节点是其他节点的完整拷贝吗?为什么
+不是，原因有以下两个：</p>
+<ol>
+<li>存储空间的考虑：如果每个节点都拥有所有队列的完全拷贝，这样新增节点不但没有新增存储空间，反而增加了更多的冗余数据</li>
+<li>性能的考虑：如果每条消息都需要完整拷贝每一个集群节点，那新增节点并没有提升处理消息的能力，最多是保持和单节点相同的性能甚至更糟</li>
+</ol>
+<h1 id="集群中唯一磁盘节点崩溃会发生什么情况">集群中唯一磁盘节点崩溃会发生什么情况<a class="anchor" href="#%e9%9b%86%e7%be%a4%e4%b8%ad%e5%94%af%e4%b8%80%e7%a3%81%e7%9b%98%e8%8a%82%e7%82%b9%e5%b4%a9%e6%ba%83%e4%bc%9a%e5%8f%91%e7%94%9f%e4%bb%80%e4%b9%88%e6%83%85%e5%86%b5">#</a></h1>
+<p>如果唯一磁盘的磁盘节点崩溃，不能进行以下操作：</p>
+<ul>
+<li>不能创建队列</li>
+<li>不能创建交换器</li>
+<li>不能创建绑定</li>
+<li>不能添加用户</li>
+<li>不能更改权限</li>
+<li>不能添加和删除集群节点</li>
+</ul>
+<p>唯一磁盘节点崩溃了，集群是可以保持运行的，但不能更改任何东西。</p>
+<h1 id="集群节点停止顺序">集群节点停止顺序<a class="anchor" href="#%e9%9b%86%e7%be%a4%e8%8a%82%e7%82%b9%e5%81%9c%e6%ad%a2%e9%a1%ba%e5%ba%8f">#</a></h1>
+<p>对集群的停止的顺序是有要求的，应该先关闭内存节点，最后关闭磁盘节点。如果顺序恰好相反的话，可能造成消息的丢失。</p>
+<h1 id="kafka与rabbitmq">Kafka与RabbitMQ<a class="anchor" href="#kafka%e4%b8%8erabbitmq">#</a></h1>
+<h2 id="应用场景方面">应用场景方面<a class="anchor" href="#%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af%e6%96%b9%e9%9d%a2">#</a></h2>
+<p>RabbitMQ：用于实时的，对可靠性要求较高的消息传递上
+kafka：用于处于活跃的流式数据，大数据量的数据处理上</p>
+<h2 id="架构模型方面">架构模型方面<a class="anchor" href="#%e6%9e%b6%e6%9e%84%e6%a8%a1%e5%9e%8b%e6%96%b9%e9%9d%a2">#</a></h2>
+<p>producer，broker，consumer
+RabbitMQ：以broker为中心，有消息的确认机制
+kafka：以consumer为中心，无消息的确认机制</p>
+<h2 id="吞吐量方面">吞吐量方面<a class="anchor" href="#%e5%90%9e%e5%90%90%e9%87%8f%e6%96%b9%e9%9d%a2">#</a></h2>
+<p>RabbitMQ：支持消息的可靠的传递，支持事务，不支持批量操作，基于存储的可靠性的要求存储可以采用内存或硬盘，吞吐量小
+kafka：内部采用消息的批量处理，数据的存储和获取是本地磁盘顺序批量操作，消息处理的效率高，吞吐量高</p>
+<h2 id="集群负载均衡方面">集群负载均衡方面<a class="anchor" href="#%e9%9b%86%e7%be%a4%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1%e6%96%b9%e9%9d%a2">#</a></h2>
+<p>RabbitMQ：本身不支持负载均衡，需要loadbalancer的支持
+kafka：采用zookeeper对集群中的broker，consumer进行管理，可以注册topic到zookeeper上，通过zookeeper的协调机制，producer保存对应的topic的broker信息，可以随机或者轮询发送到broker上，producer可以基于语义指定分片，消息发送到broker的某个分片上。
+kafka通过zk和分区机制实现：zk记录broker信息，生产者可以获取到并通过策略完成负载均衡；通过分区，投递消息到不同分区，消费者通过服务组完成均衡消费</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>1.7 Rabbit Mq常见策略</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="flex align-center">
+        <span>1.9 Rabbit Mq集群方案</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#解耦">解耦</a></li>
+    <li><a href="#异步">异步</a></li>
+    <li><a href="#削峰限流">削峰/限流</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#生产者丢失数据">生产者丢失数据</a></li>
+    <li><a href="#消息队列丢失数据">消息队列丢失数据</a></li>
+    <li><a href="#消费者丢数据">消费者丢数据</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#应用场景方面">应用场景方面</a></li>
+    <li><a href="#架构模型方面">架构模型方面</a></li>
+    <li><a href="#吞吐量方面">吞吐量方面</a></li>
+    <li><a href="#集群负载均衡方面">集群负载均衡方面</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

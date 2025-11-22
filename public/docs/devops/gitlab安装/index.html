@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="操作系统：Linux version 3.10.0-862.el7.x86_64 Gitlab：gitlab-ce14.10.0-ce.0.el7 安装必要依赖# 安装所需的依赖：ssh、postfix(用于邮件通知) 、wget，已安装的可略过。
+ssh# 安装ssh，root 用户可不加 sudo
+sudo yum install -y curl policycoreutils-pythonopenssh-server设置开机自启动
+sudo systemctl enable sshd 启动ssh服务
+sudo systemctl start sshdpostfix# 安装 Postfix 用于发送通知邮件
+sudo yum install postfix设置开机自启动
+sudo systemctl enable postfix启动postfix
+sudo systemctl start postfix wget# wget 用于从外网下载插件，检查系统中是否已经安装：
+[root@centos-01 ~]# wget -V GNU Wget 1.14 在 linux-gnu 上编译。 &#43;digest &#43;https &#43;ipv6 &#43;iri &#43;large-file &#43;nls &#43;ntlm &#43;opie &#43;ssl/openssl Wgetrc: /etc/wgetrc (系统) 字符集: /usr/share/locale 编译: gcc -DHAVE_CONFIG_H -DSYSTEM_WGETRC=&#34;/etc/wgetrc&#34; -DLOCALEDIR=&#34;/usr/share/locale&#34; -I. -I../lib -I../lib -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic 链接程序: gcc -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -lssl -lcrypto /usr/lib64/libssl.so /usr/lib64/libcrypto.so /usr/lib64/libz.so -ldl -lz -lz -lidn -luuid -lpcre ftp-opie.o openssl.o http-ntlm.o ../lib/libgnu.a Copyright (C) 2011 Free Software Foundation, Inc. 授权 GPLv3&#43;: GNU GPL 第三版或更高版本 &lt;http://www.gnu.org/licenses/gpl.html&gt;。 这是自由软件：您可以自由地更改并重新分发它。 在法律所允许的范围内，没有任何担保。 最初由 Hrvoje Nikšić &lt;hniksic@xemacs.org&gt; 编写。 请将错误报告或建议寄给 &lt;bug-wget@gnu.org&gt;。如果未安装则进行安装，安装命令如下：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="操作系统：Linux version 3.10.0-862.el7.x86_64 Gitlab：gitlab-ce14.10.0-ce.0.el7 安装必要依赖# 安装所需的依赖：ssh、postfix(用于邮件通知) 、wget，已安装的可略过。
+ssh# 安装ssh，root 用户可不加 sudo
+sudo yum install -y curl policycoreutils-pythonopenssh-server设置开机自启动
+sudo systemctl enable sshd 启动ssh服务
+sudo systemctl start sshdpostfix# 安装 Postfix 用于发送通知邮件
+sudo yum install postfix设置开机自启动
+sudo systemctl enable postfix启动postfix
+sudo systemctl start postfix wget# wget 用于从外网下载插件，检查系统中是否已经安装：
+[root@centos-01 ~]# wget -V GNU Wget 1.14 在 linux-gnu 上编译。 &#43;digest &#43;https &#43;ipv6 &#43;iri &#43;large-file &#43;nls &#43;ntlm &#43;opie &#43;ssl/openssl Wgetrc: /etc/wgetrc (系统) 字符集: /usr/share/locale 编译: gcc -DHAVE_CONFIG_H -DSYSTEM_WGETRC=&#34;/etc/wgetrc&#34; -DLOCALEDIR=&#34;/usr/share/locale&#34; -I. -I../lib -I../lib -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic 链接程序: gcc -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -lssl -lcrypto /usr/lib64/libssl.so /usr/lib64/libcrypto.so /usr/lib64/libz.so -ldl -lz -lz -lidn -luuid -lpcre ftp-opie.o openssl.o http-ntlm.o ../lib/libgnu.a Copyright (C) 2011 Free Software Foundation, Inc. 授权 GPLv3&#43;: GNU GPL 第三版或更高版本 &lt;http://www.gnu.org/licenses/gpl.html&gt;。 这是自由软件：您可以自由地更改并重新分发它。 在法律所允许的范围内，没有任何担保。 最初由 Hrvoje Nikšić &lt;hniksic@xemacs.org&gt; 编写。 请将错误报告或建议寄给 &lt;bug-wget@gnu.org&gt;。如果未安装则进行安装，安装命令如下：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="操作系统：Linux version 3.10.0-862.el7.x86_64 Gitlab：gitlab-ce14.10.0-ce.0.el7 安装必要依赖# 安装所需的依赖：ssh、postfix(用于邮件通知) 、wget，已安装的可略过。
+ssh# 安装ssh，root 用户可不加 sudo
+sudo yum install -y curl policycoreutils-pythonopenssh-server设置开机自启动
+sudo systemctl enable sshd 启动ssh服务
+sudo systemctl start sshdpostfix# 安装 Postfix 用于发送通知邮件
+sudo yum install postfix设置开机自启动
+sudo systemctl enable postfix启动postfix
+sudo systemctl start postfix wget# wget 用于从外网下载插件，检查系统中是否已经安装：
+[root@centos-01 ~]# wget -V GNU Wget 1.14 在 linux-gnu 上编译。 &#43;digest &#43;https &#43;ipv6 &#43;iri &#43;large-file &#43;nls &#43;ntlm &#43;opie &#43;ssl/openssl Wgetrc: /etc/wgetrc (系统) 字符集: /usr/share/locale 编译: gcc -DHAVE_CONFIG_H -DSYSTEM_WGETRC=&#34;/etc/wgetrc&#34; -DLOCALEDIR=&#34;/usr/share/locale&#34; -I. -I../lib -I../lib -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic 链接程序: gcc -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -lssl -lcrypto /usr/lib64/libssl.so /usr/lib64/libcrypto.so /usr/lib64/libz.so -ldl -lz -lz -lidn -luuid -lpcre ftp-opie.o openssl.o http-ntlm.o ../lib/libgnu.a Copyright (C) 2011 Free Software Foundation, Inc. 授权 GPLv3&#43;: GNU GPL 第三版或更高版本 &lt;http://www.gnu.org/licenses/gpl.html&gt;。 这是自由软件：您可以自由地更改并重新分发它。 在法律所允许的范围内，没有任何担保。 最初由 Hrvoje Nikšić &lt;hniksic@xemacs.org&gt; 编写。 请将错误报告或建议寄给 &lt;bug-wget@gnu.org&gt;。如果未安装则进行安装，安装命令如下：">
+  <meta itemprop="wordCount" content="704">
+
+<title>Gitlab安装 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle" checked />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="active">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Gitlab安装</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#ssh">ssh</a></li>
+    <li><a href="#postfix">postfix</a></li>
+    <li><a href="#wget">wget</a></li>
+    <li><a href="#vim">vim</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#yum-方式安装">yum 方式安装</a></li>
+    <li><a href="#rpm-方式安装">rpm 方式安装</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>操作系统：<code>Linux version 3.10.0-862.el7.x86_64 </code></p>
+<p>Gitlab：<code>gitlab-ce14.10.0-ce.0.el7 </code></p>
+<h1 id="安装必要依赖">安装必要依赖<a class="anchor" href="#%e5%ae%89%e8%a3%85%e5%bf%85%e8%a6%81%e4%be%9d%e8%b5%96">#</a></h1>
+<p>安装所需的依赖：<code>ssh</code>、<code>postfix(用于邮件通知)</code> 、<code>wget</code>，已安装的可略过。</p>
+<h2 id="ssh">ssh<a class="anchor" href="#ssh">#</a></h2>
+<p>安装ssh，<code>root</code> 用户可不加 <code>sudo</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install -y curl policycoreutils-pythonopenssh-server</span></span></code></pre></div><p>设置开机自启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl enable sshd  </span></span></code></pre></div><p>启动ssh服务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl start sshd</span></span></code></pre></div><h2 id="postfix">postfix<a class="anchor" href="#postfix">#</a></h2>
+<p>安装 <code>Postfix</code> 用于发送通知邮件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install postfix</span></span></code></pre></div><p>设置开机自启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl enable postfix</span></span></code></pre></div><p>启动postfix</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl start postfix </span></span></code></pre></div><h2 id="wget">wget<a class="anchor" href="#wget">#</a></h2>
+<p><code>wget</code> 用于从外网下载插件，检查系统中是否已经安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget -V</span>
+</span></span><span style="display:flex;"><span>GNU Wget 1.14 在 linux-gnu 上编译。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>+digest +https +ipv6 +iri +large-file +nls +ntlm +opie +ssl/openssl
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Wgetrc:
+</span></span><span style="display:flex;"><span>    /etc/wgetrc <span style="color:#f92672">(</span>系统<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>字符集: /usr/share/locale
+</span></span><span style="display:flex;"><span>编译: gcc -DHAVE_CONFIG_H -DSYSTEM_WGETRC<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/etc/wgetrc&#34;</span>
+</span></span><span style="display:flex;"><span>    -DLOCALEDIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/usr/share/locale&#34;</span> -I. -I../lib -I../lib -O2 -g -pipe
+</span></span><span style="display:flex;"><span>    -Wall -Wp,-D_FORTIFY_SOURCE<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> -fexceptions -fstack-protector-strong
+</span></span><span style="display:flex;"><span>    --param<span style="color:#f92672">=</span>ssp-buffer-size<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span> -grecord-gcc-switches -m64 -mtune<span style="color:#f92672">=</span>generic
+</span></span><span style="display:flex;"><span>链接程序: gcc -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> -fexceptions
+</span></span><span style="display:flex;"><span>    -fstack-protector-strong --param<span style="color:#f92672">=</span>ssp-buffer-size<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>    -grecord-gcc-switches -m64 -mtune<span style="color:#f92672">=</span>generic -lssl -lcrypto
+</span></span><span style="display:flex;"><span>    /usr/lib64/libssl.so /usr/lib64/libcrypto.so /usr/lib64/libz.so
+</span></span><span style="display:flex;"><span>    -ldl -lz -lz -lidn -luuid -lpcre ftp-opie.o openssl.o http-ntlm.o
+</span></span><span style="display:flex;"><span>    ../lib/libgnu.a
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">2011</span> Free Software Foundation, Inc.
+</span></span><span style="display:flex;"><span>授权 GPLv3+: GNU GPL 第三版或更高版本
+</span></span><span style="display:flex;"><span>&lt;http://www.gnu.org/licenses/gpl.html&gt;。
+</span></span><span style="display:flex;"><span>这是自由软件：您可以自由地更改并重新分发它。
+</span></span><span style="display:flex;"><span>在法律所允许的范围内，没有任何担保。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>最初由 Hrvoje Nikšić &lt;hniksic@xemacs.org&gt; 编写。
+</span></span><span style="display:flex;"><span>请将错误报告或建议寄给 &lt;bug-wget@gnu.org&gt;。</span></span></code></pre></div><p>如果未安装则进行安装，安装命令如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum install wget -y</span></span></code></pre></div><h2 id="vim">vim<a class="anchor" href="#vim">#</a></h2>
+<pre tabindex="0"><code>yum install vim -y</code></pre><h1 id="gitlab-安装">GitLab 安装<a class="anchor" href="#gitlab-%e5%ae%89%e8%a3%85">#</a></h1>
+<h2 id="yum-方式安装">yum 方式安装<a class="anchor" href="#yum-%e6%96%b9%e5%bc%8f%e5%ae%89%e8%a3%85">#</a></h2>
+<blockquote class='book-hint '>
+<p>注意： gitlab-ce 镜像仅支持 x86-64 架构</p>
+</blockquote><p>Centos 可以通过配置 yum 源然后使用 yum 一键安装，国内可以使用清华大学镜像源安装GitLab速度会快不少。<a href="https://mirror.tuna.tsinghua.edu.cn/help/gitlab-ce/">【相关配置安装参考这里】</a>。</p>
+<p>将以下内容写入 <code>yum</code> 源配置文件：<code>/etc/yum.repos.d/gitlab-ce.repo</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># vim /etc/yum.repos.d/gitlab-ce.repo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>gitlab-ce<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>name<span style="color:#f92672">=</span>Gitlab CE Repository
+</span></span><span style="display:flex;"><span>baseurl<span style="color:#f92672">=</span>https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el$releasever/
+</span></span><span style="display:flex;"><span>gpgcheck<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>enabled<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum makecache <span style="color:#75715e">#将服务器包信息下载到本地缓存</span>
+</span></span><span style="display:flex;"><span>yum install gitlab-ce <span style="color:#75715e">#自动安装最新版</span></span></span></code></pre></div><p>安装指定版本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># yum install gitlab-ce-x.x.x    #安装指定版本</span></span></span></code></pre></div><h2 id="rpm-方式安装">rpm 方式安装<a class="anchor" href="#rpm-%e6%96%b9%e5%bc%8f%e5%ae%89%e8%a3%85">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el8/gitlab-ce-14.0.0-ce.0.el8.x86_64.rpm</span></span></code></pre></div><pre tabindex="0"><code>rpm -i gitlab-ce-14.0.0-ce.0.el8.x86_64.rpm</code></pre><p>详细操作请自行查找相关资料。无论使用哪种方式，看到类似如下输出表示安装成功：</p>
+<pre tabindex="0"><code>Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  正在安装    : setools-libs-3.3.8-4.el7.x86_64                                                                                         1/8
+  正在安装    : libcgroup-0.41-21.el7.x86_64                                                                                            2/8
+  正在安装    : audit-libs-python-2.8.5-4.el7.x86_64                                                                                    3/8
+  正在安装    : python-IPy-0.75-6.el7.noarch                                                                                            4/8
+  正在安装    : libsemanage-python-2.5-14.el7.x86_64                                                                                    5/8
+  正在安装    : checkpolicy-2.5-8.el7.x86_64                                                                                            6/8
+  正在安装    : policycoreutils-python-2.5-34.el7.x86_64                                                                                7/8
+  正在安装    : gitlab-ce-14.10.0-ce.0.el7.x86_64                                                                                       8/8
+It looks like GitLab has not been configured yet; skipping the upgrade script.
+
+       *.                  *.
+      ***                 ***
+     *****               *****
+    .******             *******
+    ********            ********
+   ,,,,,,,,,***********,,,,,,,,,
+  ,,,,,,,,,,,*********,,,,,,,,,,,
+  .,,,,,,,,,,,*******,,,,,,,,,,,,
+      ,,,,,,,,,*****,,,,,,,,,.
+         ,,,,,,,****,,,,,,
+            .,,,***,,,,
+                ,*,.
+
+
+
+     _______ __  __          __
+    / ____(_) /_/ /   ____ _/ /_
+   / / __/ / __/ /   / __ `/ __ \
+  / /_/ / / /_/ /___/ /_/ / /_/ /
+  \____/_/\__/_____/\__,_/_.___/
+
+
+Thank you for installing GitLab!
+GitLab was unable to detect a valid hostname for your instance.
+Please configure a URL for your GitLab instance by setting `external_url`
+configuration in /etc/gitlab/gitlab.rb file.
+Then, you can start your GitLab instance by running the following command:
+  sudo gitlab-ctl reconfigure
+
+For a comprehensive list of configuration options please see the Omnibus GitLab readme
+https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md
+
+Help us improve the installation experience, let us know how we did with a 1 minute survey:
+https://gitlab.fra1.qualtrics.com/jfe/form/SV_6kVqZANThUQ1bZb?installation=omnibus&amp;release=14-10
+
+  验证中      : checkpolicy-2.5-8.el7.x86_64                                                                                            1/8
+  验证中      : libsemanage-python-2.5-14.el7.x86_64                                                                                    2/8
+  验证中      : python-IPy-0.75-6.el7.noarch                                                                                            3/8
+  验证中      : policycoreutils-python-2.5-34.el7.x86_64                                                                                4/8
+  验证中      : audit-libs-python-2.8.5-4.el7.x86_64                                                                                    5/8
+  验证中      : libcgroup-0.41-21.el7.x86_64                                                                                            6/8
+  验证中      : gitlab-ce-14.10.0-ce.0.el7.x86_64                                                                                       7/8
+  验证中      : setools-libs-3.3.8-4.el7.x86_64                                                                                         8/8
+
+已安装:
+  gitlab-ce.x86_64 0:14.10.0-ce.0.el7
+
+作为依赖被安装:
+  audit-libs-python.x86_64 0:2.8.5-4.el7         checkpolicy.x86_64 0:2.5-8.el7                     libcgroup.x86_64 0:0.41-21.el7
+  libsemanage-python.x86_64 0:2.5-14.el7         policycoreutils-python.x86_64 0:2.5-34.el7         python-IPy.noarch 0:0.75-6.el7
+  setools-libs.x86_64 0:3.3.8-4.el7
+
+完毕！</code></pre><h1 id="默认路径">默认路径<a class="anchor" href="#%e9%bb%98%e8%ae%a4%e8%b7%af%e5%be%84">#</a></h1>
+<p>安装完成后可以利用 <code>rpm -ql gitlab-ce</code> 查看其文件安装路径及相关文件路径：</p>
+<ul>
+<li>默认安装路径：<code>/opt/gitlab/</code></li>
+<li>程序数据及配置文件保存路径： <code>/var/opt/gitlab</code></li>
+<li>代码仓库保存位置：<code>/var/opt/gitlab/git-data/repositories/</code></li>
+<li>代码仓库备份位置：<code>/var/opt/gitlab/backups/</code></li>
+<li>postgresql数据及配置目录：<code>/var/opt/gitlab/postgresql/data/</code></li>
+<li>redis默认配置目录：<code>/var/opt/gitlab/redis</code></li>
+<li>gitlab主要配置文件：<code>/etc/gitlab/gitlab.rb</code></li>
+</ul>
+<h1 id="gitlab-配置修改">GitLab 配置修改<a class="anchor" href="#gitlab-%e9%85%8d%e7%bd%ae%e4%bf%ae%e6%94%b9">#</a></h1>
+<p>修改配置文件指定服务器ip和自定义端口：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vim  /etc/gitlab/gitlab.rb
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>external_url <span style="color:#e6db74">&#39;http://localhost:8888&#39;</span></span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：这里设置的端口不能被占用，默认是8080端口，如果8080已经使用，请自定义其它端口，并在防火墙设置开放相对应端口，我这里直接使用 <code>8888</code></p>
+</blockquote><p>重置并启动 GitLab</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gitlab-ctl reconfigure
+</span></span><span style="display:flex;"><span>gitlab-ctl restart</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># gitlab-ctl restart</span>
+</span></span><span style="display:flex;"><span>ok: run: alertmanager: <span style="color:#f92672">(</span>pid 88474<span style="color:#f92672">)</span> 1s
+</span></span><span style="display:flex;"><span>ok: run: gitaly: <span style="color:#f92672">(</span>pid 88487<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: gitlab-exporter: <span style="color:#f92672">(</span>pid 88502<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: gitlab-kas: <span style="color:#f92672">(</span>pid 88504<span style="color:#f92672">)</span> 1s
+</span></span><span style="display:flex;"><span>ok: run: gitlab-workhorse: <span style="color:#f92672">(</span>pid 88516<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: grafana: <span style="color:#f92672">(</span>pid 88529<span style="color:#f92672">)</span> 1s
+</span></span><span style="display:flex;"><span>ok: run: logrotate: <span style="color:#f92672">(</span>pid 88541<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: nginx: <span style="color:#f92672">(</span>pid 88547<span style="color:#f92672">)</span> 1s
+</span></span><span style="display:flex;"><span>ok: run: node-exporter: <span style="color:#f92672">(</span>pid 88556<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: postgres-exporter: <span style="color:#f92672">(</span>pid 88563<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: postgresql: <span style="color:#f92672">(</span>pid 88572<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: prometheus: <span style="color:#f92672">(</span>pid 88584<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: puma: <span style="color:#f92672">(</span>pid 88601<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: redis: <span style="color:#f92672">(</span>pid 88606<span style="color:#f92672">)</span> 0s
+</span></span><span style="display:flex;"><span>ok: run: redis-exporter: <span style="color:#f92672">(</span>pid 88612<span style="color:#f92672">)</span> 1s
+</span></span><span style="display:flex;"><span>ok: run: sidekiq: <span style="color:#f92672">(</span>pid 88696<span style="color:#f92672">)</span> 0s</span></span></code></pre></div><p>提示  &ldquo;ok: run:&ldquo;表示启动成功</p>
+<h1 id="gitlab-访问">GitLab 访问<a class="anchor" href="#gitlab-%e8%ae%bf%e9%97%ae">#</a></h1>
+<p>如果没有域名，直接输入服务器ip和指定端口进行访问。</p>
+<blockquote class='book-hint '>
+<p>注意：gitlab-ce-14初装后，将密码放在 <code>/etc/gitlab/initial_root_password</code> 临时文件中 ，这个文件将在首次执行 <code>reconfigure</code> 后24小时自动删除，所以拿到密码后尽快登陆Web界面进行密码修改</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/gitlab/initial_root_password</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># WARNING: This value is valid only in the following conditions</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          1. If provided manually (either via `GITLAB_ROOT_PASSWORD` environment variable or via `gitlab_rails[&#39;initial_root_password&#39;]` setting in `gitlab.rb`, it was provided before database was seeded for the first time (usually, the first reconfigure run).</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          2. Password hasn&#39;t been changed manually, either via UI or via command line.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#          If the password shown here doesn&#39;t work, you must reset the admin password following https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-root-password.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Password: HjGOs7XePmSXYSbncxu7UDujhh+SWxyjVkxTvVPpbf8<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># NOTE: This file will be automatically deleted in the first reconfigure run after 24 hours.</span></span></span></code></pre></div><p><img src="/images/2022-04-26-14-59-55.png" alt="" /></p>
+<p><img src="/images/2022-04-26-15-15-30.png" alt="" /></p>
+<h1 id="gitlab-常用命令">GitLab 常用命令<a class="anchor" href="#gitlab-%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gitlab-ctl start    <span style="color:#75715e"># 启动所有 gitlab 组件</span>
+</span></span><span style="display:flex;"><span>gitlab-ctl stop     <span style="color:#75715e"># 停止所有 gitlab 组件</span>
+</span></span><span style="display:flex;"><span>gitlab-ctl restart  <span style="color:#75715e"># 重启所有 gitlab 组件</span>
+</span></span><span style="display:flex;"><span>gitlab-ctl status   <span style="color:#75715e"># 查看服务状态</span>
+</span></span><span style="display:flex;"><span>gitlab-ctl reconfigure           <span style="color:#75715e"># 启动服务</span>
+</span></span><span style="display:flex;"><span>vim /etc/gitlab/gitlab.rb        <span style="color:#75715e"># 修改默认的配置文件</span>
+</span></span><span style="display:flex;"><span>gitlab-rake gitlab:check SANITIZE<span style="color:#f92672">=</span>true --trace    <span style="color:#75715e"># 检查gitlab</span>
+</span></span><span style="display:flex;"><span>sudo gitlab-ctl tail        <span style="color:#75715e"># 查看日志</span>
+</span></span><span style="display:flex;"><span>gitlab-ctl --help           <span style="color:#75715e"># 查看更多命令</span></span></span></code></pre></div></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>Vmware安装 Centos</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="flex align-center">
+        <span>Jenkins安装</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#ssh">ssh</a></li>
+    <li><a href="#postfix">postfix</a></li>
+    <li><a href="#wget">wget</a></li>
+    <li><a href="#vim">vim</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#yum-方式安装">yum 方式安装</a></li>
+    <li><a href="#rpm-方式安装">rpm 方式安装</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

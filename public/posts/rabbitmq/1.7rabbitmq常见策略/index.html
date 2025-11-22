@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="rabbitMq策略学习
+死信队列# 死信队列：DLX，dead-letter-exchang，利用DLX，当消息在一个队列中变成死信 (dead message) 之后，它能被重新publish到另一个Exchange，这个Exchange就是DLX。
+死信判断条件# 消息被拒绝(basic.reject / basic.nack)，并且 requeue = false 消息 TTL 过期 队列达到最大长度 死信处理过程# DLX也是一个正常的Exchange，和一般的Exchange没有区别，它能在任何的队列上被指定，实际上就是设置某个队列的属性 当这个队列中有死信时，RabbitMQ就会自动的将这个消息重新发布到设置的Exchange上去，进而被路由到另一个队列 可以通过监听这个死信队列的消息做相应的处理 死信队列设置# 首先设置死信队列的 exchange 和 queue，然后进行绑定
+string dlxExchangeName = &#34;test.dlx.exchange&#34;; string dlxQueueName = &#34;test.dlx.queue&#34;; channel.ExchangeDeclare(dlxExchangeName, type: &#34;topic&#34;); channel.QueueDeclare(queue: dlxQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null); // #表示只要有消息到达了死信的exchange,都会路由到这个死信队列 channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: &#34;#&#34;);定义业务队列，并设置死信参数
+// 声明队列时添加死信参数 Dictionary&lt;string, object&gt; agruments = new() { { &#34;x-dead-letter-exchange&#34;, dlxExchangeName } }; channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: agruments);Pub 完整代码如下：
+/// &lt;summary&gt; /// Pub:死信队列.DLXs the pub test. /// &lt;/summary&gt; [TestMethod] public void Dlx_PubTest() { string dlxExchangeName = &#34;test.dlx.exchange&#34;; string dlxQueueName = &#34;test.dlx.queue&#34;; channel.ExchangeDeclare(dlxExchangeName, type: &#34;topic&#34;); channel.QueueDeclare(queue: dlxQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null); // # 表示只要有消息到达了死信的exchange,都会路由到这个死信队列 channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: &#34;#&#34;); // 声明队列时添加死信参数 Dictionary&lt;string, object&gt; agruments = new() { { &#34;x-dead-letter-exchange&#34;, dlxExchangeName } }; channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: agruments); for (int i = 0; i &lt; 10; i&#43;&#43;) { channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: Encoding.UTF8.GetBytes(i.ToString())); } Assert.IsTrue(true); }
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="rabbitMq策略学习
+死信队列# 死信队列：DLX，dead-letter-exchang，利用DLX，当消息在一个队列中变成死信 (dead message) 之后，它能被重新publish到另一个Exchange，这个Exchange就是DLX。
+死信判断条件# 消息被拒绝(basic.reject / basic.nack)，并且 requeue = false 消息 TTL 过期 队列达到最大长度 死信处理过程# DLX也是一个正常的Exchange，和一般的Exchange没有区别，它能在任何的队列上被指定，实际上就是设置某个队列的属性 当这个队列中有死信时，RabbitMQ就会自动的将这个消息重新发布到设置的Exchange上去，进而被路由到另一个队列 可以通过监听这个死信队列的消息做相应的处理 死信队列设置# 首先设置死信队列的 exchange 和 queue，然后进行绑定
+string dlxExchangeName = &#34;test.dlx.exchange&#34;; string dlxQueueName = &#34;test.dlx.queue&#34;; channel.ExchangeDeclare(dlxExchangeName, type: &#34;topic&#34;); channel.QueueDeclare(queue: dlxQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null); // #表示只要有消息到达了死信的exchange,都会路由到这个死信队列 channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: &#34;#&#34;);定义业务队列，并设置死信参数
+// 声明队列时添加死信参数 Dictionary&lt;string, object&gt; agruments = new() { { &#34;x-dead-letter-exchange&#34;, dlxExchangeName } }; channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: agruments);Pub 完整代码如下：
+/// &lt;summary&gt; /// Pub:死信队列.DLXs the pub test. /// &lt;/summary&gt; [TestMethod] public void Dlx_PubTest() { string dlxExchangeName = &#34;test.dlx.exchange&#34;; string dlxQueueName = &#34;test.dlx.queue&#34;; channel.ExchangeDeclare(dlxExchangeName, type: &#34;topic&#34;); channel.QueueDeclare(queue: dlxQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null); // # 表示只要有消息到达了死信的exchange,都会路由到这个死信队列 channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: &#34;#&#34;); // 声明队列时添加死信参数 Dictionary&lt;string, object&gt; agruments = new() { { &#34;x-dead-letter-exchange&#34;, dlxExchangeName } }; channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: agruments); for (int i = 0; i &lt; 10; i&#43;&#43;) { channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: Encoding.UTF8.GetBytes(i.ToString())); } Assert.IsTrue(true); }">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="rabbitMq策略学习
+死信队列# 死信队列：DLX，dead-letter-exchang，利用DLX，当消息在一个队列中变成死信 (dead message) 之后，它能被重新publish到另一个Exchange，这个Exchange就是DLX。
+死信判断条件# 消息被拒绝(basic.reject / basic.nack)，并且 requeue = false 消息 TTL 过期 队列达到最大长度 死信处理过程# DLX也是一个正常的Exchange，和一般的Exchange没有区别，它能在任何的队列上被指定，实际上就是设置某个队列的属性 当这个队列中有死信时，RabbitMQ就会自动的将这个消息重新发布到设置的Exchange上去，进而被路由到另一个队列 可以通过监听这个死信队列的消息做相应的处理 死信队列设置# 首先设置死信队列的 exchange 和 queue，然后进行绑定
+string dlxExchangeName = &#34;test.dlx.exchange&#34;; string dlxQueueName = &#34;test.dlx.queue&#34;; channel.ExchangeDeclare(dlxExchangeName, type: &#34;topic&#34;); channel.QueueDeclare(queue: dlxQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null); // #表示只要有消息到达了死信的exchange,都会路由到这个死信队列 channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: &#34;#&#34;);定义业务队列，并设置死信参数
+// 声明队列时添加死信参数 Dictionary&lt;string, object&gt; agruments = new() { { &#34;x-dead-letter-exchange&#34;, dlxExchangeName } }; channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: agruments);Pub 完整代码如下：
+/// &lt;summary&gt; /// Pub:死信队列.DLXs the pub test. /// &lt;/summary&gt; [TestMethod] public void Dlx_PubTest() { string dlxExchangeName = &#34;test.dlx.exchange&#34;; string dlxQueueName = &#34;test.dlx.queue&#34;; channel.ExchangeDeclare(dlxExchangeName, type: &#34;topic&#34;); channel.QueueDeclare(queue: dlxQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null); // # 表示只要有消息到达了死信的exchange,都会路由到这个死信队列 channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: &#34;#&#34;); // 声明队列时添加死信参数 Dictionary&lt;string, object&gt; agruments = new() { { &#34;x-dead-letter-exchange&#34;, dlxExchangeName } }; channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: agruments); for (int i = 0; i &lt; 10; i&#43;&#43;) { channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: Encoding.UTF8.GetBytes(i.ToString())); } Assert.IsTrue(true); }">
+  <meta itemprop="wordCount" content="216">
+
+<title>1.7 Rabbit Mq常见策略 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.7 Rabbit Mq常见策略</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#死信判断条件">死信判断条件</a></li>
+    <li><a href="#死信处理过程">死信处理过程</a></li>
+    <li><a href="#死信队列设置">死信队列设置</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.7 Rabbit Mq常见策略
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>rabbitMq策略学习</p>
+<!-- more -->
+<h1 id="死信队列">死信队列<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e9%98%9f%e5%88%97">#</a></h1>
+<p>死信队列：DLX，<code>dead-letter-exchang</code>，利用DLX，当消息在一个队列中变成死信 (dead message) 之后，它能被重新publish到另一个Exchange，这个Exchange就是DLX。</p>
+<h2 id="死信判断条件">死信判断条件<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e5%88%a4%e6%96%ad%e6%9d%a1%e4%bb%b6">#</a></h2>
+<ul>
+<li>消息被拒绝(<code>basic.reject</code> / <code>basic.nack</code>)，并且 <code>requeue = false</code></li>
+<li>消息 <code>TTL</code> 过期</li>
+<li>队列达到最大长度</li>
+</ul>
+<h2 id="死信处理过程">死信处理过程<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e5%a4%84%e7%90%86%e8%bf%87%e7%a8%8b">#</a></h2>
+<ul>
+<li>DLX也是一个正常的Exchange，和一般的Exchange没有区别，它能在任何的队列上被指定，实际上就是设置某个队列的属性</li>
+<li>当这个队列中有死信时，RabbitMQ就会自动的将这个消息重新发布到设置的Exchange上去，进而被路由到另一个队列</li>
+<li>可以通过监听这个死信队列的消息做相应的处理</li>
+</ul>
+<h2 id="死信队列设置">死信队列设置<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e9%98%9f%e5%88%97%e8%ae%be%e7%bd%ae">#</a></h2>
+<p>首先设置死信队列的 <code>exchange</code> 和 <code>queue</code>，然后进行绑定</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> dlxExchangeName = <span style="color:#e6db74">&#34;test.dlx.exchange&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> dlxQueueName = <span style="color:#e6db74">&#34;test.dlx.queue&#34;</span>;
+</span></span><span style="display:flex;"><span>channel.ExchangeDeclare(dlxExchangeName, type: <span style="color:#e6db74">&#34;topic&#34;</span>);
+</span></span><span style="display:flex;"><span>channel.QueueDeclare(queue: dlxQueueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// #表示只要有消息到达了死信的exchange,都会路由到这个死信队列</span>
+</span></span><span style="display:flex;"><span>channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: <span style="color:#e6db74">&#34;#&#34;</span>);</span></span></code></pre></div><p>定义业务队列，并设置死信参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 声明队列时添加死信参数</span>
+</span></span><span style="display:flex;"><span>Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt; agruments = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    { <span style="color:#e6db74">&#34;x-dead-letter-exchange&#34;</span>, dlxExchangeName }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: agruments);</span></span></code></pre></div><p>Pub 完整代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Pub:死信队列.DLXs the pub test.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Dlx_PubTest()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> dlxExchangeName = <span style="color:#e6db74">&#34;test.dlx.exchange&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> dlxQueueName = <span style="color:#e6db74">&#34;test.dlx.queue&#34;</span>;
+</span></span><span style="display:flex;"><span>    channel.ExchangeDeclare(dlxExchangeName, type: <span style="color:#e6db74">&#34;topic&#34;</span>);
+</span></span><span style="display:flex;"><span>    channel.QueueDeclare(queue: dlxQueueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// # 表示只要有消息到达了死信的exchange,都会路由到这个死信队列</span>
+</span></span><span style="display:flex;"><span>    channel.QueueBind(queue: dlxQueueName, exchange: dlxExchangeName, routingKey: <span style="color:#e6db74">&#34;#&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 声明队列时添加死信参数</span>
+</span></span><span style="display:flex;"><span>    Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt; agruments = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        { <span style="color:#e6db74">&#34;x-dead-letter-exchange&#34;</span>, dlxExchangeName }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: agruments);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style="color:#66d9ef">null</span>, body: Encoding.UTF8.GetBytes(i.ToString()));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-14-17-07-50.png" alt="" /></p>
+<p>消费完毕，死信queue加了一条数据。</p>
+<blockquote class='book-hint '>
+<p>实际环境还需要对死信队列进行一个监听和处理，具体的处理逻辑和业务相关，这里只简单演示死信队列是否生效。</p>
+</blockquote><h1 id="延时队列">延时队列<a class="anchor" href="#%e5%bb%b6%e6%97%b6%e9%98%9f%e5%88%97">#</a></h1>
+<blockquote class='book-hint '>
+<p>延迟队列就是进入该队列的消息会被延迟消费的队列。而一般的队列，消息一旦入队了之后就会被消费者马上消费</p>
+</blockquote><p>延迟队列能做什么？延迟队列多用于需要延迟工作的场景。最常见的是以下两种场景：</p>
+<ul>
+<li>延迟消费。比如：用户生成订单之后，需要过一段时间校验订单的支付状态，如果订单仍未支付则需要及时关闭订单</li>
+<li>延迟重试。比如消费者从队列里消费消息时失败了，但是想要延迟一段时间后自动重试</li>
+</ul>
+<p><strong>实现思路</strong></p>
+<p>实现依赖于RabbitMQ的两个特性</p>
+<p><code>Time-To-Live Extensions</code></p>
+<p>RabbitMQ允许我们为消息或者队列设置TTL（time to live），也就是过期时间。TTL表明了一条消息可在队列中存活的最大时间，单位为毫秒。也就是说，当某条消息被设置了TTL或者当某条消息进入了设置了TTL的队列时，这条消息会在经过TTL秒后“死亡”，成为Dead Letter。如果既配置了消息的TTL，又配置了队列的TTL，那么较小的那个值会被取用。更多资料请查阅<a href="https://www.rabbitmq.com/ttl.html">官方文档</a>。</p>
+<p><code>Dead Letter Exchanges</code></p>
+<p>被设置了TTL的消息在过期后会成为Dead Letter。</p>
+<p>之前说过在RabbitMQ中，一共有三种消息的“死亡”形式：</p>
+<ul>
+<li>消息被拒绝。通过调用<code>basic.reject</code>或者<code>basic.nack</code>并且设置的<code>requeue</code>参数为<code>false</code></li>
+<li>消息因为设置了<code>TTL</code>而过期</li>
+<li>消息进入了一条已经达到最大长度的队列</li>
+</ul>
+<p>如果队列设置了<code>Dead Letter Exchange（DLX）</code>，那么这些<code>Dead Letter</code>就会被重新<code>publish</code>到<code>Dead Letter Exchange</code>，通过<code>Dead Letter Exchange</code>路由到其他队列。</p>
+<h1 id="延迟消费">延迟消费<a class="anchor" href="#%e5%bb%b6%e8%bf%9f%e6%b6%88%e8%b4%b9">#</a></h1>
+<p>生产者产生的消息首先会进入缓冲队列（图中红色队列）。通过RabbitMQ提供的TTL扩展，这些消息会被设置过期时间，也就是延迟消费的时间。等消息过期之后，这些消息会通过配置好的DLX转发到实际消费队列（图中蓝色队列），以此达到延迟消费的效果。</p>
+<p><img src="/images/2021-09-05-23-01-21.png" alt="" /></p>
+<h1 id="延时重试">延时重试<a class="anchor" href="#%e5%bb%b6%e6%97%b6%e9%87%8d%e8%af%95">#</a></h1>
+<p>消费者发现该消息处理出现了异常，比如是因为网络波动引起的异常。那么如果不等待一段时间，直接就重试的话，很可能会导致在这期间内一直无法成功，造成一定的资源浪费。可以将其先放在缓冲队列中（图中红色队列，可以理解为重试定义的exchange），等消息经过一段的延迟时间后再次进入实际消费队列中（图中蓝色队列），此时由于已经过了“较长”的时间了，异常的一些波动通常已经恢复，这些消息可以被正常消费。</p>
+<p><img src="/images/2021-09-05-23-01-44.png" alt="" /></p>
+<p>RabbitMQ<code>channel.basicNack()</code>能够让消息回到队列中，这样可以实现重试。但是无法明确重试次数，如果当前的消息一直重试的话，则后面的消息就会堆积起来，导致后面的消息无法消费。这是一个致命的缺点。因此需要设置重试次数来解决类似问题。</p>
+<ul>
+<li>使用<code>redis</code>或者<code>mongo</code>等第三方存储当前重试次数</li>
+<li>在<code>header</code>中添加重试次数,使用<code>channel.basicPublish()</code>方法重新将消息发送后将重试次数加1</li>
+</ul>
+<p>可以设置重试次数到达阈值时转发到指定的<code>exchange</code>。</p>
+<p><strong>代码示例：</strong></p>
+<p><a href="https://github.com/wangpengliang815/CodeSnippet">https://github.com/wangpengliang815/CodeSnippet</a></p>
+<p><strong>参考：</strong></p>
+<ul>
+<li><a href="https://www.rabbitmq.com/ttl.html">https://www.rabbitmq.com/ttl.html</a></li>
+<li><a href="https://www.cnblogs.com/xishuai/p/spring-boot-rabbitmq-delay-queue.html">https://www.cnblogs.com/xishuai/p/spring-boot-rabbitmq-delay-queue.html</a></li>
+<li><a href="https://www.cnblogs.com/lori/p/9984760.html">https://www.cnblogs.com/lori/p/9984760.html</a></li>
+<li><a href="https://www.jianshu.com/p/537cb84ba72f">https://www.jianshu.com/p/537cb84ba72f</a></li>
+<li><a href="https://www.jianshu.com/p/986ee5eb78bc">https://www.jianshu.com/p/986ee5eb78bc</a></li>
+<li><a href="https://www.cnblogs.com/wyy1234/category/1321800.html">https://www.cnblogs.com/wyy1234/category/1321800.html</a></li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.6 Rabbit Mq常用命令</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="flex align-center">
+      <span>1.8 Rabbit Mq常见问题</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#死信判断条件">死信判断条件</a></li>
+    <li><a href="#死信处理过程">死信处理过程</a></li>
+    <li><a href="#死信队列设置">死信队列设置</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

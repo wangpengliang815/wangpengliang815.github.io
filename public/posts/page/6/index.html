@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/11%E7%BB%93%E6%9E%84%E4%BD%93/">11结构体</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="自定义类型">自定义类型<a class="anchor" href="#%e8%87%aa%e5%ae%9a%e4%b9%89%e7%b1%bb%e5%9e%8b">#</a></h1>
+<p>Go语言中有一些基本的数据类型，如<code>string</code>、<code>整型</code>、<code>浮点型</code>、<code>布尔</code>等数据类型， 使用<code>type</code>关键字来定义自定义类型。</p>
+<p>自定义类型是定义了一个全新的类型。可以基于内置的基本类型定义，也可以通过 <code>struct</code> 定义。例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// 将MyInt定义为int类型</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyInt</span> <span style="color:#66d9ef">int</span></span></span></code></pre></div><p>通过 <code>type</code> 关键字的定义，<code>MyInt</code> 就是一种新的类型，具有 <code>int</code> 的特性。</p>
+<h1 id="类型别名">类型别名<a class="anchor" href="#%e7%b1%bb%e5%9e%8b%e5%88%ab%e5%90%8d">#</a></h1>
+<p>类型别名是<code>Go1.9</code>版本添加的新功能。类型别名规定：<code>TypeAlias</code> 只是Type的别名，本质上TypeAlias与 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/12%E6%8E%A5%E5%8F%A3/">12接口</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>接口（interface）定义了一个对象的行为规范，只定义规范具体对象来实现规范的细节。Go语言中接口（interface）是一种抽象类型。与C#中接口的定义是一样的，相较于具体类型比如字符串、切片、结构体等（更注重“我是什么”），接口类型更注重“能做什么”。接口类型像是一种约定。Go语言中提倡使用面向接口的编程方式实现解耦。</p>
+<h1 id="接口类型">接口类型<a class="anchor" href="#%e6%8e%a5%e5%8f%a3%e7%b1%bb%e5%9e%8b">#</a></h1>
+<p>接口是一种由程序员定义的类型，一个接口类型就是一组方法的集合，它规定了需要实现的所有方法。相较于使用结构体类型，当使用接口类型说明：<strong>相比于它是什么更关心它能做什么</strong>。</p>
+<h1 id="接口定义">接口 …</h1></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/">Channel</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="channel">channel<a class="anchor" href="#channel">#</a></h1>
+<p>上一章学习了 <code>goroutine</code> 的使用方式。但是单纯的将函数并发执行并没有意义。函数与函数间需要交换数据才能体现并发执行的意义。虽然可以使用共享内存进行数据交换，但是共享内存在不同的 <code>goroutine</code> 中容易发生竞态问题。为了保证数据交换的正确性，很多并发模型中必须使用互斥量对内存进行加锁，但这种做法势必造成性能问题。</p>
+<p>Go语言采用的并发模型是 <code>CSP（Communicating Sequential Processes）</code> 提倡：<strong>通过通信共享内存</strong>而不是<strong>通过共享内存实现通信</strong>。</p>
+<p>如果把 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/">Csp并发模型</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="并发模型">并发模型<a class="anchor" href="#%e5%b9%b6%e5%8f%91%e6%a8%a1%e5%9e%8b">#</a></h1>
+<p>业界将如何实现并发编程总结归纳为各式各样的并发模型，常见的并发模型有以下几种：</p>
+<ul>
+<li>线程&amp;锁模型</li>
+<li>Actor模型</li>
+<li>CSP模型</li>
+<li>Fork&amp;Join模型</li>
+</ul>
+<p>Go语言中的并发程序主要是通过基于 <code>CSP（communicating sequential processes）</code> 的 <code>goroutine</code> 和 <code>channel</code>来实现，当然也支持使用传统的多线程共享内存的并发方式。</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/">Goroutine</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>并发编程在当前软件领域是一个非常重要的概念，随着CPU等硬件的发展，都希望让程序运行的更快。Go语言在语言层面天生支持并发（基于 <code>goroutine</code> 的高并发），充分利用现代CPU的多核优势，这也是Go语言能够大范围流行的一个很重要的原因。</p>
+<h1 id="概念了解">概念了解<a class="anchor" href="#%e6%a6%82%e5%bf%b5%e4%ba%86%e8%a7%a3">#</a></h1>
+<h2 id="串行并发并行">串行/并发/并行<a class="anchor" href="#%e4%b8%b2%e8%a1%8c%e5%b9%b6%e5%8f%91%e5%b9%b6%e8%a1%8c">#</a></h2>
+<p><strong>串行</strong>：按照一定顺序先后执行</p>
+<p><strong>并发</strong>：同一时间段内执行多个任务，逻辑上的同时发生。一个处理器（在不同时刻或者说在同一时间间隔内）&ldquo;同时&quot;处理多个任务。宏观上是并发的，微观上是按排队等待、唤醒、执行的步骤序列执行</p>
+<p><strong>并行</strong>：物 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/">Gpm原理与调度</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="动态栈">动态栈<a class="anchor" href="#%e5%8a%a8%e6%80%81%e6%a0%88">#</a></h1>
+<p>操作系统的线程一般都有固定的栈内存（通常为 <code>2MB</code> ）,而 Go 语言中的 <code>goroutine</code> 非常轻量级，一个 <code>goroutine</code> 的初始栈空间很小（一般为 <code>2KB</code> ），所以在 Go 语言中一次创建数万个 goroutine 也是可能的。并且 goroutine 的栈不是固定的，可以根据需要动态地增大或缩小， Go 的 runtime 会自动为 goroutine 分配合适的栈空间。</p>
+<h1 id="goroutine调度">goroutine调度<a class="anchor" href="#goroutine%e8%b0%83%e5%ba%a6">#</a></h1>
+<p>操作系统的线程会被操作系统内核调度时会挂起当前执行的线程并将它的寄存器内容保存到内存中 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">原子操作</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="原子操作">原子操作<a class="anchor" href="#%e5%8e%9f%e5%ad%90%e6%93%8d%e4%bd%9c">#</a></h1>
+<p>针对整数数据类型（int32、uint32、int64、uint64）我们还可以使用原子操作来保证并发安全，通常直接使用原子操作比使用锁操作效率更高。Go语言中原子操作由内置的标准库<code>sync/atomic</code>提供。</p>
+<h2 id="atomic包">atomic包<a class="anchor" href="#atomic%e5%8c%85">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">方法</th>
+          <th style="text-align: center">解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">func LoadInt32(addr *int32) (val int32) func LoadInt64(addr *int64) …</td></tr></tbody></table></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/">并发安全和锁</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="并发安全和锁">并发安全和锁<a class="anchor" href="#%e5%b9%b6%e5%8f%91%e5%ae%89%e5%85%a8%e5%92%8c%e9%94%81">#</a></h1>
+<p>有时候我们的代码中可能会存在多个 goroutine 同时操作一个资源（临界区）的情况，这种情况下就会发生<code>竞态问题</code>（数据竞态）。这就好比现实生活中十字路口被各个方向的汽车竞争，还有火车上的卫生间被车厢里的人竞争。</p>
+<p>我们用下面的代码演示一个数据竞争的示例。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">wg</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span> <span style="color:#75715e">// 等待组</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// add 对全局变量x执行 …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/">Flag</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>Go语言内置的<code>flag</code>包实现了命令行参数的解析，使得开发命令行工具更为简单。</p>
+<h1 id="osargs">os.Args<a class="anchor" href="#osargs">#</a></h1>
+<p>如果只是简单的想要获取命令行参数，可以像下面的代码示例一样使用 <code>os.Args</code> 来获取命令行参数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 最简单的获取命令行参数</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">getOsArgs</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// os.Args是一个[]string</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>) &gt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">index</span>, <span style="color:#a6e22e">arg</span> <span style="color:#f92672">:= …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/">Fmt</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p><code>fmt</code> 包实现了类似C#语言 <code>Console.Writeline</code> 和 <code>Console.ReadLine</code> 的格式化I/O。主要分为输出内容和获取输入两部分。</p>
+<h1 id="输出">输出<a class="anchor" href="#%e8%be%93%e5%87%ba">#</a></h1>
+<p>标准库 <code>fmt</code> 提供了以下几种输出相关函数。</p>
+<h2 id="print">Print<a class="anchor" href="#print">#</a></h2>
+<p><code>Print </code> 系列函数会将内容输出到系统的标准输出，区别在于<code>Print</code>函数直接输出内容，<code>Printf</code>函数支持格式化输出字符串，<code>Println</code> 函数会在输出内容的结尾添加一个换行符。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Print</span>(<span style="color:#a6e22e">a</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">interface</span>{}) (<span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func …</span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/5/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/4/">4</a><a href="/posts/page/5/">5</a><a >6</a><a href="/posts/page/7/">7</a><a href="/posts/page/8/">8</a></span>
+  
+  <span>
+    <a href="/posts/page/7/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

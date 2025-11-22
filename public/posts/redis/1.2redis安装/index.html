@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="下载安装包# Redis（Remote Dictionary Server )，即远程字典服务，是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。
+Redis 是没有 Windows 平台下的官方支持版本的。Redis 官方不建议在 Windows 下使用，所以官网没有 Windows 版本可以下载；可以下载在 github 上的ServiceStack 提供的非官方 Windows 版本的 Redis 但不推荐，因为：
+该版本并不是官方支持的，缺少官方支持在使用上可能会出现很多问题 Redis的最新版本与 Windows 版本不同步，Redis官网版本早于Redis中文网 所以不考虑Windows下版本安装，直接选择Linux下版本安装
+Linux安装程序分为两种
+手动安装 yum安装 如果是手动下载，需要将文件上传到Linux系统中
+解压文件
+tar -xvf Redis-6.2.1.tar.gzRedis是C语言开发，安装Redis需要先将Redis的源码进行编译，编译依赖gcc环境。因此需要安装gcc，安装过程中有提示时，输入Y即可。（make命令必须在Redis解压后的程序目录下执行）
+Centos7安装有默认gcc环境，默认4.8.5版本！编译 Redis-6.x，要求 gcc5.3以上 编译器，否则会遇到大量的错误。主要原因是从 Redis-6.x 开始的多线程代码依赖C标准库中的新增类型 _Atomic 。但注意 gcc 从 4.9 版本才开始正式和完整地支持 stdatomic（gcc-4.8.5 部分支持）。Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译
+Gcc升级# 参考 ：Centos7升级gcc版本
+查看gcc版本# [root@wangpengliang Redis]# gcc -v编译Redis# 进入 Redis 程序目录
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/redis/1.2redis%E5%AE%89%E8%A3%85/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="下载安装包# Redis（Remote Dictionary Server )，即远程字典服务，是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。
+Redis 是没有 Windows 平台下的官方支持版本的。Redis 官方不建议在 Windows 下使用，所以官网没有 Windows 版本可以下载；可以下载在 github 上的ServiceStack 提供的非官方 Windows 版本的 Redis 但不推荐，因为：
+该版本并不是官方支持的，缺少官方支持在使用上可能会出现很多问题 Redis的最新版本与 Windows 版本不同步，Redis官网版本早于Redis中文网 所以不考虑Windows下版本安装，直接选择Linux下版本安装
+Linux安装程序分为两种
+手动安装 yum安装 如果是手动下载，需要将文件上传到Linux系统中
+解压文件
+tar -xvf Redis-6.2.1.tar.gzRedis是C语言开发，安装Redis需要先将Redis的源码进行编译，编译依赖gcc环境。因此需要安装gcc，安装过程中有提示时，输入Y即可。（make命令必须在Redis解压后的程序目录下执行）
+Centos7安装有默认gcc环境，默认4.8.5版本！编译 Redis-6.x，要求 gcc5.3以上 编译器，否则会遇到大量的错误。主要原因是从 Redis-6.x 开始的多线程代码依赖C标准库中的新增类型 _Atomic 。但注意 gcc 从 4.9 版本才开始正式和完整地支持 stdatomic（gcc-4.8.5 部分支持）。Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译
+Gcc升级# 参考 ：Centos7升级gcc版本
+查看gcc版本# [root@wangpengliang Redis]# gcc -v编译Redis# 进入 Redis 程序目录">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="下载安装包# Redis（Remote Dictionary Server )，即远程字典服务，是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。
+Redis 是没有 Windows 平台下的官方支持版本的。Redis 官方不建议在 Windows 下使用，所以官网没有 Windows 版本可以下载；可以下载在 github 上的ServiceStack 提供的非官方 Windows 版本的 Redis 但不推荐，因为：
+该版本并不是官方支持的，缺少官方支持在使用上可能会出现很多问题 Redis的最新版本与 Windows 版本不同步，Redis官网版本早于Redis中文网 所以不考虑Windows下版本安装，直接选择Linux下版本安装
+Linux安装程序分为两种
+手动安装 yum安装 如果是手动下载，需要将文件上传到Linux系统中
+解压文件
+tar -xvf Redis-6.2.1.tar.gzRedis是C语言开发，安装Redis需要先将Redis的源码进行编译，编译依赖gcc环境。因此需要安装gcc，安装过程中有提示时，输入Y即可。（make命令必须在Redis解压后的程序目录下执行）
+Centos7安装有默认gcc环境，默认4.8.5版本！编译 Redis-6.x，要求 gcc5.3以上 编译器，否则会遇到大量的错误。主要原因是从 Redis-6.x 开始的多线程代码依赖C标准库中的新增类型 _Atomic 。但注意 gcc 从 4.9 版本才开始正式和完整地支持 stdatomic（gcc-4.8.5 部分支持）。Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译
+Gcc升级# 参考 ：Centos7升级gcc版本
+查看gcc版本# [root@wangpengliang Redis]# gcc -v编译Redis# 进入 Redis 程序目录">
+  <meta itemprop="wordCount" content="744">
+
+<title>1.2 Redis安装 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/redis/1.2redis%E5%AE%89%E8%A3%85/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.2 Redis安装</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.2 Redis安装
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="下载安装包">下载安装包<a class="anchor" href="#%e4%b8%8b%e8%bd%bd%e5%ae%89%e8%a3%85%e5%8c%85">#</a></h1>
+<p>Redis（<code>Remote Dictionary Server</code>  )，即远程字典服务，是一个开源的使用 <code>ANSI C</code> 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p><code>Redis </code>是没有 Windows 平台下的官方支持版本的。Redis 官方不建议在 Windows 下使用，所以官网没有 Windows 版本可以下载；可以下载在 github 上的<code>ServiceStack</code>  提供的非官方 Windows 版本的 Redis 但不推荐，因为：</p>
+<ul>
+<li>该版本并不是官方支持的，缺少官方支持在使用上可能会出现很多问题</li>
+<li>Redis的最新版本与 Windows 版本不同步，Redis官网版本早于Redis中文网</li>
+</ul>
+<p>所以不考虑Windows下版本安装，直接选择Linux下版本安装</p>
+<!-- more -->
+<p><strong>Linux安装程序分为两种</strong></p>
+<ul>
+<li>手动安装</li>
+<li>yum安装</li>
+</ul>
+<p>如果是手动下载，需要将文件上传到Linux系统中</p>
+<p><img src="/images/2021-09-03-16-16-13.png" alt="" /></p>
+<p>解压文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tar -xvf Redis-6.2.1.tar.gz</span></span></code></pre></div><p>Redis是C语言开发，安装Redis需要先将Redis的源码进行编译，编译依赖gcc环境。因此需要安装gcc，安装过程中有提示时，输入Y即可。（make命令必须在Redis解压后的程序目录下执行）</p>
+<blockquote class='book-hint '>
+<p>Centos7安装有默认gcc环境，默认4.8.5版本！编译 Redis-6.x，要求 gcc5.3以上 编译器，否则会遇到大量的错误。主要原因是从 Redis-6.x 开始的多线程代码依赖C标准库中的新增类型 _Atomic 。但注意 gcc 从 4.9 版本才开始正式和完整地支持 stdatomic（gcc-4.8.5 部分支持）。Centos7默认的 gcc 版本为：4.8.5 &lt; 5.3 无法编译</p>
+</blockquote><h1 id="gcc升级">Gcc升级<a class="anchor" href="#gcc%e5%8d%87%e7%ba%a7">#</a></h1>
+<p>参考 ：<a href="https://wpl.wiki/linux/Centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC">Centos7升级gcc版本</a></p>
+<h1 id="查看gcc版本">查看gcc版本<a class="anchor" href="#%e6%9f%a5%e7%9c%8bgcc%e7%89%88%e6%9c%ac">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang Redis<span style="color:#f92672">]</span><span style="color:#75715e"># gcc -v</span></span></span></code></pre></div><h1 id="编译redis">编译Redis<a class="anchor" href="#%e7%bc%96%e8%af%91redis">#</a></h1>
+<p>进入 Redis 程序目录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd /usr/Redis/Redis-6.2.1</span></span></code></pre></div><p>Make：下载环境并编译 Redis 程序</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost Redis-6.2.1<span style="color:#f92672">]</span><span style="color:#75715e"># make  install #将Redis安装在Linux默认位置：/usr/local/bin</span>
+</span></span><span style="display:flex;"><span>或者（推荐）
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost Redis-6.2.1<span style="color:#f92672">]</span><span style="color:#75715e"># make  install  PREFIX=/usr/Redis/Redis-6.2.1/installpackage　#将Redis安装在指定位置</span></span></span></code></pre></div><p>安装完成查看文件列表</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># cd /usr/Redis/Redis-6.2.1/installpackage/bin</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+</span></span><span style="display:flex;"><span>Redis-benchmark  Redis-check-aof  Redis-check-rdb  Redis-cli  Redis-sentinel  Redis-server
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ll</span>
+</span></span><span style="display:flex;"><span>总用量 <span style="color:#ae81ff">21940</span>
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">5675824</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-benchmark
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-check-aof -&gt; Redis-server
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-check-rdb -&gt; Redis-server
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">5881760</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-cli
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-sentinel -&gt; Redis-server
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">10904032</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-server</span></span></code></pre></div><h1 id="配置redis">配置Redis<a class="anchor" href="#%e9%85%8d%e7%bd%aeredis">#</a></h1>
+<p>复制 Redis 核心配置文件，文件在安装命令目录中（默认位置在 <code>/usr/local/bin</code> ）。我在安装时选择了安装在指定位置（ <code>/usr/Redis/Redis-6.2.1/installpackage</code> ），Redis配置文件需要放在安装目录下。（<code>Redis.conf </code> 配置文件在 Redis 程序目录中）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 进入Redis安装目录/bin</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># cd /usr/Redis/Redis-6.2.1/installpackage/bin</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建目录conf：用于存放配置文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir conf</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看创建结果</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ll</span>
+</span></span><span style="display:flex;"><span>总用量 <span style="color:#ae81ff">21940</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x. <span style="color:#ae81ff">2</span> root root        <span style="color:#ae81ff">6</span> 4月  <span style="color:#ae81ff">18</span> 01:43 conf
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">5675824</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-benchmark
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-check-aof -&gt; Redis-server
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-check-rdb -&gt; Redis-server
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">5881760</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-cli
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-sentinel -&gt; Redis-server
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">10904032</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-server
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 复制Redis程序目录中的配置文件放入到Redis安装目录下conf目录中</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># cp /usr/Redis/Redis-6.2.1/Redis.conf /usr/Redis/Redis-6.2.1/install</span>
+</span></span><span style="display:flex;"><span>package/bin/conf/<span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ll</span>
+</span></span><span style="display:flex;"><span>总用量 <span style="color:#ae81ff">21940</span>
+</span></span><span style="display:flex;"><span>drwxr-xr-x. <span style="color:#ae81ff">2</span> root root       <span style="color:#ae81ff">24</span> 4月  <span style="color:#ae81ff">18</span> 01:44 conf
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">5675824</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-benchmark
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-check-aof -&gt; Redis-server
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-check-rdb -&gt; Redis-server
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">5881760</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-cli
+</span></span><span style="display:flex;"><span>lrwxrwxrwx. <span style="color:#ae81ff">1</span> root root       <span style="color:#ae81ff">12</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-sentinel -&gt; Redis-server
+</span></span><span style="display:flex;"><span>-rwxr-xr-x. <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">10904032</span> 4月  <span style="color:#ae81ff">18</span> 01:32 Redis-server
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 进入Redis安装目录下conf目录</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># cd conf</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看配置文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang conf<span style="color:#f92672">]</span><span style="color:#75715e"># ll</span>
+</span></span><span style="display:flex;"><span>总用量 <span style="color:#ae81ff">92</span>
+</span></span><span style="display:flex;"><span>-rw-r--r--. <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">92222</span> 4月  <span style="color:#ae81ff">18</span> 01:44 Redis.conf</span></span></code></pre></div><h1 id="启动redis">启动Redis<a class="anchor" href="#%e5%90%af%e5%8a%a8redis">#</a></h1>
+<ol>
+<li>进入 <code>Redis</code> 安装目录 <code>bin</code></li>
+<li>使用命令启动 <code>Redis</code> 服务（测试 <code>Redis</code> 服务会占用一个窗口）</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 在Redis安装目录下的bin目录中启动Redis服务并指定配置文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ./Redis-server conf/Redis.conf</span>
+</span></span><span style="display:flex;"><span>20335:C <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.190 <span style="color:#75715e"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span>
+</span></span><span style="display:flex;"><span>20335:C <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.190 <span style="color:#75715e"># Redis version=6.2.1, bits=64, commit=00000000, modified=0,</span>
+</span></span><span style="display:flex;"><span> pid<span style="color:#f92672">=</span>20335, just started20335:C <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.190 <span style="color:#75715e"># Configuration loaded</span>
+</span></span><span style="display:flex;"><span>20335:M <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.191 * Increased maximum number of open files to <span style="color:#ae81ff">10032</span> <span style="color:#f92672">(</span>it was or
+</span></span><span style="display:flex;"><span>iginally set to 1024<span style="color:#f92672">)</span>.20335:M <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.191 * monotonic clock: POSIX clock_gettime
+</span></span><span style="display:flex;"><span>                _._                                                  
+</span></span><span style="display:flex;"><span>           _.-<span style="color:#e6db74">``</span>__ <span style="color:#e6db74">&#39;&#39;</span>-._                                             
+</span></span><span style="display:flex;"><span>      _.-<span style="color:#e6db74">``</span>    <span style="color:#e6db74">`</span>.  <span style="color:#e6db74">`</span>_.  <span style="color:#e6db74">&#39;&#39;</span>-._           Redis 6.2.1 <span style="color:#f92672">(</span>00000000/0<span style="color:#f92672">)</span> <span style="color:#ae81ff">64</span> bit
+</span></span><span style="display:flex;"><span>  .-<span style="color:#e6db74">``</span> .-<span style="color:#e6db74">```</span>.  <span style="color:#e6db74">```</span><span style="color:#ae81ff">\/</span>    _.,_ <span style="color:#e6db74">&#39;&#39;</span>-._                                   
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">(</span>    <span style="color:#e6db74">&#39;      ,       .-`  | `,    )     Running in standalone mode
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> |`-._`-...-` __...-.``-._|&#39;</span><span style="color:#e6db74">`</span> _.-<span style="color:#e6db74">&#39;|     Port: 6379
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> |    `-._   `._    /     _.-&#39;</span>    |     PID: <span style="color:#ae81ff">20335</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">`</span>-._    <span style="color:#e6db74">`</span>-._  <span style="color:#e6db74">`</span>-./  _.-<span style="color:#e6db74">&#39;    _.-&#39;</span>                                   
+</span></span><span style="display:flex;"><span> |<span style="color:#e6db74">`</span>-._<span style="color:#e6db74">`</span>-._    <span style="color:#e6db74">`</span>-.__.-<span style="color:#e6db74">&#39;    _.-&#39;</span>_.-<span style="color:#e6db74">&#39;|                                  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> |    `-._`-._        _.-&#39;</span>_.-<span style="color:#e6db74">&#39;    |           http://Redis.io        
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  `-._    `-._`-.__.-&#39;</span>_.-<span style="color:#e6db74">&#39;    _.-&#39;</span>                                   
+</span></span><span style="display:flex;"><span> |<span style="color:#e6db74">`</span>-._<span style="color:#e6db74">`</span>-._    <span style="color:#e6db74">`</span>-.__.-<span style="color:#e6db74">&#39;    _.-&#39;</span>_.-<span style="color:#e6db74">&#39;|                                  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> |    `-._`-._        _.-&#39;</span>_.-<span style="color:#e6db74">&#39;    |                                  
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  `-._    `-._`-.__.-&#39;</span>_.-<span style="color:#e6db74">&#39;    _.-&#39;</span>                                   
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">`</span>-._    <span style="color:#e6db74">`</span>-.__.-<span style="color:#e6db74">&#39;    _.-&#39;</span>                                       
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">`</span>-._        _.-<span style="color:#e6db74">&#39;                                           
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              `-.__.-&#39;</span>                                               
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>20335:M <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.193 <span style="color:#75715e"># WARNING: The TCP backlog setting of 511 cannot be enforced</span>
+</span></span><span style="display:flex;"><span> because /proc/sys/net/core/somaxconn is set to the lower value of 128.20335:M <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.193 <span style="color:#75715e"># Server initialized</span>
+</span></span><span style="display:flex;"><span>20335:M <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.193 <span style="color:#75715e"># WARNING overcommit_memory is set to 0! Background save may</span>
+</span></span><span style="display:flex;"><span> fail under low memory condition. To fix this issue add <span style="color:#e6db74">&#39;vm.overcommit_memory = 1&#39;</span> to /etc/sysctl.conf and <span style="color:#66d9ef">then</span> reboot or run the command <span style="color:#e6db74">&#39;sysctl vm.overcommit_memory=1&#39;</span> <span style="color:#66d9ef">for</span> this to take effect.20335:M <span style="color:#ae81ff">18</span> Apr <span style="color:#ae81ff">2021</span> 01:51:48.193 * Ready to accept connections</span></span></code></pre></div><h1 id="测试redis">测试Redis<a class="anchor" href="#%e6%b5%8b%e8%af%95redis">#</a></h1>
+<p>新开连接窗口，启动客户端连接 <code>Redis</code> 服务器。</p>
+<pre tabindex="0"><code>[root@wangpengliang ~]# cd /usr/Redis/Redis-6.2.1/installpackage/bin
+# 启动客户端连接服务器并指定端口
+[root@wangpengliang bin]# ./Redis-cli -p  6379
+# 测试连接
+127.0.0.1:6379&gt; ping
+PONG
+# 退出Redis
+127.0.0.1:6379&gt; exit</code></pre><h1 id="后台启动redis">后台启动Redis<a class="anchor" href="#%e5%90%8e%e5%8f%b0%e5%90%af%e5%8a%a8redis">#</a></h1>
+<p>以上的 <code>Redis</code> 安装和启动可以算是临时服务。当开启服务后，Redis服务窗口是无法再使用的，可以将 <code>Redis</code> 服务设置为后台启动服务，避免 <code>Linux</code> 窗口连接的浪费。</p>
+<ol>
+<li>编辑 Redis 配置文件 <code>Redis.conf</code></li>
+<li>开启 Redis 后台服务（默认是关闭的）</li>
+</ol>
+<p>Step1：<code>vi /usr/Redis/Redis6.x/bin/conf/Redis.conf</code>　打开编辑(键入命令 <code>:set nu</code>  显示行号)</p>
+<p>Step2：输入<code>i</code>、<code>I</code>、<code>a</code> 等进入编辑模式</p>
+<p>Step3：将<code>daemonize</code> no 改成<code>daemonize</code> yes（表示开启Redis后台服务：约225行）</p>
+<p>Step4：按 <code>esc</code> 退出插入模式，输入<code>:wq</code> 保存退出</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 启动Redis服务</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ./Redis-server conf/Redis.conf</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 此时Redis服务已经作为后台服务启动，不再占用窗口，直接在本窗口启用客户端测试连接</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ./Redis-cli -p 6379</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; ping
+</span></span><span style="display:flex;"><span>PONG
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; exit</span></span></code></pre></div><h1 id="查看redis服务进程">查看Redis服务进程<a class="anchor" href="#%e6%9f%a5%e7%9c%8bredis%e6%9c%8d%e5%8a%a1%e8%bf%9b%e7%a8%8b">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 查看进程服务，过滤只看Redis的</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ps -ef |grep Redis</span>
+</span></span><span style="display:flex;"><span>root      <span style="color:#ae81ff">20395</span>      <span style="color:#ae81ff">1</span>  <span style="color:#ae81ff">0</span> 02:07 ?      00:00:00 ./Redis-server 127.0.0.1:6379
+</span></span><span style="display:flex;"><span>root      <span style="color:#ae81ff">20410</span>  <span style="color:#ae81ff">20345</span>  <span style="color:#ae81ff">0</span> 02:10 pts/1     00:00:00 grep --color<span style="color:#f92672">=</span>auto Redis</span></span></code></pre></div><h1 id="卸载">卸载<a class="anchor" href="#%e5%8d%b8%e8%bd%bd">#</a></h1>
+<p>删除 <code>Redis</code> 安装目录和 <code>Redis</code> 解压文件即可。</p>
+<h1 id="redis6379端口不通解决方法">Redis6379端口不通解决方法<a class="anchor" href="#redis6379%e7%ab%af%e5%8f%a3%e4%b8%8d%e9%80%9a%e8%a7%a3%e5%86%b3%e6%96%b9%e6%b3%95">#</a></h1>
+<p><strong>背景</strong></p>
+<ol>
+<li><code>Redis  </code> 在虚拟机中安装</li>
+<li>使用 <code>RedisClient</code>  在  <code>Windows</code>  主机中连接</li>
+</ol>
+<p>虚拟机中查看 Redis 进程和端口，都是存在的；但是IP地址需要设置为 <code>0.0.0.0</code> 而不是 <code>127.0.0.1</code> ，更改 Redis 使用的配置文件即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bind 127.0.0.1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=</span>&gt;
+</span></span><span style="display:flex;"><span>bind 0.0.0.0</span></span></code></pre></div><p><code>127.0.0.1</code>只能是本机能使用，如果 Redis 已经启动，需要先停止才能使配置文件生效</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ./Redis-cli -p 6379</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; SHUTDOWN
+</span></span><span style="display:flex;"><span>not connected&gt;</span></span></code></pre></div><p>重启 Redis</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang bin<span style="color:#f92672">]</span><span style="color:#75715e"># ./Redis-server conf/Redis.conf</span></span></span></code></pre></div><p>主机中使用 <code>RedisClient</code> 连接</p>
+<p><img src="/images/2021-09-03-16-20-40.png" alt="" /></p>
+<p>本机安装的Redis版本为<code>6.x</code>，<code>RedisClient</code>暂不支持</p>
+<p><img src="/images/2021-09-03-16-21-04.png" alt="" /></p>
+<p>这里可以使用控制台来测试，只是缺少了可视化的优势，需要自己敲命令</p>
+<p><img src="/images/2021-09-03-16-21-25.png" alt="" /></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.1 No Sql概述</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="flex align-center">
+      <span>1.3 Redis基本数据类型</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

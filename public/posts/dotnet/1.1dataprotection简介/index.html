@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="为什么需要数据保护# Web应用程序中经常需要存储一些敏感数据（如用户密码），Windows系统为桌面程序提供了 DPAPI用来使用，但是并不适用于Web系统。ASP.NET Core提供了一套简单易用的API用来保护数据。
+简单示例# public class MyClass { readonly IDataProtector protector; public MyClass(IDataProtectionProvider provider) { protector = provider.CreateProtector(nameof(MyClass)); } public void RunSample() { string testStr = &#34;Hello World&#34;; // 加密 string protectedPayload = protector.Protect(testStr); Console.WriteLine($&#34;Protect returned: {protectedPayload}&#34;); Console.WriteLine(&#34;=========================================&#34;); // 解密 string unprotectedPayload = protector.Unprotect(protectedPayload); Console.WriteLine($&#34;Unprotect returned: {unprotectedPayload}&#34;); } }[TestMethod()] public void Sample_01() { // 添加数据保护到服务中 var serviceCollection = new ServiceCollection(); serviceCollection.AddDataProtection(); var services = serviceCollection.BuildServiceProvider(); // 从DI中创建一个MyClass的实例 var instance = ActivatorUtilities.CreateInstance&lt;MyClass&gt;(services); instance.RunSample(); Assert.IsTrue(true); }
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/1.1dataprotection%E7%AE%80%E4%BB%8B/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="为什么需要数据保护# Web应用程序中经常需要存储一些敏感数据（如用户密码），Windows系统为桌面程序提供了 DPAPI用来使用，但是并不适用于Web系统。ASP.NET Core提供了一套简单易用的API用来保护数据。
+简单示例# public class MyClass { readonly IDataProtector protector; public MyClass(IDataProtectionProvider provider) { protector = provider.CreateProtector(nameof(MyClass)); } public void RunSample() { string testStr = &#34;Hello World&#34;; // 加密 string protectedPayload = protector.Protect(testStr); Console.WriteLine($&#34;Protect returned: {protectedPayload}&#34;); Console.WriteLine(&#34;=========================================&#34;); // 解密 string unprotectedPayload = protector.Unprotect(protectedPayload); Console.WriteLine($&#34;Unprotect returned: {unprotectedPayload}&#34;); } }[TestMethod()] public void Sample_01() { // 添加数据保护到服务中 var serviceCollection = new ServiceCollection(); serviceCollection.AddDataProtection(); var services = serviceCollection.BuildServiceProvider(); // 从DI中创建一个MyClass的实例 var instance = ActivatorUtilities.CreateInstance&lt;MyClass&gt;(services); instance.RunSample(); Assert.IsTrue(true); }">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="为什么需要数据保护# Web应用程序中经常需要存储一些敏感数据（如用户密码），Windows系统为桌面程序提供了 DPAPI用来使用，但是并不适用于Web系统。ASP.NET Core提供了一套简单易用的API用来保护数据。
+简单示例# public class MyClass { readonly IDataProtector protector; public MyClass(IDataProtectionProvider provider) { protector = provider.CreateProtector(nameof(MyClass)); } public void RunSample() { string testStr = &#34;Hello World&#34;; // 加密 string protectedPayload = protector.Protect(testStr); Console.WriteLine($&#34;Protect returned: {protectedPayload}&#34;); Console.WriteLine(&#34;=========================================&#34;); // 解密 string unprotectedPayload = protector.Unprotect(protectedPayload); Console.WriteLine($&#34;Unprotect returned: {unprotectedPayload}&#34;); } }[TestMethod()] public void Sample_01() { // 添加数据保护到服务中 var serviceCollection = new ServiceCollection(); serviceCollection.AddDataProtection(); var services = serviceCollection.BuildServiceProvider(); // 从DI中创建一个MyClass的实例 var instance = ActivatorUtilities.CreateInstance&lt;MyClass&gt;(services); instance.RunSample(); Assert.IsTrue(true); }">
+  <meta itemprop="wordCount" content="437">
+
+<title>1.1 Data Protection简介 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/1.1dataprotection%E7%AE%80%E4%BB%8B/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.1 Data Protection简介</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#用户密码哈希">用户密码哈希</a></li>
+    <li><a href="#生命周期限制">生命周期限制</a></li>
+    <li><a href="#配置数据保护">配置数据保护</a></li>
+    <li><a href="#注册服务">注册服务</a></li>
+    <li><a href="#指定私钥存储位置">指定私钥存储位置</a></li>
+    <li><a href="#使用证书加密">使用证书加密</a></li>
+    <li><a href="#调整默认保存时间">调整默认保存时间</a></li>
+    <li><a href="#应用程序隔离">应用程序隔离</a></li>
+    <li><a href="#禁止自动生成秘钥">禁止自动生成秘钥</a></li>
+    <li><a href="#修改加密算法"><strong>修改加密算法</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.1 Data Protection简介
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="为什么需要数据保护">为什么需要数据保护<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e6%95%b0%e6%8d%ae%e4%bf%9d%e6%8a%a4">#</a></h1>
+<p>Web应用程序中经常需要存储一些敏感数据（如用户密码），Windows系统为桌面程序提供了 <code>DPAPI</code>用来使用，但是并不适用于Web系统。ASP.NET Core提供了一套简单易用的API用来保护数据。</p>
+<h1 id="简单示例">简单示例<a class="anchor" href="#%e7%ae%80%e5%8d%95%e7%a4%ba%e4%be%8b">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyClass</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">readonly</span> IDataProtector protector;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> MyClass(IDataProtectionProvider provider)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            protector = provider.CreateProtector(nameof(MyClass));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> RunSample()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> testStr = <span style="color:#e6db74">&#34;Hello World&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 加密</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> protectedPayload = protector.Protect(testStr);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;Protect returned: {protectedPayload}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;=========================================&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 解密</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">string</span> unprotectedPayload = protector.Unprotect(protectedPayload);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;Unprotect returned: {unprotectedPayload}&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod()]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Sample_01()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加数据保护到服务中</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> serviceCollection = <span style="color:#66d9ef">new</span> ServiceCollection();
+</span></span><span style="display:flex;"><span>    serviceCollection.AddDataProtection();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> services = serviceCollection.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 从DI中创建一个MyClass的实例 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> instance = ActivatorUtilities.CreateInstance&lt;MyClass&gt;(services);
+</span></span><span style="display:flex;"><span>    instance.RunSample();
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-26-13-37-35.png" alt="" /></p>
+<p>在<code>CreateProtector(nameof(MyClass))</code>中，参数 <code>nameof(MyClass)</code> 可以理解为一个公钥或一个标识，表示当前Protector的用途。Data Protection 采用的是非对称加密，所以系统中应该还有一个私钥，此处的密钥由 ASP.NET Core 在系统内部维护，每一台机器都有一个自有的私钥。</p>
+<h1 id="私钥存储">私钥存储<a class="anchor" href="#%e7%a7%81%e9%92%a5%e5%ad%98%e5%82%a8">#</a></h1>
+<ul>
+<li>如果程序寄宿在<code>Microsoft Azure</code>下，存储在<code>%HOME%\ASP.NET\DataProtection-Keys</code>文件夹</li>
+<li>如果程序寄宿在<code>IIS</code>下，它被保存在<code>HKLM</code>注册表的<code>ACLed</code>特殊注册表键，并且只有工作进程可以访问，使用<code>windows</code>的<code>DPAPI</code>加密</li>
+<li>如果当前用户可用，即<code>win10</code>或者<code>win7</code>中，它存储在<code>%LOCALAPPDATA%\ASP.NET\DataProtection-Keys</code>文件夹，同样使用<code>windows</code>的<code>DPAPI</code>加密</li>
+<li>如果这些都不符合，那么也就是私钥是没有被持久化的，也就是说当进程关闭的时候，生成的私钥就丢失了</li>
+</ul>
+<h1 id="私钥文件">私钥文件<a class="anchor" href="#%e7%a7%81%e9%92%a5%e6%96%87%e4%bb%b6">#</a></h1>
+<p><img src="/images/2021-09-26-13-38-17.png" alt="" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;key</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;bf2f4417-10fa-4d4d-ba61-b91c041029e0&#34;</span> <span style="color:#a6e22e">version=</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;creationDate&gt;</span>2021-03-08T02:18:08.641323Z<span style="color:#f92672">&lt;/creationDate&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;activationDate&gt;</span>2021-03-09T09:07:57.9935838Z<span style="color:#f92672">&lt;/activationDate&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;expirationDate&gt;</span>2021-06-06T02:18:08.5176468Z<span style="color:#f92672">&lt;/expirationDate&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;descriptor</span> <span style="color:#a6e22e">deserializerType=</span><span style="color:#e6db74">&#34;Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;descriptor&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;encryption</span> <span style="color:#a6e22e">algorithm=</span><span style="color:#e6db74">&#34;AES_256_CBC&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;validation</span> <span style="color:#a6e22e">algorithm=</span><span style="color:#e6db74">&#34;HMACSHA256&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;encryptedSecret</span> <span style="color:#a6e22e">decryptorType=</span><span style="color:#e6db74">&#34;Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60&#34;</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://schemas.asp.net/2015/03/dataProtection&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;encryptedKey</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">&lt;!-- This key is encrypted with Windows DPAPI. --&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;value&gt;</span>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAdzyZbq38yUupe39PhMdBEAAAAAACAAAAAAAQZgAAAAEAACAAAACYrALB9ricGU/5Y6iOanIlQjSCb548eBxAWafTbwxtLAAAAAAOgAAAAAIAACAAAADd6x5zXIP/VC6r1Y5ZAf74uL/+lc68ilrliN7T8dGhYVABAAD0qlvH4LDPjhr3R9WTjP+mOJZrrtt8clI91ULbNPDN2bgwM7ibkICFOLVr9AkwMpRzP+etArhuXbIhH6jzdv9aoAjAcQsQtg37LSlWBI3TFmTtz53nHzIxmfgUuPS23sLjHc7KTBo9+DPHy5BT3qm21y8EDoQ8ehj6WqqwvaEkThRXcG5Kst5HzBbIgeRXSrSprjIeja0uhJpFJOAzOr5ngeoRG4tKfs6VMZMIU9IMbukbuGSC/JoUMR5yzavT/Yi+Cr9x9eeIewDOKzRIaq3wIkYIybhOJxZm5MMgV3A4j4nKSSN0jcW6hXee5ksdywsPKquK5E5fz/jY6bVc9Sj1DV+A6IN6MAjstQzYpZ6CIjFJwgwD7OpD9G/JmlwRNhB/TnNWKAW+4duXYEgKADWA4ZVg2riaYYphPbEmz5RXnphN+C6OEDozguAsW60Z2DJAAAAAPxkE7aqhWgiAk2Fxf8w1yZ6ZMkBSXe/b655jsvfLl6asBUStynk08vPaw5YsD61VyRNp/s8lRjrfwyHpTGrxOw==<span style="color:#f92672">&lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/encryptedKey&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/encryptedSecret&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/descriptor&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/descriptor&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/key&gt;</span></span></span></code></pre></div><p>文件包含一个创建日期，一个过期日期。间隔为90天，90天之后密钥就会失效，系统将自动生成一个新的密钥并设置新的密钥作为活动的密钥。只要已过期的密钥还存在于系统上，仍然可以解密任何受保护的数据。</p>
+<h1 id="data-protection">Data Protection<a class="anchor" href="#data-protection">#</a></h1>
+<p><code>ASP.NET Core Data Protection</code> 主要对开发人员提供了两个接口，<code>IDataProtectionProvider</code> 和 <code>IDataProtector</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Microsoft.AspNetCore.DataProtection
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 摘要:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//     An interface that can provide data protection services.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDataProtector</span> : IDataProtectionProvider
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span>[] Protect(<span style="color:#66d9ef">byte</span>[] plaintext);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span>[] Unprotect(<span style="color:#66d9ef">byte</span>[] protectedData);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><code>IDataProtector</code> 继承自 <code>IDataProtectionProvider</code> ，并且提供了两个方法 <code>Protect(加密)</code> 和 <code>Unprotect(解密)</code> 。</p>
+<p><code>IDataProtectionProvider</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Microsoft.AspNetCore.DataProtection
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDataProtectionProvider</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        IDataProtector CreateProtector(<span style="color:#66d9ef">string</span> purpose);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><code>IDataProtectionProvider</code> 提供了一个方法，通过传入一个 <code>purpose</code>字符串生成一个 <code>IDataProtector</code> 接口对象，方法签名中的 <code>purpose</code> 这个字符串，可以理解为一个标识，表示当前 Protector 的用途。</p>
+<p>使用 <code>IDataProtector</code> 的时候，会发现它还有一些扩展方法位于<code>Microsoft.AspNetCore.DataProtection</code>命名空间下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DataProtectionCommonExtensions</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IDataProtector CreateProtector(<span style="color:#66d9ef">this</span> IDataProtectionProvider provider, IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; purposes);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IDataProtector CreateProtector(<span style="color:#66d9ef">this</span> IDataProtectionProvider provider, <span style="color:#66d9ef">string</span> purpose, <span style="color:#66d9ef">params</span> <span style="color:#66d9ef">string</span>[] subPurposes);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IDataProtector GetDataProtector(<span style="color:#66d9ef">this</span> IServiceProvider services, IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; purposes);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IDataProtector GetDataProtector(<span style="color:#66d9ef">this</span> IServiceProvider services, <span style="color:#66d9ef">string</span> purpose, <span style="color:#66d9ef">params</span> <span style="color:#66d9ef">string</span>[] subPurposes);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">string</span> Protect(<span style="color:#66d9ef">this</span> IDataProtector protector, <span style="color:#66d9ef">string</span> plaintext);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">string</span> Unprotect(<span style="color:#66d9ef">this</span> IDataProtector protector, <span style="color:#66d9ef">string</span> protectedData);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>可以看到，<code>CreateProtector</code>还提供了可以传多个<code>purpose</code> 的方法（IEnumerable，params string[]），因为 <code>DataProtector</code> 是有层次结构的，再看一下<code>IDataProtector</code>接口，它自身也实现了<code>IDataProtectionProvider</code>接口，就是说<code>IDataProtector</code>自身也可以再创建<code>IDataProtector</code>。</p>
+<h2 id="用户密码哈希">用户密码哈希<a class="anchor" href="#%e7%94%a8%e6%88%b7%e5%af%86%e7%a0%81%e5%93%88%e5%b8%8c">#</a></h2>
+<p>在 <code>Microsoft.AspNetCore.Cryptography.KeyDerivation</code> 命名空间下提供了一个 <code>KeyDerivation.Pbkdf2</code> 方法用来对用户密码进行哈希。</p>
+<h2 id="生命周期限制">生命周期限制<a class="anchor" href="#%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e9%99%90%e5%88%b6">#</a></h2>
+<p>有些时候，需要一些具有过期或者到期时间的加密字符串，比如用户在找回密码的时候，向用户的邮箱发送一封带有重置命令的一封邮件，这个重置命令就需要有一个过期时间了，超过这个过期时间后就失效，在以前可能需要向数据库存储一个时间来标记发送时间，然后再解密对比和数据库的时间差来验证。现在不用了，ASP.NET Core 默认提供了一个接口叫 <code>ITimeLimitedDataProtector</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>CreateProtector(<span style="color:#66d9ef">string</span> purpose) : ITimeLimitedDataProtector This API <span style="color:#66d9ef">is</span> similar to the existing IDataProtectionProvider.CreateProtector <span style="color:#66d9ef">in</span> that it can be used to create purpose chains <span style="color:#66d9ef">from</span> a root time-limited protector.
+</span></span><span style="display:flex;"><span>Protect(<span style="color:#66d9ef">byte</span>[] plaintext, DateTimeOffset expiration) : <span style="color:#66d9ef">byte</span>[]
+</span></span><span style="display:flex;"><span>Protect(<span style="color:#66d9ef">byte</span>[] plaintext, TimeSpan lifetime) : <span style="color:#66d9ef">byte</span>[]
+</span></span><span style="display:flex;"><span>Protect(<span style="color:#66d9ef">byte</span>[] plaintext) : <span style="color:#66d9ef">byte</span>[]
+</span></span><span style="display:flex;"><span>Protect(<span style="color:#66d9ef">string</span> plaintext, DateTimeOffset expiration) : <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>Protect(<span style="color:#66d9ef">string</span> plaintext, TimeSpan lifetime) : <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>Protect(<span style="color:#66d9ef">string</span> plaintext) : <span style="color:#66d9ef">string</span></span></span></code></pre></div><p><code>ITimeLimitedDataProtector </code>提供了数个重载方法用来设定带有生命周期的加密方法，可以通过<code>Date TimeOffset</code>，<code>TimeSpan</code>等参数来设置时间。有对应的加密，就有相对应的解密方法，在这里就不详细介绍了。有兴趣的可以去看一下官方文档。</p>
+<h2 id="配置数据保护">配置数据保护<a class="anchor" href="#%e9%85%8d%e7%bd%ae%e6%95%b0%e6%8d%ae%e4%bf%9d%e6%8a%a4">#</a></h2>
+<p>ASP.NET Core 运行时，系统会基于当前机器的运行环境默认配置一些关于 <code>Data Protection</code> 的东西，但是有时可能需要对这些配置做一些改变。</p>
+<h2 id="注册服务">注册服务<a class="anchor" href="#%e6%b3%a8%e5%86%8c%e6%9c%8d%e5%8a%a1">#</a></h2>
+<p>通过以下方式来把 <code>Data Protection</code> 注册到服务中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddDataProtection();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="指定私钥存储位置">指定私钥存储位置<a class="anchor" href="#%e6%8c%87%e5%ae%9a%e7%a7%81%e9%92%a5%e5%ad%98%e5%82%a8%e4%bd%8d%e7%bd%ae">#</a></h2>
+<p><code>AddDataProtection</code> 返回的是一个 <code>IDataProtectionBuilder</code> 接口，这个接口提供了一个扩展方法 <code>PersistKeysToFileSystem()</code>  来存储私钥。可以通过它传入一个路径来指定私钥存储的位置，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddDataProtection()
+</span></span><span style="display:flex;"><span>        .PersistKeysToFileSystem(<span style="color:#66d9ef">new</span> DirectoryInfo(<span style="color:#e6db74">@&#34;\\server\share\directory\&#34;</span>));
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="使用证书加密">使用证书加密<a class="anchor" href="#%e4%bd%bf%e7%94%a8%e8%af%81%e4%b9%a6%e5%8a%a0%e5%af%86">#</a></h2>
+<p>可以传入一个共享文件夹，来存储私钥。这样在不同机器的私钥就可以保存到一个位置了。可以通过此种方式在分布式部署的时候，隔离开机器的差异化。如果觉得不安全，还可以配置一个<code>X.509</code>证书来进行加密，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  services.AddDataProtection()
+</span></span><span style="display:flex;"><span>      .PersistKeysToFileSystem(<span style="color:#66d9ef">new</span> DirectoryInfo(<span style="color:#e6db74">@&#34;\\server\share\directory\&#34;</span>))
+</span></span><span style="display:flex;"><span>      .ProtectKeysWithCertificate(<span style="color:#e6db74">&#34;thumbprint&#34;</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="调整默认保存时间">调整默认保存时间<a class="anchor" href="#%e8%b0%83%e6%95%b4%e9%bb%98%e8%ae%a4%e4%bf%9d%e5%ad%98%e6%97%b6%e9%97%b4">#</a></h2>
+<p><code>Data Protection</code> 默认保存时间是90天，可以通过以下方式来修改默认的保存时间：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddDataProtection()
+</span></span><span style="display:flex;"><span>        .SetDefaultKeyLifetime(TimeSpan.FromDays(<span style="color:#ae81ff">14</span>));
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="应用程序隔离">应用程序隔离<a class="anchor" href="#%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f%e9%9a%94%e7%a6%bb">#</a></h2>
+<p>默认情况下，即使使用相同的物理密钥库，<code>Data Protection</code> 也会把不同的应用程序隔离开，因为这样可以防止从一个应用程序获取另外一个应用程序的密钥。所以如果是相同的应用程序，可以设置相同的应用程序名称，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddDataProtection()
+</span></span><span style="display:flex;"><span>        .SetApplicationName(<span style="color:#e6db74">&#34;my application&#34;</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="禁止自动生成秘钥">禁止自动生成秘钥<a class="anchor" href="#%e7%a6%81%e6%ad%a2%e8%87%aa%e5%8a%a8%e7%94%9f%e6%88%90%e7%a7%98%e9%92%a5">#</a></h2>
+<p>有时候需要禁用应用程序生成密钥，或者是说只有一个程序用来生成或者管理密钥，其他程序只是负责读的话，那么可以这样：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  services.AddDataProtection()
+</span></span><span style="display:flex;"><span>      .DisableAutomaticKeyGeneration();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="修改加密算法"><strong>修改加密算法</strong><a class="anchor" href="#%e4%bf%ae%e6%94%b9%e5%8a%a0%e5%af%86%e7%ae%97%e6%b3%95">#</a></h2>
+<p>可以使用 <code>UseCryptographicAlgorithms</code> 方法来修改 <code>ASP.NET Core Data Protection</code> 的默认加密算法，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddDataProtection()
+</span></span><span style="display:flex;"><span>    .UseCryptographicAlgorithms(<span style="color:#66d9ef">new</span> AuthenticatedEncryptionSettings()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+</span></span><span style="display:flex;"><span>        ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+</span></span><span style="display:flex;"><span>    });</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>2.3 Portainer可视化面板</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/1.2%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95/" class="flex align-center">
+      <span>1.2实践及多环境调试</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#用户密码哈希">用户密码哈希</a></li>
+    <li><a href="#生命周期限制">生命周期限制</a></li>
+    <li><a href="#配置数据保护">配置数据保护</a></li>
+    <li><a href="#注册服务">注册服务</a></li>
+    <li><a href="#指定私钥存储位置">指定私钥存储位置</a></li>
+    <li><a href="#使用证书加密">使用证书加密</a></li>
+    <li><a href="#调整默认保存时间">调整默认保存时间</a></li>
+    <li><a href="#应用程序隔离">应用程序隔离</a></li>
+    <li><a href="#禁止自动生成秘钥">禁止自动生成秘钥</a></li>
+    <li><a href="#修改加密算法"><strong>修改加密算法</strong></a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

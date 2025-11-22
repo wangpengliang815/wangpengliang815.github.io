@@ -1,0 +1,4 @@
+---
+title: "📦 Redis"
+bookCollapseSection: true
+---

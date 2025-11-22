@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="为什么选择敏捷？# 传统项目管理特点# 预测性性生命周期 通过文档驱动（每个人对于文档理解力不一样可能会导致执行过程中有偏差） 过程控制（需要项目经理在过程中跟踪整个执行过程） 带来的问题：
+交付周期长 软件质量无法保证 团队士气弱（长期做同一个产品但一直得不到反馈） 按时发布率低（技术债务导致无法按时发布） 沟通效果差（文档的变化带来沟通不及时） 进度延期久 三边四没六拍# 三边# 边计划 边实施 边修改 四没# 开始时，没问题
+过程中，没关系
+失败时，没办法
+总结时，没资源
+六拍# 拍脑袋（领导拍脑袋提出想法） 拍肩膀（领导拍项目经理肩膀好好干） 拍胸脯（项目经理拍胸脯保证完成任务） 拍桌子（项目执行各种扯皮拍桌子） 拍屁股（干不下去拍屁股走人） 拍大腿（领导承担最终结果拍大腿后悔不该做） 敏捷管理特点# 透明（所有事项都会通过 US、Backlog 等形式开放给团队所有成员看到） 检查（每日站会、迭代回顾） 适应变化 带来的好处：
+快速交付 降低风险（短周期迭代持续反馈提高预见性） 适应变化（小步快跑快速验证产品需求及调整方向） 更好的质量（通过持续集成及频繁测试保证代码质量更高） 持续完善（迭代结束进行回顾检视团队动向） 更高的满意度（高优先级的需求快速交付便于快速实现商业价值） 快鱼法则# 当今市场竞争不是大鱼吃小鱼，而是快鱼吃慢鱼，这就是快鱼法则
+MVP思想# MVP（最小可行化产品，Minimum Viable Product）思想：先在市场投入极简的原型产品，通过不断试错，学习和有价值的用户反馈，对产品进行快速迭代以适应市场
+迭代和增量# Scrum基于迭代开发和增量开发。
+迭代开发# 迭代开发承认我们在把事情做对之前有可能做错，在把事情做好之前有可能做坏。迭代开发本身是一种有计划的修改策略。通过多次开发来改善正在构建的特性，逐步得出一个完善的解决方案。不过产品迭代开发的最大缺点是在遇到不确定因素的时候，很难事先确定需要改进多少次。
+此图非常经典，用于阐述很多敏捷方面的概念和理念。最开始是解释 MVP 的概念，但是正好借助MVP也可以更好的理解迭代开发。
+需求：客户需要一种工具，希望可以从A地快速的到达B地。于是研发团队开始开会研究，假设他们严格的执行了迭代开发的原则（因为他们也不确定最后造出来的到底是什么）。因为用户的需求很迫切，研发团队要快速的占领市场。所以首批推向市场的工具：滑板。
+交到用户手里时，用户很高兴。这个小东西可比走路快多了。但是随着使用的时间增加，会很累。研发团队在得到用户的反馈之后，又快速迭代。在原有滑板的基础上，增加了扶手装置。有了扶手装置，明显没有那么累了。但是长距离使用时，还是需要一只脚登地发力，还是很累。
+好，又得到了用户的反馈。针对反馈优化产品放入下一轮迭代。这次交付到客户手中的产品，被设计成了一个具有两个大大轮子的东西。用户骑起来，果然又快又省力。可是用户又问，还能更快吗？
+还能更快吗？对于研发团队没有什么做不到的，发挥集体智慧。在第四个迭代完成后，交付到客户手中的是具备发动机提供动力取代人力的东西。根本不需要人出力，用户非常的高兴。
+这个时候用户已经可以很快的从A地到达B地了。但是用户的需求永远的不会满足，“我需要带着我的家人去海边度假”，“我需要拉些重物到XX”。最后交付到用户手中，是一辆崭新的骑车。
+从一开始用户提出需求后，任何人都没有想到最后交付的尽然是一辆汽车。但是这些都是在一次一次不断的迭代中，逐步形成的。但是这其中有一个环节是不能被忽视的，发布、反馈和调整。这是一个正向的闭环。发布完版本之后，听取使用者的反馈再根据反馈进行调整。反馈可能或者一定与研发团队预想的不一致，所以需要先接纳变化，内化后再输出。
+增量开发# 增量开发基于一个古老的原则：先构建部分，在构建整体。避免到最后才冒出一个大的、爆发式的活动，集成所有组件和交付所有产品。相反把产品分解成更小的特性，先构建一部分，再来做出调整，构建更多的特性。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="为什么选择敏捷？# 传统项目管理特点# 预测性性生命周期 通过文档驱动（每个人对于文档理解力不一样可能会导致执行过程中有偏差） 过程控制（需要项目经理在过程中跟踪整个执行过程） 带来的问题：
+交付周期长 软件质量无法保证 团队士气弱（长期做同一个产品但一直得不到反馈） 按时发布率低（技术债务导致无法按时发布） 沟通效果差（文档的变化带来沟通不及时） 进度延期久 三边四没六拍# 三边# 边计划 边实施 边修改 四没# 开始时，没问题
+过程中，没关系
+失败时，没办法
+总结时，没资源
+六拍# 拍脑袋（领导拍脑袋提出想法） 拍肩膀（领导拍项目经理肩膀好好干） 拍胸脯（项目经理拍胸脯保证完成任务） 拍桌子（项目执行各种扯皮拍桌子） 拍屁股（干不下去拍屁股走人） 拍大腿（领导承担最终结果拍大腿后悔不该做） 敏捷管理特点# 透明（所有事项都会通过 US、Backlog 等形式开放给团队所有成员看到） 检查（每日站会、迭代回顾） 适应变化 带来的好处：
+快速交付 降低风险（短周期迭代持续反馈提高预见性） 适应变化（小步快跑快速验证产品需求及调整方向） 更好的质量（通过持续集成及频繁测试保证代码质量更高） 持续完善（迭代结束进行回顾检视团队动向） 更高的满意度（高优先级的需求快速交付便于快速实现商业价值） 快鱼法则# 当今市场竞争不是大鱼吃小鱼，而是快鱼吃慢鱼，这就是快鱼法则
+MVP思想# MVP（最小可行化产品，Minimum Viable Product）思想：先在市场投入极简的原型产品，通过不断试错，学习和有价值的用户反馈，对产品进行快速迭代以适应市场
+迭代和增量# Scrum基于迭代开发和增量开发。
+迭代开发# 迭代开发承认我们在把事情做对之前有可能做错，在把事情做好之前有可能做坏。迭代开发本身是一种有计划的修改策略。通过多次开发来改善正在构建的特性，逐步得出一个完善的解决方案。不过产品迭代开发的最大缺点是在遇到不确定因素的时候，很难事先确定需要改进多少次。
+此图非常经典，用于阐述很多敏捷方面的概念和理念。最开始是解释 MVP 的概念，但是正好借助MVP也可以更好的理解迭代开发。
+需求：客户需要一种工具，希望可以从A地快速的到达B地。于是研发团队开始开会研究，假设他们严格的执行了迭代开发的原则（因为他们也不确定最后造出来的到底是什么）。因为用户的需求很迫切，研发团队要快速的占领市场。所以首批推向市场的工具：滑板。
+交到用户手里时，用户很高兴。这个小东西可比走路快多了。但是随着使用的时间增加，会很累。研发团队在得到用户的反馈之后，又快速迭代。在原有滑板的基础上，增加了扶手装置。有了扶手装置，明显没有那么累了。但是长距离使用时，还是需要一只脚登地发力，还是很累。
+好，又得到了用户的反馈。针对反馈优化产品放入下一轮迭代。这次交付到客户手中的产品，被设计成了一个具有两个大大轮子的东西。用户骑起来，果然又快又省力。可是用户又问，还能更快吗？
+还能更快吗？对于研发团队没有什么做不到的，发挥集体智慧。在第四个迭代完成后，交付到客户手中的是具备发动机提供动力取代人力的东西。根本不需要人出力，用户非常的高兴。
+这个时候用户已经可以很快的从A地到达B地了。但是用户的需求永远的不会满足，“我需要带着我的家人去海边度假”，“我需要拉些重物到XX”。最后交付到用户手中，是一辆崭新的骑车。
+从一开始用户提出需求后，任何人都没有想到最后交付的尽然是一辆汽车。但是这些都是在一次一次不断的迭代中，逐步形成的。但是这其中有一个环节是不能被忽视的，发布、反馈和调整。这是一个正向的闭环。发布完版本之后，听取使用者的反馈再根据反馈进行调整。反馈可能或者一定与研发团队预想的不一致，所以需要先接纳变化，内化后再输出。
+增量开发# 增量开发基于一个古老的原则：先构建部分，在构建整体。避免到最后才冒出一个大的、爆发式的活动，集成所有组件和交付所有产品。相反把产品分解成更小的特性，先构建一部分，再来做出调整，构建更多的特性。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="为什么选择敏捷？# 传统项目管理特点# 预测性性生命周期 通过文档驱动（每个人对于文档理解力不一样可能会导致执行过程中有偏差） 过程控制（需要项目经理在过程中跟踪整个执行过程） 带来的问题：
+交付周期长 软件质量无法保证 团队士气弱（长期做同一个产品但一直得不到反馈） 按时发布率低（技术债务导致无法按时发布） 沟通效果差（文档的变化带来沟通不及时） 进度延期久 三边四没六拍# 三边# 边计划 边实施 边修改 四没# 开始时，没问题
+过程中，没关系
+失败时，没办法
+总结时，没资源
+六拍# 拍脑袋（领导拍脑袋提出想法） 拍肩膀（领导拍项目经理肩膀好好干） 拍胸脯（项目经理拍胸脯保证完成任务） 拍桌子（项目执行各种扯皮拍桌子） 拍屁股（干不下去拍屁股走人） 拍大腿（领导承担最终结果拍大腿后悔不该做） 敏捷管理特点# 透明（所有事项都会通过 US、Backlog 等形式开放给团队所有成员看到） 检查（每日站会、迭代回顾） 适应变化 带来的好处：
+快速交付 降低风险（短周期迭代持续反馈提高预见性） 适应变化（小步快跑快速验证产品需求及调整方向） 更好的质量（通过持续集成及频繁测试保证代码质量更高） 持续完善（迭代结束进行回顾检视团队动向） 更高的满意度（高优先级的需求快速交付便于快速实现商业价值） 快鱼法则# 当今市场竞争不是大鱼吃小鱼，而是快鱼吃慢鱼，这就是快鱼法则
+MVP思想# MVP（最小可行化产品，Minimum Viable Product）思想：先在市场投入极简的原型产品，通过不断试错，学习和有价值的用户反馈，对产品进行快速迭代以适应市场
+迭代和增量# Scrum基于迭代开发和增量开发。
+迭代开发# 迭代开发承认我们在把事情做对之前有可能做错，在把事情做好之前有可能做坏。迭代开发本身是一种有计划的修改策略。通过多次开发来改善正在构建的特性，逐步得出一个完善的解决方案。不过产品迭代开发的最大缺点是在遇到不确定因素的时候，很难事先确定需要改进多少次。
+此图非常经典，用于阐述很多敏捷方面的概念和理念。最开始是解释 MVP 的概念，但是正好借助MVP也可以更好的理解迭代开发。
+需求：客户需要一种工具，希望可以从A地快速的到达B地。于是研发团队开始开会研究，假设他们严格的执行了迭代开发的原则（因为他们也不确定最后造出来的到底是什么）。因为用户的需求很迫切，研发团队要快速的占领市场。所以首批推向市场的工具：滑板。
+交到用户手里时，用户很高兴。这个小东西可比走路快多了。但是随着使用的时间增加，会很累。研发团队在得到用户的反馈之后，又快速迭代。在原有滑板的基础上，增加了扶手装置。有了扶手装置，明显没有那么累了。但是长距离使用时，还是需要一只脚登地发力，还是很累。
+好，又得到了用户的反馈。针对反馈优化产品放入下一轮迭代。这次交付到客户手中的产品，被设计成了一个具有两个大大轮子的东西。用户骑起来，果然又快又省力。可是用户又问，还能更快吗？
+还能更快吗？对于研发团队没有什么做不到的，发挥集体智慧。在第四个迭代完成后，交付到客户手中的是具备发动机提供动力取代人力的东西。根本不需要人出力，用户非常的高兴。
+这个时候用户已经可以很快的从A地到达B地了。但是用户的需求永远的不会满足，“我需要带着我的家人去海边度假”，“我需要拉些重物到XX”。最后交付到用户手中，是一辆崭新的骑车。
+从一开始用户提出需求后，任何人都没有想到最后交付的尽然是一辆汽车。但是这些都是在一次一次不断的迭代中，逐步形成的。但是这其中有一个环节是不能被忽视的，发布、反馈和调整。这是一个正向的闭环。发布完版本之后，听取使用者的反馈再根据反馈进行调整。反馈可能或者一定与研发团队预想的不一致，所以需要先接纳变化，内化后再输出。
+增量开发# 增量开发基于一个古老的原则：先构建部分，在构建整体。避免到最后才冒出一个大的、爆发式的活动，集成所有组件和交付所有产品。相反把产品分解成更小的特性，先构建一部分，再来做出调整，构建更多的特性。">
+  <meta itemprop="wordCount" content="175">
+
+<title>Pmi Acp备考笔记01 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle" checked />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="active">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Pmi Acp备考笔记01</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#传统项目管理特点">传统项目管理特点</a></li>
+    <li><a href="#三边四没六拍">三边四没六拍</a>
+      <ul>
+        <li><a href="#三边">三边</a></li>
+        <li><a href="#四没"><strong>四没</strong></a></li>
+        <li><a href="#六拍"><strong>六拍</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#迭代开发">迭代开发</a></li>
+    <li><a href="#增量开发">增量开发</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="为什么选择敏捷">为什么选择敏捷？<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%80%89%e6%8b%a9%e6%95%8f%e6%8d%b7">#</a></h1>
+<h2 id="传统项目管理特点">传统项目管理特点<a class="anchor" href="#%e4%bc%a0%e7%bb%9f%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86%e7%89%b9%e7%82%b9">#</a></h2>
+<ul>
+<li>预测性性生命周期</li>
+<li>通过文档驱动（每个人对于文档理解力不一样可能会导致执行过程中有偏差）</li>
+<li>过程控制（需要项目经理在过程中跟踪整个执行过程）</li>
+</ul>
+<p>带来的问题：</p>
+<ol>
+<li>交付周期长</li>
+<li>软件质量无法保证</li>
+<li>团队士气弱（长期做同一个产品但一直得不到反馈）</li>
+<li>按时发布率低（技术债务导致无法按时发布）</li>
+<li>沟通效果差（文档的变化带来沟通不及时）</li>
+<li>进度延期久</li>
+</ol>
+<h2 id="三边四没六拍">三边四没六拍<a class="anchor" href="#%e4%b8%89%e8%be%b9%e5%9b%9b%e6%b2%a1%e5%85%ad%e6%8b%8d">#</a></h2>
+<h3 id="三边">三边<a class="anchor" href="#%e4%b8%89%e8%be%b9">#</a></h3>
+<ul>
+<li>边计划</li>
+<li>边实施</li>
+<li>边修改</li>
+</ul>
+<h3 id="四没"><strong>四没</strong><a class="anchor" href="#%e5%9b%9b%e6%b2%a1">#</a></h3>
+<ul>
+<li>
+<p>开始时，没问题</p>
+</li>
+<li>
+<p>过程中，没关系</p>
+</li>
+<li>
+<p>失败时，没办法</p>
+</li>
+<li>
+<p>总结时，没资源</p>
+</li>
+</ul>
+<h3 id="六拍"><strong>六拍</strong><a class="anchor" href="#%e5%85%ad%e6%8b%8d">#</a></h3>
+<ul>
+<li>拍脑袋（领导拍脑袋提出想法）</li>
+<li>拍肩膀（领导拍项目经理肩膀好好干）</li>
+<li>拍胸脯（项目经理拍胸脯保证完成任务）</li>
+<li>拍桌子（项目执行各种扯皮拍桌子）</li>
+<li>拍屁股（干不下去拍屁股走人）</li>
+<li>拍大腿（领导承担最终结果拍大腿后悔不该做）</li>
+</ul>
+<h1 id="敏捷管理特点">敏捷管理特点<a class="anchor" href="#%e6%95%8f%e6%8d%b7%e7%ae%a1%e7%90%86%e7%89%b9%e7%82%b9">#</a></h1>
+<ul>
+<li>透明（所有事项都会通过 <code>US</code>、<code>Backlog</code> 等形式开放给团队所有成员看到）</li>
+<li>检查（每日站会、迭代回顾）</li>
+<li>适应变化</li>
+</ul>
+<p>带来的好处：</p>
+<ol>
+<li>快速交付</li>
+<li>降低风险（短周期迭代持续反馈提高预见性）</li>
+<li>适应变化（小步快跑快速验证产品需求及调整方向）</li>
+<li>更好的质量（通过持续集成及频繁测试保证代码质量更高）</li>
+<li>持续完善（迭代结束进行回顾检视团队动向）</li>
+<li>更高的满意度（高优先级的需求快速交付便于快速实现商业价值）</li>
+</ol>
+<h1 id="快鱼法则">快鱼法则<a class="anchor" href="#%e5%bf%ab%e9%b1%bc%e6%b3%95%e5%88%99">#</a></h1>
+<blockquote class='book-hint '>
+<p>当今市场竞争不是大鱼吃小鱼，而是<strong>快鱼</strong>吃慢鱼，这就是<strong>快鱼</strong>法则</p>
+</blockquote><h1 id="mvp思想">MVP思想<a class="anchor" href="#mvp%e6%80%9d%e6%83%b3">#</a></h1>
+<blockquote class='book-hint '>
+<p><code>MVP</code>（最小可行化产品，<code>Minimum Viable Product</code>）思想：先在市场投入极简的原型产品，通过不断试错，学习和有价值的用户反馈，对产品进行快速迭代以适应市场</p>
+</blockquote><h1 id="迭代和增量">迭代和增量<a class="anchor" href="#%e8%bf%ad%e4%bb%a3%e5%92%8c%e5%a2%9e%e9%87%8f">#</a></h1>
+<p>Scrum基于迭代开发和增量开发。</p>
+<h2 id="迭代开发">迭代开发<a class="anchor" href="#%e8%bf%ad%e4%bb%a3%e5%bc%80%e5%8f%91">#</a></h2>
+<p>迭代开发承认我们在把事情做对之前有可能做错，在把事情做好之前有可能做坏。迭代开发本身是一种有计划的修改策略。通过多次开发来改善正在构建的特性，逐步得出一个完善的解决方案。不过产品迭代开发的最大缺点是在遇到不确定因素的时候，很难事先确定需要改进多少次。</p>
+<p><img src="/images/2023-03-11-11-59-39.png" alt="" /></p>
+<p>此图非常经典，用于阐述很多敏捷方面的概念和理念。最开始是解释 <code>MVP</code> 的概念，但是正好借助MVP也可以更好的理解迭代开发。</p>
+<blockquote class='book-hint '>
+<p><strong>需求</strong>：客户需要一种工具，希望可以从A地快速的到达B地。于是研发团队开始开会研究，假设他们严格的执行了迭代开发的原则（因为他们也不确定最后造出来的到底是什么）。因为用户的需求很迫切，研发团队要快速的占领市场。所以首批推向市场的工具：滑板。</p>
+<p>交到用户手里时，用户很高兴。这个小东西可比走路快多了。但是随着使用的时间增加，会很累。研发团队在得到用户的反馈之后，又快速迭代。在原有滑板的基础上，增加了扶手装置。有了扶手装置，明显没有那么累了。但是长距离使用时，还是需要一只脚登地发力，还是很累。</p>
+<p>好，又得到了用户的反馈。针对反馈优化产品放入下一轮迭代。这次交付到客户手中的产品，被设计成了一个具有两个大大轮子的东西。用户骑起来，果然又快又省力。可是用户又问，还能更快吗？</p>
+<p>还能更快吗？对于研发团队没有什么做不到的，发挥集体智慧。在第四个迭代完成后，交付到客户手中的是具备发动机提供动力取代人力的东西。根本不需要人出力，用户非常的高兴。</p>
+<p>这个时候用户已经可以很快的从A地到达B地了。但是用户的需求永远的不会满足，“我需要带着我的家人去海边度假”，“我需要拉些重物到XX”。最后交付到用户手中，是一辆崭新的骑车。</p>
+<p>从一开始用户提出需求后，任何人都没有想到最后交付的尽然是一辆汽车。但是这些都是在一次一次不断的迭代中，逐步形成的。但是这其中有一个环节是不能被忽视的，发布、反馈和调整。这是一个正向的闭环。发布完版本之后，听取使用者的反馈再根据反馈进行调整。反馈可能或者一定与研发团队预想的不一致，所以需要先接纳变化，内化后再输出。</p>
+</blockquote><p><img src="/images/2023-03-11-12-07-47.png" alt="" /></p>
+<h2 id="增量开发">增量开发<a class="anchor" href="#%e5%a2%9e%e9%87%8f%e5%bc%80%e5%8f%91">#</a></h2>
+<p>增量开发基于一个古老的原则：<strong>先构建部分，在构建整体</strong>。避免到最后才冒出一个大的、爆发式的活动，集成所有组件和交付所有产品。相反把产品分解成更小的特性，先构建一部分，再来做出调整，构建更多的特性。</p>
+<p>增量开发展示了一个重要的信息，使我们能够适应开发工作并改变工作方式。增量开发中最大的缺点是逐步构建的过程中，有迷失全局的风险。</p>
+<p><img src="/images/2023-03-11-12-08-30.png" alt="" /></p>
+<h1 id="哪些项目适用于敏捷">哪些项目适用于敏捷<a class="anchor" href="#%e5%93%aa%e4%ba%9b%e9%a1%b9%e7%9b%ae%e9%80%82%e7%94%a8%e4%ba%8e%e6%95%8f%e6%8d%b7">#</a></h1>
+<ol>
+<li>需求、技术明确。采用传统项目管理足以成功</li>
+<li>需求、技术都不确定，适合使用敏捷</li>
+</ol>
+<h1 id="三角倒置">三角倒置<a class="anchor" href="#%e4%b8%89%e8%a7%92%e5%80%92%e7%bd%ae">#</a></h1>
+<ul>
+<li>传统项目管理（计划驱动）</li>
+<li>敏捷项目管理（价值驱动）</li>
+</ul>
+<p><img src="/images/2023-07-07-15-25-27.png" alt="" /></p>
+<h1 id="敏捷思维">敏捷思维<a class="anchor" href="#%e6%95%8f%e6%8d%b7%e6%80%9d%e7%bb%b4">#</a></h1>
+<ul>
+<li>价值驱动、优先排序</li>
+<li>尽早交付、及时反馈</li>
+<li>转变思维、三角倒置</li>
+</ul>
+<h1 id="敏捷宣言">敏捷宣言<a class="anchor" href="#%e6%95%8f%e6%8d%b7%e5%ae%a3%e8%a8%80">#</a></h1>
+<ol>
+<li><strong>个体和交互胜过流程和工具</strong></li>
+</ol>
+<ul>
+<li>重视个体和团队的力量</li>
+<li>坚持以人为本、倡导共同参与</li>
+<li>一种流程不一定适用于所有团队，不同的人具有不同的工作方式</li>
+</ul>
+<ol start="2">
+<li><strong>可工作的软件胜过面面俱到的文档</strong></li>
+</ol>
+<ul>
+<li>文档够用就好 <code>just enough</code> <code>just in time</code> <code>just because</code></li>
+<li><code>5-why</code> 法获取需要该文档的根本原因</li>
+<li>避免镀金</li>
+</ul>
+<ol start="3">
+<li><strong>客户合作胜过合同谈判</strong></li>
+</ol>
+<ul>
+<li>提倡跟客户合作，聚焦于谈判阻碍客户价值的输入势必造成对立关系</li>
+</ul>
+<ol start="4">
+<li><strong>响应变化胜过遵循计划</strong></li>
+</ol>
+<ul>
+<li>变更是创造伟大产品的有价值的工具</li>
+<li>去除低优先级的需求</li>
+</ul>
+<h1 id="敏捷12条准则">敏捷12条准则<a class="anchor" href="#%e6%95%8f%e6%8d%b712%e6%9d%a1%e5%87%86%e5%88%99">#</a></h1>
+<blockquote class='book-hint '>
+<p>没有什么方法可以保证团队一定能开发出完美的软件，敏捷的团队也是同样的，所以有一系列的原则来帮助敏捷团队</p>
+</blockquote><ul>
+<li>
+<p>尽早、持续地交付有价值的软件，让客户满意</p>
+</li>
+<li>
+<p>欣然面对需求变化，即使在开发后期。敏捷过程利用变化为客户维持竞争的优势</p>
+</li>
+<li>
+<p>频繁地交付可工作的软件，从数周到数月，交付周期越短越好</p>
+</li>
+<li>
+<p>在团队内外，面对面交谈是最有效，也是最高效的沟通方式</p>
+</li>
+<li>
+<p>在整个项目过程中，业务人员必须和开发人员每天都在一起工作</p>
+</li>
+<li>
+<p>以受激励的个体为核心构建项目。为他们提供所需的环境和支持，相信他们可以把工作做好</p>
+</li>
+<li>
+<p>可工作的软件是衡量进度的首要标准</p>
+</li>
+<li>
+<p>敏捷过程倡导可持续开发</p>
+</li>
+<li>
+<p>坚持不懈的追求技术卓越和良好的设计，以此增强敏捷的能力</p>
+</li>
+<li>
+<p>简单是尽最大可能减少不必要工作的艺术，是敏捷的根本</p>
+</li>
+<li>
+<p>最好的架构、需求和设计来自自组织的团队</p>
+</li>
+<li>
+<p>团队定期反思如何提升效率，并依此调整自己的行为</p>
+</li>
+</ul>
+<p><strong>客户总是对的吗？</strong></p>
+<blockquote class='book-hint '>
+<p>一个好的开发团队要交付给客户真正需要的东西，而不是提供给他们要的东西。亨利.福特曾经说过一句话“如果我问人们想要什么，他们肯定会说想要更快地马（而不是汽车）”。这个事情说明客户无法在一开始就告诉你他想要的是一辆汽车而不是一匹更快地马。</p>
+</blockquote><p>敏捷所说的12条原则的初衷就是让团队构建用户真正需要的产品，有价值的软件。但是每个人都会看到软件中不同的价值，那么就要求每个人都想想其他利益相关人，想他们各自关心的事情，想想软件会给他们带来的价值。任何新产品在第一次面市的时候都是功能不全面的，尤其市面上没有同类产品的时候，随着时间以及版本的更替，产品会解决越来越多的问题，以及会变的越来越好用，我们现在去看当初的产品肯定很容易就看出来其中的问题，但是在项目刚刚开始的时候是很难思考全面的。</p>
+<p><strong>按我现在说的做，而不是按我之前说的做</strong></p>
+<blockquote class='book-hint '>
+<p>很多公司做一个项目或者产品的时候会在一开始组织专门的人员找齐全部利益相关人开会讨论，然后将所有的信息整合到一起形成一份说明书，然后再发送到各利益相关人那里进行评审，然后再开会讨论，再出一份更好的说明书，一次一次的可能要耗费好几天，最终形成一份各方面都满意的说明书。拿给开发团队评估工期，综合各方面可能要1、2个月之久，但是各利益人都觉得很不错，因为一年之后就可以拿到一个非常棒的产品。经过一年的奋斗，开发团队终于交付了产品，产品与说明书相差无几，准确地展现了各利益人所要的功能。但是结果呢，往往一年的时间市场已经变化，一年前很被市场需要的软件并不被当前的市场所需要。</p>
+</blockquote><blockquote class='book-hint '>
+<p>市场存在着变数，一些变数在项目初期是可以被发现的，但是更多的变数都是在项目开始的时候无法被发现的。但是说明书已经制定了，而开发团队又不喜欢自己做的东西不停的变化。所以团队要快速地响应市场以及各利益相关人的变化，敏捷的几项原则就是帮助团队应对这种变化的。</p>
+</blockquote><p><strong>原则1：尽早、持续地交付有价值的软件，让客户满意</strong></p>
+<blockquote class='book-hint '>
+<p>敏捷团队最重要的事情就是给客户交付可工作的软件。而这条原则就包含三点，尽早发布软件、持续交付价值、让客户满意。</p>
+</blockquote><blockquote class='book-hint '>
+<p>没有什么事情的完美的。尽管在项目一开始每个人都想一次性的提出全部的需求，但是问题在于客户在真正拿到可工作的软件之前，都不清楚应该提什么样的需求。所以就要求开发团队尽早的交付，尽早的给客户一个可工作的软件，即便是仅交付了一个可工作的特性，也是一种突破。这对整个团队都是有益的，因为客户可以给出有价值的反馈，这样开发团队才能朝着正确地方向推进项目。</p>
+</blockquote><blockquote class='book-hint '>
+<p>尽早交付也有一个缺点，就是最初交付给客户的软件完成度非常的低。很多客户很难忍受一个仅有部分功能，还有可能存在大量BUG的软件，这些客户往往认为既然交付就要交付完整地产品。</p>
+<p>敏捷的核心价值观里有一句，客户协作高于合同谈判。这就要去客户也要能够和开发团队一起成长，一起协作，共同逐步完善产品。如果客户非常官僚，那么团队就必须全新的变更管理流程，这要去与客户重新进行一轮合同谈判。真正与客户协作的团队可以在开发过程中任意进行任何有必要地改变，这也是持续交付的意义所在。而团队确定哪些特性能交付价值的唯一方法就是与客户协作，并利用前一次迭代收到的反馈。从短期看，团队可以通过尽早交付价值让客户满意，从长期看，交付最终产品的时候可以使得价值最大化。</p>
+</blockquote><p><strong>原则2：欣然面对需求变化，即使是在开发后期。敏捷过程利用变化为客户维持竞争优势</strong></p>
+<blockquote class='book-hint '>
+<p>如果做项目就会面临着大量的变化，尤其是老板不会顾及工作量，也不会改变截止时间，当这种情况下存在大量的变化时，开发人员就一定会有情绪，从而形成恶性循环。</p>
+</blockquote><blockquote class='book-hint '>
+<p>为什么会使得开发人员抱怨不止，因为在需求变更之前，开发人员会认为项目进展的很好，而且可能做了很多决策：如何规划产品结构，要开发什么产品，向客户承诺交付什么。结果一个项目外的人突然告诉你这个计划里有错误，而且是你的锅。给开发人员说它错了，是很难接收的。尤其说的人还享受着他的服务，就好比，你做了一盘菜给别人吃，那个人一边津津乐道的吃，还一边骂你做的菜难吃如屎。开发人员对自己所做的工作都是有一种自豪感的：我们交付的产品我们能负责，而且能满足用户的需求。而变化就是在质疑这种自豪感。瞬间就会感觉自己的努力没有得到尊重。</p>
+</blockquote><blockquote class='book-hint '>
+<p>而开发人员如何才能够接收变化。简单地说就是站在客户的角度去看待问题。其实客户也不愿意给开发人员提出变化，因为这就是要求他们承认自己在一开始犯了错误，让开发人员白做了很多事情。正因如此，往往客户都是很晚才来告诉开发人员变化，因为他们知道自己带来的是坏消息，这是让人很难堪的行为，客户还要为整个变化买单。所以，将心比心，开发和客户都要做一些不可能的事情，开发人员被要求读懂客户的心，客户被要求能预测未来。</p>
+</blockquote><p>要做到能够欣然接收变化，就要意识到以下几点：</p>
+<ul>
+<li>
+<p>不要认为有变化就要有人要倒霉。每个人都要求知道犯错了以后就立即改正而不是期待一开始就做到完美</p>
+</li>
+<li>
+<p>我们是一条绳上的蚂蚱。每个人包括客户都要对全部需求以及变化负责，争论谁对谁错是没有意义的，抱怨变化是没有意义的</p>
+</li>
+<li>
+<p>我们不把变化拖到最后。谁都不愿意犯错误，但是这是难免的，那么就要尽早修复，将损失降到最低</p>
+</li>
+<li>
+<p>我们不要再把变化当做犯错。在当时的信息环境下，能做到那个程度已经很好了，出了错事才会让路变得更加明朗</p>
+</li>
+<li>
+<p>我们通过变化学到东西。变化才是团队成长最有效的方式</p>
+</li>
+</ul>
+<p><strong>原则3：频繁交付可工作的软件，从数周到数月，交付周期越短越好</strong></p>
+<blockquote class='book-hint '>
+<p>对于敏捷实践者来说，传统的实践方法被称作“命令-控制”。这种方式与军事的命令-控制的方式是一致的。“命令”指的是项目经理给团队分配任务的方式。尽管并不是所有成员都向项目经理汇报，但是项目经理仍然可以控制所有人的任务分配。“控制”指的是项目经理管理变化的方式。无论是项目内的变化还是员工休假、机器故障，亦或是其他一些无关的变化，都在项目经理的监控之内。当变化时对其进行评估，更新项目计划，在进度安排和文档中引入变化带来的改变，给团队分配新的任务，管理利益干系人的期待，不要让人感到意外。使用敏捷的传统项目负责人不愿意欣然接受变化的原因就是害怕变化引起的混乱。</p>
+</blockquote><blockquote class='book-hint '>
+<p>那么，如何才能又能欣然的接受变化，又能不引入混乱？关键在于频繁发布可工作的软件。团队将迭代的周期缩短，在每一轮迭代结束的时候，都可以交付一个可以使用或者演示的软件，然后计划下一个迭代要干什么，这样一个可预测的进度安排和持续检查可以帮助团队尽早掌握变化，同时也创建了一个没有责备的氛围。传统项目经理最大的困难就是监视变化，每日审查和迭代回顾相当于让整个团队帮助项目经理尽早的发现变化，避免将变化放在项目的晚期，从而防止这些变化对项目造成更严重的影响。</p>
+</blockquote><blockquote class='book-hint '>
+<p>传统的瀑布式流程一旦定义好需求就把开发团队和客户完全隔离开，而敏捷团队采取的则完全不同，后者始终与客户交互。这样就可以及时响应变化，开发出更好地产品。但是每当发现项目确实需要修改的时候，都有一半人返回去更新规格说明书，以保证计划保持最新的状态。越来越多的人觉得文档太多，但是每当想砍掉一些内容的时候，就会有人说如果不写某项功能、需求、设计或测试用例，那么就会有人产生误解。如果最终的实现不正确，他们就会因此遭到谴责。于是，文档中的任何一部分看上去都是必要地，因为少了任何一部分团队都有可能开发出错误的软件。</p>
+</blockquote><blockquote class='book-hint '>
+<p>一直以来各个团队都对文档写多少而感到困惑，一直都在努力找到一种平衡。那么对于敏捷团队来说，文档写的够项目开发用就可以了，具体要参看团队要解决的问题以及沟通的情况。一个原则就是如果某种文档不能给团队开发软件带来帮助，而且也没有必须写的原因，那么敏捷团队就不写这种文档。</p>
+</blockquote><p><strong>原则4：在团队内外，面对面交谈是最有效、也是最高效的沟通方式</strong></p>
+<blockquote class='book-hint '>
+<p>为什么要写文档，并不是因为要写出来一份东西，而是要把我的想法告诉你，使我脑子里地想法和你脑子里地想法仅可能的接近。为什么面对面的交谈是最有效的，而且大于文档。因为我们都知道，一份完整地文档是很难实现的，而且是非常耗时的，到最后完成的文档又不一定在项目中有用。然而面对面去交谈，就很容易形成头脑的风暴，很容易让大家的思想达到统一，这正是交谈的良好方式，一有什么变化就可以立即进行讨论。</p>
+</blockquote><blockquote class='book-hint '>
+<p>团队沟通的终极目标是形成一种集体意识，在成员之间建立不必直说也能领悟的共同知识。一个团队能够形成集体意识，越能共享同样地视角，就越容易对同样地问题形成一致的答案。这为团队构筑了处理变化的坚实基础，可以跳过冲突，立即编写代码，而且不会因为维护文档而分心。</p>
+</blockquote><p><strong>原则5：在整个项目中，业务人员和开发人员必须每天在一起工作</strong></p>
+<blockquote class='book-hint '>
+<p>为了完成出色的软件，开发团队需要与业务人员进行大量面对面的讨论，业务人员了解需要什么软件，因为他们在没有软件的情况下开展了同样地工作，有了业务人员的陪伴，研发人员可以及时更改自己的开发方向，但是业务人员往往希望开上一两次会就解决剩下的问题，因为他们同样也有自己的工作。</p>
+</blockquote><blockquote class='book-hint '>
+<p>如何解决这个问题，首先双方要都认识到，团队要给公司开发带来价值的软件。完成后的软件应该值得公司的投入。如果软件带来的价值超过了开发软件的成本，那么公司就值得在这项开发上面投入资金。一个好的项目应该有足够的价值让业务人员赶到值得投入精力。所以业务人员应该与开发人员坐在一起工作，尽早的处理变化，因为后期修改的成本会很高。而业务人员应该很喜欢跟敏捷的团队一起合作，因为传统的开发团队把业务人员看做谈判的客户，而敏捷团队则是与客户合作的，在项目进行过程中客户具有平等的发言权。</p>
+</blockquote><p><strong>原则6：以受激励的个体为核心构建项目，为他们提供环境和支持，相信他们可以把工作做好</strong></p>
+<blockquote class='book-hint '>
+<p>如果团队里地每一个人都认为自己开发的软件是很有价值的，是能够给公司带来利益的，那么这个团队就会越来越好。相反，如果团队成员看不到软件的价值，或者他们没有因为开发优秀软件而得到奖励，那么在这种情况下，项目就会失败，因为项目中最重要的是人。现在大多数公司的考核与绩效往往不利于员工开展高效的敏捷方法。</p>
+</blockquote><p>大多数公司的问题为：</p>
+<ol>
+<li>
+<p>在代码审查中，如果不断发现bug，那么这个程序员就会得到糟糕的评价，如果没有发现bug，那么这个程序员就会得到奖励。（这会导致程序员在代码审查中不愿意去寻找bug。）</p>
+</li>
+<li>
+<p>根据发现bug的数量去奖励测试人员。（这会导致测试人员挑刺并且奖励报告的质量。这种方式还会使得程序员和测试人员之间产生敌对情绪，会阻碍程序员和测试员之间的合作。）</p>
+</li>
+<li>
+<p>根据业务分析员产出的文档量去判定其绩效评级（而不是根据他们与团队分享的知识量评评级）</p>
+</li>
+</ol>
+<p>所以以这种绩效去考核程序员，最终出来的内容肯定不会好，一个很好的团队应该根据成员对团队的贡献去进行考核，鼓励贡献多的人员。比如认识到软件并没有解决的某个业务问题并将其修复的程序员，以及能够发现代码或架构中的问题并提交给团队的测试人员。</p>
+<blockquote class='book-hint '>
+<p>不好的氛围容易引发一种一心自保（<code>Cover Your Ass</code>，CYA）的态度，在这种态度下，测试人员会努力确保每一项需求都有测试覆盖，而不去考虑测试到底能不能对软件的质量有所帮助。程序员会严格遵循需求文档中的每一个字，而不去认真想一想自己开发的功能是不是真正给用户带来价值。在这样的公司经理自然想找一个“始作俑者”为那些因变化而产生的额外工作量而负责。当这种趋势不可避免的时候，团队里的成员会逐渐转向编写“防御性文档”以保护自己。为了避免糟糕的考核或惩罚，他们可以把责任撇向他们所遵循的那部分文档。</p>
+</blockquote><blockquote class='book-hint '>
+<p>过于详尽的文档会增加需求含糊以及团队成员之间误解和沟通的风险。敏捷团队最有效的沟通方式就是面对面的沟通，并且输出最少的文档，让开发人员和业务人员每天工作在一起，尽快的交付最大价值的产品，并且在团队中每一位成员都会有项目的责任感，因为他们都要对项目负责，并且他们都可以为项目做出正确地决定。</p>
+</blockquote><p><strong>原则7：可工作的软件是衡量进的的首要标准</strong></p>
+<blockquote class='book-hint '>
+<p>好的团队合作会确保所有人在任何时刻都了解项目的进展。</p>
+</blockquote><blockquote class='book-hint '>
+<p>在传统的“命令-控制”项目经理眼中，要想掌控项目的进展就要让成员经常更新项目的状态。但是状态汇报是很难获得项目的真正状态。汇报本身就不是一种完美的沟通工具，而且还带有很浓重的政治色彩，而且所有的项目经理到知道有时候需要在状态汇报中略去一些会让经理和团队主管难堪的东西，而别人常常需要用这些信息进行决策。</p>
+</blockquote><blockquote class='book-hint '>
+<p>所以，最好的汇报方式就是一个可工作的软件，只要真切的看到了软件在眼前工作，那么你就“得到了”项目的进展。当看到软件中缺少或者不满意的部分，相关人员就会主动去沟通下一步的计划了。敏捷团队在每一轮迭代结束的时候交付可工作的软件，通过真实地产品向大家展示具体成果，团队可以让大家掌握项目进展的最新情况，而且这种方式几乎不可能让人产生误解。</p>
+</blockquote><p><strong>原则8：敏捷过程倡导可持续开发。赞助商、开发人员和用户要能够共同、长期维持其步调，稳定向前</strong></p>
+<blockquote class='book-hint '>
+<p>很多团队就会出现一种现象，每当截止日期临近的时候，就会出现拼命的加班，尤其是在晚上和周末。这种做法是不可靠的，一个团队可以拼命工作几个星期干更多地活，但是团队的工作效率一般都会再这段时间过后一落千丈。人们会感到疲劳，而且由于加班而耽误的事情，最终都会找上门来，然后就会付出更多的时间和精力去处理。因此敏捷团队要做的就是可持续的开发节奏。会预留时间，并且制定一个切实可靠的计划，通过迭代。因为每次预估的都是接下来一周、两周的公布工作内容，而且承诺的仅是可以交付的内容，所以就不会动不动的加班，从而形成一种良性循环。</p>
+</blockquote><blockquote class='book-hint '>
+<p>可持续的开发节奏就是给予团队足够的开发时间，让成员不需要工作到深夜，也不需要周末加班的节奏。</p>
+</blockquote><p><strong>原则9：坚持不懈的追求技术卓越和设计优越，以此增强敏捷的能力</strong></p>
+<blockquote class='book-hint '>
+<p>计划做的太夸张并不是老加班的唯一原因，有的时候看起来是一个很简单地功能，当做起来就觉得有点难度，而随着越做越深入，就觉得这是一个坑。然后发布了以后本来可以轻松的转向其他的事情，但是却要不停的修复这个功能的bug以及打补丁。所以从长久来看设计良好的代码会大量减少后续的维护工作。但是这并不是意味着在软件一开始就进行完整地设计。而一个良好的程序员会再编写的时候不停的寻找设计和代码的问题，一旦发现问题，就会立即进行修复。在项目的开发过程中，只需要在当下多花一点点时间编写可靠的代码并及时修复问题，那么留下来的这份代码库在未来就会非常好的维护。</p>
+</blockquote><p><strong>原则10：简单是尽最大可能减少不必要工作的艺术，是敏捷的根本</strong></p>
+<blockquote class='book-hint '>
+<p>在开发软件的时候，要尽量的简单，解除耦合性，因为如果项目比较复杂，那么在向项目中添加新的代码的时候就会让项目变得越来越复杂，因为有了依赖关系，变化导致系统另一部分发生变化的可能性会提升，后面还有可能导致第三个变化，到最后就会形成多米诺效应。而产出好的代码的方式就是以最少计划启动项目，但是人们往往认为没有良好的计划，那么将来面对变化的时候就会很头疼，因为如果现在就开始编码的花，那么以后遇到变化的话，就有可能删除现在的代码。</p>
+</blockquote><blockquote class='book-hint '>
+<p>避免这种现象的方法就是迭代式的编程，每轮迭代都开发没有太多依赖或者不必要依赖的代码系统。编码的时候如果团队仅基于一些智能实现单一功能的小型自包含单元进行设计，那么就可以很好地避免多米诺效应。那么哪些单元是很有必要的，就要去业务人员与开发人员经常的进行沟通，确保只开发有价值的特性，因为后期维护一些没有价值的特性往往比这些特性给公司带来的价值要高。</p>
+</blockquote><p><strong>原则11：最好的架构、需求和设计来自自组织的团队</strong></p>
+<blockquote class='book-hint '>
+<p>有大量事前设计的团队非常容易做出过于复杂的设计。因为在设计和架构的阶段就要尽全力就必定意味着要构建可以做到的最棒的架构。如果提出的需求比较少而且设计太简单，那么从直觉上就会给人一种偷工减料的感觉。只有他们拿出一份巨大的需求文档和一个复杂的设计才不会让人质疑。过于复杂的设计又会舍得后期做变化的时候陷入恶性循环。</p>
+</blockquote><blockquote class='book-hint '>
+<p>那么一个比较好的方式就是组织自组织的团队（self-organizing team），没有明确地需求和设计环节。这个团队会一起对项目进行规划，并且会作为一个团队进行改进计划，没有明确地领导，也就没有很多的干预项，他们会把项目分解成多个部分，从能给公司带来最大价值的部分着手，然后再考虑详细的需求、设计和架构。这样的团队所有人都会对架构进行设计，每个人都有责任，每个人都说的算。这样的团队就很容易循序渐进，从而设计出一个增量式的方案。</p>
+</blockquote><p><strong>原则12：团队定期反思如何提升效率，并依此调整</strong></p>
+<blockquote class='book-hint '>
+<p>一个敏捷团队如果不能持续地改进构建软件的方式，那么团队就不算敏捷。敏捷的团队会不断的对项目进行检查，不断的进行优化，他们会从项目中学习，通过检查的结果对未来进行改造。而且他们并不只是在项目结束的时候这么做，他们会每天都在寻找需要改进的地方。增强团队实力的唯一方式就是经常回顾自己已经做的事情，然后评估作为一个团队这些事情做得怎么样，最后提出改进的计划。要经常回顾过去，看看哪些事情做对了，哪些事情做错了。这需要揪出具体的问题和错误，而很少有人会对公然指出其他的错误而感到自在。随着时间的推移，团队中的成员会对这件事情感到越来越自然。最终，大家会认为这是提意见而不是挑刺。</p>
+</blockquote><blockquote class='book-hint '>
+<p>很多团队认为他们并没有时间去进行这件事情，他们在一个项目结束了以后就会立即投入下一个项目中，认为与其花时间在这个上面还不如投入到下一个项目中。那么就要求团队在制定计划的时候就给项目结束后预留一些时间来进行回顾，因为这件事情很重要，团队成员可以从这其中吸取教训，提高效率。</p>
+</blockquote><p><strong>整合所有的原则</strong></p>
+<p>一个好的敏捷团队是要整合所有的原则，而不是从中寻找几个实践，整合这些实践的关键在于团队的思维方式，敏捷的价值观和原则是思维背后的动力。敏捷团队不仅要诚实的回顾开发软件的方式，还要回顾成员交流的方式，以及与公司其他同事交流的方式。首先要理解原则，然后要理解其中的原理，还要在工作中不断的评估和改进。</p>
+<blockquote class='book-hint '>
+<p>并且敏捷团队的沟通方式可以让开发人员真正的进步，因为他们的团队很可能是自组织团队，每个人都会去进行自主的学习，因为团队的知识决定了项目的宽度，并且团队成员自己会决定让团队正常运转的沟通内容，这不仅可以开发出更好地产品，而且你还可以向坐在身边的开发人员取长补短。</p>
+</blockquote></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>Pmi Acpdown</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="flex align-center">
+        <span>Pmi Acp备考笔记02</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#传统项目管理特点">传统项目管理特点</a></li>
+    <li><a href="#三边四没六拍">三边四没六拍</a>
+      <ul>
+        <li><a href="#三边">三边</a></li>
+        <li><a href="#四没"><strong>四没</strong></a></li>
+        <li><a href="#六拍"><strong>六拍</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#迭代开发">迭代开发</a></li>
+    <li><a href="#增量开发">增量开发</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

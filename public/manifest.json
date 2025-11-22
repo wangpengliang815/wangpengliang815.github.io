@@ -1,0 +1,15 @@
+{
+  "name": "CODE'NOTE",
+  "short_name": "CODE'NOTE",
+  "start_url": "/wangpengliang815/wangpengliang815.github.io/",
+  "scope": "/wangpengliang815/wangpengliang815.github.io/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/wangpengliang815/wangpengliang815.github.io/favicon.svg",
+      "sizes": "512x512"
+    }
+  ]
+}

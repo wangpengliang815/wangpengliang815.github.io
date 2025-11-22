@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.2docker%E9%95%9C%E5%83%8F/">1.2 Docker镜像</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>镜像是一种轻量级、可执行的独立软件包，用来打包软件运行环境和基于运行环境开发的软件，包含运行软件所需的所有内容，包括代码、运行时、库、环境变量和配置文件，Docker 运行容器前需要本地存在对应的镜像，如果本地不存在会从镜像仓库下载该镜像。</p>
+<blockquote class='book-hint '>
+<p>操作系统分为内核和用户空间。对于 Linux 而言，内核启动后，会挂载 <code>root</code> 文件系统为其提供用户空间支持。而 Docker 镜像就相当于是一个 root 文件系统。比如官方镜像 ubuntu:18.04 就包含了完整的一套 Ubuntu 18.04 最小系统的 …</p></blockquote></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.3docker%E5%AE%B9%E5%99%A8/">1.3 Docker容器</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>容器是依赖于镜像生成，独立运行的一个或一组应用以及它们的运行环境。</p>
+<h1 id="启动容器">启动容器<a class="anchor" href="#%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8">#</a></h1>
+<p>启动容器有两种方式</p>
+<ul>
+<li>基于镜像新建容器并启动</li>
+<li>将在终止状态（<code>stopped</code>）的容器重新启动</li>
+</ul>
+<h2 id="新建并启动容器">新建并启动容器<a class="anchor" href="#%e6%96%b0%e5%bb%ba%e5%b9%b6%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8">#</a></h2>
+<p>比如下面的命令输出“hello world!”，之后终止容器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run ubuntu /bin/echo &#39;hello world!&#39;</span>
+</span></span><span style="display:flex;"><span>hello world!</span></span></code></pre></div><p>下面的命令则启动一个 bash 终端，允许用户进行交互：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[ …</span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.4docker%E4%BB%93%E5%BA%93/">1.4 Docker仓库</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>仓库是集中存放镜像的地方。注册服务器是管理仓库的具体服务器，每个服务器上可以有多个仓库，每个仓库下面有多个镜像。</p>
+<h1 id="docker-hub">Docker Hub<a class="anchor" href="#docker-hub">#</a></h1>
+<p>Docker 官方维护了一个公共仓库 Docker Hub，其中已经包括了数量超过 15,000 的镜像。大部分需求都可以通过在 Docker Hub 中直接下载镜像来实现。</p>
+<h2 id="注册">注册<a class="anchor" href="#%e6%b3%a8%e5%86%8c">#</a></h2>
+<p>在 <a href="https://hub.docker.com">Docker Hub</a> 免费注册一个 Docker 账号。</p>
+<p><img src="/images/2021-09-09-13-57-25.png" alt="" /></p>
+<h2 id="登录">登录<a class="anchor" href="#%e7%99%bb%e5%bd%95">#</a></h2>
+<p>通过执行 <code>docker login</code>  命令交互式的输入用户名及密码来完成在命令行界面登录 Docker Hub，通过 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/">1.5 Docker数据管理</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>在容器中管理数据主要有两种方式：</p>
+<ul>
+<li>数据卷（ <code>Volumes</code> ）</li>
+<li>挂载主机目录 ( <code>Bind Mounts</code> )</li>
+</ul>
+<p>关于使用：<code>-v</code> or <code>--mount</code>，新手推荐选择 <code>--mount</code> 参数，经验丰富的自由发挥。</p>
+<h1 id="容器数据卷">容器数据卷<a class="anchor" href="#%e5%ae%b9%e5%99%a8%e6%95%b0%e6%8d%ae%e5%8d%b7">#</a></h1>
+<p>数据卷（<code>Volumes</code>）是一个可供一个或多个容器使用的特殊目录它可以绕过 UFS，可以提供很多有用的特性：</p>
+<ul>
+<li>数据卷可以在容器之间共享和重用</li>
+<li>对数据卷的修改会立马生效</li>
+<li>对数据卷的更新不会影响镜像</li>
+<li>数据卷默认会一直存在，即使容器被删除</li>
+</ul>
+<p>数据卷的使用，类似 Linux 下对目录或文件进行 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/">1.6 Docker容器网络模式</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>安装Docker时会自动创建三个网络。可以使用 <code>docker network ls</code> 命令列出网络：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker network ls</span>
+</span></span><span style="display:flex;"><span>NETWORK ID     NAME      DRIVER    SCOPE
+</span></span><span style="display:flex;"><span>cdda3ae8795a   bridge    bridge    local
+</span></span><span style="display:flex;"><span>ed7ffc7437dd   host      host      local
+</span></span><span style="display:flex;"><span>fa66bc1a17f4   none      null      local</span></span></code></pre></div><h1 id="四种网络模式">四种网络模 …</h1></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">1.7 Docker高级网络配置</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>除了自动创建的网络，还可以创建自定义网络。Docker提供三种自定义网络驱动： <code>bridge</code> /<code>overlay</code> / <code>macvlan</code> ，其中 <code>overlay</code>  和 <code>macvlan</code> 用于创建跨主机的网络。</p>
+<blockquote class='book-hint '>
+<p>注意：建议使用自定义的网络来控制哪些容器可以相互通信，可以自动DNS解析容器名称到IP地址</p>
+</blockquote><p>除了自动创建的网络还可以创建自定义网络。Docker提供三种自定义网络驱动：</p>
+<ul>
+<li><code>bridge</code></li>
+<li><code>overlay</code></li>
+<li><code>macvlan</code></li>
+</ul>
+<p>其中 <code>overlay</code>  和 <code>macvlan</code> 用于创建跨主机的网络。</p>
+<blockquote class='book-hint '>
+<p>注意：建议使用自定 …</p></blockquote></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.8dockerfile/">1.8 Dockerfile</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>之前已经了解到镜像的定制实际上就是定制每一层所添加的配置、文件。如果可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，这就是 <code>Dockerfile</code>。</p>
+<h1 id="格式描述">格式描述<a class="anchor" href="#%e6%a0%bc%e5%bc%8f%e6%8f%8f%e8%bf%b0">#</a></h1>
+<p>Dockerfile 整体由两类语句组成</p>
+<ul>
+<li><code>Comment</code>  注释信息</li>
+<li><code>Instruction arguments</code>  指令参数，一行一个指令</li>
+</ul>
+<p><strong>注意</strong></p>
+<ul>
+<li><code>Dockerfile</code> 文件名首字母必须大写</li>
+<li><code>Dockerfile</code> 指令不区分大小写，但为方便和参数做区分，通常指令使用大写字母</li>
+<li><code>Dockerfile</code> 指令按顺序从上 …</li></ul></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/1.9dockercompose/">1.9 Docker Compose</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><blockquote class='book-hint '>
+<p><code>Docker Compose</code> 是 Docker 官方编排（Orchestration）项目之一，负责实现对 Docker 容器集群的快速编排，快速的部署分布式应用。</p>
+</blockquote><p>通过之前学习已经了解到使用一个 <code>Dockerfile</code> 模板文件，可以很方便的定义一个单独的应用容器。然而在日常工作中，经常碰到的情况是需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器、负载均衡容器等等。<code>Compose</code> 就是用来处理这些事情的。它通过一个单独 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/2.0dockermachine/">2.0 Docker Machine</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="概念">概念<a class="anchor" href="#%e6%a6%82%e5%bf%b5">#</a></h1>
+<p>Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境，基于 Go 语言实现。</p>
+<h1 id="安装">安装<a class="anchor" href="#%e5%ae%89%e8%a3%85">#</a></h1>
+<p>Docker Machine 可以在多种操作系统平台上安装，包括 Linux、MacOS，以及 Windows。</p>
+<h2 id="macoswindows">MacOS、Windows<a class="anchor" href="#macoswindows">#</a></h2>
+<p>Docker for Mac、Docker for Windows 自带 <code>docker-machine</code> 二进制包，安装之后即可使用。
+<strong>查看版本信息</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-machine -v …</span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/docker/2.1dockerswarm/">2.1 Docker Swarm</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="背景介绍">背景介绍<a class="anchor" href="#%e8%83%8c%e6%99%af%e4%bb%8b%e7%bb%8d">#</a></h1>
+<p>借助一个Redis实例来学习 <code>Docker Swarm</code>，背景：<code>standalone</code> 部署模式故障转移机制：独立部署 <code>Redis</code> ，借助 <code>docker swarm</code> 故障转移机制做到基本HA，多节点的Redis通过 <code>NFS</code> 实现容器数据共享。</p>
+<h1 id="环境准备">环境准备<a class="anchor" href="#%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87">#</a></h1>
+<p>独立的 <code>NFS</code> 服务器</p>
+<table>
+  <thead>
+      <tr>
+          <th>192.168.158.143</th>
+          <th>部署NFS服务</th>
+      </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p><code>Swarm</code> 集群由 <strong>管理节点</strong> 和 <strong>工作节点</strong> 组成。这里创建一个包含一个管理节点和 …</p></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/">1</a><a >2</a><a href="/posts/page/3/">3</a><a href="/posts/page/4/">4</a></span>
+  
+  <span>
+    <a href="/posts/page/3/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

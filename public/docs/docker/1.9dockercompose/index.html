@@ -1,0 +1,2777 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content=" Docker Compose 是 Docker 官方编排（Orchestration）项目之一，负责实现对 Docker 容器集群的快速编排，快速的部署分布式应用。
+通过之前学习已经了解到使用一个 Dockerfile 模板文件，可以很方便的定义一个单独的应用容器。然而在日常工作中，经常碰到的情况是需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器、负载均衡容器等等。Compose 就是用来处理这些事情的。它通过一个单独的 docker-compose.yml 模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目project。
+Compose 中有两个重要的概念：
+服务 (service)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例 项目 (project)：由一组关联的应用容器组成的一个完整业务单元，在 docker-compose.yml 文件中定义 Compose 的默认管理对象是项目，通过子命令对项目中的一组容器进行便捷地生命周期管理，Compose 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 来对容器进行管理。因此只要所操作的平台支持 Docker API 就可以在其上利用 Compose 来进行编排管理。
+安装# Compose 支持 Linux、macOS、Windows 10 三大平台，安装方式：
+通过 Python 的包管理工具 pip 进行安装 直接下载编译好的二进制文件使用 直接在 Docker 容器中运行 前两种方式是传统方式，适合本地环境下安装使用；最后一种方式则不破坏系统环境，更适合云计算场景，Docker for Mac 、 Docker for Windows 自带 docker-compose 二进制文件，安装 Docker 之后可以直接使用。
+查看本机是否安装
+[root@wangpengliang ~]# docker-compose --version -bash: docker-compose: 未找到命令Linux下安装 Compose
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="Docker Compose 是 Docker 官方编排（Orchestration）项目之一，负责实现对 Docker 容器集群的快速编排，快速的部署分布式应用。
+通过之前学习已经了解到使用一个 Dockerfile 模板文件，可以很方便的定义一个单独的应用容器。然而在日常工作中，经常碰到的情况是需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器、负载均衡容器等等。Compose 就是用来处理这些事情的。它通过一个单独的 docker-compose.yml 模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目project。
+Compose 中有两个重要的概念：
+服务 (service)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例 项目 (project)：由一组关联的应用容器组成的一个完整业务单元，在 docker-compose.yml 文件中定义 Compose 的默认管理对象是项目，通过子命令对项目中的一组容器进行便捷地生命周期管理，Compose 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 来对容器进行管理。因此只要所操作的平台支持 Docker API 就可以在其上利用 Compose 来进行编排管理。
+安装# Compose 支持 Linux、macOS、Windows 10 三大平台，安装方式：
+通过 Python 的包管理工具 pip 进行安装 直接下载编译好的二进制文件使用 直接在 Docker 容器中运行 前两种方式是传统方式，适合本地环境下安装使用；最后一种方式则不破坏系统环境，更适合云计算场景，Docker for Mac 、 Docker for Windows 自带 docker-compose 二进制文件，安装 Docker 之后可以直接使用。
+查看本机是否安装
+[root@wangpengliang ~]# docker-compose --version -bash: docker-compose: 未找到命令Linux下安装 Compose">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="Docker Compose 是 Docker 官方编排（Orchestration）项目之一，负责实现对 Docker 容器集群的快速编排，快速的部署分布式应用。
+通过之前学习已经了解到使用一个 Dockerfile 模板文件，可以很方便的定义一个单独的应用容器。然而在日常工作中，经常碰到的情况是需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器、负载均衡容器等等。Compose 就是用来处理这些事情的。它通过一个单独的 docker-compose.yml 模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目project。
+Compose 中有两个重要的概念：
+服务 (service)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例 项目 (project)：由一组关联的应用容器组成的一个完整业务单元，在 docker-compose.yml 文件中定义 Compose 的默认管理对象是项目，通过子命令对项目中的一组容器进行便捷地生命周期管理，Compose 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 来对容器进行管理。因此只要所操作的平台支持 Docker API 就可以在其上利用 Compose 来进行编排管理。
+安装# Compose 支持 Linux、macOS、Windows 10 三大平台，安装方式：
+通过 Python 的包管理工具 pip 进行安装 直接下载编译好的二进制文件使用 直接在 Docker 容器中运行 前两种方式是传统方式，适合本地环境下安装使用；最后一种方式则不破坏系统环境，更适合云计算场景，Docker for Mac 、 Docker for Windows 自带 docker-compose 二进制文件，安装 Docker 之后可以直接使用。
+查看本机是否安装
+[root@wangpengliang ~]# docker-compose --version -bash: docker-compose: 未找到命令Linux下安装 Compose">
+  <meta itemprop="wordCount" content="2120">
+
+<title>1.9 Docker Compose | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle" checked />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="active">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.9 Docker Compose</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#命令选项">命令选项</a></li>
+    <li><a href="#命令使用说明">命令使用说明</a>
+      <ul>
+        <li><a href="#build">build</a></li>
+        <li><a href="#config">config</a></li>
+        <li><a href="#down">down</a></li>
+        <li><a href="#exec">exec</a></li>
+        <li><a href="#help">help</a></li>
+        <li><a href="#images">images</a></li>
+        <li><a href="#kill">kill</a></li>
+        <li><a href="#logs">logs</a></li>
+        <li><a href="#pause">pause</a></li>
+        <li><a href="#port">port</a></li>
+        <li><a href="#ps">ps</a></li>
+        <li><a href="#pull">pull</a></li>
+        <li><a href="#push">push</a></li>
+        <li><a href="#restart">restart</a></li>
+        <li><a href="#rm">rm</a></li>
+        <li><a href="#run">run</a></li>
+        <li><a href="#scale">scale</a></li>
+        <li><a href="#start">start</a></li>
+        <li><a href="#stop">stop</a></li>
+        <li><a href="#top">top</a></li>
+        <li><a href="#unpause">unpause</a></li>
+        <li><a href="#up">up</a></li>
+        <li><a href="#version">version</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#build-1">build</a></li>
+    <li><a href="#cap_add-cap_drop">cap_add, cap_drop</a></li>
+    <li><a href="#command">command</a></li>
+    <li><a href="#cgroup_parent">cgroup_parent</a></li>
+    <li><a href="#container_name">container_name</a></li>
+    <li><a href="#devices">devices</a></li>
+    <li><a href="#depends_on">depends_on</a></li>
+    <li><a href="#dns">dns</a></li>
+    <li><a href="#dns_search">dns_search</a></li>
+    <li><a href="#tmpfs">tmpfs</a></li>
+    <li><a href="#env_file">env_file</a></li>
+    <li><a href="#environment">environment</a></li>
+    <li><a href="#expose">expose</a></li>
+    <li><a href="#external_links">external_links</a></li>
+    <li><a href="#extra_hosts">extra_hosts</a></li>
+    <li><a href="#healthcheck">healthcheck</a></li>
+    <li><a href="#image">image</a></li>
+    <li><a href="#labels">labels</a></li>
+    <li><a href="#links">links</a></li>
+    <li><a href="#logging">logging</a></li>
+    <li><a href="#network_mode">network_mode</a></li>
+    <li><a href="#networks">networks</a></li>
+    <li><a href="#pid">pid</a></li>
+    <li><a href="#ports">ports</a></li>
+    <li><a href="#secrets">secrets</a></li>
+    <li><a href="#security_opt">security_opt</a></li>
+    <li><a href="#stop_signal">stop_signal</a></li>
+    <li><a href="#sysctls">sysctls</a></li>
+    <li><a href="#ulimits">ulimits</a></li>
+    <li><a href="#volumes">volumes</a></li>
+    <li><a href="#其它指令">其它指令</a></li>
+    <li><a href="#读取变量">读取变量</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><blockquote class='book-hint '>
+<p><code>Docker Compose</code> 是 Docker 官方编排（Orchestration）项目之一，负责实现对 Docker 容器集群的快速编排，快速的部署分布式应用。</p>
+</blockquote><p>通过之前学习已经了解到使用一个 <code>Dockerfile</code> 模板文件，可以很方便的定义一个单独的应用容器。然而在日常工作中，经常碰到的情况是需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器、负载均衡容器等等。<code>Compose</code> 就是用来处理这些事情的。它通过一个单独的 <code>docker-compose.yml</code> 模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目<code>project</code>。</p>
+<p><code>Compose</code> 中有两个重要的概念：</p>
+<ul>
+<li>服务 (<code>service</code>)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例</li>
+<li>项目 (<code>project</code>)：由一组关联的应用容器组成的一个完整业务单元，在 <code>docker-compose.yml</code> 文件中定义</li>
+</ul>
+<p><code>Compose</code> 的默认管理对象是项目，通过子命令对项目中的一组容器进行便捷地生命周期管理，<code>Compose</code> 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 来对容器进行管理。因此只要所操作的平台支持 <code>Docker API</code> 就可以在其上利用 <code>Compose</code> 来进行编排管理。</p>
+<h1 id="安装">安装<a class="anchor" href="#%e5%ae%89%e8%a3%85">#</a></h1>
+<p><code>Compose</code>  支持 Linux、macOS、Windows 10 三大平台，安装方式：</p>
+<ol>
+<li>通过 Python 的包管理工具 <code>pip</code>  进行安装</li>
+<li>直接下载编译好的二进制文件使用</li>
+<li>直接在 Docker 容器中运行</li>
+</ol>
+<p>前两种方式是传统方式，适合本地环境下安装使用；最后一种方式则不破坏系统环境，更适合云计算场景，<code>Docker for Mac</code>  、 <code>Docker for Windows</code>  自带 <code>docker-compose</code>  二进制文件，安装 Docker 之后可以直接使用。</p>
+<p><strong>查看本机是否安装</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose --version</span>
+</span></span><span style="display:flex;"><span>-bash: docker-compose: 未找到命令</span></span></code></pre></div><p><strong>Linux下安装 Compose</strong></p>
+<p>在 Linux 上安装十分简单，从 官方 GitHub Release 处直接下载编译好的二进制文件即可。</p>
+<p>例如，在 Linux 64 位系统上直接下载对应的二进制包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-uname -s-uname -m &gt; /usr/local/bin/docker-compose
+</span></span><span style="display:flex;"><span>$ sudo chmod +x /usr/local/bin/docker-compose</span></span></code></pre></div><p>查看本机架构</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># uname -m</span>
+</span></span><span style="display:flex;"><span>x86_64</span></span></code></pre></div><p>这里选择使用二进制包下载安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># curl -L https://github.com/docker/compose/releases/download/1.17.1/docker-compose-`uname -s`-`uname -m` &gt; /usr/local/bin/docker-compose</span>
+</span></span><span style="display:flex;"><span>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span></span><span style="display:flex;"><span>                                 Dload  Upload   Total   Spent    Left  Speed
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">100</span>   <span style="color:#ae81ff">633</span>  <span style="color:#ae81ff">100</span>   <span style="color:#ae81ff">633</span>    <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">63</span>      <span style="color:#ae81ff">0</span>  0:00:10  0:00:09  0:00:01   <span style="color:#ae81ff">155</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">100</span> 8649k  <span style="color:#ae81ff">100</span> 8649k    <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span>   292k      <span style="color:#ae81ff">0</span>  0:00:29  0:00:29 --:--:-- 1989k
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completion/bash/docker-compose &gt; /etc/bash_completion.d/docker-compose</span>
+</span></span><span style="display:flex;"><span>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+</span></span><span style="display:flex;"><span>                                 Dload  Upload   Total   Spent    Left  Speed
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">100</span> <span style="color:#ae81ff">10554</span>  <span style="color:#ae81ff">100</span> <span style="color:#ae81ff">10554</span>    <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span>   <span style="color:#ae81ff">1435</span>      <span style="color:#ae81ff">0</span>  0:00:07  0:00:07 --:--:--  <span style="color:#ae81ff">2753</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># chmod +x /usr/local/bin/docker-compose</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose --version</span>
+</span></span><span style="display:flex;"><span>docker-compose version 1.17.1, build 6d101fb</span></span></code></pre></div><p><strong>PIP 安装</strong></p>
+<blockquote class='book-hint '>
+<p>注意： <code> x86_64</code>  架构的 Linux 建议按照上边的方法下载二进制包进行安装，如果计算机的架构是 <code>ARM</code>  (例如，树莓派)，再使用 pip 安装</p>
+</blockquote><p>这种方式是将 Compose 当作一个 Python 应用来从 pip 源中安装</p>
+<p>执行安装命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo pip install -U docker-compose</span></span></code></pre></div><p>看到类似如下输出，说明安装成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Collecting docker-compose
+</span></span><span style="display:flex;"><span>Downloading docker-compose-1.17.1.tar.gz <span style="color:#f92672">(</span>149kB<span style="color:#f92672">)</span>: 149kB downloaded
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>Successfully installed docker-compose cached-property requests texttable websocket-client docker-py dockerpty six enum34 backports.ssl-match-hostname ipaddress</span></span></code></pre></div><p>bash 补全命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completion/bash/docker-compose &gt; /etc/bash_completion.d/docker-compose</span></span></code></pre></div><p>容器中执行
+Compose 既然是一个 Python 应用，自然也可以直接用容器来执行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -L https://github.com/docker/compose/releases/download/1.8.0/run.sh &gt; /usr/local/bin/docker-compose
+</span></span><span style="display:flex;"><span>$ chmod +x /usr/local/bin/docker-compose</span></span></code></pre></div><p>查看下载的 <code>run.sh</code>  脚本内容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>set -e
+</span></span><span style="display:flex;"><span>VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.8.0&#34;</span>
+</span></span><span style="display:flex;"><span>IMAGE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;docker/compose:</span>$VERSION<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Setup options for connecting to docker host</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$DOCKER_HOST<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    DOCKER_HOST<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/var/run/docker.sock&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -S <span style="color:#e6db74">&#34;</span>$DOCKER_HOST<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    DOCKER_ADDR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-v </span>$DOCKER_HOST<span style="color:#e6db74">:</span>$DOCKER_HOST<span style="color:#e6db74"> -e DOCKER_HOST&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    DOCKER_ADDR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-e DOCKER_HOST -e DOCKER_TLS_VERIFY -e DOCKER_CERT_PATH&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Setup volume mounts for compose config and context</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    VOLUMES<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-v </span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">:</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span>$COMPOSE_FILE<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    compose_dir<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>dirname $COMPOSE_FILE<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># TODO: also check --file argument</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span>$compose_dir<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    VOLUMES<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$VOLUMES<span style="color:#e6db74"> -v </span>$compose_dir<span style="color:#e6db74">:</span>$compose_dir<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    VOLUMES<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$VOLUMES<span style="color:#e6db74"> -v </span>$HOME<span style="color:#e6db74">:</span>$HOME<span style="color:#e6db74"> -v </span>$HOME<span style="color:#e6db74">:/root&#34;</span> <span style="color:#75715e"># mount $HOME in /root to share docker.config</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Only allocate tty if we detect one</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -t <span style="color:#ae81ff">1</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    DOCKER_RUN_OPTIONS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-t&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -t <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    DOCKER_RUN_OPTIONS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$DOCKER_RUN_OPTIONS<span style="color:#e6db74"> -i&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>exec docker run --rm $DOCKER_RUN_OPTIONS $DOCKER_ADDR $COMPOSE_OPTIONS $VOLUMES -w <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> $IMAGE <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span></span></span></code></pre></div><p>可以看到，其实是下载了 <code>docker/compose</code>  镜像并运行</p>
+<h1 id="卸载">卸载<a class="anchor" href="#%e5%8d%b8%e8%bd%bd">#</a></h1>
+<p>如果是二进制包方式安装的，删除二进制文件即可</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo rm /usr/local/bin/docker-compose</span></span></code></pre></div><p>如果是通过 <code>pip</code>  安装的，则执行如下命令即可</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo pip uninstall docker-compose</span></span></code></pre></div><h1 id="使用">使用<a class="anchor" href="#%e4%bd%bf%e7%94%a8">#</a></h1>
+<p>之前说到<code>Compose</code> 中有两个重要的概念：</p>
+<ul>
+<li>服务 (<code>service</code>)：一个应用容器，实际上可以运行多个相同镜像的实例</li>
+<li>项目 (<code>project</code>)：由一组关联的应用容器组成的一个完整业务单元</li>
+</ul>
+<p>可见，一个项目可以由多个服务（容器）关联而成，<code>Compose</code> 面向项目进行管理。</p>
+<p><strong>创建Web应用</strong></p>
+<p>示例用 <code>Python</code> 创建一个能够记录页面访问次数的 web 网站。新建文件夹，在该目录中编写 <code>app.py</code> 文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> redis <span style="color:#f92672">import</span> Redis
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> Flask(__name__)
+</span></span><span style="display:flex;"><span>redis <span style="color:#f92672">=</span> Redis(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;redis&#39;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">6379</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#39;/&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hello</span>():
+</span></span><span style="display:flex;"><span>    count <span style="color:#f92672">=</span> redis<span style="color:#f92672">.</span>incr(<span style="color:#e6db74">&#39;hits&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Hello World! 该页面已被访问 </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> 次。</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(count)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0.0.0.0&#34;</span>, debug<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)</span></span></code></pre></div><p><strong>Dockerfile</strong></p>
+<p>编写 <code>Dockerfile</code> 文件内容为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>FROM python:<span style="color:#ae81ff">3.6</span><span style="color:#f92672">-</span>alpine
+</span></span><span style="display:flex;"><span>ADD <span style="color:#f92672">.</span> <span style="color:#f92672">/</span>code
+</span></span><span style="display:flex;"><span>WORKDIR <span style="color:#f92672">/</span>code
+</span></span><span style="display:flex;"><span>RUN pip install redis flask
+</span></span><span style="display:flex;"><span>CMD [<span style="color:#e6db74">&#34;python&#34;</span>, <span style="color:#e6db74">&#34;app.py&#34;</span>]</span></span></code></pre></div><p><strong>docker-compose.yml</strong></p>
+<p>编写 <code>docker-compose.yml</code> 文件，这个是 Compose 使用的主模板文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#39;3&#39;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  web:
+</span></span><span style="display:flex;"><span>    build: <span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">-</span> <span style="color:#e6db74">&#34;5000:5000&#34;</span>
+</span></span><span style="display:flex;"><span>  redis:
+</span></span><span style="display:flex;"><span>    image: <span style="color:#e6db74">&#34;redis:alpine&#34;</span></span></span></code></pre></div><p><strong>运行 compose</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-compose up</span></span></code></pre></div><p><strong>创建 <code>pythontests</code> 目录，创建 <code>app.py</code> <code>Dockerfile</code> <code>docker-compose.yml</code> 文件</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+</span></span><span style="display:flex;"><span>app.py  docker-compose.yml  Dockerfile</span></span></code></pre></div><p><strong>运行 docker-compose</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># docker-compose up</span>
+</span></span><span style="display:flex;"><span>Building web
+</span></span><span style="display:flex;"><span>Step 1/5 : FROM python:3.6-alpine <span style="color:#75715e"># 下载基础镜像python:3.6-alpine</span>
+</span></span><span style="display:flex;"><span>3.6-alpine: Pulling from library/python
+</span></span><span style="display:flex;"><span>540db60ca938: Pull complete
+</span></span><span style="display:flex;"><span>a7ad1a75a999: Pull complete
+</span></span><span style="display:flex;"><span>5545670c3922: Pull complete
+</span></span><span style="display:flex;"><span>c89910f38943: Pull complete
+</span></span><span style="display:flex;"><span>b6a40d090e87: Pull complete
+</span></span><span style="display:flex;"><span>Digest: sha256:492bb540e9c9bc9f586d5d69467c66bc32072d9af48463b1f0054d4ff9b93709
+</span></span><span style="display:flex;"><span>Status: Downloaded newer image <span style="color:#66d9ef">for</span> python:3.6-alpine
+</span></span><span style="display:flex;"><span> ---&gt; ac438c122d19
+</span></span><span style="display:flex;"><span>Step 2/5 : ADD . /code   <span style="color:#75715e"># 拷贝文件到/code目录</span>
+</span></span><span style="display:flex;"><span> ---&gt; 68cbe5b2f598
+</span></span><span style="display:flex;"><span>Step 3/5 : WORKDIR /code <span style="color:#75715e"># 设置/code目录为工作目录</span>
+</span></span><span style="display:flex;"><span> ---&gt; Running in 4fd09a1580a8
+</span></span><span style="display:flex;"><span>Removing intermediate container 4fd09a1580a8 <span style="color:#75715e"># 拆卸中间容器：4fd09a1580a8</span>
+</span></span><span style="display:flex;"><span> ---&gt; 2e4bbd31555d
+</span></span><span style="display:flex;"><span>Step 4/5 : RUN pip install redis flask <span style="color:#75715e"># 运行pip安装redis、flask</span>
+</span></span><span style="display:flex;"><span> ---&gt; Running in c12f4ece64f1
+</span></span><span style="display:flex;"><span>Collecting redis
+</span></span><span style="display:flex;"><span>  Downloading redis-3.5.3-py2.py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">72</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting flask
+</span></span><span style="display:flex;"><span>  Downloading Flask-2.0.1-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">94</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting click&gt;<span style="color:#f92672">=</span>7.1.2
+</span></span><span style="display:flex;"><span>  Downloading click-8.0.1-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">97</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting Werkzeug&gt;<span style="color:#f92672">=</span>2.0
+</span></span><span style="display:flex;"><span>  Downloading Werkzeug-2.0.1-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">288</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting itsdangerous&gt;<span style="color:#f92672">=</span>2.0
+</span></span><span style="display:flex;"><span>  Downloading itsdangerous-2.0.1-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">18</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting Jinja2&gt;<span style="color:#f92672">=</span>3.0
+</span></span><span style="display:flex;"><span>  Downloading Jinja2-3.0.1-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">133</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting importlib-metadata
+</span></span><span style="display:flex;"><span>  Downloading importlib_metadata-4.5.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">17</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting MarkupSafe&gt;<span style="color:#f92672">=</span>2.0
+</span></span><span style="display:flex;"><span>  Downloading MarkupSafe-2.0.1.tar.gz <span style="color:#f92672">(</span><span style="color:#ae81ff">18</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting dataclasses
+</span></span><span style="display:flex;"><span>  Downloading dataclasses-0.8-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">19</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting typing-extensions&gt;<span style="color:#f92672">=</span>3.6.4
+</span></span><span style="display:flex;"><span>  Downloading typing_extensions-3.10.0.0-py3-none-any.whl <span style="color:#f92672">(</span><span style="color:#ae81ff">26</span> kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Collecting zipp&gt;<span style="color:#f92672">=</span>0.5
+</span></span><span style="display:flex;"><span>  Downloading zipp-3.4.1-py3-none-any.whl <span style="color:#f92672">(</span>5.2 kB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Building wheels <span style="color:#66d9ef">for</span> collected packages: MarkupSafe
+</span></span><span style="display:flex;"><span>  Building wheel <span style="color:#66d9ef">for</span> MarkupSafe <span style="color:#f92672">(</span>setup.py<span style="color:#f92672">)</span>: started
+</span></span><span style="display:flex;"><span>  Building wheel <span style="color:#66d9ef">for</span> MarkupSafe <span style="color:#f92672">(</span>setup.py<span style="color:#f92672">)</span>: finished with status <span style="color:#e6db74">&#39;done&#39;</span>
+</span></span><span style="display:flex;"><span>  Created wheel <span style="color:#66d9ef">for</span> MarkupSafe: filename<span style="color:#f92672">=</span>MarkupSafe-2.0.1-py3-none-any.whl size<span style="color:#f92672">=</span><span style="color:#ae81ff">9761</span> sha256<span style="color:#f92672">=</span>e2a25263f4c7babbdd0cdda87cad139e54eb972cf742f2f7b7893003e0ecfe97
+</span></span><span style="display:flex;"><span>  Stored in directory: /root/.cache/pip/wheels/05/46/9b/189d9acb1f643857fb8ad990ca04c02509c35d3ad6fac81794
+</span></span><span style="display:flex;"><span>Successfully built MarkupSafe
+</span></span><span style="display:flex;"><span>Installing collected packages: zipp, typing-extensions, MarkupSafe, importlib-metadata, dataclasses, Werkzeug, Jinja2, itsdangerous, click, redis, flask
+</span></span><span style="display:flex;"><span>Successfully installed Jinja2-3.0.1 MarkupSafe-2.0.1 Werkzeug-2.0.1 click-8.0.1 dataclasses-0.8 flask-2.0.1 importlib-metadata-4.5.0 itsdangerous-2.0.1 redis-3.5.3 typing-extensions-3.10.0.0 zipp-3.4.1
+</span></span><span style="display:flex;"><span>WARNING: Running pip as root will break packages and permissions. You should install packages reliably by using venv: https://pip.pypa.io/warnings/venv
+</span></span><span style="display:flex;"><span>Removing intermediate container c12f4ece64f1
+</span></span><span style="display:flex;"><span> ---&gt; 061f502fa95e
+</span></span><span style="display:flex;"><span>Step 5/5 : CMD <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;python&#34;</span>, <span style="color:#e6db74">&#34;app.py&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> ---&gt; Running in c6ac95ba9659
+</span></span><span style="display:flex;"><span>Removing intermediate container c6ac95ba9659
+</span></span><span style="display:flex;"><span> ---&gt; aabe65a53ffd
+</span></span><span style="display:flex;"><span>Successfully built aabe65a53ffd
+</span></span><span style="display:flex;"><span>Successfully tagged pythontests_web:latest
+</span></span><span style="display:flex;"><span>WARNING: Image <span style="color:#66d9ef">for</span> service web was built because it did not already exist. To rebuild this image you must use <span style="color:#e6db74">`</span>docker-compose build<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>docker-compose up --build<span style="color:#e6db74">`</span>.
+</span></span><span style="display:flex;"><span>Pulling redis <span style="color:#f92672">(</span>redis:alpine<span style="color:#f92672">)</span>...
+</span></span><span style="display:flex;"><span>alpine: Pulling from library/redis
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>29712d301e8c: Pull complete
+</span></span><span style="display:flex;"><span>8173c12df40f: Pull complete
+</span></span><span style="display:flex;"><span>8cc52074f78e: Pull complete
+</span></span><span style="display:flex;"><span>aa7854465cce: Pull complete
+</span></span><span style="display:flex;"><span>6ab1d05b4973: Pull complete
+</span></span><span style="display:flex;"><span>Digest: sha256:eaaa58f8757d6f04b2e34ace57a71d79f8468053c198f5758fd2068ac235f303
+</span></span><span style="display:flex;"><span>Status: Downloaded newer image <span style="color:#66d9ef">for</span> redis:alpine
+</span></span><span style="display:flex;"><span>Creating pythontests_web_1
+</span></span><span style="display:flex;"><span>Creating pythontests_redis_1
+</span></span><span style="display:flex;"><span>Attaching to pythontests_redis_1, pythontests_web_1
+</span></span><span style="display:flex;"><span>redis_1  | 1:C <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.588 <span style="color:#75715e"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span>
+</span></span><span style="display:flex;"><span>redis_1  | 1:C <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.588 <span style="color:#75715e"># Redis version=6.2.4, bits=64, commit=00000000, modified=0, pid=1, just started</span>
+</span></span><span style="display:flex;"><span>redis_1  | 1:C <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.588 <span style="color:#75715e"># Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</span>
+</span></span><span style="display:flex;"><span>redis_1  | 1:M <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.588 * monotonic clock: POSIX clock_gettime
+</span></span><span style="display:flex;"><span>redis_1  | 1:M <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.590 * Running mode<span style="color:#f92672">=</span>standalone, port<span style="color:#f92672">=</span>6379.
+</span></span><span style="display:flex;"><span>redis_1  | 1:M <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.590 <span style="color:#75715e"># WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span>
+</span></span><span style="display:flex;"><span>redis_1  | 1:M <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.590 <span style="color:#75715e"># Server initialized</span>
+</span></span><span style="display:flex;"><span>redis_1  | 1:M <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.590 <span style="color:#75715e"># WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &#39;vm.overcommit_memory = 1&#39; to /etc/sysctl.conf and then reboot or run the command &#39;sysctl vm.overcommit_memory=1&#39; for this to take effect.</span>
+</span></span><span style="display:flex;"><span>redis_1  | 1:M <span style="color:#ae81ff">09</span> Jun <span style="color:#ae81ff">2021</span> 03:16:24.590 * Ready to accept connections
+</span></span><span style="display:flex;"><span>web_1    |  * Serving Flask app <span style="color:#e6db74">&#39;app&#39;</span> <span style="color:#f92672">(</span>lazy loading<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>web_1    |  * Environment: production
+</span></span><span style="display:flex;"><span>web_1    |    WARNING: This is a development server. Do not use it in a production deployment.
+</span></span><span style="display:flex;"><span>web_1    |    Use a production WSGI server instead.
+</span></span><span style="display:flex;"><span>web_1    |  * Debug mode: on
+</span></span><span style="display:flex;"><span>web_1    |  * Running on all addresses.
+</span></span><span style="display:flex;"><span>web_1    |    WARNING: This is a development server. Do not use it in a production deployment.
+</span></span><span style="display:flex;"><span>web_1    |  * Running on http://172.19.0.2:5000/ <span style="color:#f92672">(</span>Press CTRL+C to quit<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>web_1    |  * Restarting with stat
+</span></span><span style="display:flex;"><span>web_1    |  * Debugger is active!
+</span></span><span style="display:flex;"><span>web_1    |  * Debugger PIN: 103-300-970
+</span></span><span style="display:flex;"><span>web_1    | 172.19.0.1 - - <span style="color:#f92672">[</span>09/Jun/2021 03:17:00<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> -</span></span></code></pre></div><p>测试结果</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># curl 172.18.0.2:5000</span>
+</span></span><span style="display:flex;"><span>Hello World! 该页面已被访问 <span style="color:#ae81ff">1</span> 次。
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># curl 172.18.0.2:5000</span>
+</span></span><span style="display:flex;"><span>Hello World! 该页面已被访问 <span style="color:#ae81ff">2</span> 次。
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># curl 172.18.0.2:5000</span>
+</span></span><span style="display:flex;"><span>Hello World! 该页面已被访问 <span style="color:#ae81ff">3</span> 次。
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># curl 172.18.0.2:5000</span>
+</span></span><span style="display:flex;"><span>Hello World! 该页面已被访问 <span style="color:#ae81ff">4</span> 次。
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang pythontests<span style="color:#f92672">]</span><span style="color:#75715e"># curl 172.18.0.2:5000</span>
+</span></span><span style="display:flex;"><span>Hello World! 该页面已被访问 <span style="color:#ae81ff">5</span> 次。</span></span></code></pre></div><h1 id="命令对象与格式">命令对象与格式<a class="anchor" href="#%e5%91%bd%e4%bb%a4%e5%af%b9%e8%b1%a1%e4%b8%8e%e6%a0%bc%e5%bc%8f">#</a></h1>
+<p>对于 Compose 来说，大部分命令的对象既可以是项目本身，也可以指定为项目中的服务或者容器。如果没有特别的说明，命令对象将是项目。这意味着项目中所有的服务都会受到命令影响。</p>
+<p><strong>查看具体某个命令的使用格式：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-compose <span style="color:#f92672">[</span>COMMAND<span style="color:#f92672">]</span> --help 
+</span></span><span style="display:flex;"><span>或
+</span></span><span style="display:flex;"><span>docker-compose help <span style="color:#f92672">[</span>COMMAND<span style="color:#f92672">]</span></span></span></code></pre></div><p><strong><code>docker-compose</code> 命令的基本使用格式：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker-compose <span style="color:#f92672">[</span>-f<span style="color:#f92672">=</span>&lt;arg&gt;...<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>options<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>COMMAND<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>ARGS...<span style="color:#f92672">]</span></span></span></code></pre></div><h2 id="命令选项">命令选项<a class="anchor" href="#%e5%91%bd%e4%bb%a4%e9%80%89%e9%a1%b9">#</a></h2>
+<ul>
+<li><code>-f, --file FILE</code> 指定使用的 Compose 模板文件，默认为 <code>docker-compose.yml</code>，可以多次指定</li>
+<li><code>-p, --project-name NAME</code> 指定项目名称，默认将使用所在目录名称作为项目名</li>
+<li><code>--x-networking</code> 使用 Docker 的可拔插网络后端特性</li>
+<li><code>--x-network-driver DRIVER</code> 指定网络后端的驱动，默认为 <code>bridge</code></li>
+<li><code>--verbose</code> 输出更多调试信息</li>
+<li><code>-v, --version</code> 打印版本并退出</li>
+</ul>
+<h2 id="命令使用说明">命令使用说明<a class="anchor" href="#%e5%91%bd%e4%bb%a4%e4%bd%bf%e7%94%a8%e8%af%b4%e6%98%8e">#</a></h2>
+<h3 id="build">build<a class="anchor" href="#build">#</a></h3>
+<p>格式： <code>docker-compose build [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>构建（重新构建）项目中的服务容器。服务容器一旦构建后，将会带上一个标记名，例如对于 web 项目中的一个 db 容器，可能是 web_db。可以随时在项目目录下运行 <code>docker-compose build</code> 来重新构建服务</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>--force-rm</code> 删除构建过程中的临时容器</li>
+<li><code>--no-cache</code> 构建镜像过程中不使用 cache（这将加长构建过程）</li>
+<li><code>--pull</code> 始终尝试通过 pull 来获取更新版本的镜像</li>
+</ul>
+<h3 id="config">config<a class="anchor" href="#config">#</a></h3>
+<p>验证 Compose 文件格式是否正确，若正确则显示配置，若格式错误显示错误原因。</p>
+<h3 id="down">down<a class="anchor" href="#down">#</a></h3>
+<p>此命令将会停止 <code>up</code> 命令所启动的容器，并移除网络。</p>
+<h3 id="exec">exec<a class="anchor" href="#exec">#</a></h3>
+<p>进入指定容器。</p>
+<h3 id="help">help<a class="anchor" href="#help">#</a></h3>
+<p>获得一个命令的帮助。</p>
+<h3 id="images">images<a class="anchor" href="#images">#</a></h3>
+<p>列出 Compose 文件中包含的镜像。</p>
+<h3 id="kill">kill<a class="anchor" href="#kill">#</a></h3>
+<p>格式： <code>docker-compose kill [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>通过发送 <code>SIGKILL</code> 信号来强制停止服务容器。支持通过 <code>-s</code> 参数来指定发送的信号，例如通过如下指令发送 <code>SIGINT</code> 信号</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose kill -s SIGINT</span></span></code></pre></div><h3 id="logs">logs<a class="anchor" href="#logs">#</a></h3>
+<p>格式： <code>docker-compose logs [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>查看服务容器的输出。默认情况下，docker-compose 将对不同的服务输出使用不同的颜色来区分。可以通过 <code>--no-color</code> 来关闭颜色。该命令在调试问题的时候经常使用</p>
+</blockquote><h3 id="pause">pause<a class="anchor" href="#pause">#</a></h3>
+<p>格式：<code>docker-compose pause [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>暂停一个服务容器</p>
+</blockquote><h3 id="port">port<a class="anchor" href="#port">#</a></h3>
+<p>格式： <code>docker-compose port [options] SERVICE PRIVATE_PORT</code></p>
+<blockquote class='book-hint '>
+<p>打印某个容器端口所映射的公共端口</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>--protocol=proto</code> 指定端口协议，tcp（默认值）或者 udp</li>
+<li><code>--index=index</code> 如果同一服务存在多个容器，指定命令对象容器的序号（默认为 1）</li>
+</ul>
+<h3 id="ps">ps<a class="anchor" href="#ps">#</a></h3>
+<p>格式： <code>docker-compose ps [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>列出项目中目前的所有容器。</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>-q</code> 只打印容器的 ID 信息</li>
+</ul>
+<h3 id="pull">pull<a class="anchor" href="#pull">#</a></h3>
+<p>格式： <code>docker-compose pull [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>拉取服务依赖的镜像</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>--ignore-pull-failures</code> 忽略拉取镜像过程中的错误</li>
+</ul>
+<h3 id="push">push<a class="anchor" href="#push">#</a></h3>
+<blockquote class='book-hint '>
+<p>推送服务依赖的镜像到 Docker 镜像仓库</p>
+</blockquote><h3 id="restart">restart<a class="anchor" href="#restart">#</a></h3>
+<p>格式：<code>docker-compose restart [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>重启项目中的服务</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>-t, --timeout TIMEOUT</code> 指定重启前停止容器的超时（默认10 秒）</li>
+</ul>
+<h3 id="rm">rm<a class="anchor" href="#rm">#</a></h3>
+<p>格式：<code>docker-compose rm [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>删除所有（停止状态的）服务容器。推荐先执行 <code>docker-compose stop</code> 命令来停止容器</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>-f, --force</code> 强制直接删除，包括非停止状态的容器。一般尽量不要使用该选项</li>
+<li><code>-v</code> 删除容器所挂载的数据卷</li>
+</ul>
+<h3 id="run">run<a class="anchor" href="#run">#</a></h3>
+<p>格式： <code>docker-compose run [options] [-p PORT...] [-e KEY=VAL...] SERVICE [COMMAND] [ARGS...]</code></p>
+<blockquote class='book-hint '>
+<p>在指定服务上执行一个命令</p>
+</blockquote><p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose run ubuntu ping docker.com</span></span></code></pre></div><p>这将会启动一个 ubuntu 服务容器，并执行 <code>ping docker.com</code> 命令。默认情况下，如果存在关联，则所有关联的服务将会自动被启动，除非这些服务已经在运行中。该命令类似启动容器后运行指定的命令，相关卷、链接等等都将会按照配置自动创建。</p>
+<p>两个不同点：</p>
+<ul>
+<li>给定命令将会覆盖原有的自动运行命令</li>
+<li>不会自动创建端口，以避免冲突</li>
+</ul>
+<p>如果不希望自动启动关联的容器，可以使用 <code>--no-deps</code> 选项，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose run --no-deps web python manage.py shell</span></span></code></pre></div><p>将不会启动 web 容器所关联的其它容器。</p>
+<p>选项：</p>
+<ul>
+<li><code>-d</code> 后台运行容器</li>
+<li><code>--name NAME</code> 为容器指定一个名字</li>
+<li><code>--entrypoint CMD</code> 覆盖默认的容器启动指令</li>
+<li><code>-e KEY=VAL</code> 设置环境变量值，可多次使用选项来设置多个环境变量</li>
+<li><code>-u, --user=&quot;&quot;</code> 指定运行容器的用户名或者 uid</li>
+<li><code>--no-deps</code> 不自动启动关联的服务容器</li>
+<li><code>--rm</code> 运行命令后自动删除容器，<code>d</code> 模式下将忽略</li>
+<li><code>-p, --publish=[]</code> 映射容器端口到本地主机</li>
+<li><code>--service-ports</code> 配置服务端口并映射到本地主机</li>
+<li><code>-T</code> 不分配伪 tty，意味着依赖 tty 的指令将无法运行</li>
+</ul>
+<h3 id="scale">scale<a class="anchor" href="#scale">#</a></h3>
+<p>格式： <code>docker-compose scale [options] [SERVICE=NUM...]</code></p>
+<blockquote class='book-hint '>
+<p>设置指定服务运行的容器个数。</p>
+</blockquote><p>通过 <code>service=num</code> 的参数来设置数量。例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker-compose scale web<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> db<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span></span></span></code></pre></div><p>这将启动 3 个容器运行 web 服务，2 个容器运行 db 服务。</p>
+<p>一般的，当指定数目多于该服务当前实际运行容器，将新创建并启动容器；反之，将停止容器。</p>
+<p>选项：</p>
+<ul>
+<li><code>-t, --timeout TIMEOUT</code> 停止容器时候的超时（默认为 10 秒）。</li>
+</ul>
+<h3 id="start">start<a class="anchor" href="#start">#</a></h3>
+<p>格式： <code>docker-compose start [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>启动已经存在的服务容器</p>
+</blockquote><h3 id="stop">stop<a class="anchor" href="#stop">#</a></h3>
+<p>格式： <code>docker-compose stop [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>停止已经处于运行状态的容器，但不删除它。通过 <code>docker-compose start</code> 可以再次启动这些容器</p>
+</blockquote><p>选项：</p>
+<ul>
+<li><code>-t, --timeout TIMEOUT</code> 停止容器时候的超时（默认为 10 秒）。</li>
+</ul>
+<h3 id="top">top<a class="anchor" href="#top">#</a></h3>
+<blockquote class='book-hint '>
+<p>查看各个服务容器内运行的进程</p>
+</blockquote><h3 id="unpause">unpause<a class="anchor" href="#unpause">#</a></h3>
+<p>格式： <code>docker-compose unpause [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>恢复处于暂停状态中的服务</p>
+</blockquote><h3 id="up">up<a class="anchor" href="#up">#</a></h3>
+<p>格式： <code>docker-compose up [options] [SERVICE...]</code></p>
+<blockquote class='book-hint '>
+<p>该命令十分强大，它将尝试自动完成包括构建镜像，（重新）创建服务，启动服务，并关联服务相关容器的一系列操作。链接的服务都将会被自动启动，除非已经处于运行状态。大部分时候都可以直接通过该命令来启动一个项目。默认情况，<code>docker-compose up</code> 启动的容器都在前台，控制台将会同时打印所有容器的输出信息，可以很方便进行调试。</p>
+</blockquote><p>当通过 <code>Ctrl-C</code> 停止命令时，所有容器将会停止。</p>
+<p>如果使用 <code>docker-compose up -d</code>，将会在后台启动并运行所有的容器。一般推荐生产环境下使用该选项。</p>
+<p>默认情况，如果服务容器已经存在，<code>docker-compose up</code> 将会尝试停止容器，然后重新创建（保持使用 <code>volumes-from</code> 挂载的卷），以保证新启动的服务匹配 <code>docker-compose.yml</code> 文件的最新内容。如果不希望容器被停止并重新创建，可以使用 <code>docker-compose up --no-recreate</code>。这样将只会启动处于停止状态的容器，而忽略已经运行的服务。如果只想重新部署某个服务，可以使用 <code>docker-compose up --no-deps -d &lt;SERVICE_NAME&gt;</code> 来重新创建服务并后台停止旧服务，启动新服务，并不会影响到其所依赖的服务。
+选项：</p>
+<ul>
+<li><code>-d</code> 在后台运行服务容器。</li>
+<li><code>--no-color</code> 不使用颜色来区分不同的服务的控制台输出。</li>
+<li><code>--no-deps</code> 不启动服务所链接的容器。</li>
+<li><code>--force-recreate</code> 强制重新创建容器，不能与 <code>--no-recreate</code> 同时使用。</li>
+<li><code>--no-recreate</code> 如果容器已经存在了，则不重新创建，不能与 <code>--force-recreate</code> 同时使用。</li>
+<li><code>--no-build</code> 不自动构建缺失的服务镜像。</li>
+<li><code>-t, --timeout TIMEOUT</code> 停止容器时候的超时（默认为 10 秒）。</li>
+</ul>
+<h3 id="version">version<a class="anchor" href="#version">#</a></h3>
+<p>格式： <code>docker-compose version</code></p>
+<blockquote class='book-hint '>
+<p>打印版本信息</p>
+</blockquote><h1 id="compose-模板文件">Compose 模板文件<a class="anchor" href="#compose-%e6%a8%a1%e6%9d%bf%e6%96%87%e4%bb%b6">#</a></h1>
+<p>模板文件是使用 <code>Compose</code> 的核心，涉及到的指令关键字也大部分指令跟 <code>docker run</code> 相关参数的含义都是类似的。默认的模板文件名称为 <code>docker-compose.yml</code>，格式为 YAML 格式。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  webapp:
+</span></span><span style="display:flex;"><span>    image: examples/web
+</span></span><span style="display:flex;"><span>    ports:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;80:80&#34;</span>
+</span></span><span style="display:flex;"><span>    volumes:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;/data&#34;</span></span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：每个服务都必须通过 <code>image</code> 指令指定镜像或 <code>build</code> 指令（需要 Dockerfile）等来自动构建生成镜像</p>
+</blockquote><p>如果使用 <code>build</code> 指令，在 <code>Dockerfile</code> 中设置的选项(例如：<code>CMD</code>, <code>EXPOSE</code>, <code>VOLUME</code>, <code>ENV</code> 等) 将会自动被获取，无需在 <code>docker-compose.yml</code> 中再次设置。</p>
+<h2 id="build-1">build<a class="anchor" href="#build-1">#</a></h2>
+<p>指定 <code>Dockerfile</code> 所在文件夹的路径（可以是绝对路径，或者相对 docker-compose.yml 文件的路径）。 <code>Compose</code> 将会利用它自动构建这个镜像，然后使用这个镜像。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#39;3&#39;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  webapp:
+</span></span><span style="display:flex;"><span>    build: ./dir</span></span></code></pre></div><p>也可以使用 <code>context</code> 指令指定 <code>Dockerfile</code> 所在文件夹的路径。使用 <code>dockerfile</code> 指令指定 <code>Dockerfile</code> 文件名。
+使用 <code>arg</code> 指令指定构建镜像时的变量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#39;3&#39;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  webapp:
+</span></span><span style="display:flex;"><span>    build:
+</span></span><span style="display:flex;"><span>      context: ./dir
+</span></span><span style="display:flex;"><span>      dockerfile: Dockerfile-alternate
+</span></span><span style="display:flex;"><span>      args:
+</span></span><span style="display:flex;"><span>        buildno: <span style="color:#ae81ff">1</span></span></span></code></pre></div><p>使用 <code>cache_from</code> 指定构建镜像的缓存</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>build:
+</span></span><span style="display:flex;"><span>  context: .
+</span></span><span style="display:flex;"><span>  cache_from:
+</span></span><span style="display:flex;"><span>    - alpine:latest
+</span></span><span style="display:flex;"><span>    - corp/web_app:3.14</span></span></code></pre></div><h2 id="cap_add-cap_drop">cap_add, cap_drop<a class="anchor" href="#cap_add-cap_drop">#</a></h2>
+<p>指定容器的内核能力（capacity）分配。
+例如，让容器拥有所有能力：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cap_add:
+</span></span><span style="display:flex;"><span>  - ALL</span></span></code></pre></div><p>去掉 <code>NET_ADMIN</code>  能力：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cap_drop:
+</span></span><span style="display:flex;"><span>  - NET_ADMIN</span></span></code></pre></div><h2 id="command">command<a class="anchor" href="#command">#</a></h2>
+<p>覆盖容器启动后默认执行的命令。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>command: echo <span style="color:#e6db74">&#34;hello world&#34;</span></span></span></code></pre></div><h2 id="cgroup_parent">cgroup_parent<a class="anchor" href="#cgroup_parent">#</a></h2>
+<p>指定父 <code>cgroup</code> 组，意味着将继承该组的资源限制。
+例如，创建了一个 cgroup 组名称为 <code>cgroups_1</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cgroup_parent: cgroups_1</span></span></code></pre></div><h2 id="container_name">container_name<a class="anchor" href="#container_name">#</a></h2>
+<p>指定容器名称。默认将会使用 <code>项目名称_服务名称_序号</code> 这样的格式。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>container_name: docker-web-container</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意: 指定容器名称后，该服务将无法进行扩展（scale），因为 Docker 不允许多个容器具有相同的名称</p>
+</blockquote><h2 id="devices">devices<a class="anchor" href="#devices">#</a></h2>
+<p>指定设备映射关系。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>devices:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;/dev/ttyUSB1:/dev/ttyUSB0&#34;</span></span></span></code></pre></div><h2 id="depends_on">depends_on<a class="anchor" href="#depends_on">#</a></h2>
+<p>解决容器的依赖、启动先后的问题。以下例子中会先启动 <code>redis</code> <code>db</code> 再启动 <code>web。</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#39;3&#39;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  web:
+</span></span><span style="display:flex;"><span>    build: .
+</span></span><span style="display:flex;"><span>    depends_on:
+</span></span><span style="display:flex;"><span>      - db
+</span></span><span style="display:flex;"><span>      - redis
+</span></span><span style="display:flex;"><span>  redis:
+</span></span><span style="display:flex;"><span>    image: redis
+</span></span><span style="display:flex;"><span>  db:
+</span></span><span style="display:flex;"><span>    image: postgres</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：<code>web</code> 服务不会等待 <code>redis</code> <code>db</code> 「完全启动」之后才启动</p>
+</blockquote><h2 id="dns">dns<a class="anchor" href="#dns">#</a></h2>
+<p>自定义 <code>DNS</code> 服务器。可以是一个值，也可以是一个列表。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dns: 8.8.8.8
+</span></span><span style="display:flex;"><span>dns:
+</span></span><span style="display:flex;"><span>  - 8.8.8.8
+</span></span><span style="display:flex;"><span>  - 114.114.114.114</span></span></code></pre></div><h2 id="dns_search">dns_search<a class="anchor" href="#dns_search">#</a></h2>
+<p>配置 <code>DNS</code> 搜索域。可以是一个值，也可以是一个列表。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dns_search: example.com
+</span></span><span style="display:flex;"><span>dns_search:
+</span></span><span style="display:flex;"><span>  - domain1.example.com
+</span></span><span style="display:flex;"><span>  - domain2.example.com</span></span></code></pre></div><h2 id="tmpfs">tmpfs<a class="anchor" href="#tmpfs">#</a></h2>
+<p>挂载一个 tmpfs 文件系统到容器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tmpfs: /run
+</span></span><span style="display:flex;"><span>tmpfs:
+</span></span><span style="display:flex;"><span>  - /run
+</span></span><span style="display:flex;"><span>  - /tmp</span></span></code></pre></div><h2 id="env_file">env_file<a class="anchor" href="#env_file">#</a></h2>
+<p>从文件中获取环境变量，可以为单独的文件路径或列表。如果通过 <code>docker-compose -f FILE</code> 方式来指定 Compose 模板文件，则 <code>env_file</code> 中变量的路径会基于模板文件路径。如果有变量名称与 <code>environment</code> 指令冲突，则按照惯例，以后者为准。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>env_file: .env
+</span></span><span style="display:flex;"><span>env_file:
+</span></span><span style="display:flex;"><span>  - ./common.env
+</span></span><span style="display:flex;"><span>  - ./apps/web.env
+</span></span><span style="display:flex;"><span>  - /opt/secrets.env</span></span></code></pre></div><p>环境变量文件中每一行必须符合格式，支持 <code>#</code> 开头的注释行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># common.env: Set development environment</span>
+</span></span><span style="display:flex;"><span>PROG_ENV<span style="color:#f92672">=</span>development</span></span></code></pre></div><h2 id="environment">environment<a class="anchor" href="#environment">#</a></h2>
+<p>设置环境变量。可以使用数组或字典两种格式。只给定名称的变量会自动获取运行 Compose 主机上对应变量的值，可以用来防止泄露不必要的数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>environment:
+</span></span><span style="display:flex;"><span>  RACK_ENV: development
+</span></span><span style="display:flex;"><span>  SESSION_SECRET:
+</span></span><span style="display:flex;"><span>environment:
+</span></span><span style="display:flex;"><span>  - RACK_ENV<span style="color:#f92672">=</span>development
+</span></span><span style="display:flex;"><span>  - SESSION_SECRET</span></span></code></pre></div><p>如果变量名称或者值中用到 <code>true|false，yes|no</code> 等表达 <a href="http://yaml.org/type/bool.html">布尔</a> 含义的词汇，最好放到引号里，避免 YAML 自动解析某些内容为对应的布尔语义。这些特定词汇，包括</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF</span></span></code></pre></div><h2 id="expose">expose<a class="anchor" href="#expose">#</a></h2>
+<p>暴露端口，但不映射到宿主机，只被连接的服务访问。仅可以指定内部端口为参数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>expose:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;3000&#34;</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;8000&#34;</span></span></span></code></pre></div><h2 id="external_links">external_links<a class="anchor" href="#external_links">#</a></h2>
+<p>链接到 <code>docker-compose.yml</code> 外部的容器，甚至并非 <code>Compose</code> 管理的外部容器。</p>
+<blockquote class='book-hint '>
+<p>注意：不建议使用该指令</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>external_links:
+</span></span><span style="display:flex;"><span> - redis_1
+</span></span><span style="display:flex;"><span> - project_db_1:mysql
+</span></span><span style="display:flex;"><span> - project_db_1:postgresql</span></span></code></pre></div><h2 id="extra_hosts">extra_hosts<a class="anchor" href="#extra_hosts">#</a></h2>
+<p>类似 Docker 中的 <code>--add-host</code> 参数，指定额外的 host 名称映射信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>extra_hosts:
+</span></span><span style="display:flex;"><span> - <span style="color:#e6db74">&#34;googledns:8.8.8.8&#34;</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#e6db74">&#34;dockerhub:52.1.157.61&#34;</span></span></span></code></pre></div><p>会在启动后的服务容器中 <code>/etc/hosts</code> 文件中添加如下两条条目</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>8.8.8.8 googledns
+</span></span><span style="display:flex;"><span>52.1.157.61 dockerhub</span></span></code></pre></div><h2 id="healthcheck">healthcheck<a class="anchor" href="#healthcheck">#</a></h2>
+<p>通过命令检查容器是否健康运行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>healthcheck:
+</span></span><span style="display:flex;"><span>  test: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;CMD&#34;</span>, <span style="color:#e6db74">&#34;curl&#34;</span>, <span style="color:#e6db74">&#34;-f&#34;</span>, <span style="color:#e6db74">&#34;http://localhost&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  interval: 1m30s
+</span></span><span style="display:flex;"><span>  timeout: 10s
+</span></span><span style="display:flex;"><span>  retries: <span style="color:#ae81ff">3</span></span></span></code></pre></div><h2 id="image">image<a class="anchor" href="#image">#</a></h2>
+<p>指定为镜像名称或镜像 ID。如果镜像在本地不存在，<code>Compose</code> 将会尝试拉取这个镜像。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>image: ubuntu
+</span></span><span style="display:flex;"><span>image: orchardup/postgresql
+</span></span><span style="display:flex;"><span>image: a4bc65fd</span></span></code></pre></div><h2 id="labels">labels<a class="anchor" href="#labels">#</a></h2>
+<p>为容器添加 Docker 元数据（metadata）信息。例如可以为容器添加辅助说明信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>labels:
+</span></span><span style="display:flex;"><span>  com.startupteam.description: <span style="color:#e6db74">&#34;webapp for a startup team&#34;</span>
+</span></span><span style="display:flex;"><span>  com.startupteam.department: <span style="color:#e6db74">&#34;devops department&#34;</span>
+</span></span><span style="display:flex;"><span>  com.startupteam.release: <span style="color:#e6db74">&#34;rc3 for v1.0&#34;</span></span></span></code></pre></div><h2 id="links">links<a class="anchor" href="#links">#</a></h2>
+<blockquote class='book-hint '>
+<p>注意：不推荐使用该指令</p>
+</blockquote><h2 id="logging">logging<a class="anchor" href="#logging">#</a></h2>
+<p>配置日志选项。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>logging:
+</span></span><span style="display:flex;"><span>  driver: syslog
+</span></span><span style="display:flex;"><span>  options:
+</span></span><span style="display:flex;"><span>    syslog-address: <span style="color:#e6db74">&#34;tcp://192.168.0.42:123&#34;</span></span></span></code></pre></div><p>目前支持三种日志驱动类型</p>
+<ul>
+<li><code>driver: &quot;json-file&quot;</code></li>
+<li><code>driver: &quot;syslog&quot;</code></li>
+<li><code>driver: &quot;none&quot;</code></li>
+</ul>
+<p><code>options</code> 配置日志驱动的相关参数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>options:
+</span></span><span style="display:flex;"><span>  max-size: <span style="color:#e6db74">&#34;200k&#34;</span>
+</span></span><span style="display:flex;"><span>  max-file: <span style="color:#e6db74">&#34;10&#34;</span></span></span></code></pre></div><h2 id="network_mode">network_mode<a class="anchor" href="#network_mode">#</a></h2>
+<p>设置网络模式。使用和 <code>docker run</code> 的 <code>--network</code> 参数一样的值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>network_mode: <span style="color:#e6db74">&#34;bridge&#34;</span>
+</span></span><span style="display:flex;"><span>network_mode: <span style="color:#e6db74">&#34;host&#34;</span>
+</span></span><span style="display:flex;"><span>network_mode: <span style="color:#e6db74">&#34;none&#34;</span>
+</span></span><span style="display:flex;"><span>network_mode: <span style="color:#e6db74">&#34;service:[service name]&#34;</span>
+</span></span><span style="display:flex;"><span>network_mode: <span style="color:#e6db74">&#34;container:[container name/id]&#34;</span></span></span></code></pre></div><h2 id="networks">networks<a class="anchor" href="#networks">#</a></h2>
+<p>配置容器连接的网络。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  some-service:
+</span></span><span style="display:flex;"><span>    networks:
+</span></span><span style="display:flex;"><span>     - some-network
+</span></span><span style="display:flex;"><span>     - other-network
+</span></span><span style="display:flex;"><span>networks:
+</span></span><span style="display:flex;"><span>  some-network:
+</span></span><span style="display:flex;"><span>  other-network:</span></span></code></pre></div><h2 id="pid">pid<a class="anchor" href="#pid">#</a></h2>
+<p>跟主机系统共享进程命名空间。打开该选项的容器之间，以及容器和宿主机系统之间可以通过进程 ID 来相互访问和操作。<code>pid: &quot;host&quot;</code></p>
+<h2 id="ports">ports<a class="anchor" href="#ports">#</a></h2>
+<p>暴露端口信息。使用宿主端口：容器端口 <code>(HOST:CONTAINER)</code> 格式，或者仅仅指定容器的端口（宿主将会随机选择端口）都可以。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ports:
+</span></span><span style="display:flex;"><span> - <span style="color:#e6db74">&#34;3000&#34;</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#e6db74">&#34;8000:8000&#34;</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#e6db74">&#34;49100:22&#34;</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#e6db74">&#34;127.0.0.1:8001:8001&#34;</span></span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：当使用 <code>HOST:CONTAINER</code> 格式来映射端口时，如果使用的容器端口小于 60 并且没放到引号里，可能会得到错误结果，因为 <code>YAML</code> 会自动解析 <code>xx:yy</code> 这种数字格式为 60 进制。为避免出现这种问题，建议数字串都采用引号包括起来的字符串格式</p>
+</blockquote><h2 id="secrets">secrets<a class="anchor" href="#secrets">#</a></h2>
+<p>存储敏感数据，例如 <code>mysql</code> 服务密码。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#34;3.1&#34;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>mysql:
+</span></span><span style="display:flex;"><span>  image: mysql
+</span></span><span style="display:flex;"><span>  environment:
+</span></span><span style="display:flex;"><span>    MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+</span></span><span style="display:flex;"><span>  secrets:
+</span></span><span style="display:flex;"><span>    - db_root_password
+</span></span><span style="display:flex;"><span>    - my_other_secret
+</span></span><span style="display:flex;"><span>secrets:
+</span></span><span style="display:flex;"><span>  my_secret:
+</span></span><span style="display:flex;"><span>    file: ./my_secret.txt
+</span></span><span style="display:flex;"><span>  my_other_secret:
+</span></span><span style="display:flex;"><span>    external: true</span></span></code></pre></div><h2 id="security_opt">security_opt<a class="anchor" href="#security_opt">#</a></h2>
+<p>指定容器模板标签（label）机制的默认属性（用户、角色、类型、级别等）。例如配置标签的用户名和角色名。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>security_opt:
+</span></span><span style="display:flex;"><span>    - label:user:USER
+</span></span><span style="display:flex;"><span>    - label:role:ROLE</span></span></code></pre></div><h2 id="stop_signal">stop_signal<a class="anchor" href="#stop_signal">#</a></h2>
+<p>设置另一个信号来停止容器。在默认情况下使用的是 SIGTERM 停止容器。<code>stop_signal: SIGUSR1</code></p>
+<h2 id="sysctls">sysctls<a class="anchor" href="#sysctls">#</a></h2>
+<p>配置容器内核参数。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sysctls:
+</span></span><span style="display:flex;"><span>  net.core.somaxconn: <span style="color:#ae81ff">1024</span>
+</span></span><span style="display:flex;"><span>  net.ipv4.tcp_syncookies: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>sysctls:
+</span></span><span style="display:flex;"><span>  - net.core.somaxconn<span style="color:#f92672">=</span><span style="color:#ae81ff">1024</span>
+</span></span><span style="display:flex;"><span>  - net.ipv4.tcp_syncookies<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span></span></span></code></pre></div><h2 id="ulimits">ulimits<a class="anchor" href="#ulimits">#</a></h2>
+<p>指定容器的 ulimits 限制值。例如，指定最大进程数为 65535，指定文件句柄数为 20000（软限制，应用可以随时修改，不能超过硬限制） 和 40000（系统硬限制，只能 root 用户提高）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ulimits:
+</span></span><span style="display:flex;"><span>    nproc: <span style="color:#ae81ff">65535</span>
+</span></span><span style="display:flex;"><span>    nofile:
+</span></span><span style="display:flex;"><span>      soft: <span style="color:#ae81ff">20000</span>
+</span></span><span style="display:flex;"><span>      hard: <span style="color:#ae81ff">40000</span></span></span></code></pre></div><h2 id="volumes">volumes<a class="anchor" href="#volumes">#</a></h2>
+<p>数据卷所挂载路径设置。可以设置宿主机路径 （<code>HOST:CONTAINER</code>） 或加上访问模式 （<code>HOST:CONTAINER:ro</code>）。该指令中路径支持相对路径。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>volumes:
+</span></span><span style="display:flex;"><span> - /var/lib/mysql
+</span></span><span style="display:flex;"><span> - cache/:/tmp/cache
+</span></span><span style="display:flex;"><span> - ~/configs:/etc/configs/:ro</span></span></code></pre></div><h2 id="其它指令">其它指令<a class="anchor" href="#%e5%85%b6%e5%ae%83%e6%8c%87%e4%bb%a4">#</a></h2>
+<p>此外，还有包括 <code>domainname, entrypoint, hostname, ipc, mac_address, privileged, read_only, shm_size, restart, stdin_open, tty, user, working_dir</code> 等指令，基本跟 <code>docker run</code> 中对应参数的功能一致。</p>
+<p><strong>指定服务容器启动后执行的入口文件</strong></p>
+<p><code>entrypoint: /code/entrypoint.sh</code></p>
+<p><strong>指定容器中运行应用的用户名</strong>
+<code>user: nginx</code></p>
+<p><strong>指定容器中工作目录</strong>
+<code>working_dir: /code</code></p>
+<p><strong>指定容器中搜索域名、主机名、mac 地址等</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>domainname: your_website.com
+</span></span><span style="display:flex;"><span>hostname: test
+</span></span><span style="display:flex;"><span>mac_address: 08-00-27-00-0C-0A</span></span></code></pre></div><p><strong>允许容器中运行一些特权命令</strong>
+<code>privileged: true</code></p>
+<p><strong>指定容器退出后的重启策略为始终重启。该命令对保持服务始终运行十分有效，在生产环境中推荐配置为 <code>always</code> 或者 <code>unless-stopped</code></strong>
+<code>restart: always</code></p>
+<p><strong>以只读模式挂载容器的 root 文件系统，意味着不能对容器内容进行修改</strong>
+<code>read_only: true</code></p>
+<p><strong>打开标准输入，可以接受外部输入</strong>
+<code>stdin_open: true</code></p>
+<p><strong>模拟一个伪终端</strong>
+<code>tty: true</code></p>
+<h2 id="读取变量">读取变量<a class="anchor" href="#%e8%af%bb%e5%8f%96%e5%8f%98%e9%87%8f">#</a></h2>
+<p>Compose 模板文件支持动态读取主机的系统环境变量和当前目录下的 <code>.env</code> 文件中的变量。
+例如，下面的 Compose 文件将从运行它的环境中读取变量 <code>${MONGO_VERSION}</code> 的值，并写入执行的指令中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>version: <span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>db:
+</span></span><span style="display:flex;"><span>  image: <span style="color:#e6db74">&#34;mongo:</span><span style="color:#e6db74">${</span>MONGO_VERSION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span></span></span></code></pre></div><p>如果执行 <code>MONGO_VERSION=3.2 docker-compose up</code> 则会启动一个 <code>mongo:3.2</code> 镜像的容器；如果执行 <code>MONGO_VERSION=2.8 docker-compose up</code> 则会启动一个 <code>mongo:2.8</code> 镜像的容器。
+若当前目录存在 <code>.env</code> 文件，执行 <code>docker-compose</code> 命令时将从该文件中读取变量。
+在当前目录新建 <code>.env</code> 文件并写入以下内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 支持 # 号注释</span>
+</span></span><span style="display:flex;"><span>MONGO_VERSION<span style="color:#f92672">=</span>3.6</span></span></code></pre></div><p>执行 <code>docker-compose up</code> 则会启动一个 <code>mongo:3.6</code> 镜像的容器。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>1.8 Dockerfile</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="flex align-center">
+        <span>2.0 Docker Machine</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#命令选项">命令选项</a></li>
+    <li><a href="#命令使用说明">命令使用说明</a>
+      <ul>
+        <li><a href="#build">build</a></li>
+        <li><a href="#config">config</a></li>
+        <li><a href="#down">down</a></li>
+        <li><a href="#exec">exec</a></li>
+        <li><a href="#help">help</a></li>
+        <li><a href="#images">images</a></li>
+        <li><a href="#kill">kill</a></li>
+        <li><a href="#logs">logs</a></li>
+        <li><a href="#pause">pause</a></li>
+        <li><a href="#port">port</a></li>
+        <li><a href="#ps">ps</a></li>
+        <li><a href="#pull">pull</a></li>
+        <li><a href="#push">push</a></li>
+        <li><a href="#restart">restart</a></li>
+        <li><a href="#rm">rm</a></li>
+        <li><a href="#run">run</a></li>
+        <li><a href="#scale">scale</a></li>
+        <li><a href="#start">start</a></li>
+        <li><a href="#stop">stop</a></li>
+        <li><a href="#top">top</a></li>
+        <li><a href="#unpause">unpause</a></li>
+        <li><a href="#up">up</a></li>
+        <li><a href="#version">version</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#build-1">build</a></li>
+    <li><a href="#cap_add-cap_drop">cap_add, cap_drop</a></li>
+    <li><a href="#command">command</a></li>
+    <li><a href="#cgroup_parent">cgroup_parent</a></li>
+    <li><a href="#container_name">container_name</a></li>
+    <li><a href="#devices">devices</a></li>
+    <li><a href="#depends_on">depends_on</a></li>
+    <li><a href="#dns">dns</a></li>
+    <li><a href="#dns_search">dns_search</a></li>
+    <li><a href="#tmpfs">tmpfs</a></li>
+    <li><a href="#env_file">env_file</a></li>
+    <li><a href="#environment">environment</a></li>
+    <li><a href="#expose">expose</a></li>
+    <li><a href="#external_links">external_links</a></li>
+    <li><a href="#extra_hosts">extra_hosts</a></li>
+    <li><a href="#healthcheck">healthcheck</a></li>
+    <li><a href="#image">image</a></li>
+    <li><a href="#labels">labels</a></li>
+    <li><a href="#links">links</a></li>
+    <li><a href="#logging">logging</a></li>
+    <li><a href="#network_mode">network_mode</a></li>
+    <li><a href="#networks">networks</a></li>
+    <li><a href="#pid">pid</a></li>
+    <li><a href="#ports">ports</a></li>
+    <li><a href="#secrets">secrets</a></li>
+    <li><a href="#security_opt">security_opt</a></li>
+    <li><a href="#stop_signal">stop_signal</a></li>
+    <li><a href="#sysctls">sysctls</a></li>
+    <li><a href="#ulimits">ulimits</a></li>
+    <li><a href="#volumes">volumes</a></li>
+    <li><a href="#其它指令">其它指令</a></li>
+    <li><a href="#读取变量">读取变量</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

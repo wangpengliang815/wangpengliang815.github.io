@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="值类型和引用类型# C#的类型一共分为两类
+值类型 ValueType 引用类型 ReferenceType 值类型和引用类型都继承自 System.Object 类。不同的是几乎所有的引用类型都直接从 System.Object 继承，而值类型则继承 System.ValueType 。System.ValueType直接派生于System.Object。即System.ValueType本身是一个类类型，而不是值类型。关键在于ValueType重写了Equals()方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。
+区别# 引用类型变量的赋值只复制对对象的引用而不复制对象本身。而将一个值类型变量赋给另一个值类型变量时，将复制包含的值 引用类型可以派生出新的类型，而值类型不能 引用类型可以包含 null 值，值类型不能（可空类型功能允许将 null 赋给值类型） 引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。 误区：“引用类型存储在堆上，值类型保存在栈上”，这句话前半部分是正确的，引用类型的实例总是在堆上创建的。但是变量的值是在声明的位置存储的，所以假定一个类中有一个int类型的实例变量，那么这个变量的值是跟对象中的其他数据在一起也就是堆上。只有局部变量（方法内部声明的变量）和方法参数在栈上。
+使用场合# 值类型：在内存管理方面具有更好的效率，但不支持多态不能派生新的类型，适合用做存储数据的载体 引用类型：支持多态可以派生新的类型 内存的逻辑划分之栈和堆# C#程序在CLR上运行时，内存从逻辑上划分两大块：栈、堆，这两个基本元素组成了C#程序的运行环境。
+栈：在程序运行的时候，每个线程(Thread)都会维护一个自己的专属线程堆栈 堆：是程序在运行的时候请求操作系统分配给自己的内存空间，储存着使用的各种对象等信息，跟栈不同的是它们被调用完毕不会立即被清理掉 栈的特征# 栈空间比较小（每个线程只有一个栈占用 1MB，栈内存溢出抛出 StackOverflowException 但是读取速度快 数据只能从栈的顶端插入或删除，是连续存储的，把数据放到栈顶称为入栈，从栈顶删除数据称为出栈​ 存放方法的参数、局部变量、返回地址等值，当一个方法执行完毕后立刻自动清除 栈的结构# 栈帧：每个方法执行都会分配一块独立的内存空间来存储方法运行需要的数据，按后入先出的方式进入和弹出线程栈。
+堆的特征# 堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出 OutOfMemoryException ，但是读取速度慢 数据存储不连续，与栈不同：堆里的内存能够以任意顺序存入和移除 存放引用类型的对象，通过GC清理 堆的结构# 参考：Drill Into .NET Framework Internals to See How the CLR Creates Runtime Objects ​
+代码运行时内存分配情况# 变量和对象在内存中的分配# 示例代码：
+class TestClass { public int x; public static string y; } void Test1() { var a=1; var b=new TestClass(); var c=a; var d=b; var e=d.x; var f=TestClass.y; }内存分配情况：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="值类型和引用类型# C#的类型一共分为两类
+值类型 ValueType 引用类型 ReferenceType 值类型和引用类型都继承自 System.Object 类。不同的是几乎所有的引用类型都直接从 System.Object 继承，而值类型则继承 System.ValueType 。System.ValueType直接派生于System.Object。即System.ValueType本身是一个类类型，而不是值类型。关键在于ValueType重写了Equals()方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。
+区别# 引用类型变量的赋值只复制对对象的引用而不复制对象本身。而将一个值类型变量赋给另一个值类型变量时，将复制包含的值 引用类型可以派生出新的类型，而值类型不能 引用类型可以包含 null 值，值类型不能（可空类型功能允许将 null 赋给值类型） 引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。 误区：“引用类型存储在堆上，值类型保存在栈上”，这句话前半部分是正确的，引用类型的实例总是在堆上创建的。但是变量的值是在声明的位置存储的，所以假定一个类中有一个int类型的实例变量，那么这个变量的值是跟对象中的其他数据在一起也就是堆上。只有局部变量（方法内部声明的变量）和方法参数在栈上。
+使用场合# 值类型：在内存管理方面具有更好的效率，但不支持多态不能派生新的类型，适合用做存储数据的载体 引用类型：支持多态可以派生新的类型 内存的逻辑划分之栈和堆# C#程序在CLR上运行时，内存从逻辑上划分两大块：栈、堆，这两个基本元素组成了C#程序的运行环境。
+栈：在程序运行的时候，每个线程(Thread)都会维护一个自己的专属线程堆栈 堆：是程序在运行的时候请求操作系统分配给自己的内存空间，储存着使用的各种对象等信息，跟栈不同的是它们被调用完毕不会立即被清理掉 栈的特征# 栈空间比较小（每个线程只有一个栈占用 1MB，栈内存溢出抛出 StackOverflowException 但是读取速度快 数据只能从栈的顶端插入或删除，是连续存储的，把数据放到栈顶称为入栈，从栈顶删除数据称为出栈​ 存放方法的参数、局部变量、返回地址等值，当一个方法执行完毕后立刻自动清除 栈的结构# 栈帧：每个方法执行都会分配一块独立的内存空间来存储方法运行需要的数据，按后入先出的方式进入和弹出线程栈。
+堆的特征# 堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出 OutOfMemoryException ，但是读取速度慢 数据存储不连续，与栈不同：堆里的内存能够以任意顺序存入和移除 存放引用类型的对象，通过GC清理 堆的结构# 参考：Drill Into .NET Framework Internals to See How the CLR Creates Runtime Objects ​
+代码运行时内存分配情况# 变量和对象在内存中的分配# 示例代码：
+class TestClass { public int x; public static string y; } void Test1() { var a=1; var b=new TestClass(); var c=a; var d=b; var e=d.x; var f=TestClass.y; }内存分配情况：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="值类型和引用类型# C#的类型一共分为两类
+值类型 ValueType 引用类型 ReferenceType 值类型和引用类型都继承自 System.Object 类。不同的是几乎所有的引用类型都直接从 System.Object 继承，而值类型则继承 System.ValueType 。System.ValueType直接派生于System.Object。即System.ValueType本身是一个类类型，而不是值类型。关键在于ValueType重写了Equals()方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。
+区别# 引用类型变量的赋值只复制对对象的引用而不复制对象本身。而将一个值类型变量赋给另一个值类型变量时，将复制包含的值 引用类型可以派生出新的类型，而值类型不能 引用类型可以包含 null 值，值类型不能（可空类型功能允许将 null 赋给值类型） 引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。 误区：“引用类型存储在堆上，值类型保存在栈上”，这句话前半部分是正确的，引用类型的实例总是在堆上创建的。但是变量的值是在声明的位置存储的，所以假定一个类中有一个int类型的实例变量，那么这个变量的值是跟对象中的其他数据在一起也就是堆上。只有局部变量（方法内部声明的变量）和方法参数在栈上。
+使用场合# 值类型：在内存管理方面具有更好的效率，但不支持多态不能派生新的类型，适合用做存储数据的载体 引用类型：支持多态可以派生新的类型 内存的逻辑划分之栈和堆# C#程序在CLR上运行时，内存从逻辑上划分两大块：栈、堆，这两个基本元素组成了C#程序的运行环境。
+栈：在程序运行的时候，每个线程(Thread)都会维护一个自己的专属线程堆栈 堆：是程序在运行的时候请求操作系统分配给自己的内存空间，储存着使用的各种对象等信息，跟栈不同的是它们被调用完毕不会立即被清理掉 栈的特征# 栈空间比较小（每个线程只有一个栈占用 1MB，栈内存溢出抛出 StackOverflowException 但是读取速度快 数据只能从栈的顶端插入或删除，是连续存储的，把数据放到栈顶称为入栈，从栈顶删除数据称为出栈​ 存放方法的参数、局部变量、返回地址等值，当一个方法执行完毕后立刻自动清除 栈的结构# 栈帧：每个方法执行都会分配一块独立的内存空间来存储方法运行需要的数据，按后入先出的方式进入和弹出线程栈。
+堆的特征# 堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出 OutOfMemoryException ，但是读取速度慢 数据存储不连续，与栈不同：堆里的内存能够以任意顺序存入和移除 存放引用类型的对象，通过GC清理 堆的结构# 参考：Drill Into .NET Framework Internals to See How the CLR Creates Runtime Objects ​
+代码运行时内存分配情况# 变量和对象在内存中的分配# 示例代码：
+class TestClass { public int x; public static string y; } void Test1() { var a=1; var b=new TestClass(); var c=a; var d=b; var e=d.x; var f=TestClass.y; }内存分配情况：">
+  <meta itemprop="wordCount" content="265">
+
+<title>值类型和引用类型的内存分配 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>值类型和引用类型的内存分配</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#栈的特征">栈的特征</a></li>
+    <li><a href="#栈的结构">栈的结构</a></li>
+    <li><a href="#堆的特征">堆的特征</a></li>
+    <li><a href="#堆的结构">堆的结构</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#变量和对象在内存中的分配">变量和对象在内存中的分配</a></li>
+    <li><a href="#方法参数在栈中的分配">方法参数在栈中的分配</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    值类型和引用类型的内存分配
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="值类型和引用类型">值类型和引用类型<a class="anchor" href="#%e5%80%bc%e7%b1%bb%e5%9e%8b%e5%92%8c%e5%bc%95%e7%94%a8%e7%b1%bb%e5%9e%8b">#</a></h1>
+<p>C#的类型一共分为两类</p>
+<ul>
+<li>值类型 <code>ValueType</code></li>
+<li>引用类型 <code>ReferenceType</code></li>
+</ul>
+<p>值类型和引用类型都继承自 <code>System.Object</code> 类。不同的是几乎所有的引用类型都直接从 <code>System.Object</code> 继承，而值类型则继承 <code>System.ValueType </code>。<code>System.ValueType</code>直接派生于<code>System.Object</code>。即<code>System.ValueType</code>本身是一个类类型，而不是值类型。关键在于<code>ValueType</code>重写了<code>Equals()</code>方法，从而对值类型按照实例的值来比较，而不是引用地址来比较。</p>
+<h1 id="区别">区别<a class="anchor" href="#%e5%8c%ba%e5%88%ab">#</a></h1>
+<ul>
+<li>引用类型变量的赋值只复制对对象的引用而不复制对象本身。而将一个值类型变量赋给另一个值类型变量时，将复制包含的值</li>
+<li>引用类型可以派生出新的类型，而值类型不能</li>
+<li>引用类型可以包含 <code>null</code> 值，值类型不能（<strong>可空类型功能允许将 null 赋给值类型</strong>）</li>
+<li>引用类型存储在堆中。类实例化时会在堆中开辟一部分空间存储类的实例，类实例的引用（指针）还是存储在栈中。值类型总是分配在它声明的地方(作为字段时跟随其所属的实例存储在堆上。作为局部变量时存储在栈上)。</li>
+</ul>
+<blockquote class='book-hint '>
+<p>误区：&ldquo;引用类型存储在堆上，值类型保存在栈上&rdquo;，这句话前半部分是正确的，引用类型的实例总是在堆上创建的。但是变量的值是在声明的位置存储的，所以假定一个类中有一个<code>int</code>类型的实例变量，那么这个变量的值是跟对象中的其他数据在一起也就是堆上。只有局部变量（方法内部声明的变量）和方法参数在栈上。</p>
+</blockquote><h1 id="使用场合">使用场合<a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e5%90%88">#</a></h1>
+<ul>
+<li>值类型：在内存管理方面具有更好的效率，但不支持多态不能派生新的类型，适合用做存储数据的载体</li>
+<li>引用类型：支持多态可以派生新的类型</li>
+</ul>
+<h1 id="内存的逻辑划分之栈和堆">内存的逻辑划分之栈和堆<a class="anchor" href="#%e5%86%85%e5%ad%98%e7%9a%84%e9%80%bb%e8%be%91%e5%88%92%e5%88%86%e4%b9%8b%e6%a0%88%e5%92%8c%e5%a0%86">#</a></h1>
+<p>C#程序在CLR上运行时，内存从逻辑上划分两大块：栈、堆，这两个基本元素组成了C#程序的运行环境。</p>
+<ul>
+<li>栈：在程序运行的时候，每个线程(<code>Thread</code>)都会维护一个自己的专属线程堆栈</li>
+<li>堆：是程序在运行的时候请求操作系统分配给自己的内存空间，储存着使用的各种对象等信息，跟栈不同的是它们被调用完毕不会立即被清理掉</li>
+</ul>
+<h2 id="栈的特征">栈的特征<a class="anchor" href="#%e6%a0%88%e7%9a%84%e7%89%b9%e5%be%81">#</a></h2>
+<ul>
+<li>栈空间比较小（每个线程只有一个栈占用 <code>1MB</code>，栈内存溢出抛出 <code>StackOverflowException</code> 但是读取速度快</li>
+<li>数据只能从栈的顶端插入或删除，是连续存储的，<strong>把数据放到栈顶称为入栈</strong>，<strong>从栈顶删除数据称为出栈</strong>​</li>
+<li>存放方法的参数、局部变量、返回地址等值，当一个方法执行完毕后立刻自动清除</li>
+</ul>
+<h2 id="栈的结构">栈的结构<a class="anchor" href="#%e6%a0%88%e7%9a%84%e7%bb%93%e6%9e%84">#</a></h2>
+<p><img src="/images/2021-09-02-22-41-17.png" alt="" /></p>
+<blockquote class='book-hint '>
+<p>栈帧：每个方法执行都会分配一块独立的内存空间来存储方法运行需要的数据，按<strong>后入先出</strong>的方式进入和弹出线程栈。</p>
+</blockquote><h2 id="堆的特征">堆的特征<a class="anchor" href="#%e5%a0%86%e7%9a%84%e7%89%b9%e5%be%81">#</a></h2>
+<ul>
+<li>堆空间比较大（32位最多分配1.5GB，64位最多分配8TB，堆内存溢出抛出 <code>OutOfMemoryException</code> ，但是读取速度慢</li>
+<li>数据存储不连续，与栈不同：堆里的内存能够以任意顺序存入和移除</li>
+<li>存放引用类型的对象，通过<code>GC</code>清理</li>
+</ul>
+<h2 id="堆的结构">堆的结构<a class="anchor" href="#%e5%a0%86%e7%9a%84%e7%bb%93%e6%9e%84">#</a></h2>
+<p>参考：<a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2005/may/net-framework-internals-how-the-clr-creates-runtime-objects">Drill Into .NET Framework Internals to See How the CLR Creates Runtime Objects</a>
+​</p>
+<h1 id="代码运行时内存分配情况">代码运行时内存分配情况<a class="anchor" href="#%e4%bb%a3%e7%a0%81%e8%bf%90%e8%a1%8c%e6%97%b6%e5%86%85%e5%ad%98%e5%88%86%e9%85%8d%e6%83%85%e5%86%b5">#</a></h1>
+<h2 id="变量和对象在内存中的分配">变量和对象在内存中的分配<a class="anchor" href="#%e5%8f%98%e9%87%8f%e5%92%8c%e5%af%b9%e8%b1%a1%e5%9c%a8%e5%86%85%e5%ad%98%e4%b8%ad%e7%9a%84%e5%88%86%e9%85%8d">#</a></h2>
+<p><strong>示例代码</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestClass</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> x;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">string</span> y;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Test1()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> a=<span style="color:#ae81ff">1</span>; 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> b=<span style="color:#66d9ef">new</span> TestClass();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> c=a;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> d=b;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> e=d.x;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> f=TestClass.y;
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><strong>内存分配情况</strong>：</p>
+<p><img src="/images/2021-09-02-22-42-10.png" alt="" /></p>
+<ol>
+<li><code>Test1()</code>方法被调用：系统为该方法创建一个栈桢，用于存储该方法使用到的值类型的变量、指针、调用其他方法的返回地址等</li>
+<li>方法执行到 <code>var a=1</code>：变量<code>a</code>的值<code>1</code>首先入栈存储，栈的起始地址为<code>0x000000671b77e5a4</code></li>
+<li>方法执行到 <code>var b=new TestClass()</code>：在堆中开辟一块内存用于存储<code>TestClass</code>实例对象，然后变量<code>b</code>入栈，变量<code>b</code>的值为<code>TestClass</code>实例对象的引用（实际存储的是<code>TestClass</code>实例在堆上的内存地址，也就是指针）</li>
+<li>方法执行到 <code>var c=a</code>：将变量<code>c</code>压入栈，因为<code>a</code>是值类型，所以将变量<code>a</code>的值拷贝赋值给<code>c</code></li>
+<li>方法执行到 <code>var d=b</code>：将变量<code>d</code>压入栈，因为<code>b</code>是引用类型，所以将变量<code>b</code>引用的地址赋值给变量<code>d</code>，此时变量<code>b</code>和<code>d</code>都指向堆内存中的<code>TestClass</code>实例对象</li>
+<li>方法执行到 <code>var e=d.x</code>时：将变量<code>e</code>压入栈，因为<code>x</code>字段是值类型，所以将<code>x</code>的实际值0（int类型初始化的默认值为0）赋值给<code>e</code></li>
+<li>方法执行到 <code>var f=TestClass.y</code>：将变量<code>f</code>压入栈，因为<code>y</code>字段是引用类型，所以<code>f</code>变量的值为<code>y</code> 字段的引用</li>
+</ol>
+<h2 id="方法参数在栈中的分配">方法参数在栈中的分配<a class="anchor" href="#%e6%96%b9%e6%b3%95%e5%8f%82%e6%95%b0%e5%9c%a8%e6%a0%88%e4%b8%ad%e7%9a%84%e5%88%86%e9%85%8d">#</a></h2>
+<p><strong>示例代码：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestClass</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> x;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> sum(<span style="color:#66d9ef">int</span> i,<span style="color:#66d9ef">int</span> j){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> i+j;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Test1()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> a=<span style="color:#66d9ef">new</span> TestClass();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> b = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  b=a.sum(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><strong>内存分配情况：</strong></p>
+<p><img src="/images/2021-09-02-22-42-35.png" alt="" />
+​</p>
+<ol>
+<li>方法执行到 <code>var a=new TestClass()</code> : 在堆中开辟一块内存用于存储<code>TestClass</code>实例对象，然后变量<code>a</code>入栈，变量<code>a</code>的值为<code>TestClass</code>实例对象的引用（实际上存储的是<code>TestClass</code>实例在堆上的内存地址，也就是指针）</li>
+<li>方法执行到 <code>int b = 0</code>：将局部变量<code>b</code>压入栈，因为<code>b</code>是值类型所以值<code>0</code>存储在栈中</li>
+<li>方法执行到 <code>b=a.sum(1,2)</code>：首先两个<code>int</code>类型实参<code>1，2</code>分别入栈，并将<code>sum</code>方法的返回地址压入栈，<code>sum</code>方法执行结束之后应返回至该位置</li>
+</ol>
+<h1 id="systemstring">System.String<a class="anchor" href="#systemstring">#</a></h1>
+<ul>
+<li>特性一：字符串是不可变的，字符串一经创建便不能更改，不能变长、变短或修改其中的任何字符。</li>
+<li>特性二：字符串驻留（字符串池化），<code>CLR</code>可通过一个<code>String</code>对象共享多个完全一致的<code>String</code>内容，这样能减少系统中字符串的数量，从而节省内存。<code>String</code>的驻留机制实际上是在<code>SystemDomain</code>中进行的。 当<code>CLR</code>被加载之后，会在<code>SystemDomain</code>对应的<code>managed heap</code>中创建一个<code>Hashtable</code>，<code>Hashtable</code>中记录了所有在代码中使用字面量声明的字符串实例的引用，<code>Hashtable</code>的<code>Key</code>为字符串本身，<code>Value</code>为字符串对象的地址。</li>
+</ul>
+<p><strong>示例代码：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//申请一块堆内存，把地址放在Hashtable的key为hello的元素中</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">string</span> str1 = <span style="color:#e6db74">&#34;hello&#34;</span>; 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//由于上一句已经创建了key为hello的元素，所以不需要申请新的堆内存</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">string</span> str2 = <span style="color:#e6db74">&#34;hello&#34;</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//编译成MSIL语言时 已经与string str3 = &#34;hello&#34;一样了</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">string</span> str3 = <span style="color:#e6db74">&#34;&#34;</span> + <span style="color:#e6db74">&#34;e&#34;</span> + <span style="color:#e6db74">&#34;l&#34;</span> + <span style="color:#e6db74">&#34;l&#34;</span> + <span style="color:#e6db74">&#34;o&#34;</span>; 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//显式new</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">string</span> str4 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>(<span style="color:#66d9ef">new</span> <span style="color:#66d9ef">char</span>[] { <span style="color:#e6db74">&#39;h&#39;</span>, <span style="color:#e6db74">&#39;e&#39;</span>, <span style="color:#e6db74">&#39;l&#39;</span>, <span style="color:#e6db74">&#39;l&#39;</span>, <span style="color:#e6db74">&#39;o&#39;</span> }); 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//申请一块堆内存，把地址放在Hashtable的key为hello2的元素中</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">string</span> str5 = <span style="color:#e6db74">&#34;hello2&#34;</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//True 引用同一块堆内存 </span>
+</span></span><span style="display:flex;"><span>   Console.WriteLine(<span style="color:#66d9ef">object</span>.ReferenceEquals(str1, str2).ToString());
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//True 也是引用同一块堆内存</span>
+</span></span><span style="display:flex;"><span>   Console.WriteLine(<span style="color:#66d9ef">object</span>.ReferenceEquals(str1, str3).ToString()); 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//False 引用了不同的堆内存 </span>
+</span></span><span style="display:flex;"><span>   Console.WriteLine(<span style="color:#66d9ef">object</span>.ReferenceEquals(str1, str4).ToString());
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 先从Hashtable中检索是否有重复的key ，检索到了hello2，所以不需要申请新的堆内存</span>
+</span></span><span style="display:flex;"><span>   str2 = <span style="color:#e6db74">&#34;hello2&#34;</span>; 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//False str2与str1已经不引用同一个堆</span>
+</span></span><span style="display:flex;"><span>   Console.WriteLine(<span style="color:#66d9ef">object</span>.ReferenceEquals(str1, str2).ToString());
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//True 变成与str5引用同一个堆内存</span>
+</span></span><span style="display:flex;"><span>   Console.WriteLine(<span style="color:#66d9ef">object</span>.ReferenceEquals(str2, str5).ToString()); 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 控制台输入两个相同的字符串</span>
+</span></span><span style="display:flex;"><span>   str1 = Console.ReadLine();
+</span></span><span style="display:flex;"><span>   str2 = Console.ReadLine();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">//False 因为 str1 和 str2 两个变量并非字面量声明的字符串，所以不会触发字符串驻留机制</span>
+</span></span><span style="display:flex;"><span>   Console.WriteLine(<span style="color:#66d9ef">object</span>.ReferenceEquals(str1, str2).ToString());
+</span></span><span style="display:flex;"><span>   Console.ReadLine();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="静态字段和属性">静态字段和属性<a class="anchor" href="#%e9%9d%99%e6%80%81%e5%ad%97%e6%ae%b5%e5%92%8c%e5%b1%9e%e6%80%a7">#</a></h1>
+<p>类型的静态字段和静态属性的支持字段（例如 int）存储在类型对象（加载堆）中。</p>
+<p><code>JIT</code> 会在进行编译时找到这些静态成员的地址，并在之后的编译时硬编码它们，然后写在机器码中。</p>
+<p>这样，再次访问静态成员时就不需要通过类型对象。程序中所有类型的静态成员组成一个全局的数组，它包括每一个类型中的基元类型静态成员的内存地址。</p>
+<p>数组的地址会被钉死 (pinned)，使得它不会被 <code>GC</code> 回收掉（除非卸载应用程序域），这样机器码中的硬编码将一直有意义，直到程序终止。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90azuredevops%E7%AE%A1%E9%81%93/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.4方案实践及集成 Azure Devops管道</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="flex align-center">
+      <span>反射技术</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#栈的特征">栈的特征</a></li>
+    <li><a href="#栈的结构">栈的结构</a></li>
+    <li><a href="#堆的特征">堆的特征</a></li>
+    <li><a href="#堆的结构">堆的结构</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#变量和对象在内存中的分配">变量和对象在内存中的分配</a></li>
+    <li><a href="#方法参数在栈中的分配">方法参数在栈中的分配</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

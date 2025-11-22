@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="记录rabbitMq中Channel常见的方法
+channel.exchangeDeclare()# type：direct、fanout、topic durable：(true、false) true：服务器重启会保留下来Exchange。警告：仅设置此选项，不代表消息持久化。即不保证重启后消息还在。 原文：true if we are declaring a durable exchange (the exchange will survive a server restart
+autoDelete：(true、false) true：当已经没有消费者时，服务器是否可以删除该Exchange 原文：true if the server should delete the exchange when it is no longer in use
+/** * Declare an exchange. * @see com.rabbitmq.client.AMQP.Exchange.Declare * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk * @param exchange the name of the exchange * @param type the exchange type * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart) * @param autoDelete true if the server should delete the exchange when it is no longer in use * @param arguments other properties (construction arguments) for the exchange * @return a declaration-confirm method to indicate the exchange was successfully declared * @throws java.io.IOException if an error is encountered */ Exchange.DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete, Map&lt;String, Object&gt; arguments) throws IOException;chanel.basicQos()# prefetchSize：0 prefetchCount：会告诉RabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则该consumer将block掉，直到有消息ack global：true\false 是否将上面设置应用于channel，简单点说，就是上面限制是channel级别的还是consumer级别 备注：据说prefetchSize 和global这两项，rabbitmq没有实现，暂且不研究
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="记录rabbitMq中Channel常见的方法
+channel.exchangeDeclare()# type：direct、fanout、topic durable：(true、false) true：服务器重启会保留下来Exchange。警告：仅设置此选项，不代表消息持久化。即不保证重启后消息还在。 原文：true if we are declaring a durable exchange (the exchange will survive a server restart
+autoDelete：(true、false) true：当已经没有消费者时，服务器是否可以删除该Exchange 原文：true if the server should delete the exchange when it is no longer in use
+/** * Declare an exchange. * @see com.rabbitmq.client.AMQP.Exchange.Declare * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk * @param exchange the name of the exchange * @param type the exchange type * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart) * @param autoDelete true if the server should delete the exchange when it is no longer in use * @param arguments other properties (construction arguments) for the exchange * @return a declaration-confirm method to indicate the exchange was successfully declared * @throws java.io.IOException if an error is encountered */ Exchange.DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete, Map&lt;String, Object&gt; arguments) throws IOException;chanel.basicQos()# prefetchSize：0 prefetchCount：会告诉RabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则该consumer将block掉，直到有消息ack global：true\false 是否将上面设置应用于channel，简单点说，就是上面限制是channel级别的还是consumer级别 备注：据说prefetchSize 和global这两项，rabbitmq没有实现，暂且不研究">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="记录rabbitMq中Channel常见的方法
+channel.exchangeDeclare()# type：direct、fanout、topic durable：(true、false) true：服务器重启会保留下来Exchange。警告：仅设置此选项，不代表消息持久化。即不保证重启后消息还在。 原文：true if we are declaring a durable exchange (the exchange will survive a server restart
+autoDelete：(true、false) true：当已经没有消费者时，服务器是否可以删除该Exchange 原文：true if the server should delete the exchange when it is no longer in use
+/** * Declare an exchange. * @see com.rabbitmq.client.AMQP.Exchange.Declare * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk * @param exchange the name of the exchange * @param type the exchange type * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart) * @param autoDelete true if the server should delete the exchange when it is no longer in use * @param arguments other properties (construction arguments) for the exchange * @return a declaration-confirm method to indicate the exchange was successfully declared * @throws java.io.IOException if an error is encountered */ Exchange.DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete, Map&lt;String, Object&gt; arguments) throws IOException;chanel.basicQos()# prefetchSize：0 prefetchCount：会告诉RabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则该consumer将block掉，直到有消息ack global：true\false 是否将上面设置应用于channel，简单点说，就是上面限制是channel级别的还是consumer级别 备注：据说prefetchSize 和global这两项，rabbitmq没有实现，暂且不研究">
+  <meta itemprop="wordCount" content="1085">
+
+<title>1.5 Channel常见方法 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.5 Channel常见方法</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.5 Channel常见方法
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>记录rabbitMq中Channel常见的方法</p>
+<!-- more -->
+<h1 id="channelexchangedeclare">channel.exchangeDeclare()<a class="anchor" href="#channelexchangedeclare">#</a></h1>
+<ul>
+<li><code>type</code>：direct、fanout、topic</li>
+<li><code>durable</code>：(<code>true、false</code>) true：服务器重启会保留下来Exchange。警告：仅设置此选项，不代表消息持久化。即不保证重启后消息还在。</li>
+</ul>
+<blockquote class='book-hint '>
+<p>原文：true if we are declaring a durable exchange (the exchange will survive a server restart</p>
+</blockquote><ul>
+<li><code>autoDelete</code>：(<code>true、false</code>) true：当已经没有消费者时，服务器是否可以删除该Exchange</li>
+</ul>
+<blockquote class='book-hint '>
+<p>原文：true if the server should delete the exchange when it is no longer in use</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Declare an exchange.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Exchange.Declare
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Exchange.DeclareOk
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param exchange the name of the exchange
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param type the exchange type
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param durable true if we are declaring a durable exchange (the exchange will survive a server restart)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param autoDelete true if the server should delete the exchange when it is no longer in use
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param arguments other properties (construction arguments) for the exchange
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @return a declaration-confirm method to indicate the exchange was successfully declared
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    Exchange.DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete,
+</span></span><span style="display:flex;"><span>                                       Map&lt;String, Object&gt; arguments) throws IOException;</span></span></code></pre></div><h1 id="chanelbasicqos">chanel.basicQos()<a class="anchor" href="#chanelbasicqos">#</a></h1>
+<ul>
+<li><code>prefetchSize</code>：0</li>
+<li><code>prefetchCount</code>：会告诉RabbitMQ不要同时给一个消费者推送多于N个消息，即一旦有N个消息还没有ack，则该consumer将block掉，直到有消息ack</li>
+<li><code>global</code>：<code>true\false</code> 是否将上面设置应用于channel，简单点说，就是上面限制是<code>channel</code>级别的还是<code>consumer</code>级别</li>
+</ul>
+<p>备注：据说prefetchSize 和global这两项，rabbitmq没有实现，暂且不研究</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Request specific &#34;quality of service&#34; settings.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * These settings impose limits on the amount of data the server
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * will deliver to consumers before requiring acknowledgements.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Thus they provide a means of consumer-initiated flow control.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.Qos
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param prefetchSize maximum amount of content (measured in
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * octets) that the server will deliver, 0 if unlimited
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param prefetchCount maximum number of messages that the server
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * will deliver, 0 if unlimited
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param global true if the settings should be applied to the
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * entire channel rather than each consumer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> basicQos(<span style="color:#66d9ef">int</span> prefetchSize, <span style="color:#66d9ef">int</span> prefetchCount, boolean global) throws IOException;</span></span></code></pre></div><h1 id="channelbasicpublish">channel.basicPublish()<a class="anchor" href="#channelbasicpublish">#</a></h1>
+<ul>
+<li><code>routingKey</code>：路由键，#匹配0个或多个单词，*匹配一个单词，在topic exchange做消息转发用</li>
+<li><code>mandatory</code>：true：如果exchange根据自身类型和消息routeKey无法找到一个符合条件的queue，那么会调用basic.return方法将消息返还给生产者。false：出现上述情形broker会直接将消息扔掉</li>
+<li><code>immediate</code>：true：如果exchange在将消息route到queue(s)时发现对应的queue上没有消费者，那么这条消息不会放入队列中。当与消息routeKey关联的所有queue(一个或多个)都没有消费者时，该消息会通过basic.return方法返还给生产者。</li>
+<li><code>BasicProperties</code> ：需要注意的是<code>BasicProperties.deliveryMode</code>，0:不持久化 1：持久化 这里指的是消息的持久化，配合channel(durable=true),queue(durable)可以实现，即使服务器宕机，消息仍然保留</li>
+</ul>
+<blockquote class='book-hint '>
+<p>简单来说：<code>mandatory</code>标志告诉服务器至少将该消息route到一个队列中，否则将消息返还给生产者；<code>immediate</code>标志告诉服务器如果该消息关联的queue上有消费者，则马上将消息投递给它，如果所有queue都没有消费者，直接把消息返还给生产者，不用将消息入队列等待消费者了</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>  <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Publish a message.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Publishing to a non-existent exchange will result in a channel-level
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * protocol exception, which closes the channel.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Invocations of &lt;code&gt;Channel#basicPublish&lt;/code&gt; will eventually block if a
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * &lt;a href=&#34;http://www.rabbitmq.com/alarms.html&#34;&gt;resource-driven alarm&lt;/a&gt; is in effect.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.Publish
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see &lt;a href=&#34;http://www.rabbitmq.com/alarms.html&#34;&gt;Resource-driven alarms&lt;/a&gt;.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param exchange the exchange to publish the message to
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param routingKey the routing key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param mandatory true if the &#39;mandatory&#39; flag is to be set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param immediate true if the &#39;immediate&#39; flag is to be
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * set. Note that the RabbitMQ server does not support this flag.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param props other properties for the message - routing headers etc
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param body the message body
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, <span style="color:#66d9ef">byte</span>[] body)
+</span></span><span style="display:flex;"><span>            throws IOException;</span></span></code></pre></div><h1 id="channelbasicack">channel.basicAck()<a class="anchor" href="#channelbasicack">#</a></h1>
+<ul>
+<li><code>deliveryTag</code>：该消息的index</li>
+<li><code>multiple</code>：是否批量；true:将一次性ack所有小于deliveryTag的消息</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Acknowledge one or several received
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * messages. Supply the deliveryTag from the {@link com.rabbitmq.client.AMQP.Basic.GetOk}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * or {@link com.rabbitmq.client.AMQP.Basic.Deliver} method
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * containing the received message being acknowledged.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.Ack
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param deliveryTag the tag from the received {@link com.rabbitmq.client.AMQP.Basic.GetOk} or {@link com.rabbitmq.client.AMQP.Basic.Deliver}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param multiple true to acknowledge all messages up to and
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * including the supplied delivery tag; false to acknowledge just
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * the supplied delivery tag.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> basicAck(<span style="color:#66d9ef">long</span> deliveryTag, boolean multiple) throws IOException;</span></span></code></pre></div><h1 id="channelbasicnackdeliverygetenvelopegetdeliverytag-false-true">channel.basicNack(delivery.getEnvelope().getDeliveryTag(), false, true)<a class="anchor" href="#channelbasicnackdeliverygetenvelopegetdeliverytag-false-true">#</a></h1>
+<ul>
+<li><code>deliveryTag</code>：该消息的index</li>
+<li><code>multiple</code>：是否批量.true:将一次性拒绝所有小于deliveryTag的消息</li>
+<li><code>requeue</code>：被拒绝的是否重新入队列</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Reject one or several received messages.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Supply the &lt;code&gt;deliveryTag&lt;/code&gt; from the {@link com.rabbitmq.client.AMQP.Basic.GetOk}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * or {@link com.rabbitmq.client.AMQP.Basic.GetOk} method containing the message to be rejected.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.Nack
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param deliveryTag the tag from the received {@link com.rabbitmq.client.AMQP.Basic.GetOk} or {@link com.rabbitmq.client.AMQP.Basic.Deliver}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param multiple true to reject all messages up to and including
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * the supplied delivery tag; false to reject just the supplied
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * delivery tag.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param requeue true if the rejected message(s) should be requeued rather
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * than discarded/dead-lettered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> basicNack(<span style="color:#66d9ef">long</span> deliveryTag, boolean multiple, boolean requeue)
+</span></span><span style="display:flex;"><span>            throws IOException;</span></span></code></pre></div><h1 id="channelbasicrejectdeliverygetenvelopegetdeliverytag-false">channel.basicReject(delivery.getEnvelope().getDeliveryTag(), false)<a class="anchor" href="#channelbasicrejectdeliverygetenvelopegetdeliverytag-false">#</a></h1>
+<ul>
+<li><code>deliveryTag</code>：该消息的index</li>
+<li><code>requeue</code>：被拒绝的是否重新入队列</li>
+</ul>
+<blockquote class='book-hint '>
+<p>channel.basicNack 与 channel.basicReject 的区别在于basicNack可以拒绝多条消息，而basicReject一次只能拒绝一条消息</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Reject a message. Supply the deliveryTag from the {@link com.rabbitmq.client.AMQP.Basic.GetOk}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * or {@link com.rabbitmq.client.AMQP.Basic.Deliver} method
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * containing the received message being rejected.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.Reject
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param deliveryTag the tag from the received {@link com.rabbitmq.client.AMQP.Basic.GetOk} or {@link com.rabbitmq.client.AMQP.Basic.Deliver}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param requeue true if the rejected message should be requeued rather than discarded/dead-lettered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> basicReject(<span style="color:#66d9ef">long</span> deliveryTag, boolean requeue) throws IOException;</span></span></code></pre></div><h1 id="channelbasicconsumequeuename-true-consumer">channel.basicConsume(queueName, true, consumer)<a class="anchor" href="#channelbasicconsumequeuename-true-consumer">#</a></h1>
+<ul>
+<li><code>autoAck</code>：是否自动<code>ack</code>，如果不自动<code>ack</code>，需要使用<code>channel.ack</code>、<code>channel.nack</code>、<code>channel.basicReject</code> 进行消息应答</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Start a non-nolocal, non-exclusive consumer, with
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * a server-generated consumerTag.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param queue the name of the queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param autoAck true if the server should consider messages
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * acknowledged once delivered; false if the server should expect
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * explicit acknowledgements
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param callback an interface to the consumer object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @return the consumerTag generated by the server
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.Consume
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Basic.ConsumeOk
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see #basicConsume(String, boolean, String, boolean, boolean, Map, Consumer)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    String basicConsume(String queue, boolean autoAck, Consumer callback) throws IOException;</span></span></code></pre></div><h1 id="chanelexchangebind">chanel.exchangeBind()<a class="anchor" href="#chanelexchangebind">#</a></h1>
+<p><code>channel.queueBind(queueName, EXCHANGE_NAME, bindingKey)</code>；用于通过绑定<code>bindingKey</code>将<code>queue</code>到<code>Exchange</code>，之后便可以进行消息接收</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Bind an exchange to an exchange, with no extra arguments.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Exchange.Bind
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Exchange.BindOk
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param destination the name of the exchange to which messages flow across the binding
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param source the name of the exchange from which messages flow across the binding
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param routingKey the routine key to use for the binding
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @return a binding-confirm method if the binding was successfully created
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    Exchange.BindOk exchangeBind(String destination, String source, String routingKey) throws IOException;</span></span></code></pre></div><h1 id="channelqueuedeclarequeuename-false-false-false-null">channel.queueDeclare(queueName, false, false, false, null)<a class="anchor" href="#channelqueuedeclarequeuename-false-false-false-null">#</a></h1>
+<ul>
+<li><code>durable</code>：(true、false) true：在服务器重启时，能够存活</li>
+<li><code>exclusive</code> ：是否为当前连接的专用队列，在连接断开后，会自动删除该队列，生产环境中应该很少用到</li>
+<li><code>autodelete</code>：当没有任何消费者使用时，自动删除该队列</li>
+</ul>
+<blockquote class='book-hint '>
+<p>this means that the queue will be deleted when there are no more processes consuming messages from it.)</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * Declare a queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Queue.Declare
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @see com.rabbitmq.client.AMQP.Queue.DeclareOk
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param queue the name of the queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param durable true if we are declaring a durable queue (the queue will survive a server restart)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param exclusive true if we are declaring an exclusive queue (restricted to this connection)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param autoDelete true if we are declaring an autodelete queue (server will delete it when no longer in use)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param arguments other properties (construction arguments) for the queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @return a declaration-confirm method to indicate the queue was successfully declared
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @throws java.io.IOException if an error is encountered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    Queue.DeclareOk queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,
+</span></span><span style="display:flex;"><span>                                 Map&lt;String, Object&gt; arguments) throws IOException;</span></span></code></pre></div><p><code>arguments</code>中可以设置的常用属性</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">参数名</th>
+          <th style="text-align: left">作用</th>
+          <th>示例</th>
+          <th>示例描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Message TTL</td>
+          <td style="text-align: left">设置队列中消息的有效时间</td>
+          <td>{ &ldquo;x-message-ttl&rdquo;,1000*8}</td>
+          <td>设置队列中的所有消息的有效期为8s</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Auto expire</td>
+          <td style="text-align: left">一定的时间内队列没有被使用，则自动删除队列</td>
+          <td>{&ldquo;x-expires&rdquo;,1000*60}</td>
+          <td>如果60s没有队列被访问，则删除队列</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Max length</td>
+          <td style="text-align: left">队列能保存消息的最大条数</td>
+          <td>{&ldquo;x-max-length&rdquo;,100 }</td>
+          <td>设置队列最多保存100条消息</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Max length bytes</td>
+          <td style="text-align: left">队列中ready类型消息的总字节数</td>
+          <td>{&ldquo;x-max-length-bytes&rdquo;,1000 }</td>
+          <td>设置队列中ready类型消息总共不能超过1000字节</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Overflow behaviour</td>
+          <td style="text-align: left">当队列消息满了时，再接收消息时的处理方法。有两种处理方案：默认为&quot;drop-head&quot;模式，表示从队列头部丢弃消息；&ldquo;reject-publish&quot;表示不接收后续的消息</td>
+          <td>{&ldquo;x-overflow&rdquo;,&ldquo;reject-publish&rdquo; }</td>
+          <td>设置当队列消息满了时,丢弃传来后续消息</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Dead letter exchange</td>
+          <td style="text-align: left">用于存储被丢弃的消息的交换机名。Overflow behaviour 的两种处理方案中丢弃的消息都会发送到这个交换机</td>
+          <td>{&ldquo;x-dead-letter-exchange&rdquo;,&ldquo;beiyongExchange&rdquo; }</td>
+          <td>设置丢弃的消息发送到名字为beiyongExchange的交换机</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Dead letter routing key</td>
+          <td style="text-align: left">被丢弃的消息发送到Dead letter exchange时的使用的routing Key</td>
+          <td>{&ldquo;x-dead-letter-routing-key&rdquo;,&ldquo;deadKey&rdquo; }</td>
+          <td>设置丢弃的消息发送到beiyongExchange交换机时的RoutingKey值是&quot;deadKey&rdquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Maximum priority</td>
+          <td style="text-align: left">设置队列中消息优先级的最大等级，在publish消息时可以设置单条消息的优先级等级</td>
+          <td>{&ldquo;x-max-priority&rdquo;,10 }</td>
+          <td>设置中消息优先级的最大等级为10</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Lazy mode</td>
+          <td style="text-align: left">设置队列的模式，如果设置为Lazy表示队列中消息尽可能存放在磁盘中，以减少内存占用；不设置时消息都存放在队列中，用以尽可能快的处理消息</td>
+          <td>{&ldquo;x-queue-mode&rdquo;,&ldquo;lazy&rdquo;}</td>
+          <td>3.6以后版本可用，设置队列中消息尽可能存放在磁盘中，以减少内存占用。在消息拥堵时和消息持久化配置使用可以减少内存占用</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.4两种消费模式和 Qos的实现</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="flex align-center">
+      <span>1.6 Rabbit Mq常用命令</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

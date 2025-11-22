@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="事务概念# 一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序的串行化执行而不会被其他命令插入，不许加塞。
+事务作用# 一个队列中，一次性、顺序性、排他性的执行一系列命令。
+事务常用命令# multi# 标记一个事务块的开始
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; get k1 QUEUED 127.0.0.1:6379(TX)&gt; exec 1) OK 2) OK 3) &#34;v1&#34;discard# 取消事务，放弃执行事务块内的所有命令
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; discard OK 127.0.0.1:6379&gt; get k1 (nil)exec# 执行所有事务块内的命令
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; get k1 QUEUED 127.0.0.1:6379(TX)&gt; exec 1) OK 2) OK 3) &#34;v1&#34;事务原子性# Redis单条命令是保证原子性的，但是Redis事务并不能保证原子性。所有的命令在事务中并不会立即执行，只会在执行事务的时候才会执行，所以Redis事务没有事务隔离级别的概念。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="事务概念# 一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序的串行化执行而不会被其他命令插入，不许加塞。
+事务作用# 一个队列中，一次性、顺序性、排他性的执行一系列命令。
+事务常用命令# multi# 标记一个事务块的开始
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; get k1 QUEUED 127.0.0.1:6379(TX)&gt; exec 1) OK 2) OK 3) &#34;v1&#34;discard# 取消事务，放弃执行事务块内的所有命令
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; discard OK 127.0.0.1:6379&gt; get k1 (nil)exec# 执行所有事务块内的命令
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; get k1 QUEUED 127.0.0.1:6379(TX)&gt; exec 1) OK 2) OK 3) &#34;v1&#34;事务原子性# Redis单条命令是保证原子性的，但是Redis事务并不能保证原子性。所有的命令在事务中并不会立即执行，只会在执行事务的时候才会执行，所以Redis事务没有事务隔离级别的概念。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="事务概念# 一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序的串行化执行而不会被其他命令插入，不许加塞。
+事务作用# 一个队列中，一次性、顺序性、排他性的执行一系列命令。
+事务常用命令# multi# 标记一个事务块的开始
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; get k1 QUEUED 127.0.0.1:6379(TX)&gt; exec 1) OK 2) OK 3) &#34;v1&#34;discard# 取消事务，放弃执行事务块内的所有命令
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; discard OK 127.0.0.1:6379&gt; get k1 (nil)exec# 执行所有事务块内的命令
+127.0.0.1:6379&gt; multi OK 127.0.0.1:6379(TX)&gt; set k1 v1 QUEUED 127.0.0.1:6379(TX)&gt; set k2 v2 QUEUED 127.0.0.1:6379(TX)&gt; get k1 QUEUED 127.0.0.1:6379(TX)&gt; exec 1) OK 2) OK 3) &#34;v1&#34;事务原子性# Redis单条命令是保证原子性的，但是Redis事务并不能保证原子性。所有的命令在事务中并不会立即执行，只会在执行事务的时候才会执行，所以Redis事务没有事务隔离级别的概念。">
+  <meta itemprop="wordCount" content="330">
+
+<title>1.5 Redis事务操作 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.5 Redis事务操作</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#multi"><code>multi</code></a></li>
+    <li><a href="#discard"><code>discard</code></a></li>
+    <li><a href="#exec"><code>exec</code></a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#单线程操作"><strong>单线程操作</strong></a></li>
+    <li><a href="#多线程操作"><strong>多线程操作</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.5 Redis事务操作
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="事务概念">事务概念<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e6%a6%82%e5%bf%b5">#</a></h1>
+<p>一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，<strong>按顺序的串行化执行</strong>而不会被其他命令插入，不许加塞。</p>
+<!-- more -->
+<h1 id="事务作用">事务作用<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e4%bd%9c%e7%94%a8">#</a></h1>
+<p>一个队列中，一次性、顺序性、排他性的执行一系列命令。</p>
+<h1 id="事务常用命令">事务常用命令<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4">#</a></h1>
+<h2 id="multi"><code>multi</code><a class="anchor" href="#multi">#</a></h2>
+<p>标记一个事务块的开始</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k1 v1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k2 v2
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; get k1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; exec
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;v1&#34;</span></span></span></code></pre></div><h2 id="discard"><code>discard</code><a class="anchor" href="#discard">#</a></h2>
+<p>取消事务，放弃执行事务块内的所有命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k1 v1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k2 v2
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; discard
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get k1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span></span></span></code></pre></div><h2 id="exec"><code>exec</code><a class="anchor" href="#exec">#</a></h2>
+<p>执行所有事务块内的命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k1 v1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k2 v2
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; get k1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; exec
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;v1&#34;</span></span></span></code></pre></div><h1 id="事务原子性">事务原子性<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e5%8e%9f%e5%ad%90%e6%80%a7">#</a></h1>
+<p>Redis单条命令是保证原子性的，但是<strong>Redis事务并不能保证原子性</strong>。所有的命令在事务中并不会立即执行，只会在执行事务的时候才会执行，所以<strong>Redis事务没有事务隔离级别的概念</strong>。</p>
+<p><strong>编译时异常</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k1 v1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k2 v2
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k3 v3
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 随便写的，此时会报错误不存在这个命令；但是并没有说事务停止了</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; helloworld
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>error<span style="color:#f92672">)</span> ERR unknown command <span style="color:#e6db74">`</span>helloworld<span style="color:#e6db74">`</span>, with args beginning with: 
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k4 v4<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; exec
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>error<span style="color:#f92672">)</span> EXECABORT Transaction discarded because of previous errors.
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get k1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span></span></span></code></pre></div><p>结果可知：事务中所有命令都不会被执行</p>
+<p><strong>运行时异常</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k1 v1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k2 v2
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k3 v3
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># k1值是字符串类型所以无法自增，但是并没有提示错误</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; incr k1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; exec
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> OK
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>error<span style="color:#f92672">)</span> ERR value is not an integer or out of range
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get k1
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;v1&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get k2
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;v2&#34;</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; get k3
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;v3&#34;</span></span></span></code></pre></div><p>结果可知：出错的命令不会被执行，正常的命令还是会被执行</p>
+<p>基于编译时异常和运行时异常的区别，可以更好的理解为什么说：<strong>Redis单条命令是保证原子性的，但是Redis事务是不保证原子性的</strong>。</p>
+<h1 id="watch监控">Watch监控<a class="anchor" href="#watch%e7%9b%91%e6%8e%a7">#</a></h1>
+<p><strong>乐观锁</strong>：每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量。</p>
+<p><strong>悲观锁</strong>：每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会 <code>block</code> 直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。</p>
+<h2 id="单线程操作"><strong>单线程操作</strong><a class="anchor" href="#%e5%8d%95%e7%ba%bf%e7%a8%8b%e6%93%8d%e4%bd%9c">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 余额</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; set money <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 花出去的钱</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; set out <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 监视money</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; watch money
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 启动事务</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 余额-20</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; DECRby money <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># out+20</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; INCRBY out <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 执行事务</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; EXEC
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">20</span></span></span></code></pre></div><p>结果正常</p>
+<h2 id="多线程操作"><strong>多线程操作</strong><a class="anchor" href="#%e5%a4%9a%e7%ba%bf%e7%a8%8b%e6%93%8d%e4%bd%9c">#</a></h2>
+<p>客户端1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 余额</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; set money <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 花出去的钱</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; set out <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 监视money</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; watch money
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 启动事务</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 余额-20</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; DECRby money <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># out+20</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; INCRBY out <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>QUEUED</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：这个时候并没有执行事务</p>
+</blockquote><p>客户端2</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; WATCH money
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; incrby money <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">200</span></span></span></code></pre></div><p>回到客户端1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; exec
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nil<span style="color:#f92672">)</span></span></span></code></pre></div><p>结果可知：使用<code>watch</code>可以实现乐观锁的功能</p>
+<h1 id="unwatch">UnWatch<a class="anchor" href="#unwatch">#</a></h1>
+<p>接着上面的 watch 讲解，先解锁再获取最新的值进行操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 解锁</span>
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; unwatch
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; decrby money <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; INCRBY out <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; exec
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">180</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">20</span></span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.4 Redis特殊数据类型</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="flex align-center">
+      <span>1.6 Redis配置文件详解</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#multi"><code>multi</code></a></li>
+    <li><a href="#discard"><code>discard</code></a></li>
+    <li><a href="#exec"><code>exec</code></a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#单线程操作"><strong>单线程操作</strong></a></li>
+    <li><a href="#多线程操作"><strong>多线程操作</strong></a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

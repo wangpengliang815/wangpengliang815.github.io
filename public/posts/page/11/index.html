@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/">1.9 Redis集群方案</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="redis集群">Redis集群<a class="anchor" href="#redis%e9%9b%86%e7%be%a4">#</a></h1>
+<p>Redis支持三种集群方案</p>
+<ul>
+<li>主从复制</li>
+<li>Sentinel（哨兵）</li>
+<li>Cluster</li>
+</ul>
+<!-- more -->
+<h2 id="主从复制">主从复制<a class="anchor" href="#%e4%b8%bb%e4%bb%8e%e5%a4%8d%e5%88%b6">#</a></h2>
+<p>通过持久化功能，Redis保证了即使在服务器重启的情况下也不会丢失（或少量丢失）数据，因为持久化会把内存中数据保存到硬盘上，重启会从硬盘上加载数据。 但是由于数据是存储在一台服务器上的，如果这台服务器出现硬盘故障等问题，也会导致数据丢失。为了避免单点故障，通常的做法是将数据库复制多个副本以部署在不同的服务器上，这样即使有一台服务器出现故障，其他服务器依然可以继续提供服务。</p>
+<p>为此： <code>Redis …</code></p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/">使用 Docker搭建 Redis集群</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="环境准备">环境准备<a class="anchor" href="#%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">IP</th>
+          <th style="text-align: center">操作系统</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">192.168.252.191</td>
+          <td style="text-align: center">CentOS Linux release 7.9.2009 (Core)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">192.168.252.192</td>
+          <td style="text-align: center">CentOS Linux release 7.9.2009 (Core) …</td></tr></tbody></table></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/">客户端连接 Redis</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>测试代码：https://github.com/wangpengliang815/CodeSnippet/tree/master/CommonLib/CommonLib</p>
+<p>参考文档：https://www.bookstack.cn/books/StackExchange.Redis-docs-cn</p>
+<!-- more -->
+<h1 id="客户端">客户端<a class="anchor" href="#%e5%ae%a2%e6%88%b7%e7%ab%af">#</a></h1>
+<ul>
+<li>ServiceStack.Redis 是商业版，免费版有限制</li>
+<li>StackExchange.Redis 是免费版，但是内核在 .NETCore 运行有问题经常 Timeout，暂无法解决</li>
+<li>csRedis …</li></ul></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">单元测试</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="常见测试类型">常见测试类型<a class="anchor" href="#%e5%b8%b8%e8%a7%81%e6%b5%8b%e8%af%95%e7%b1%bb%e5%9e%8b">#</a></h1>
+<ul>
+<li>单元测试</li>
+<li>集成测试</li>
+<li>Web测试</li>
+<li>负载测试</li>
+<li>其他</li>
+</ul>
+<!-- more -->
+<h1 id="依赖倒置原则dip">依赖倒置原则(DIP）<a class="anchor" href="#%e4%be%9d%e8%b5%96%e5%80%92%e7%bd%ae%e5%8e%9f%e5%88%99dip">#</a></h1>
+<p>很多情况下,一个类或者是方法它会依赖一些外部组件，如其他开发写的代码、第三方类库、数据库、网络等，当被测试的代码与这些组件紧耦合时，这段代码将可能是不可测的。如一个方法中依赖一个数据库组件去访问数据库，那么在执行这个方法时，必然要与数据库交互，如果没有数据库，那么该方法就无法运行。所以单元测试不仅是对代码逻辑进行检查，同时还对整个代码结构有所限制，面向对象编程时应当遵循“依赖倒置”原则，模块应该依赖抽象，抽象不应 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/">压力测试k6</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p><code>k6</code> 是GitHub上提供的开源负载测试工具，使用Go编写。测试脚本使用JavaScript编写。</p>
+<!-- more -->
+<h1 id="先决条件">先决条件<a class="anchor" href="#%e5%85%88%e5%86%b3%e6%9d%a1%e4%bb%b6">#</a></h1>
+<ul>
+<li>安装K6 <a href="https://k6.io/docs/getting-started/installation">https://k6.io/docs/getting-started/installation</a></li>
+<li>环境变量配置；<code>cd</code> 到压测脚本目录</li>
+</ul>
+<h1 id="概念">概念<a class="anchor" href="#%e6%a6%82%e5%bf%b5">#</a></h1>
+<ul>
+<li>vu：虚拟用户</li>
+<li>duration:持续时长</li>
+</ul>
+<h1 id="入门">入门<a class="anchor" href="#%e5%85%a5%e9%97%a8">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">http</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;k6/http&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">sleep</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;k6&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default …</span></span></span></span></span></span></span></span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/">自动化 Ui测试</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p><code>Selenium</code>可以用来做<code>自动化UI测试</code>，支持多语言，这里使用<code>C#</code>编写测试脚本。</p>
+<!-- more -->
+<h1 id="netframework">.NetFramework<a class="anchor" href="#netframework">#</a></h1>
+<p><code>Selenium.Support</code>，<code>Selenium.WebDriver</code>,<code>Selenium.RC</code></p>
+<h1 id="dotnet-core">Dotnet core<a class="anchor" href="#dotnet-core">#</a></h1>
+<p>核心库：<code>Selenium.Support</code>，<code>Selenium.WebDriver</code>,<code>Selenium.Chrome.WebDriver</code></p>
+<p>注意：Selenium.RC包在dotnetcore会存在不兼容的问题，无法正常找到<code>chromedriver.exe</code> 文件。</p>
+<p><strong>Exception …</strong></p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/">集成测试</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>学习一下C#中集成测试</p>
+<!-- more -->
+<h1 id="集成测试">集成测试<a class="anchor" href="#%e9%9b%86%e6%88%90%e6%b5%8b%e8%af%95">#</a></h1>
+<p>集成测试可在包含应用支持基础结构（如数据库、文件系统和网络）的级别上确保应用组件功能正常。</p>
+<p>单元测试关注是的软件最小可执行单元是否能够正常执行，但软件是由一个个最小执行单元组成的集合体，单元与单元之间存在着种种依赖或联系，所以在开发时仅仅确保最小单元的正确往往不够，为了保证软件能够正确运行，单元与单元之间的集成测试是非常必要。</p>
+<p>与单元测试相比，集成测试可在更广泛的级别上评估应用的组件。 单元测试用于测试独立软件组件，如单独的类方法。 集成测试确认两个或更多应用组件一起工 …</p></!--></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/10/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/9/">9</a><a href="/posts/page/10/">10</a><a >11</a></span>
+  
+  <span>
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

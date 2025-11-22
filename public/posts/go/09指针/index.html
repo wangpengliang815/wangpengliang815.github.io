@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="指针类型# 任何程序数据载入内存后，在内存都有内存的地址这就是指针。而为了保存一个数据在内存中的地址，就需要指针变量。一个指针的值是一个变量的地址。一个指针对应变量在内存中的存储位置。
+例如：
+x := 1 // 声明int类型变量x p := &amp;x // &amp;x用于获取变量x的内存地址，返回一个指向x的指针p fmt.Println(*p) // *p用户获取指针p指向变量的值 *p = 2 // 可以重新给*p指针赋值 fmt.Println(x) // &#34;2&#34;输出：
+1 2 用 var x int 声明语句声明一个变量，&amp;x 表达式（取x变量的内存地址）将产生一个指向该整数变量的指针，指针对应的数据类型是 *int，名字为 p ，可以理解为：“p指针指向变量x”或者“p指针保存了x变量的内存地址”。同时 *p 表达式对应p指针指向的变量的值。一般 *p 表达式读取指针指向的变量的值，这里为int类型的值，同时因为 *p 对应一个变量，所以该表达式也可以出现在赋值语句的左边，表示更新指针所指向的变量的值。
+注意：因为指针包含了一个变量的地址，因此如果将指针作为参数调用函数，那将可以在函数中通过该指针来更新变量的值
+&amp;x：获取变量x的内存地址，返回一个指向x的指针 *p：获取指针p指向变量的值 看一下 b := &amp;a 的图示：
+总结： 取地址操作符 &amp; 和取值操作符 * 是一对互补操作符，&amp; 取出地址，* 根据地址取出地址指向的值。
+变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：
+对变量进行取地址 &amp; 操作，可以获得这个变量的指针变量 指针变量的值是指针地址 对指针变量进行取值 *操作，可以获得指针变量指向的原变量的值 指针传值
+func modify1(x int) { x = 100 } func modify2(x *int) { *x = 100 } func main() { a := 10 modify1(a) fmt.Println(a) // 10 modify2(&amp;a) fmt.Println(a) // 100 }new和make# 先来看一个例子：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/go/09%E6%8C%87%E9%92%88/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="指针类型# 任何程序数据载入内存后，在内存都有内存的地址这就是指针。而为了保存一个数据在内存中的地址，就需要指针变量。一个指针的值是一个变量的地址。一个指针对应变量在内存中的存储位置。
+例如：
+x := 1 // 声明int类型变量x p := &amp;x // &amp;x用于获取变量x的内存地址，返回一个指向x的指针p fmt.Println(*p) // *p用户获取指针p指向变量的值 *p = 2 // 可以重新给*p指针赋值 fmt.Println(x) // &#34;2&#34;输出：
+1 2 用 var x int 声明语句声明一个变量，&amp;x 表达式（取x变量的内存地址）将产生一个指向该整数变量的指针，指针对应的数据类型是 *int，名字为 p ，可以理解为：“p指针指向变量x”或者“p指针保存了x变量的内存地址”。同时 *p 表达式对应p指针指向的变量的值。一般 *p 表达式读取指针指向的变量的值，这里为int类型的值，同时因为 *p 对应一个变量，所以该表达式也可以出现在赋值语句的左边，表示更新指针所指向的变量的值。
+注意：因为指针包含了一个变量的地址，因此如果将指针作为参数调用函数，那将可以在函数中通过该指针来更新变量的值
+&amp;x：获取变量x的内存地址，返回一个指向x的指针 *p：获取指针p指向变量的值 看一下 b := &amp;a 的图示：
+总结： 取地址操作符 &amp; 和取值操作符 * 是一对互补操作符，&amp; 取出地址，* 根据地址取出地址指向的值。
+变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：
+对变量进行取地址 &amp; 操作，可以获得这个变量的指针变量 指针变量的值是指针地址 对指针变量进行取值 *操作，可以获得指针变量指向的原变量的值 指针传值
+func modify1(x int) { x = 100 } func modify2(x *int) { *x = 100 } func main() { a := 10 modify1(a) fmt.Println(a) // 10 modify2(&amp;a) fmt.Println(a) // 100 }new和make# 先来看一个例子：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="指针类型# 任何程序数据载入内存后，在内存都有内存的地址这就是指针。而为了保存一个数据在内存中的地址，就需要指针变量。一个指针的值是一个变量的地址。一个指针对应变量在内存中的存储位置。
+例如：
+x := 1 // 声明int类型变量x p := &amp;x // &amp;x用于获取变量x的内存地址，返回一个指向x的指针p fmt.Println(*p) // *p用户获取指针p指向变量的值 *p = 2 // 可以重新给*p指针赋值 fmt.Println(x) // &#34;2&#34;输出：
+1 2 用 var x int 声明语句声明一个变量，&amp;x 表达式（取x变量的内存地址）将产生一个指向该整数变量的指针，指针对应的数据类型是 *int，名字为 p ，可以理解为：“p指针指向变量x”或者“p指针保存了x变量的内存地址”。同时 *p 表达式对应p指针指向的变量的值。一般 *p 表达式读取指针指向的变量的值，这里为int类型的值，同时因为 *p 对应一个变量，所以该表达式也可以出现在赋值语句的左边，表示更新指针所指向的变量的值。
+注意：因为指针包含了一个变量的地址，因此如果将指针作为参数调用函数，那将可以在函数中通过该指针来更新变量的值
+&amp;x：获取变量x的内存地址，返回一个指向x的指针 *p：获取指针p指向变量的值 看一下 b := &amp;a 的图示：
+总结： 取地址操作符 &amp; 和取值操作符 * 是一对互补操作符，&amp; 取出地址，* 根据地址取出地址指向的值。
+变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：
+对变量进行取地址 &amp; 操作，可以获得这个变量的指针变量 指针变量的值是指针地址 对指针变量进行取值 *操作，可以获得指针变量指向的原变量的值 指针传值
+func modify1(x int) { x = 100 } func modify2(x *int) { *x = 100 } func main() { a := 10 modify1(a) fmt.Println(a) // 10 modify2(&amp;a) fmt.Println(a) // 100 }new和make# 先来看一个例子：">
+  <meta itemprop="wordCount" content="209">
+
+<title>09指针 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/go/09%E6%8C%87%E9%92%88/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>09指针</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#new">new</a></li>
+    <li><a href="#make">make</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    09指针
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="指针类型">指针类型<a class="anchor" href="#%e6%8c%87%e9%92%88%e7%b1%bb%e5%9e%8b">#</a></h1>
+<p>任何程序数据载入内存后，在内存都有内存的地址这就是指针。而为了保存一个数据在内存中的地址，就需要指针变量。一个指针的值是一个变量的地址。一个指针对应变量在内存中的存储位置。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>          <span style="color:#75715e">// 声明int类型变量x</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>         <span style="color:#75715e">// &amp;x用于获取变量x的内存地址，返回一个指向x的指针p</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span>) <span style="color:#75715e">// *p用户获取指针p指向变量的值</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span> = <span style="color:#ae81ff">2</span>          <span style="color:#75715e">// 可以重新给*p指针赋值</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">x</span>)  <span style="color:#75715e">// &#34;2&#34;</span></span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#ae81ff">1</span>      
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>    </span></span></code></pre></div><p>用 <code>var x int</code> 声明语句声明一个变量，<code>&amp;x</code> 表达式（取x变量的内存地址）将产生一个指向该整数变量的指针，指针对应的数据类型是 <code>*int</code>，名字为 <code>p</code> ，可以理解为：“p指针指向变量x”或者“p指针保存了x变量的内存地址”。同时 <code>*p</code> 表达式对应p指针指向的变量的值。一般 <code>*p</code> 表达式读取指针指向的变量的值，这里为int类型的值，同时因为 <code>*p</code> 对应一个变量，所以该表达式也可以出现在赋值语句的左边，表示更新指针所指向的变量的值。</p>
+<blockquote class='book-hint '>
+<p>注意：因为指针包含了一个变量的地址，因此如果将指针作为参数调用函数，那将可以在函数中通过该指针来更新变量的值</p>
+</blockquote><ul>
+<li><code>&amp;x</code>：获取变量x的内存地址，返回一个指向x的指针</li>
+<li><code>*p</code>：获取指针p指向变量的值</li>
+</ul>
+<p>看一下 <code>b := &amp;a</code> 的图示：</p>
+<p><img src="https://www.liwenzhou.com/images/Go/pointer/ptr.png" alt="取变量地址图示" /></p>
+<p><strong>总结：</strong> 取地址操作符 <code>&amp;</code> 和取值操作符 <code>*</code> 是一对互补操作符，<code>&amp; </code>取出地址，<code>* </code>根据地址取出地址指向的值。</p>
+<p>变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：</p>
+<ul>
+<li>对变量进行取地址 <code>&amp;</code> 操作，可以获得这个变量的指针变量</li>
+<li>指针变量的值是指针地址</li>
+<li>对指针变量进行取值 <code>*</code>操作，可以获得指针变量指向的原变量的值</li>
+</ul>
+<p>指针传值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">modify1</span>(<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> = <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">modify2</span>(<span style="color:#a6e22e">x</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">x</span> = <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">modify1</span>(<span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">a</span>) <span style="color:#75715e">// 10</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">modify2</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">a</span>) <span style="color:#75715e">// 100</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="new和make">new和make<a class="anchor" href="#new%e5%92%8cmake">#</a></h1>
+<p>先来看一个例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">*</span><span style="color:#a6e22e">a</span> = <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>[<span style="color:#e6db74">&#34;wangpengliang&#34;</span>] = <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">b</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>执行上面的代码会引发 <code>panic</code>，为什么呢？ 在Go语言中<strong>对于引用类型的变量，在使用的时候不仅要声明，还要为它分配内存空间，否则值就没办法存储。而对于值类型的声明不需要分配内存空间，是因为它们在声明的时候已经默认分配好内存空间</strong>。Go语言中 <code>new</code> 和 <code>make</code> 是内建的两个函数，主要用来分配内存。</p>
+<p>这里 <code>panic</code>原因在于：</p>
+<p><code>var a *int</code>  只是声明了一个指针变量 <code>a</code> 但是没有初始化，指针作为引用类型需要初始化后才会拥有内存空间，才可以赋值。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> = new(<span style="color:#66d9ef">int</span>)</span></span></code></pre></div><p><code>var b map[string]int</code> 只是声明变量 <code>b</code> 是一个 <code>map</code> 类型变量而未初始化。需要初始化后才可以赋值，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span> = make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">10</span>)</span></span></code></pre></div><h2 id="new">new<a class="anchor" href="#new">#</a></h2>
+<p><code>new</code> 是一个内置的函数，函数签名如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> new(<span style="color:#a6e22e">Type</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">Type</span></span></span></code></pre></div><p>其中，</p>
+<ul>
+<li><code>Type</code> 表示类型，<code>new</code> 函数只接受一个参数，这个参数是一个类型</li>
+<li><code>*Type</code>表示类型指针，<code>new</code> 函数返回一个指向该类型内存地址的指针</li>
+</ul>
+<p>使用 <code>new</code> 函数得到的是一个类型的指针，并且该指针对应的值为该类型的零值。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T\n&#34;</span>, <span style="color:#a6e22e">a</span>) <span style="color:#75715e">// *int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T\n&#34;</span>, <span style="color:#a6e22e">b</span>) <span style="color:#75715e">// *bool</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">a</span>)       <span style="color:#75715e">// 0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">b</span>)       <span style="color:#75715e">// false</span>
+</span></span><span style="display:flex;"><span>}	</span></span></code></pre></div><h2 id="make">make<a class="anchor" href="#make">#</a></h2>
+<p><code>make</code> 也是用于内存分配的，与 <code>new </code>区别在于它只用于 <code>slice</code>、<code>map</code>以及 <code>channel</code> 的内存创建，而且它返回的类型就是这三个类型本身，而不是他们的指针类型。</p>
+<blockquote class='book-hint '>
+<p>因为这三种类型就是引用类型，所以就没有必要返回他们的指针了</p>
+</blockquote><p>函数签名如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> make(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">size</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">IntegerType</span>) <span style="color:#a6e22e">Type</span></span></span></code></pre></div><h1 id="new与make的区别">new与make的区别<a class="anchor" href="#new%e4%b8%8emake%e7%9a%84%e5%8c%ba%e5%88%ab">#</a></h1>
+<ol>
+<li>二者都是用来做内存分配的。</li>
+<li><code>make</code> 只用于<code>slice</code>、<code>map</code> 、<code>channel</code> 的初始化，返回这三个引用类型本身</li>
+<li><code>new</code> 用于类型的内存分配，并且内存对应的值为类型零值，返回的是指向类型的指针</li>
+</ol>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/go/08%E5%87%BD%E6%95%B0/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>08函数</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/go/10%E5%8F%8D%E5%B0%84/" class="flex align-center">
+      <span>10反射</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#new">new</a></li>
+    <li><a href="#make">make</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="准备工作# DataProtectionOption# 将使用数据保护需要的参数做成 Option ，方便配置调用。
+public class ProtectionOption { /// &lt;summary&gt;应用程序名称&lt;/summary&gt; /// &lt;value&gt;The name of the application.&lt;/value&gt; public string ApplicationName { get; set; } /// &lt;summary&gt;证书指纹&lt;/summary&gt; /// &lt;value&gt;The thumbprint.&lt;/value&gt; public string Thumbprint { get; set; } /// &lt;summary&gt;私钥存储路径&lt;/summary&gt; /// &lt;value&gt;The secret key path.&lt;/value&gt; public string SecretKeyPath { get; set; } /// &lt;summary&gt;保护器名称&lt;/summary&gt; /// &lt;value&gt;The purpose.&lt;/value&gt; public string Purpose { get; set; } }ProtectionOptionBase# 真实项目中，不可能只对单个字符串进行加解密，大多数时候是对某个 Option 配置进行加解密，定义需要解密的 Option 需要继承的基类，Option上带有 EncryptedAttribute 标记的属性将会被解密。
+/// &lt;summary&gt;使用数据保护的Option要继承的基类,带有EncryptedAttribute标记的将会被解密&lt;/summary&gt; public abstract class ProtectionOptionBase { private bool Decrypted { get; set; } = false; public void Decrypt(IDataProtector protector) { if (Decrypted) return; foreach (PropertyInfo property in GetType().GetProperties()) { if (property.GetCustomAttribute&lt;EncryptedAttribute&gt;() != null) { string text = property.GetValue(this).ToString(); property.SetValue(this, protector.Unprotect(text)); } } Decrypted = true; } public void CopyTo(ProtectionOptionBase option) { foreach (PropertyInfo property in GetType().GetProperties()) { property.SetValue(option, property.GetValue(this)); } } }EncryptedAttribute# 定义特性，用于标识属性是否需要被解密。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/1.3%E5%9F%BA%E4%BA%8Edataprotection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="准备工作# DataProtectionOption# 将使用数据保护需要的参数做成 Option ，方便配置调用。
+public class ProtectionOption { /// &lt;summary&gt;应用程序名称&lt;/summary&gt; /// &lt;value&gt;The name of the application.&lt;/value&gt; public string ApplicationName { get; set; } /// &lt;summary&gt;证书指纹&lt;/summary&gt; /// &lt;value&gt;The thumbprint.&lt;/value&gt; public string Thumbprint { get; set; } /// &lt;summary&gt;私钥存储路径&lt;/summary&gt; /// &lt;value&gt;The secret key path.&lt;/value&gt; public string SecretKeyPath { get; set; } /// &lt;summary&gt;保护器名称&lt;/summary&gt; /// &lt;value&gt;The purpose.&lt;/value&gt; public string Purpose { get; set; } }ProtectionOptionBase# 真实项目中，不可能只对单个字符串进行加解密，大多数时候是对某个 Option 配置进行加解密，定义需要解密的 Option 需要继承的基类，Option上带有 EncryptedAttribute 标记的属性将会被解密。
+/// &lt;summary&gt;使用数据保护的Option要继承的基类,带有EncryptedAttribute标记的将会被解密&lt;/summary&gt; public abstract class ProtectionOptionBase { private bool Decrypted { get; set; } = false; public void Decrypt(IDataProtector protector) { if (Decrypted) return; foreach (PropertyInfo property in GetType().GetProperties()) { if (property.GetCustomAttribute&lt;EncryptedAttribute&gt;() != null) { string text = property.GetValue(this).ToString(); property.SetValue(this, protector.Unprotect(text)); } } Decrypted = true; } public void CopyTo(ProtectionOptionBase option) { foreach (PropertyInfo property in GetType().GetProperties()) { property.SetValue(option, property.GetValue(this)); } } }EncryptedAttribute# 定义特性，用于标识属性是否需要被解密。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="准备工作# DataProtectionOption# 将使用数据保护需要的参数做成 Option ，方便配置调用。
+public class ProtectionOption { /// &lt;summary&gt;应用程序名称&lt;/summary&gt; /// &lt;value&gt;The name of the application.&lt;/value&gt; public string ApplicationName { get; set; } /// &lt;summary&gt;证书指纹&lt;/summary&gt; /// &lt;value&gt;The thumbprint.&lt;/value&gt; public string Thumbprint { get; set; } /// &lt;summary&gt;私钥存储路径&lt;/summary&gt; /// &lt;value&gt;The secret key path.&lt;/value&gt; public string SecretKeyPath { get; set; } /// &lt;summary&gt;保护器名称&lt;/summary&gt; /// &lt;value&gt;The purpose.&lt;/value&gt; public string Purpose { get; set; } }ProtectionOptionBase# 真实项目中，不可能只对单个字符串进行加解密，大多数时候是对某个 Option 配置进行加解密，定义需要解密的 Option 需要继承的基类，Option上带有 EncryptedAttribute 标记的属性将会被解密。
+/// &lt;summary&gt;使用数据保护的Option要继承的基类,带有EncryptedAttribute标记的将会被解密&lt;/summary&gt; public abstract class ProtectionOptionBase { private bool Decrypted { get; set; } = false; public void Decrypt(IDataProtector protector) { if (Decrypted) return; foreach (PropertyInfo property in GetType().GetProperties()) { if (property.GetCustomAttribute&lt;EncryptedAttribute&gt;() != null) { string text = property.GetValue(this).ToString(); property.SetValue(this, protector.Unprotect(text)); } } Decrypted = true; } public void CopyTo(ProtectionOptionBase option) { foreach (PropertyInfo property in GetType().GetProperties()) { property.SetValue(option, property.GetValue(this)); } } }EncryptedAttribute# 定义特性，用于标识属性是否需要被解密。">
+  <meta itemprop="wordCount" content="603">
+
+<title>1.3基于 Data Protection的数据保护方案 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/1.3%E5%9F%BA%E4%BA%8Edataprotection%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4%E6%96%B9%E6%A1%88/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.3基于 Data Protection的数据保护方案</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#dataprotectionoption">DataProtectionOption</a></li>
+    <li><a href="#protectionoptionbase">ProtectionOptionBase</a></li>
+    <li><a href="#encryptedattribute">EncryptedAttribute</a></li>
+    <li><a href="#dataprotectionextensions">DataProtectionExtensions</a></li>
+    <li><a href="#generatingciphertextconsole">GeneratingCiphertext.Console</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#appsettingsjson">appsettings.json</a></li>
+    <li><a href="#appsettingsdevelopmentjson">appsettings.Development.json</a></li>
+    <li><a href="#appsettingssitjson">appsettings.Sit.json</a></li>
+    <li><a href="#startup">Startup</a></li>
+    <li><a href="#environmentcontroller">EnvironmentController</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.3基于 Data Protection的数据保护方案
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="准备工作">准备工作<a class="anchor" href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c">#</a></h1>
+<h2 id="dataprotectionoption">DataProtectionOption<a class="anchor" href="#dataprotectionoption">#</a></h2>
+<p>将使用数据保护需要的参数做成 <code>Option</code> ，方便配置调用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProtectionOption</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;应用程序名称&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;value&gt;The name of the application.&lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> ApplicationName { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;证书指纹&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;value&gt;The thumbprint.&lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Thumbprint { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;私钥存储路径&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;value&gt;The secret key path.&lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> SecretKeyPath { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;保护器名称&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;value&gt;The purpose.&lt;/value&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Purpose { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }</span></span></code></pre></div><h2 id="protectionoptionbase">ProtectionOptionBase<a class="anchor" href="#protectionoptionbase">#</a></h2>
+<p>真实项目中，不可能只对单个字符串进行加解密，大多数时候是对某个 <code>Option</code> 配置进行加解密，定义需要解密的 <code>Option</code> 需要继承的基类，Option上带有 <code>EncryptedAttribute</code>  标记的属性将会被解密。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;使用数据保护的Option要继承的基类,带有EncryptedAttribute标记的将会被解密&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProtectionOptionBase</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">bool</span> Decrypted { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Decrypt(IDataProtector protector)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (Decrypted) <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (PropertyInfo property <span style="color:#66d9ef">in</span> GetType().GetProperties())
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (property.GetCustomAttribute&lt;EncryptedAttribute&gt;() != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">string</span> text = property.GetValue(<span style="color:#66d9ef">this</span>).ToString();
+</span></span><span style="display:flex;"><span>                    property.SetValue(<span style="color:#66d9ef">this</span>, protector.Unprotect(text));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            Decrypted = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> CopyTo(ProtectionOptionBase option)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (PropertyInfo property <span style="color:#66d9ef">in</span> GetType().GetProperties())
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                property.SetValue(option, property.GetValue(<span style="color:#66d9ef">this</span>));
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }</span></span></code></pre></div><h2 id="encryptedattribute">EncryptedAttribute<a class="anchor" href="#encryptedattribute">#</a></h2>
+<p>定义特性，用于标识属性是否需要被解密。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EncryptedAttribute</span> : Attribute
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><h2 id="dataprotectionextensions">DataProtectionExtensions<a class="anchor" href="#dataprotectionextensions">#</a></h2>
+<p>基于数据保护服务添加扩展方法，提供注入服务并使用指定证书进行解密的能力。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DataProtectionExtensions</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;注册数据保护服务,使用x509证书加密&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;services&#34;&gt;The services.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;exception cref=&#34;Exception&#34;&gt;not found X509Certificate&lt;/exception&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IDataProtector AddDataProtectionWithX509(<span style="color:#66d9ef">this</span> IServiceCollection services)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            ServiceProvider provider = services.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取用户配置数据保护的Option</span>
+</span></span><span style="display:flex;"><span>            ProtectionOption protectionOption = provider
+</span></span><span style="display:flex;"><span>                .GetRequiredService&lt;IOptions&lt;ProtectionOption&gt;&gt;().Value;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取证书</span>
+</span></span><span style="display:flex;"><span>            X509Certificate2 cert = GetCertificateFromStore(protectionOption.Thumbprint);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 注册服务</span>
+</span></span><span style="display:flex;"><span>            services.AddDataProtection()
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 设置应用程序名称</span>
+</span></span><span style="display:flex;"><span>                .SetApplicationName(protectionOption.ApplicationName)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 设置秘钥存储路径</span>
+</span></span><span style="display:flex;"><span>                .PersistKeysToFileSystem(<span style="color:#66d9ef">new</span> DirectoryInfo(protectionOption.SecretKeyPath))
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 设置用于加密的证书</span>
+</span></span><span style="display:flex;"><span>                .UnprotectKeysWithAnyCertificate(cert);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            provider = services.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            IDataProtectionProvider protectionProvider = provider.GetRequiredService&lt;IDataProtectionProvider&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 创建数据保护器</span>
+</span></span><span style="display:flex;"><span>            IDataProtector protector = protectionProvider.CreateProtector(protectionOption.Purpose);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 注册单例的数据保护器</span>
+</span></span><span style="display:flex;"><span>            services.AddSingleton&lt;IDataProtector&gt;(serviceProvider =&gt; protector);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> protector;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IServiceCollection ProtectedConfigure&lt;TOptions&gt;(<span style="color:#66d9ef">this</span> IServiceCollection services
+</span></span><span style="display:flex;"><span>            , IConfigurationSection section)
+</span></span><span style="display:flex;"><span>             <span style="color:#66d9ef">where</span> TOptions : ProtectionOptionBase, <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            ServiceProvider provider = services.BuildServiceProvider();
+</span></span><span style="display:flex;"><span>            IDataProtector protector = provider.GetRequiredService&lt;IDataProtector&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            services.Configure&lt;TOptions&gt;(option =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">var</span> config = section.Get&lt;TOptions&gt;();
+</span></span><span style="display:flex;"><span>                config.Decrypt(protector);
+</span></span><span style="display:flex;"><span>                config.CopyTo(option);
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> services;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// Get the certifcate to use to encrypt the key</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// CertSearchArea：StoreLocation.CurrentUser/StoreLocation.LocalMachine</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;thumbprint&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> X509Certificate2 GetCertificateFromStore(<span style="color:#66d9ef">string</span> thumbprint)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            X509Certificate2 signingCert =
+</span></span><span style="display:flex;"><span>                GetCertificateFromStore(thumbprint, StoreLocation.CurrentUser);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (signingCert != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> signingCert;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                signingCert =
+</span></span><span style="display:flex;"><span>                   GetCertificateFromStore(thumbprint, StoreLocation.LocalMachine);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (signingCert != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> signingCert;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> X509Certificate2Exception(<span style="color:#e6db74">&#34;本机和当前用户证书存储区都未找到对应证书&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;Gets the certificate from store.&lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;thumbprint&#34;&gt;The thumbprint.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;param name=&#34;storeLocation&#34;&gt;The store location.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> X509Certificate2 GetCertificateFromStore(<span style="color:#66d9ef">string</span> thumbprint, StoreLocation storeLocation)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取本地机器证书存储</span>
+</span></span><span style="display:flex;"><span>            X509Store localMachineStore = <span style="color:#66d9ef">new</span> X509Store(storeLocation);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                localMachineStore.Open(OpenFlags.ReadOnly);
+</span></span><span style="display:flex;"><span>                X509Certificate2Collection certCollection = localMachineStore.Certificates;
+</span></span><span style="display:flex;"><span>                X509Certificate2Collection localMachineCerts =
+</span></span><span style="display:flex;"><span>                    certCollection.Find(X509FindType.FindByTimeValid, DateTime.Now, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>                X509Certificate2Collection signingCert =
+</span></span><span style="display:flex;"><span>                    localMachineCerts.Find(X509FindType.FindByThumbprint, thumbprint, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (signingCert.Count == <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> signingCert[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">finally</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                localMachineStore.Close();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }</span></span></code></pre></div><h2 id="generatingciphertextconsole">GeneratingCiphertext.Console<a class="anchor" href="#generatingciphertextconsole">#</a></h2>
+<p>依赖指定证书生成加密文件 <code>secret.xml</code> 以及对应 <code>{key}.xml</code>文件。</p>
+<ul>
+<li><code>{key}.xml</code>是生成的秘钥文件</li>
+<li><code>secret.xml</code>在之后的管道集成中会使用到</li>
+</ul>
+<p><img src="/images/2021-09-24-16-06-37.png" alt="" /></p>
+<p>注意：在启动时必须提供必需的参数才可生成 <code>secret.xml</code> 及 <code>{key}.xml</code> 文件；在管道中使用命令行操作，在<code>Visual Studio</code>中可以使用如下方式设置：</p>
+<p><img src="/images/2021-09-24-16-06-56.png" alt="" /></p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>--cpath=<span style="color:#e6db74">&#34;C:\\Users\\WangPengLiang\\Desktop\\DataProtection\\dev.pfx&#34;</span>  --cpass=<span style="color:#e6db74">&#34;wpl19950815&#34;</span> --purpose=<span style="color:#e6db74">&#34;RedPI.Todo&#34;</span> --spath=<span style="color:#e6db74">&#34;C:\\Users\\WangPengLiang\\Desktop\\DataProtection\\app-keys&#34;</span> --appname=<span style="color:#e6db74">&#34;RedPI.Todo&#34;</span> --snodes=<span style="color:#e6db74">&#34;a:1, b:2&#34;</span>  --soutputpath=<span style="color:#e6db74">&#34;C:\Users\WangPengLiang\Desktop\DataProtection&#34;</span></span></span></code></pre></div><h1 id="项目应用">项目应用<a class="anchor" href="#%e9%a1%b9%e7%9b%ae%e5%ba%94%e7%94%a8">#</a></h1>
+<h2 id="appsettingsjson">appsettings.json<a class="anchor" href="#appsettingsjson">#</a></h2>
+<p>appsettings.json中包含了通用的Option的配置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 数据保护相关配置;SecretKeyPath:固定目录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;ProtectionOption&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Thumbprint&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ApplicationName&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;SecretKeyPath&#34;</span>: <span style="color:#e6db74">&#34;DataProtection\\app-keys&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Purpose&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="appsettingsdevelopmentjson">appsettings.Development.json<a class="anchor" href="#appsettingsdevelopmentjson">#</a></h2>
+<p>appsettings.Development.json 只包含针对当前环境的配置，直接明文存储。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 开发环境：明文存储
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;TestOption&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Test1&#34;</span>: <span style="color:#e6db74">&#34;dev-test1&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Test2&#34;</span>: <span style="color:#e6db74">&#34;dev-test2&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;DataBase&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;DbConnection&#34;</span>: <span style="color:#e6db74">&#34;Server=.;Database=WebApp01.Database;uid=sa;pwd=wpl19950815;&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="appsettingssitjson">appsettings.Sit.json<a class="anchor" href="#appsettingssitjson">#</a></h2>
+<p>appsettings.Sit.json 只包含针对当前环境的配置；<code>TestOption.Test2</code> 添加了 <code>Encrypted</code> 标记用于测试解密Option；<code>DataBase.DbConnection</code> 用于测试解密字符串。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> WebApp01.Options
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> WebApp01.CustomDataProtection;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestOption</span> : ProtectionOptionBase
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test1 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Encrypted]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test2 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 数据保护相关配置;SecretKeyPath:固定目录
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;ProtectionOption&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Thumbprint&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ApplicationName&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;SecretKeyPath&#34;</span>: <span style="color:#e6db74">&#34;DataProtection\\app-keys&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Purpose&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 测试Option解密
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;TestOption&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Test1&#34;</span>: <span style="color:#e6db74">&#34;sit-test1&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Test2&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Sit环境：需要加密的配置在CD时进行替换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;DataBase&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;DbConnection&#34;</span>: <span style="color:#e6db74">&#34;CD Replace&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="startup">Startup<a class="anchor" href="#startup">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (Environment.IsDevelopment())
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        services.Configure&lt;TestOption&gt;(Configuration.GetSection(<span style="color:#e6db74">&#34;TestOption&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 注入数据保护需要的Option</span>
+</span></span><span style="display:flex;"><span>        services.Configure&lt;ProtectionOption&gt;(Configuration.GetSection(<span style="color:#e6db74">&#34;ProtectionOption&#34;</span>));
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 注入数据保护服务（依赖指定证书）</span>
+</span></span><span style="display:flex;"><span>        IDataProtector dataProtector = services.AddDataProtectionWithX509();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 解密字符串</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> connStr = dataProtector.Unprotect(Configuration.GetSection(<span style="color:#e6db74">&#34;Database:ConnectString&#34;</span>).Value);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(connStr);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 解密Option;Option上带有EncryptedAttribute标记的属性将会被解密</span>
+</span></span><span style="display:flex;"><span>        services.ProtectedConfigure&lt;TestOption&gt;(Configuration.GetSection(<span style="color:#e6db74">&#34;TestOption&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    services.AddControllers();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="environmentcontroller">EnvironmentController<a class="anchor" href="#environmentcontroller">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EnvironmentController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IOptions&lt;TestOption&gt; testOption;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> EnvironmentController(IOptions&lt;TestOption&gt; testOption)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.testOption = testOption;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult GetEnvironmentVariables()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt; dicts = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>        ConfigurationBuilder builder = <span style="color:#66d9ef">new</span> ConfigurationBuilder();
+</span></span><span style="display:flex;"><span>        builder.AddJsonFile(<span style="color:#e6db74">&#34;appsettings.json&#34;</span>);
+</span></span><span style="display:flex;"><span>        IConfigurationRoot configuration = builder.Build();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;ProtectionOption.Thumbprint&#34;</span>, configuration.GetSection(<span style="color:#e6db74">&#34;ProtectionOption:Thumbprint&#34;</span>).Value);
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;ProtectionOption.ApplicationName&#34;</span>, configuration.GetSection(<span style="color:#e6db74">&#34;ProtectionOption:ApplicationName&#34;</span>).Value);
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;ProtectionOption.SecretKeyPath&#34;</span>, configuration.GetSection(<span style="color:#e6db74">&#34;ProtectionOption:SecretKeyPath&#34;</span>).Value);
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;ProtectionOption.Purpose&#34;</span>, configuration.GetSection(<span style="color:#e6db74">&#34;ProtectionOption:Purpose&#34;</span>).Value);
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;TestOption.Test1&#34;</span>, testOption.Value.Test1);
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;TestOption.Test2&#34;</span>, testOption.Value.Test2);
+</span></span><span style="display:flex;"><span>        dicts.Add(<span style="color:#e6db74">&#34;DataBase.DbConnection&#34;</span>, configuration.GetSection(<span style="color:#e6db74">&#34;DataBase:DbConnection&#34;</span>).Value);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(JsonConvert.SerializeObject(dicts));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/1.2%E5%AE%9E%E8%B7%B5%E5%8F%8A%E5%A4%9A%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.2实践及多环境调试</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/1.4%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5%E5%8F%8A%E9%9B%86%E6%88%90azuredevops%E7%AE%A1%E9%81%93/" class="flex align-center">
+      <span>1.4方案实践及集成 Azure Devops管道</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#dataprotectionoption">DataProtectionOption</a></li>
+    <li><a href="#protectionoptionbase">ProtectionOptionBase</a></li>
+    <li><a href="#encryptedattribute">EncryptedAttribute</a></li>
+    <li><a href="#dataprotectionextensions">DataProtectionExtensions</a></li>
+    <li><a href="#generatingciphertextconsole">GeneratingCiphertext.Console</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#appsettingsjson">appsettings.json</a></li>
+    <li><a href="#appsettingsdevelopmentjson">appsettings.Development.json</a></li>
+    <li><a href="#appsettingssitjson">appsettings.Sit.json</a></li>
+    <li><a href="#startup">Startup</a></li>
+    <li><a href="#environmentcontroller">EnvironmentController</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

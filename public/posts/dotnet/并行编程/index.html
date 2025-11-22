@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速，传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程。
+Parallel# Parallel 类是对线程的抽象，位于 System.Threading.Tasks 名称空间下,提供了 任务和数据并行性 .在Parallel 下有三个常用的方法 Invoke 、 For 、ForEach，其中：
+Parallel.Invoke 用于任务并行性 Parallel.ForEach/Parallel.For 用于数据并行性 任务并行性# Parallel.Invoke# 如果多个任务应并行运行，就可以使用 Parallel.Invoke() 方法将串行的代码并行化。
+public void Parallel_Example_01() { var watch = Stopwatch.StartNew(); watch.Start(); Run1(); Run2(); Run3(); watch.Stop(); Console.WriteLine(&#34;串行开发,总耗时{0}&#34;, watch.ElapsedMilliseconds); watch.Restart(); Parallel.Invoke(Run1, Run2, Run3); watch.Stop(); Console.WriteLine(&#34;并行开发,总耗时{0}&#34;, watch.ElapsedMilliseconds); static void Run1() { Console.WriteLine(&#34;Run1,我需要1s&#34;); Thread.Sleep(1000); } static void Run2() { Console.WriteLine(&#34;Run2,我需要2s&#34;); Thread.Sleep(2000); } static void Run3() { Console.WriteLine(&#34;Run3,我需要3s&#34;); Thread.Sleep(3000); } Assert.IsTrue(true); } 主程序启动时，先顺序调用Run1(),Run()2,Run3()方法，这是串行的。而后使用Parallel.Invoke()将三个方法并行调用。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速，传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程。
+Parallel# Parallel 类是对线程的抽象，位于 System.Threading.Tasks 名称空间下,提供了 任务和数据并行性 .在Parallel 下有三个常用的方法 Invoke 、 For 、ForEach，其中：
+Parallel.Invoke 用于任务并行性 Parallel.ForEach/Parallel.For 用于数据并行性 任务并行性# Parallel.Invoke# 如果多个任务应并行运行，就可以使用 Parallel.Invoke() 方法将串行的代码并行化。
+public void Parallel_Example_01() { var watch = Stopwatch.StartNew(); watch.Start(); Run1(); Run2(); Run3(); watch.Stop(); Console.WriteLine(&#34;串行开发,总耗时{0}&#34;, watch.ElapsedMilliseconds); watch.Restart(); Parallel.Invoke(Run1, Run2, Run3); watch.Stop(); Console.WriteLine(&#34;并行开发,总耗时{0}&#34;, watch.ElapsedMilliseconds); static void Run1() { Console.WriteLine(&#34;Run1,我需要1s&#34;); Thread.Sleep(1000); } static void Run2() { Console.WriteLine(&#34;Run2,我需要2s&#34;); Thread.Sleep(2000); } static void Run3() { Console.WriteLine(&#34;Run3,我需要3s&#34;); Thread.Sleep(3000); } Assert.IsTrue(true); } 主程序启动时，先顺序调用Run1(),Run()2,Run3()方法，这是串行的。而后使用Parallel.Invoke()将三个方法并行调用。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速，传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程。
+Parallel# Parallel 类是对线程的抽象，位于 System.Threading.Tasks 名称空间下,提供了 任务和数据并行性 .在Parallel 下有三个常用的方法 Invoke 、 For 、ForEach，其中：
+Parallel.Invoke 用于任务并行性 Parallel.ForEach/Parallel.For 用于数据并行性 任务并行性# Parallel.Invoke# 如果多个任务应并行运行，就可以使用 Parallel.Invoke() 方法将串行的代码并行化。
+public void Parallel_Example_01() { var watch = Stopwatch.StartNew(); watch.Start(); Run1(); Run2(); Run3(); watch.Stop(); Console.WriteLine(&#34;串行开发,总耗时{0}&#34;, watch.ElapsedMilliseconds); watch.Restart(); Parallel.Invoke(Run1, Run2, Run3); watch.Stop(); Console.WriteLine(&#34;并行开发,总耗时{0}&#34;, watch.ElapsedMilliseconds); static void Run1() { Console.WriteLine(&#34;Run1,我需要1s&#34;); Thread.Sleep(1000); } static void Run2() { Console.WriteLine(&#34;Run2,我需要2s&#34;); Thread.Sleep(2000); } static void Run3() { Console.WriteLine(&#34;Run3,我需要3s&#34;); Thread.Sleep(3000); } Assert.IsTrue(true); } 主程序启动时，先顺序调用Run1(),Run()2,Run3()方法，这是串行的。而后使用Parallel.Invoke()将三个方法并行调用。">
+  <meta itemprop="wordCount" content="596">
+
+<title>并行编程 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>并行编程</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#parallelinvoke">Parallel.Invoke</a></li>
+    <li><a href="#执行顺序">执行顺序</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#parallelfor">Parallel.For</a></li>
+    <li><a href="#parallelforeach">Parallel.ForEach</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#parallelloopstatebreak">ParallelLoopState.Break()</a></li>
+    <li><a href="#parallelloopstatestop">ParallelLoopState.Stop()</a></li>
+    <li><a href="#注意">注意</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#exception">Exception</a></li>
+    <li><a href="#aggregateexception">AggregateException</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    并行编程
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速，传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程。</p>
+<h1 id="parallel">Parallel<a class="anchor" href="#parallel">#</a></h1>
+<p><code>Parallel</code> 类是对线程的抽象，位于 <code>System.Threading.Tasks</code> 名称空间下,提供了 <code>任务和数据并行性</code> .在<code>Parallel</code> 下有三个常用的方法 <code>Invoke</code> 、 <code>For</code> 、<code>ForEach</code>，其中：</p>
+<ul>
+<li><code>Parallel</code>.<code>Invoke</code> 用于任务并行性</li>
+<li><code>Parallel.ForEach</code>/<code>Parallel.For</code> 用于数据并行性</li>
+</ul>
+<h1 id="任务并行性">任务并行性<a class="anchor" href="#%e4%bb%bb%e5%8a%a1%e5%b9%b6%e8%a1%8c%e6%80%a7">#</a></h1>
+<h2 id="parallelinvoke">Parallel.Invoke<a class="anchor" href="#parallelinvoke">#</a></h2>
+<p>如果多个任务应并行运行，就可以使用 <code>Parallel.Invoke()</code> 方法将串行的代码并行化。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_01()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> watch = Stopwatch.StartNew();
+</span></span><span style="display:flex;"><span>    watch.Start();
+</span></span><span style="display:flex;"><span>    Run1();
+</span></span><span style="display:flex;"><span>    Run2();
+</span></span><span style="display:flex;"><span>    Run3();
+</span></span><span style="display:flex;"><span>    watch.Stop();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;串行开发,总耗时{0}&#34;</span>, watch.ElapsedMilliseconds);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    watch.Restart();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Parallel.Invoke(Run1, Run2, Run3);
+</span></span><span style="display:flex;"><span>    watch.Stop();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;并行开发,总耗时{0}&#34;</span>, watch.ElapsedMilliseconds);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run1()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Run1,我需要1s&#34;</span>);
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">1000</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run2()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Run2,我需要2s&#34;</span>);
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">2000</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run3()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Run3,我需要3s&#34;</span>);
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">3000</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-02-22-45-44.png" alt="" />
+主程序启动时，先顺序调用<code>Run1()</code>,<code>Run()2</code>,<code>Run3()</code>方法，这是串行的。而后使用<code>Parallel.Invoke()</code>将三个方法并行调用。</p>
+<h2 id="执行顺序">执行顺序<a class="anchor" href="#%e6%89%a7%e8%a1%8c%e9%a1%ba%e5%ba%8f">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_02()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程启动,线程ID:{0}&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Parallel.Invoke(
+</span></span><span style="display:flex;"><span>        () =&gt; Run1(<span style="color:#e6db74">&#34;task1&#34;</span>),
+</span></span><span style="display:flex;"><span>        () =&gt; Run2(<span style="color:#e6db74">&#34;task2&#34;</span>),
+</span></span><span style="display:flex;"><span>        () =&gt; Run3(<span style="color:#e6db74">&#34;task3&#34;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程结束,线程ID:{0}&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run1(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>, taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;a&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run2(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>, taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;b&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run3(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>, taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;c&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-02-22-46-14.png" alt="" />
+结果可知：
+没有固定顺序，每个<code>Task</code>可能是不同的线程去执行，也可能是相同的。主线程必须等<code>Invoke</code>中的所有方法执行完成后返回才继续向下执行。以后设计并行的时候，要考虑每个<code>Task</code>任务尽可能差不多，如果相差很大，比如一个时间非常长，其他都比较短，这样一个线程可能会影响整个任务的性能。这点非常重要(就是说<code>Invoke</code>会阻塞主线程)。</p>
+<h1 id="数据并行性">数据并行性<a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%b9%b6%e8%a1%8c%e6%80%a7">#</a></h1>
+<h2 id="parallelfor">Parallel.For<a class="anchor" href="#parallelfor">#</a></h2>
+<p><code>Parallel.For</code>是 <code>for</code> 的多线程实现，串行代码中也有一个<code>for</code>，但是那个<code>for</code>并没有用到多核。而<code>Paraller.For</code>它会在底层根据硬件线程的运行状况来充分的使用所有的可利用的硬件线程。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_For()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">3</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt; bag = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> watch = Stopwatch.StartNew();
+</span></span><span style="display:flex;"><span>        watch.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j = <span style="color:#ae81ff">0</span>; j &lt; <span style="color:#ae81ff">20000000</span>; j++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            bag.Add(i);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        watch.Stop();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;串行添加,总数20000000,耗时{0}&#34;</span>, watch.ElapsedMilliseconds);
+</span></span><span style="display:flex;"><span>        watch.Restart();
+</span></span><span style="display:flex;"><span>        Parallel.For(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">20000000</span>, j =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            bag.Add(j);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        watch.Stop();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;并行添加,总数20000000,耗时{0}&#34;</span>, watch.ElapsedMilliseconds);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;***********************************&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>向一个线程安全的集合插入数据,使用串行的 for 耗时与使用并行的 Parallel.For 差异：
+<img src="/images/2021-09-02-22-46-43.png" alt="" /></p>
+<h2 id="parallelforeach">Parallel.ForEach<a class="anchor" href="#parallelforeach">#</a></h2>
+<p><code>Parallel.ForEach</code> 是 <code>foreach</code> 的多线程实现，都能对<code>IEnumerable&lt;T&gt;</code> 类型对象进行遍历。<code>Parallel.ForEach</code>的特殊之处在于它使用多线程来执行循环体内的代码段。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_ForEach()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt; bag = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>    Parallel.For(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10</span>, j =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        bag.Add(j);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;集合总数:{0}&#34;</span>, bag.Count);
+</span></span><span style="display:flex;"><span>    Parallel.ForEach(bag, item =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="中断">中断<a class="anchor" href="#%e4%b8%ad%e6%96%ad">#</a></h1>
+<ul>
+<li><code>Parallel.For</code>：添加<code>ParallelLoopState</code>参数，该实例提供了<code>Break</code>和<code>Stop</code>方法来帮助实现中断</li>
+<li><code>ParallelLoopState.Break()</code>：在完成当前的这轮工作之后，不再执行后继的工作，但在当前这轮工作开始之前“已经在执行”的工作，则必须完成。但并不能执行完所有的循环</li>
+<li><code>ParallelLoopState.Stop()</code>：不但不会再创建新的线程执行并行循环，而且当前“已经在执行”的工作也应该被中止</li>
+</ul>
+<h2 id="parallelloopstatebreak">ParallelLoopState.Break()<a class="anchor" href="#parallelloopstatebreak">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_For_Break()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> maxCount = <span style="color:#ae81ff">1000</span>;
+</span></span><span style="display:flex;"><span>    ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt; bag = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> watch = Stopwatch.StartNew();
+</span></span><span style="display:flex;"><span>    watch.Start();
+</span></span><span style="display:flex;"><span>    Parallel.For(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2000</span>, (j, state) =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (bag.Count == maxCount)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            state.Break();
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//return是必须的,否则依旧会继续执行</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        bag.Add(j);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    watch.Stop();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;集合元素个数{0}&#34;</span>, bag.Count);
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(maxCount, bag.Count);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="parallelloopstatestop">ParallelLoopState.Stop()<a class="anchor" href="#parallelloopstatestop">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_For_Stop()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> maxCount = <span style="color:#ae81ff">1000</span>;
+</span></span><span style="display:flex;"><span>    ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt; bag = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j = <span style="color:#ae81ff">0</span>; j &lt; <span style="color:#ae81ff">5</span>; j++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        bag = <span style="color:#66d9ef">new</span> ConcurrentBag&lt;<span style="color:#66d9ef">int</span>&gt;();
+</span></span><span style="display:flex;"><span>        Parallel.For(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2000</span>, (i, state) =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (bag.Count == maxCount)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                state.Stop();
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            bag.Add(i);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;集合元素个数{0}&#34;</span>, bag.Count);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;*************************************************&#34;</span>);
+</span></span><span style="display:flex;"><span>        Assert.AreEqual(maxCount, bag.Count);
+</span></span><span style="display:flex;"><span>    }           
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="注意">注意<a class="anchor" href="#%e6%b3%a8%e6%84%8f">#</a></h2>
+<p><code>Stop</code>仅仅通知其他迭代尽快结束，而<code>Break</code>不仅通知其他迭代尽快结束，同时还要保证退出之前要完成<code>LowestBreakIteration</code>之前的迭代。 例如，对于从 0 到 1000 并行迭代的<code>for</code>循环，如果从第 100 此迭代开始调用<code>Break</code>，则低于 100 的所有迭代仍会运行，从 101 到 1000 的迭代则不必要。而调用<code>Stop</code>方法不保证低于 100 的所有迭代都会运行。</p>
+<h1 id="异常处理">异常处理<a class="anchor" href="#%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86">#</a></h1>
+<p>任务是并行计算的，处理过程中可能会产生n多的异常。</p>
+<h2 id="exception">Exception<a class="anchor" href="#exception">#</a></h2>
+<p><code>Exception</code>是可以捕获到两个异常的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_Exception()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程启动,线程ID:{0}&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Parallel.Invoke(() =&gt; Run1(<span style="color:#e6db74">&#34;task1&#34;</span>), () =&gt; Run2(<span style="color:#e6db74">&#34;task2&#34;</span>), () =&gt; Run3(<span style="color:#e6db74">&#34;task3&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(ex.Message);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程结束,线程ID:{0}&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run1(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>,
+</span></span><span style="display:flex;"><span>            taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;Run1出现异常&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run2(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>,
+</span></span><span style="display:flex;"><span>            taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run3(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>,
+</span></span><span style="display:flex;"><span>            taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;Run3出现异常&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-02-22-47-13.png" alt="" /></p>
+<h2 id="aggregateexception">AggregateException<a class="anchor" href="#aggregateexception">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_AggregateException()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程启动,线程ID:{0}&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Parallel.Invoke(() =&gt; Run1(<span style="color:#e6db74">&#34;task1&#34;</span>), () =&gt; Run2(<span style="color:#e6db74">&#34;task2&#34;</span>), () =&gt; Run3(<span style="color:#e6db74">&#34;task3&#34;</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (AggregateException ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// AggregateException捕获并行产生的一组异常集合</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> ex.InnerExceptions)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run1(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>,
+</span></span><span style="display:flex;"><span>            taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;Run1出现异常&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run2(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>,
+</span></span><span style="display:flex;"><span>            taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Run3(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;任务名：{0}线程ID:{1}&#34;</span>,
+</span></span><span style="display:flex;"><span>            taskName, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;Run3出现异常&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程结束,线程ID:{0}&#34;</span>, Thread.CurrentThread.ManagedThreadId);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><code>Invoke</code>方法中调用了一个产生异常的方法，但是结果显示异常并不会影响其它方法及主线程的执行。</p>
+<h1 id="parallelfor肯定快吗">Parallel.For肯定快吗?<a class="anchor" href="#parallelfor%e8%82%af%e5%ae%9a%e5%bf%ab%e5%90%97">#</a></h1>
+<p>在实现多线程时，为了防止多个线程同时处理同一个变量而导致变量处于&quot;薛定谔状态&quot;，引入了&quot;锁&quot;的概念，即在每一时刻只有获得&quot;锁&quot;的线程才能操作目标变量。如果在<code>Parallel.For</code>中也需要操作一个全局变量，就意味着即使这是并行计算，大家也需要排队操作全局变量，此时<code>Parallel.For</code>可能远远不如传统的<code>for</code>循环来的快。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Parallel_Example_Performance()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Stopwatch stopWatch = <span style="color:#66d9ef">new</span> Stopwatch();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> obj = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">long</span> num = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    stopWatch.Start();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10000</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j = <span style="color:#ae81ff">0</span>; j &lt; <span style="color:#ae81ff">60000</span>; j++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            num++;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    stopWatch.Stop();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;for run &#34;</span> + stopWatch.ElapsedMilliseconds + <span style="color:#e6db74">&#34; ms.&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    stopWatch.Reset();
+</span></span><span style="display:flex;"><span>    stopWatch.Start();
+</span></span><span style="display:flex;"><span>    Parallel.For(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10000</span>, item =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j = <span style="color:#ae81ff">0</span>; j &lt; <span style="color:#ae81ff">60000</span>; j++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">lock</span> (obj)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                num++;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    stopWatch.Stop();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;ParallelFor run &#34;</span> + stopWatch.ElapsedMilliseconds + <span style="color:#e6db74">&#34; ms.&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-02-22-47-34.png" alt="" /></p>
+<h1 id="paralleloptions">ParallelOptions<a class="anchor" href="#paralleloptions">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">属性</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">CancellationToken</td>
+          <td style="text-align: left">获取或设置与此 ParallelOptions 实例关联的 CancellationToken</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">MaxDegreeOfParallelism</td>
+          <td style="text-align: left">获取或设置此 ParallelOptions 实例所允许的并发任务的最大数目</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>委托和事件</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="flex align-center">
+      <span>异步编程</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#parallelinvoke">Parallel.Invoke</a></li>
+    <li><a href="#执行顺序">执行顺序</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#parallelfor">Parallel.For</a></li>
+    <li><a href="#parallelforeach">Parallel.ForEach</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#parallelloopstatebreak">ParallelLoopState.Break()</a></li>
+    <li><a href="#parallelloopstatestop">ParallelLoopState.Stop()</a></li>
+    <li><a href="#注意">注意</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#exception">Exception</a></li>
+    <li><a href="#aggregateexception">AggregateException</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

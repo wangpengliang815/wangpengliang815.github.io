@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="学习rabbitMq中的消息确认和持久化机制
+生产端消息确认# tx机制# tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：txSelect()、txCommit()、txRollback()
+channel.txSelect()： 用于将当前channel设置成transaction模式 channel.txCommit() ：提交事务 channel.txRollback() ：回滚事务 使用 tx 机制，首先要通过txSelect 方法开启事务，然后发布消息给 broker 服务器，如果 txCommit 提交成功，则说明消息成功被 broker 接收；如果在txCommit 执行之前 broker 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 txRollback 回滚事务。
+/// &lt;summary&gt; /// 生产端消息确认(tx事务机制) /// &lt;/summary&gt; [TestMethod] public void PublisherTest_Transaction() { channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); string message = &#34;hello world&#34;; byte[] messageBody = Encoding.UTF8.GetBytes(message); try { // 开启tx事务机制 channel.TxSelect(); // 消息发送 channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: messageBody); // 事务提交 channel.TxCommit(); } catch (Exception ex) { // 事务回滚 channel.TxRollback(); Assert.Fail(ex.Message); } }Confirm模式# C#的RabbitMQ API中，有三个与Confirm相关的方法：ConfirmSelect()、WaitForConfirms()、WaitForConfirmOrDie
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="学习rabbitMq中的消息确认和持久化机制
+生产端消息确认# tx机制# tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：txSelect()、txCommit()、txRollback()
+channel.txSelect()： 用于将当前channel设置成transaction模式 channel.txCommit() ：提交事务 channel.txRollback() ：回滚事务 使用 tx 机制，首先要通过txSelect 方法开启事务，然后发布消息给 broker 服务器，如果 txCommit 提交成功，则说明消息成功被 broker 接收；如果在txCommit 执行之前 broker 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 txRollback 回滚事务。
+/// &lt;summary&gt; /// 生产端消息确认(tx事务机制) /// &lt;/summary&gt; [TestMethod] public void PublisherTest_Transaction() { channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); string message = &#34;hello world&#34;; byte[] messageBody = Encoding.UTF8.GetBytes(message); try { // 开启tx事务机制 channel.TxSelect(); // 消息发送 channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: messageBody); // 事务提交 channel.TxCommit(); } catch (Exception ex) { // 事务回滚 channel.TxRollback(); Assert.Fail(ex.Message); } }Confirm模式# C#的RabbitMQ API中，有三个与Confirm相关的方法：ConfirmSelect()、WaitForConfirms()、WaitForConfirmOrDie">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="学习rabbitMq中的消息确认和持久化机制
+生产端消息确认# tx机制# tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：txSelect()、txCommit()、txRollback()
+channel.txSelect()： 用于将当前channel设置成transaction模式 channel.txCommit() ：提交事务 channel.txRollback() ：回滚事务 使用 tx 机制，首先要通过txSelect 方法开启事务，然后发布消息给 broker 服务器，如果 txCommit 提交成功，则说明消息成功被 broker 接收；如果在txCommit 执行之前 broker 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 txRollback 回滚事务。
+/// &lt;summary&gt; /// 生产端消息确认(tx事务机制) /// &lt;/summary&gt; [TestMethod] public void PublisherTest_Transaction() { channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); string message = &#34;hello world&#34;; byte[] messageBody = Encoding.UTF8.GetBytes(message); try { // 开启tx事务机制 channel.TxSelect(); // 消息发送 channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: messageBody); // 事务提交 channel.TxCommit(); } catch (Exception ex) { // 事务回滚 channel.TxRollback(); Assert.Fail(ex.Message); } }Confirm模式# C#的RabbitMQ API中，有三个与Confirm相关的方法：ConfirmSelect()、WaitForConfirms()、WaitForConfirmOrDie">
+  <meta itemprop="wordCount" content="481">
+
+<title>1.3消息确认及持久化 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle" checked />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="active">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.3消息确认及持久化</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#tx机制">tx机制</a></li>
+    <li><a href="#confirm模式">Confirm模式</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#自动确认">自动确认</a></li>
+    <li><a href="#手动确认basicack">手动确认(BasicAck)</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#basicnack">BasicNack()</a></li>
+    <li><a href="#basicreject">BasicReject()</a></li>
+    <li><a href="#basicrecover">BasicRecover()</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>学习rabbitMq中的消息确认和持久化机制</p>
+<!-- more -->
+<h1 id="生产端消息确认">生产端消息确认<a class="anchor" href="#%e7%94%9f%e4%ba%a7%e7%ab%af%e6%b6%88%e6%81%af%e7%a1%ae%e8%ae%a4">#</a></h1>
+<h2 id="tx机制">tx机制<a class="anchor" href="#tx%e6%9c%ba%e5%88%b6">#</a></h2>
+<blockquote class='book-hint '>
+<p>tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：<code>txSelect()</code>、<code>txCommit()</code>、<code>txRollback()</code></p>
+</blockquote><ul>
+<li><code>channel.txSelect()</code>： 用于将当前<code>channel</code>设置成<code>transaction</code>模式</li>
+<li><code>channel.txCommit()</code> ：提交事务</li>
+<li><code>channel.txRollback()</code> ：回滚事务</li>
+</ul>
+<p>使用 <code>tx</code> 机制，首先要通过<code>txSelect</code> 方法开启事务，然后发布消息给 <code>broker</code> 服务器，如果 <code>txCommit</code> 提交成功，则说明消息成功被 <code>broker</code> 接收；如果在<code>txCommit</code> 执行之前 <code>broker</code> 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 <code>txRollback</code> 回滚事务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// 生产端消息确认(tx事务机制)</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PublisherTest_Transaction() 
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">string</span> message = <span style="color:#e6db74">&#34;hello world&#34;</span>;
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">byte</span>[] messageBody = Encoding.UTF8.GetBytes(message);
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 开启tx事务机制</span>
+</span></span><span style="display:flex;"><span>         channel.TxSelect();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 消息发送</span>
+</span></span><span style="display:flex;"><span>         channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style="color:#66d9ef">null</span>, body: messageBody);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 事务提交</span>
+</span></span><span style="display:flex;"><span>         channel.TxCommit();
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 事务回滚</span>
+</span></span><span style="display:flex;"><span>         channel.TxRollback();
+</span></span><span style="display:flex;"><span>         Assert.Fail(ex.Message);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><h2 id="confirm模式">Confirm模式<a class="anchor" href="#confirm%e6%a8%a1%e5%bc%8f">#</a></h2>
+<blockquote class='book-hint '>
+<p>C#的RabbitMQ API中，有三个与Confirm相关的方法：<code>ConfirmSelect()</code>、<code>WaitForConfirms()</code>、<code>WaitForConfirmOrDie</code></p>
+</blockquote><ul>
+<li><code>channel.ConfirmSelect()</code> ：表示开启Confirm模式</li>
+<li><code>channel.WaitForConfirms()</code> ：等待所有消息确认，如果所有的消息都被服务端成功接收返回true，只要有一条没有被成功接收就返回<code>false</code></li>
+<li><code>channel.WaitForConfirmsOrDie()</code>和<code>WaitForConfirms</code>作用类型，也是等待所有消息确认。区别在于该方法没有返回值(<code>Void</code>)，如果有任意一条消息没有被成功接收，该方法会立即抛出<code>OperationInterrupedException</code>类型异常</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 生产端消息确认(Confirm模式)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PublisherTest_Confirm()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message = <span style="color:#e6db74">&#34;hello world&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span>[] messageBody = Encoding.UTF8.GetBytes(message);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 开启Confirm模式</span>
+</span></span><span style="display:flex;"><span>    channel.ConfirmSelect();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 消息发送</span>
+</span></span><span style="display:flex;"><span>    channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style="color:#66d9ef">null</span>, body: messageBody);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// WaitForConfirms确认消息(可以同时确认多条消息)是否发送成功</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (channel.WaitForConfirms())
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;Message发送成功&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Assert.Fail();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="消费端消息确认">消费端消息确认<a class="anchor" href="#%e6%b6%88%e8%b4%b9%e7%ab%af%e6%b6%88%e6%81%af%e7%a1%ae%e8%ae%a4">#</a></h1>
+<h2 id="自动确认">自动确认<a class="anchor" href="#%e8%87%aa%e5%8a%a8%e7%a1%ae%e8%ae%a4">#</a></h2>
+<blockquote class='book-hint '>
+<p>当RabbbitMQ将消息发送给消费者后，消费者接收到消息后，不等待消息处理结束，立即自动回送一个确认回执。自动确认的用法十分简单，设置消费方法的参数 autoAck 为 true 即可</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>EventingBasicConsumer consumer = <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>           Encoding.UTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>, autoAck: <span style="color:#66d9ef">true</span>, consumer: consumer);</span></span></code></pre></div><p>可能存在的问题：</p>
+<ol>
+<li>丢失数据：Broker会在接收到确认回执时删除消息，如果消费者接收到消息并返回了确认回执，然后这个消费者在处理消息时挂了，那么这条消息就再也找不回来了</li>
+<li>只要队列不空，RabbitMQ会源源不断的把消息推送给客户端，而不管客户端能否消费的完，如果其中一个消费端消费的较慢,会极大的浪费性能</li>
+</ol>
+<h2 id="手动确认basicack">手动确认(BasicAck)<a class="anchor" href="#%e6%89%8b%e5%8a%a8%e7%a1%ae%e8%ae%a4basicack">#</a></h2>
+<blockquote class='book-hint '>
+<p>消费从队列中获取消息后，服务器会将该消息处于不可用状态，等待消费者反馈。<code>Resume</code>方法的参数<code>autoAck</code>设置为<code>false</code>，然后在消费端使用代码 <code>channel.BasicAck()</code>/<code>BasicReject()</code>等方法来确认和拒绝消息即可实现手动确认</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>EventingBasicConsumer consumer = <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>           Encoding.wUTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>	 <span style="color:#75715e">// 手动ack</span>
+</span></span><span style="display:flex;"><span>    channel.BasicAck(
+</span></span><span style="display:flex;"><span>        deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>        multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>    autoAck: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    consumer: consumer);</span></span></code></pre></div><p>改为手动确认方式只需改两处</p>
+<ol>
+<li>开启监听时将 <code>autoAck</code> 参数改为 <code>false</code></li>
+<li>消息消费成功后返回确认</li>
+</ol>
+<p>这段代码中，先处理消息，成功后再做 <code>ack</code>响应，失败就不做 <code>ack</code>响应，这样消息会储存在<code>MQ</code>的<code>Unacked</code>消息里，不会丢失，看起来没啥问题，但是如果其中一条消息在处理时抛出了异常，将导致后续所有消息都会无法消费。</p>
+<h1 id="消息拒绝">消息拒绝<a class="anchor" href="#%e6%b6%88%e6%81%af%e6%8b%92%e7%bb%9d">#</a></h1>
+<h2 id="basicnack">BasicNack()<a class="anchor" href="#basicnack">#</a></h2>
+<blockquote class='book-hint '>
+<p>与<code>BasicReject()</code>不同的是同时支持多个消息，可以<code>nack</code> 该消费者先前接收未<code>ack</code> 的所有消息</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>EventingBasicConsumer consumer =
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>           Encoding.UTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 消费到某条消息时出错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 导致Broker无法拿到正常回执信息引发后续消息都无法被正常消费
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 如果MQ没得到ack响应，这些消息会堆积在Unacked消息里,不会丢弃,直至客户端断开重连时，才变回ready
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 如果Consumer客户端不断开连接，这些Unacked消息，永远不会变回ready状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * Unacked消息多了,占用内存越来越大,就会异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        MessageConsumer(ea);
+</span></span><span style="display:flex;"><span>        channel.BasicAck(
+</span></span><span style="display:flex;"><span>                   deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>                   multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 出错了，发nack，并通知MQ把消息塞回的队列头部（不是尾部）</span>
+</span></span><span style="display:flex;"><span>        channel.BasicNack(
+</span></span><span style="display:flex;"><span>            deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>            multiple: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>            requeue: <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>    autoAck: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    consumer: consumer);</span></span></code></pre></div><p>这里将代码调整为消费正常就 <code>ack</code>，不正常就<code>nack</code>，并等下一次重新消费。看起来没问题，但是如果某条消息在消费时又抛出异常，该消息将会被<code>Nack</code>机制重新扔回 <strong>队列头部</strong>，下一步又消费这条会出异常的消息，又出错，塞回队列……进入死循环，所以要谨慎使用<code>Nack</code>机制。这里可以在<code>catch</code>中记录错误日志依旧使用<code>ack</code>确认消费。</p>
+<h2 id="basicreject">BasicReject()<a class="anchor" href="#basicreject">#</a></h2>
+<blockquote class='book-hint '>
+<p>消费端告诉服务器这个消息拒绝接收，不处理，可以设置是否放回到队列中还是丢掉(只能一次拒绝一个消息)</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> MessagePublisher(<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">$&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span> MessagePublisher(<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">$&#34;2&#34;</span>);
+</span></span><span style="display:flex;"><span> MessagePublisher(<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">$&#34;3&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> channel.QueueDeclare(
+</span></span><span style="display:flex;"><span>     queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>     durable: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     exclusive: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     autoDelete: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> EventingBasicConsumer consumer =
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> channel.BasicQos(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>            Encoding.UTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">if</span> (message == <span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(<span style="color:#e6db74">$&#34;Message：{message}&#34;</span>);
+</span></span><span style="display:flex;"><span>         channel.BasicAck(
+</span></span><span style="display:flex;"><span>             deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>             multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(<span style="color:#e6db74">$&#34;拒绝处理&#34;</span>);
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">/* BasicReject用于拒绝消息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            requeue参数指定了拒绝后是否重新放回queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            一次只能拒绝一条消息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            设置为true: 消息会被重新仍回queue中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            设置为false:消息将被丢弃
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>         channel.BasicReject(
+</span></span><span style="display:flex;"><span>             deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>             requeue: <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>     autoAck: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     consumer: consumer);</span></span></code></pre></div><h2 id="basicrecover">BasicRecover()<a class="anchor" href="#basicrecover">#</a></h2>
+<blockquote class='book-hint '>
+<p>路由不成功的消息可以使用<code>recovery</code>重新发送到队列中,参数是是否requeue，true则重新入队列，并且尽可能的将之前recover的消息投递给其他消费者消费，而不是自己再次消费。false则消息会重新被投递给自己</p>
+</blockquote><h1 id="消息持久化-persistent">消息持久化 Persistent<a class="anchor" href="#%e6%b6%88%e6%81%af%e6%8c%81%e4%b9%85%e5%8c%96-persistent">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th>参数</th>
+          <th>重启RabbitMQ</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>exchange.durable=fasle/queue.durable=false</td>
+          <td>exchange/queue将会被丢弃</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=fasle</td>
+          <td>exchange将会被丢弃</td>
+      </tr>
+      <tr>
+          <td>queue.durable=fasle</td>
+          <td>queue将会被丢弃</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=fasle/queue.durable=true</td>
+          <td>exchange将会被丢弃,queue虽然会存在,但队列内消息会全部丢失</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=true/queue.durable=true</td>
+          <td>exchange/queue会存在,但队列内消息会全部丢失</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=true&amp;&amp;queue.durable=true/消息发布时(persistent=true)</td>
+          <td>消息真正的持久化</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">100</span>; i++)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span>[] messageBody = Encoding.UTF8.GetBytes(i.ToString());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 设置消息持久化</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> props = channel.CreateBasicProperties();
+</span></span><span style="display:flex;"><span>    props.Persistent = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 消息发送</span>
+</span></span><span style="display:flex;"><span>    channel.BasicPublish(
+</span></span><span style="display:flex;"><span>        exchange: <span style="color:#e6db74">&#34;TestExchange&#34;</span>,
+</span></span><span style="display:flex;"><span>        routingKey: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>        basicProperties: props,
+</span></span><span style="display:flex;"><span>        body: messageBody);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="消息优先级-priority">消息优先级 Priority<a class="anchor" href="#%e6%b6%88%e6%81%af%e4%bc%98%e5%85%88%e7%ba%a7-priority">#</a></h1>
+<blockquote class='book-hint '>
+<p>queue是先进先出的，即先发送的消息先被消费。但是在具体业务中可能会遇到要提前处理某些消息的需求，如一个常见的需求：普通客户的消息按先进先出的顺序处理，vip客户的消息要提前处理。消息实现优先级控制的实现方式是：首先在声明queue是设置队列的<code>x-max-priority</code>属性，然后在<code>publish</code>消息时，设置消息的优先级等级即可</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// 消息优先级</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PublisherTest_Priority()
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                        arguments: <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;() {
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 队列优先级最高为10，不加x-max-priority的话，消息发布时设置了消息的优先级也不会生效</span>
+</span></span><span style="display:flex;"><span>                        {<span style="color:#e6db74">&#34;x-max-priority&#34;</span>,<span style="color:#ae81ff">10</span> }
+</span></span><span style="display:flex;"><span>                        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 测试数据</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">string</span>[] msgs = { <span style="color:#e6db74">&#34;vip1&#34;</span>, <span style="color:#e6db74">&#34;hello1&#34;</span>, <span style="color:#e6db74">&#34;hello2&#34;</span>, <span style="color:#e6db74">&#34;hello3&#34;</span>, <span style="color:#e6db74">&#34;vip5&#34;</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 设置消息优先级</span>
+</span></span><span style="display:flex;"><span>     IBasicProperties props = channel.CreateBasicProperties();
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">string</span> msg <span style="color:#66d9ef">in</span> msgs)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// vip开头的消息，优先级设置为9,其他消息优先级为1</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">if</span> (msg.StartsWith(<span style="color:#e6db74">&#34;vip&#34;</span>))
+</span></span><span style="display:flex;"><span>             props.Priority = <span style="color:#ae81ff">9</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>             props.Priority = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                                routingKey: queueName,
+</span></span><span style="display:flex;"><span>                                basicProperties: props,
+</span></span><span style="display:flex;"><span>                                body: Encoding.UTF8.GetBytes(msg));
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>1.2工作模式介绍</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="flex align-center">
+        <span>1.4两种消费模式和 Qos的实现</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#tx机制">tx机制</a></li>
+    <li><a href="#confirm模式">Confirm模式</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#自动确认">自动确认</a></li>
+    <li><a href="#手动确认basicack">手动确认(BasicAck)</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#basicnack">BasicNack()</a></li>
+    <li><a href="#basicreject">BasicReject()</a></li>
+    <li><a href="#basicrecover">BasicRecover()</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

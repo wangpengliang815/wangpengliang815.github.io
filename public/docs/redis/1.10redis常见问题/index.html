@@ -1,0 +1,2371 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="redis常见问题记录
+什么是Redis？# Redis(Remote Dictionary Server) 是一个使用 C 语言编写的，开源的（BSD许可）高性能非关系型（NoSQL）的键值对数据库。与传统数据库不同的是 Redis 数据存在内存中，所以读写速度非常快。
+Redis优缺点有哪些？# 优点 缺点 读写性能优异：读 110000次/s，写 81000次/s 缓存和数据库双写一致性问题 支持数据持久化：支持AOF和RDB两种持久化方式 缓存雪崩问题 支持事务：Redis的所有操作都是原子性的，同时还支持对几个操作合并后的原子性执行 缓存击穿问题 支持多种数据结构：除了支持String类型外还支持Hash、Set、Zset、List等数据结构 缓存的并发竞争问题 支持主从复制：主机会自动将数据同步到从机，可以进行读写分离 为什么要用Redis?# 高性能
+假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在数缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可。
+高并发
+直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
+Redis为什么快?# 完全基于内存：绝大部分请求是纯粹的内存操作非常快速。数据存在内存中类似于 HashMap。查找和操作的时间复杂度都是O(1)。
+采用单线程：避免了不必要的上下文切换和竞争条件，也不存在多进程或者多线程导致的切换而消耗 CPU，不用去考虑各种锁的问题，不存在加锁释放锁操作，没有因为可能出现死锁而导致的性能消耗。
+使用多路 I/O 复用模型，非阻塞 IO。
+传统并发模型：每个 I/O 流(快递)都有一个新的线程管理。多路复用：只有单个线程，通过跟踪每个 I/O 流的状态来管理多个 I/O 流
+Redis有哪些数据类型?# 5种基本数据类型
+String List Set Zset Hash 3种特殊数据类型
+Geospatial 地理位置 Hyperloglog 基数统计 Bitmap位图场景 Redis的应用场景有哪些？# 计数器
+可以对 String 进行自增自减运算，从而实现计数器功能。Redis 这种内存型数据库的读写性能非常高，很适合存储频繁读写的计数量。
+缓存
+将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。
+会话缓存
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="redis常见问题记录
+什么是Redis？# Redis(Remote Dictionary Server) 是一个使用 C 语言编写的，开源的（BSD许可）高性能非关系型（NoSQL）的键值对数据库。与传统数据库不同的是 Redis 数据存在内存中，所以读写速度非常快。
+Redis优缺点有哪些？# 优点 缺点 读写性能优异：读 110000次/s，写 81000次/s 缓存和数据库双写一致性问题 支持数据持久化：支持AOF和RDB两种持久化方式 缓存雪崩问题 支持事务：Redis的所有操作都是原子性的，同时还支持对几个操作合并后的原子性执行 缓存击穿问题 支持多种数据结构：除了支持String类型外还支持Hash、Set、Zset、List等数据结构 缓存的并发竞争问题 支持主从复制：主机会自动将数据同步到从机，可以进行读写分离 为什么要用Redis?# 高性能
+假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在数缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可。
+高并发
+直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
+Redis为什么快?# 完全基于内存：绝大部分请求是纯粹的内存操作非常快速。数据存在内存中类似于 HashMap。查找和操作的时间复杂度都是O(1)。
+采用单线程：避免了不必要的上下文切换和竞争条件，也不存在多进程或者多线程导致的切换而消耗 CPU，不用去考虑各种锁的问题，不存在加锁释放锁操作，没有因为可能出现死锁而导致的性能消耗。
+使用多路 I/O 复用模型，非阻塞 IO。
+传统并发模型：每个 I/O 流(快递)都有一个新的线程管理。多路复用：只有单个线程，通过跟踪每个 I/O 流的状态来管理多个 I/O 流
+Redis有哪些数据类型?# 5种基本数据类型
+String List Set Zset Hash 3种特殊数据类型
+Geospatial 地理位置 Hyperloglog 基数统计 Bitmap位图场景 Redis的应用场景有哪些？# 计数器
+可以对 String 进行自增自减运算，从而实现计数器功能。Redis 这种内存型数据库的读写性能非常高，很适合存储频繁读写的计数量。
+缓存
+将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。
+会话缓存">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="redis常见问题记录
+什么是Redis？# Redis(Remote Dictionary Server) 是一个使用 C 语言编写的，开源的（BSD许可）高性能非关系型（NoSQL）的键值对数据库。与传统数据库不同的是 Redis 数据存在内存中，所以读写速度非常快。
+Redis优缺点有哪些？# 优点 缺点 读写性能优异：读 110000次/s，写 81000次/s 缓存和数据库双写一致性问题 支持数据持久化：支持AOF和RDB两种持久化方式 缓存雪崩问题 支持事务：Redis的所有操作都是原子性的，同时还支持对几个操作合并后的原子性执行 缓存击穿问题 支持多种数据结构：除了支持String类型外还支持Hash、Set、Zset、List等数据结构 缓存的并发竞争问题 支持主从复制：主机会自动将数据同步到从机，可以进行读写分离 为什么要用Redis?# 高性能
+假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在数缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可。
+高并发
+直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。
+Redis为什么快?# 完全基于内存：绝大部分请求是纯粹的内存操作非常快速。数据存在内存中类似于 HashMap。查找和操作的时间复杂度都是O(1)。
+采用单线程：避免了不必要的上下文切换和竞争条件，也不存在多进程或者多线程导致的切换而消耗 CPU，不用去考虑各种锁的问题，不存在加锁释放锁操作，没有因为可能出现死锁而导致的性能消耗。
+使用多路 I/O 复用模型，非阻塞 IO。
+传统并发模型：每个 I/O 流(快递)都有一个新的线程管理。多路复用：只有单个线程，通过跟踪每个 I/O 流的状态来管理多个 I/O 流
+Redis有哪些数据类型?# 5种基本数据类型
+String List Set Zset Hash 3种特殊数据类型
+Geospatial 地理位置 Hyperloglog 基数统计 Bitmap位图场景 Redis的应用场景有哪些？# 计数器
+可以对 String 进行自增自减运算，从而实现计数器功能。Redis 这种内存型数据库的读写性能非常高，很适合存储频繁读写的计数量。
+缓存
+将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。
+会话缓存">
+  <meta itemprop="wordCount" content="359">
+
+<title>1.10 Redis常见问题 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle" checked />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="active">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.10 Redis常见问题</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么是redis">什么是Redis？</a></li>
+    <li><a href="#redis优缺点有哪些">Redis优缺点有哪些？</a></li>
+    <li><a href="#为什么要用redis">为什么要用Redis?</a></li>
+    <li><a href="#redis为什么快">Redis为什么快?</a></li>
+    <li><a href="#redis有哪些数据类型">Redis有哪些数据类型?</a></li>
+    <li><a href="#redis的应用场景有哪些">Redis的应用场景有哪些？</a></li>
+    <li><a href="#什么是redis持久化">什么是Redis持久化？</a></li>
+    <li><a href="#redis-的持久化机制有哪些">Redis 的持久化机制有哪些？</a></li>
+    <li><a href="#如何选择合适的持久化方式">如何选择合适的持久化方式?</a></li>
+    <li><a href="#过期键的删除策略">过期键的删除策略?</a></li>
+    <li><a href="#redis-key的过期时间和永久有效怎么设置">Redis key的过期时间和永久有效怎么设置？</a></li>
+    <li><a href="#redis的内存淘汰策略有哪些">Redis的内存淘汰策略有哪些?</a></li>
+    <li><a href="#redis的内存用完了会发生什么">Redis的内存用完了会发生什么？</a></li>
+    <li><a href="#redis如何做内存优化">Redis如何做内存优化？</a></li>
+    <li><a href="#redis线程模型">Redis线程模型？</a></li>
+    <li><a href="#什么是事务">什么是事务？</a></li>
+    <li><a href="#redis事务的概念">Redis事务的概念?</a></li>
+    <li><a href="#redis事务的三个阶段">Redis事务的三个阶段?</a></li>
+    <li><a href="#redis事务相关命令">Redis事务相关命令?</a></li>
+    <li><a href="#事务管理acid概述">事务管理（ACID）概述</a></li>
+    <li><a href="#redis事务支持隔离性吗">Redis事务支持隔离性吗？</a></li>
+    <li><a href="#redis事务保证原子性吗支持回滚吗">Redis事务保证原子性吗，支持回滚吗？</a></li>
+    <li><a href="#redis事务其他实现">Redis事务其他实现？</a></li>
+    <li><a href="#redis实现分布式锁">Redis实现分布式锁</a></li>
+    <li><a href="#如何解决redis的并发竞争-key-问题">如何解决Redis的并发竞争 Key 问题</a></li>
+    <li><a href="#什么是-redlock">什么是 RedLock</a></li>
+    <li><a href="#缓存雪崩">缓存雪崩</a></li>
+    <li><a href="#缓存穿透">缓存穿透</a></li>
+    <li><a href="#缓存击穿">缓存击穿</a></li>
+    <li><a href="#缓存预热">缓存预热</a></li>
+    <li><a href="#如何保证缓存与数据库双写时的数据一致性">如何保证缓存与数据库双写时的数据一致性？</a></li>
+    <li><a href="#redis回收进程如何工作的">Redis回收进程如何工作的？</a></li>
+    <li><a href="#redis回收使用的是什么算法">Redis回收使用的是什么算法？</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>redis常见问题记录</p>
+<!-- more -->
+<h2 id="什么是redis">什么是Redis？<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afredis">#</a></h2>
+<p>Redis(Remote Dictionary Server) 是一个使用 C 语言编写的，开源的（BSD许可）高性能非关系型（NoSQL）的键值对数据库。与传统数据库不同的是 Redis 数据存在内存中，所以读写速度非常快。</p>
+<h2 id="redis优缺点有哪些">Redis优缺点有哪些？<a class="anchor" href="#redis%e4%bc%98%e7%bc%ba%e7%82%b9%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>读写性能优异：读 <code>110000次/s</code>，写 <code>81000次/s</code></td>
+          <td>缓存和数据库双写一致性问题</td>
+      </tr>
+      <tr>
+          <td>支持数据持久化：支持<code>AOF</code>和<code>RDB</code>两种持久化方式</td>
+          <td>缓存雪崩问题</td>
+      </tr>
+      <tr>
+          <td>支持事务：Redis的所有操作都是原子性的，同时还支持对几个操作合并后的原子性执行</td>
+          <td>缓存击穿问题</td>
+      </tr>
+      <tr>
+          <td>支持多种数据结构：除了支持<code>String</code>类型外还支持<code>Hash</code>、<code>Set</code>、<code>Zset</code>、<code>List</code>等数据结构</td>
+          <td>缓存的并发竞争问题</td>
+      </tr>
+      <tr>
+          <td>支持主从复制：主机会自动将数据同步到从机，可以进行读写分离</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="为什么要用redis">为什么要用Redis?<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e7%94%a8redis">#</a></h2>
+<p><strong>高性能</strong></p>
+<p>假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在数缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可。</p>
+<p><strong>高并发</strong></p>
+<p>直接操作缓存能够承受的请求是远远大于直接访问数据库的，所以可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。</p>
+<h2 id="redis为什么快">Redis为什么快?<a class="anchor" href="#redis%e4%b8%ba%e4%bb%80%e4%b9%88%e5%bf%ab">#</a></h2>
+<p><strong>完全基于内存</strong>：绝大部分请求是纯粹的内存操作非常快速。数据存在内存中类似于 HashMap。查找和操作的时间复杂度都是<code>O(1)</code>。</p>
+<p><strong>采用单线程</strong>：避免了不必要的上下文切换和竞争条件，也不存在多进程或者多线程导致的切换而消耗 CPU，不用去考虑各种锁的问题，不存在加锁释放锁操作，没有因为可能出现死锁而导致的性能消耗。</p>
+<p><strong>使用多路 I/O 复用模型，非阻塞 IO</strong>。</p>
+<p>传统并发模型：每个 <code>I/O</code> 流(快递)都有一个新的线程管理。多路复用：只有单个线程，通过跟踪每个 <code>I/O</code> 流的状态来管理多个 <code>I/O</code> 流</p>
+<h2 id="redis有哪些数据类型">Redis有哪些数据类型?<a class="anchor" href="#redis%e6%9c%89%e5%93%aa%e4%ba%9b%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b">#</a></h2>
+<p>5种基本数据类型</p>
+<ul>
+<li>String</li>
+<li>List</li>
+<li>Set</li>
+<li>Zset</li>
+<li>Hash</li>
+</ul>
+<p>3种特殊数据类型</p>
+<ul>
+<li>Geospatial 地理位置</li>
+<li>Hyperloglog 基数统计</li>
+<li>Bitmap位图场景</li>
+</ul>
+<h2 id="redis的应用场景有哪些">Redis的应用场景有哪些？<a class="anchor" href="#redis%e7%9a%84%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h2>
+<p><strong>计数器</strong></p>
+<p>可以对 String 进行自增自减运算，从而实现计数器功能。Redis 这种内存型数据库的读写性能非常高，很适合存储频繁读写的计数量。</p>
+<p><strong>缓存</strong></p>
+<p>将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</p>
+<p><strong>会话缓存</strong></p>
+<p>可以使用 Redis 来统一存储多台应用服务器的会话信息。当应用服务器不再存储用户的会话信息，也就不再具有状态，一个用户可以请求任意一个应用服务器，从而更容易实现高可用性以及可伸缩性。</p>
+<p><strong>消息队列</strong>(发布/订阅功能)</p>
+<p><code>List</code> 是一个双向链表，可以通过 <code>lpush</code> 和 <code>rpop</code> 写入和读取消息实现消息队列(不过最好使用 Kafka、RabbitMQ 等消息中间件）。</p>
+<p><strong>分布式锁实现</strong></p>
+<p>在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步。可以使用 Redis 自带的 <code>SETNX</code> 命令实现分布式锁，除此之外，还可以使用官方提供的 <code>RedLock</code> 分布式锁实现。</p>
+<p><strong>其它</strong></p>
+<p>Set 可以实现交集、并集等操作，从而实现共同好友等功能。ZSet 可以实现有序性操作，从而实现排行榜等功能。</p>
+<h2 id="什么是redis持久化">什么是Redis持久化？<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afredis%e6%8c%81%e4%b9%85%e5%8c%96">#</a></h2>
+<p>持久化就是把内存的数据写到磁盘中去，防止服务宕机内存数据丢失。</p>
+<h2 id="redis-的持久化机制有哪些">Redis 的持久化机制有哪些？<a class="anchor" href="#redis-%e7%9a%84%e6%8c%81%e4%b9%85%e5%8c%96%e6%9c%ba%e5%88%b6%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h2>
+<p>Redis 提供两种持久化机制 <code>RDB</code>（默认） 和 <code>AOF</code> 机制</p>
+<p><strong>RDB</strong>：是<code>Redis DataBase</code>缩写快照，Redis默认的持久化方式。按照一定的时间将内存的数据以快照的形式保存到硬盘中，对应产生的数据文件为<code>dump.rdb</code>。通过配置文件中的<code>save</code>参数来定义快照周期。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>只有一个文件 <code>dump.rdb</code>，方便持久化</td>
+          <td>数据安全性低。RDB 是间隔一段时间进行持久化，如果持久化之间 Redis 发生故障，会发生数据丢失</td>
+      </tr>
+      <tr>
+          <td>容灾性好，一个文件可以保存到安全的磁盘</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>性能最大化，<code>fork</code> 子进程来完成写操作，让主进程继续处理命令，所以是<code>IO</code> 最大化。使用单独子进程来进行持久化，主进程不会进行任何 <code>IO</code> 操作，保证了 Redis 的高性能</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>数据集较大时时，比 <code>AOF</code> 的启动效率更高</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>AOF（Append-only file)</strong>： 是将Redis执行的每次写命令记录到单独的日志文件中，当重启Redis会重新将持久化的日志中文件恢复数据。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>数据安全，AOF 持久化可以配置 <code>appendfsync</code> 属性，有 <code>always</code>，每进行一次 命令操作就记录到 <code>aof</code> 文件中一次</td>
+          <td>aof文件比 rdb文件大，且恢复速度慢</td>
+      </tr>
+      <tr>
+          <td>通过 <code>append</code> 模式写文件，即使中途服务器宕机，可以通过 <code>redis-check-aof</code> 工具解决数据一致性问题</td>
+          <td>数据集大的时候，比rdb启动效率低</td>
+      </tr>
+      <tr>
+          <td>AOF 机制的 <code>rewrite</code>模式。AOF 文件没被 rewrite 之前（文件过大时会对命令进行合并重写），可以删除其中的某些命令（比如误操作的 flushall）)</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>对比</strong></p>
+<ul>
+<li>aof文件比rdb更新频率高，优先使用aof还原数据</li>
+<li>aof比rdb更安全也更大</li>
+<li>rdb性能比aof好</li>
+<li>如果两个都配了优先加载aof</li>
+</ul>
+<h2 id="如何选择合适的持久化方式">如何选择合适的持久化方式?<a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%80%89%e6%8b%a9%e5%90%88%e9%80%82%e7%9a%84%e6%8c%81%e4%b9%85%e5%8c%96%e6%96%b9%e5%bc%8f">#</a></h2>
+<p>一般来说， 如果想达到足以媲美PostgreSQL的数据安全性，应该同时使用两种持久化功能。在这种情况下，当 Redis 重启的时候会优先载入AOF文件来恢复原始的数据，因为在通常情况下AOF文件保存的数据集要比RDB文件保存的数据集要完整。</p>
+<p>如果非常关心数据， 但仍然可以承受数分钟以内的数据丢失，那么可以只使用RDB持久化。如果只希望数据在服务器运行的时候存在，也可以不使用任何持久化方式。</p>
+<h2 id="过期键的删除策略">过期键的删除策略?<a class="anchor" href="#%e8%bf%87%e6%9c%9f%e9%94%ae%e7%9a%84%e5%88%a0%e9%99%a4%e7%ad%96%e7%95%a5">#</a></h2>
+<p>Redis是key-value数据库，可以设置Redis中缓存的key的过期时间。Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。</p>
+<p><strong>过期策略通常有以下三种</strong></p>
+<p><strong>定时过期</strong>：每个设置过期时间的key都需要创建一个定时器，到过期时间就会立即清除。该策略可以立即清除过期的数据，对内存很友好；但是会占用大量的CPU资源去处理过期的数据，从而影响缓存的响应时间和吞吐量。</p>
+<p><strong>惰性过期</strong>：只有当访问一个key时，才会判断该key是否已过期，过期则清除。该策略可以最大化地节省CPU资源，却对内存非常不友好。极端情况可能出现大量的过期key没有再次被访问，从而不会被清除，占用大量内存。</p>
+<p><strong>定期过期</strong>：每隔一定的时间，会扫描一定数量的数据库的expires字典中一定数量的key，并清除其中已过期的key。该策略是前两者的一个折中方案。通过调整定时扫描的时间间隔和每次扫描的限定耗时，可以在不同情况下使得CPU和内存资源达到最优的平衡效果。expires字典会保存所有设置了过期时间的key的过期时间数据，其中，key是指向键空间中的某个键的指针，value是该键的毫秒精度的UNIX时间戳表示的过期时间。键空间是指该Redis集群中保存的所有键。Redis中同时使用了<strong>惰性过期</strong>和<strong>定期过期</strong>两种过期策略。</p>
+<p><strong>注意</strong>：除了缓存服务器自带的缓存失效策略之外（Redis默认的有6中策略可供选择），还可以根据具体的业务需求进行自定义的缓存淘汰策略</p>
+<h2 id="redis-key的过期时间和永久有效怎么设置">Redis key的过期时间和永久有效怎么设置？<a class="anchor" href="#redis-key%e7%9a%84%e8%bf%87%e6%9c%9f%e6%97%b6%e9%97%b4%e5%92%8c%e6%b0%b8%e4%b9%85%e6%9c%89%e6%95%88%e6%80%8e%e4%b9%88%e8%ae%be%e7%bd%ae">#</a></h2>
+<p><code>EXPIRE</code>和<code>PERSIST</code>命令</p>
+<h2 id="redis的内存淘汰策略有哪些">Redis的内存淘汰策略有哪些?<a class="anchor" href="#redis%e7%9a%84%e5%86%85%e5%ad%98%e6%b7%98%e6%b1%b0%e7%ad%96%e7%95%a5%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h2>
+<p>Redis内存数据集大小上升到一定大小的时候，就会施行数据淘汰策略；Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。</p>
+<p><strong>全局的键空间选择性移除</strong></p>
+<p><code>noeviction</code>：当内存不足以容纳新写入数据时，新写入操作会报错</p>
+<p><code>allkeys-lru</code>：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key。（这个是最常用的）</p>
+<p><code>allkeys-random</code>：当内存不足以容纳新写入数据时，在键空间中，随机移除某个key</p>
+<p><strong>设置过期时间的键空间选择性移除</strong></p>
+<p><code>volatile-lru</code>：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，移除最近最少使用的key</p>
+<p><code>volatile-random</code>：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，随机移除某个key</p>
+<p><code>volatile-ttl</code>：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，有更早过期时间的key优先移除</p>
+<p><strong>注意：</strong></p>
+<p>Redis的内存淘汰策略的选取并不会影响过期的key的处理</p>
+<p>内存淘汰策略用于处理内存不足时的需要申请额外空间的数据</p>
+<p>过期策略用于处理过期的缓存数据</p>
+<h2 id="redis的内存用完了会发生什么">Redis的内存用完了会发生什么？<a class="anchor" href="#redis%e7%9a%84%e5%86%85%e5%ad%98%e7%94%a8%e5%ae%8c%e4%ba%86%e4%bc%9a%e5%8f%91%e7%94%9f%e4%bb%80%e4%b9%88">#</a></h2>
+<p>如果达到设置的上限，Redis的写命令会返回错误信息（但是读命令还可以正常返回）或者可以配置内存淘汰机制，当Redis达到内存上限时会冲刷掉旧的内容。</p>
+<h2 id="redis如何做内存优化">Redis如何做内存优化？<a class="anchor" href="#redis%e5%a6%82%e4%bd%95%e5%81%9a%e5%86%85%e5%ad%98%e4%bc%98%e5%8c%96">#</a></h2>
+<p>可以利用Hash,list,sorted set,set等集合类型数据，因为通常情况下很多小的Key-Value可以用更紧凑的方式存放到一起。尽可能使用散列表（hashes），散列表（是说散列表里面存储的数少）使用的内存非常小，所以应该尽可能的将数据模型抽象到一个散列表里面。比如web系统中有一个用户对象，不要为这个用户的名称，姓氏，邮箱，密码设置单独的key，而应该把这个用户的所有信息存储到一张散列表里面。</p>
+<h2 id="redis线程模型">Redis线程模型？<a class="anchor" href="#redis%e7%ba%bf%e7%a8%8b%e6%a8%a1%e5%9e%8b">#</a></h2>
+<p>Redis基于Reactor模式开发了网络事件处理器，这个处理器被称为文件事件处理器（file event handler）。它的组成结构为4部分：多个套接字、IO多路复用程序、文件事件分派器、事件处理器。因为文件事件分派器队列的消费是单线程的，所以Redis才叫单线程模型。</p>
+<p><strong>参考</strong>：<a href="https://www.cnblogs.com/barrywxx/p/8570821.html">https://www.cnblogs.com/barrywxx/p/8570821.html</a></p>
+<h2 id="什么是事务">什么是事务？<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af%e4%ba%8b%e5%8a%a1">#</a></h2>
+<p>事务是一个单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。</p>
+<p>事务是一个原子操作：事务中的命令要么全部被执行，要么全部都不执行。</p>
+<h2 id="redis事务的概念">Redis事务的概念?<a class="anchor" href="#redis%e4%ba%8b%e5%8a%a1%e7%9a%84%e6%a6%82%e5%bf%b5">#</a></h2>
+<p>Redis 事务的本质是通过<code>MULTI</code>、<code>EXEC</code>、<code>WATCH</code>等一组命令的集合。事务支持一次执行多个命令，一个事务中所有命令都会被序列化。在事务执行过程，会按照顺序串行化执行队列中的命令，其他客户端提交的命令请求不会插入到事务执行命令序列中。总结：Redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。</p>
+<h2 id="redis事务的三个阶段">Redis事务的三个阶段?<a class="anchor" href="#redis%e4%ba%8b%e5%8a%a1%e7%9a%84%e4%b8%89%e4%b8%aa%e9%98%b6%e6%ae%b5">#</a></h2>
+<p>1）事务开始  <code>MULTI</code></p>
+<p>2）命令入队</p>
+<p>3）事务执行 <code>EXEC</code></p>
+<p>事务执行过程中，如果服务端收到有EXEC、DISCARD、WATCH、MULTI之外的请求将会把请求放入队列中排队。</p>
+<h2 id="redis事务相关命令">Redis事务相关命令?<a class="anchor" href="#redis%e4%ba%8b%e5%8a%a1%e7%9b%b8%e5%85%b3%e5%91%bd%e4%bb%a4">#</a></h2>
+<p>Redis事务功能是通过<code>MULTI</code>、<code>EXEC</code>、<code>DISCARD</code>和<code>WATCH</code> 四个原语实现的</p>
+<p>Redis会将一个事务中的所有命令序列化，然后按顺序执行</p>
+<p>Redis不支持回滚，<strong>Redis 在事务失败时不进行回滚，而是继续执行余下的命令</strong>， 所以 Redis 的内部可以保持简单且快速</p>
+<p>如果在一个事务中的命令出现错误，那么所有的命令都不会执行</p>
+<p>如果在一个事务中出现运行错误，那么正确的命令会被执行</p>
+<p>WATCH<code>命令是一个乐观锁，可以为 Redis 事务提供</code>check-and-set<code>（CAS）行为。 可以监控一个或多个键，一旦其中有一个键被修改（或删除），之后的事务就不会执行，监控一直持续到</code>EXEC`命令</p>
+<p><code>MULTI</code>命令用于开启一个事务，它总是返回OK。 <code>MULTI</code>执行之后，客户端可以继续向服务器发送任意多条命令，这些命令不会立即被执行，而是被放到一个队列中，当<code>EXEC</code>命令被调用时，所有队列中的命令才会被执行</p>
+<p><code>EXEC</code>：执行所有事务块内的命令。返回事务块内所有命令的返回值，按命令执行的先后顺序排列。 当操作被打断时，返回空值 <code>nil</code></p>
+<p>通过调用<code>DISCARD</code>，客户端可以清空事务队列，并放弃执行事务， 并且客户端会从事务状态中退出</p>
+<p><code>UNWATCH</code>命令可以取消<code>Watch</code>对所有<code>key</code>的监控</p>
+<h2 id="事务管理acid概述">事务管理（ACID）概述<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e7%ae%a1%e7%90%86acid%e6%a6%82%e8%bf%b0">#</a></h2>
+<p><strong>原子性（Atomicity）</strong></p>
+<p>原子性是指事务是一个不可分割的工作单位，事务中的操作要么都发生，要么都不发生</p>
+<p><strong>一致性（Consistency）</strong></p>
+<p>事务前后数据的完整性必须保持一致</p>
+<p><strong>隔离性（Isolation）</strong></p>
+<p>多个事务并发执行时，一个事务的执行不应影响其他事务的执行</p>
+<p><strong>持久性（Durability）</strong></p>
+<p>持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的，接下来即使数据库发生故障也不应该对其有任何影响</p>
+<blockquote class='book-hint '>
+<p>Redis的事务总是具有ACID中的一致性和隔离性，其他特性是不支持的。当服务器运行在AOF持久化模式下，并且appendfsync选项的值为always时，事务也具有持久性</p>
+</blockquote><h2 id="redis事务支持隔离性吗">Redis事务支持隔离性吗？<a class="anchor" href="#redis%e4%ba%8b%e5%8a%a1%e6%94%af%e6%8c%81%e9%9a%94%e7%a6%bb%e6%80%a7%e5%90%97">#</a></h2>
+<p>Redis 是单进程程序，并且它保证在执行事务时，不会对事务进行中断，事务可以运行直到执行完所有事务队列中的命令为止。因此Redis 的事务是总是带有隔离性的。</p>
+<h2 id="redis事务保证原子性吗支持回滚吗">Redis事务保证原子性吗，支持回滚吗？<a class="anchor" href="#redis%e4%ba%8b%e5%8a%a1%e4%bf%9d%e8%af%81%e5%8e%9f%e5%ad%90%e6%80%a7%e5%90%97%e6%94%af%e6%8c%81%e5%9b%9e%e6%bb%9a%e5%90%97">#</a></h2>
+<p>Redis中单条命令是原子性执行的，但事务不保证原子性且没有回滚。事务中任意命令执行失败，其余的命令仍会被执行。</p>
+<h2 id="redis事务其他实现">Redis事务其他实现？<a class="anchor" href="#redis%e4%ba%8b%e5%8a%a1%e5%85%b6%e4%bb%96%e5%ae%9e%e7%8e%b0">#</a></h2>
+<ul>
+<li>基于Lua脚本，Redis可以保证脚本内的命令一次性、按顺序地执行。其同时也不提供事务运行错误的回滚，执行过程中如果部分命令运行错误，剩下的命令还是会继续运行完</li>
+<li>基于中间标记变量，通过另外的标记变量来标识事务是否执行完成，读取数据时先读取该标记变量判断是否事务执行完成。但这样会需要额外写代码实现，比较繁琐</li>
+</ul>
+<h2 id="redis实现分布式锁">Redis实现分布式锁<a class="anchor" href="#redis%e5%ae%9e%e7%8e%b0%e5%88%86%e5%b8%83%e5%bc%8f%e9%94%81">#</a></h2>
+<p>Redis为单进程单线程模式，采用队列模式将并发访问变成串行访问，且多客户端对Redis的连接并不存在竞争关系Redis中可以使用<code>SETNX</code>命令实现分布式锁。</p>
+<p>当且仅当 key 不存在，将 key 的值设为 value。 若给定的 key 已经存在，则 SETNX 不做任何动作</p>
+<p><code>SETNX</code> 是『SET if Not eXists』(如果不存在，则 SET)的简写</p>
+<blockquote class='book-hint '>
+<p>返回值：设置成功返回 1 | 设置失败返回 0</p>
+</blockquote><h2 id="如何解决redis的并发竞争-key-问题">如何解决Redis的并发竞争 Key 问题<a class="anchor" href="#%e5%a6%82%e4%bd%95%e8%a7%a3%e5%86%b3redis%e7%9a%84%e5%b9%b6%e5%8f%91%e7%ab%9e%e4%ba%89-key-%e9%97%ae%e9%a2%98">#</a></h2>
+<p>所谓 Redis 的并发竞争 Key 的问题也就是多个系统同时对一个 key 进行操作，但是最后执行的顺序和期望的顺序不同，也就导致了结果的不同</p>
+<p><strong>方案一</strong>：分布式锁（zookeeper 和 redis 都可以实现分布式锁）。（如果不存在 Redis 的并发竞争 Key 问题，不要使用分布式锁，这样会影响性能）</p>
+<p><strong>方案二</strong>：并发量过大的情况下,可以通过消息中间件进行处理,把Redis.Set操作放在队列中使其串行化必须依次执行</p>
+<h2 id="什么是-redlock">什么是 RedLock<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af-redlock">#</a></h2>
+<p>Redis 官方站提出了一种权威的基于 Redis 实现分布式锁的方式名叫 Redlock，此种方式比原先的单节点的方法更安全。它可以保证以下特性：</p>
+<ul>
+<li>安全特性：互斥访问，即永远只有一个 client 能拿到锁</li>
+<li>避免死锁：最终 client 都可能拿到锁，不会出现死锁的情况，即使原本锁住某资源的 client crash 了或者出现了网络分区</li>
+<li>容错性：只要大部分 Redis 节点存活就可以正常提供服务</li>
+</ul>
+<h2 id="缓存雪崩">缓存雪崩<a class="anchor" href="#%e7%bc%93%e5%ad%98%e9%9b%aa%e5%b4%a9">#</a></h2>
+<p>缓存雪崩是指缓存同一时间大面积的失效，所以后面的请求都会落到数据库上，造成数据库短时间内承受大量请求而崩掉。</p>
+<p>使缓存集中失效的原因：</p>
+<p>1、Redis服务器宕机</p>
+<p>2、对缓存数据设置了相同的过期时间，导致某时间段内缓存集中失效</p>
+<p><strong>解决方案</strong></p>
+<p>1、针对原因1，可以实现Redis的高可用，Redis Cluster 或者 Redis Sentinel(哨兵) 等</p>
+<p>2、针对原因2，设置缓存过期时间时加上一个随机值，避免缓存在同一时间过期</p>
+<p>3、使用双缓存策略，设置两个缓存，原始缓存和备用缓存，原始缓存失效时，访问备用缓存，备用缓存失效时间设置长点</p>
+<h2 id="缓存穿透">缓存穿透<a class="anchor" href="#%e7%bc%93%e5%ad%98%e7%a9%bf%e9%80%8f">#</a></h2>
+<p>缓存穿透表示查询一个一定不存在的数据，由于没有获取到缓存，所以没写入缓存，导致这个不存在的数据每次都需要去数据库查询，失去了缓存的意义。请求的数据大量的没有获取到缓存，导致走数据库，有可能搞垮数据库，使整个服务瘫痪。</p>
+<p><strong>解决方案</strong></p>
+<p>1、接口层增加校验，如用户鉴权校验，<code>id</code>做基础校验，<code>id&lt;=0</code>的直接拦截</p>
+<p>2、从缓存取不到的数据，在数据库中也没有取到，这时也可以将<code>key-value</code>写为<code>key-null</code>，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击</p>
+<p>3、采用布隆过滤器，将所有可能存在的数据哈希到一个足够大的<code>bitmap</code>中，一个一定不存在的数据会被这个 <code>bitmap</code> 拦截掉，从而避免对底层存储系统的查询压力</p>
+<h2 id="缓存击穿">缓存击穿<a class="anchor" href="#%e7%bc%93%e5%ad%98%e5%87%bb%e7%a9%bf">#</a></h2>
+<p>缓存击穿表示某个key的缓存非常热门，有很高的并发一直在访问，如果该缓存失效，请求会同时打到数据库，压垮数据库。</p>
+<p><strong>缓存击穿与缓存雪崩的区别是</strong>：</p>
+<p>1、缓存击穿针对的是某一热门key缓存</p>
+<p>2、缓存雪崩针对的是大量缓存的集中失效</p>
+<p><strong>解决方案</strong></p>
+<p>1、设置热点数据永远不过期</p>
+<p>2、加互斥锁</p>
+<h2 id="缓存预热">缓存预热<a class="anchor" href="#%e7%bc%93%e5%ad%98%e9%a2%84%e7%83%ad">#</a></h2>
+<p>缓存预热就是系统上线后，将相关的缓存数据直接加载到缓存系统。这样就可以避免在用户请求的时候，先查询数据库，然后再将数据缓存的问题，用户直接查询事先被预热的缓存数据。</p>
+<p><strong>解决方案</strong></p>
+<p>1、直接写个缓存刷新页面，上线时手工操作一下</p>
+<p>2、数据量不大，可以在项目启动的时候自动进行加载</p>
+<p>3、定时刷新缓存</p>
+<h2 id="如何保证缓存与数据库双写时的数据一致性">如何保证缓存与数据库双写时的数据一致性？<a class="anchor" href="#%e5%a6%82%e4%bd%95%e4%bf%9d%e8%af%81%e7%bc%93%e5%ad%98%e4%b8%8e%e6%95%b0%e6%8d%ae%e5%ba%93%e5%8f%8c%e5%86%99%e6%97%b6%e7%9a%84%e6%95%b0%e6%8d%ae%e4%b8%80%e8%87%b4%e6%80%a7">#</a></h2>
+<p>TODO</p>
+<h2 id="redis回收进程如何工作的">Redis回收进程如何工作的？<a class="anchor" href="#redis%e5%9b%9e%e6%94%b6%e8%bf%9b%e7%a8%8b%e5%a6%82%e4%bd%95%e5%b7%a5%e4%bd%9c%e7%9a%84">#</a></h2>
+<ol>
+<li>一个客户端运行了新的命令，添加了新的数据</li>
+<li>Redis检查内存使用情况，如果大于maxmemory的限制， 则根据设定好的策略进行回收</li>
+<li>一个新的命令被执行，等等</li>
+<li>所以我们不断地穿越内存限制的边界，通过不断达到边界然后不断地回收回到边界以下</li>
+</ol>
+<h2 id="redis回收使用的是什么算法">Redis回收使用的是什么算法？<a class="anchor" href="#redis%e5%9b%9e%e6%94%b6%e4%bd%bf%e7%94%a8%e7%9a%84%e6%98%af%e4%bb%80%e4%b9%88%e7%ae%97%e6%b3%95">#</a></h2>
+<p>LRU算法</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>Consul服务注册发现</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="flex align-center">
+        <span>1.1 No Sql概述</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么是redis">什么是Redis？</a></li>
+    <li><a href="#redis优缺点有哪些">Redis优缺点有哪些？</a></li>
+    <li><a href="#为什么要用redis">为什么要用Redis?</a></li>
+    <li><a href="#redis为什么快">Redis为什么快?</a></li>
+    <li><a href="#redis有哪些数据类型">Redis有哪些数据类型?</a></li>
+    <li><a href="#redis的应用场景有哪些">Redis的应用场景有哪些？</a></li>
+    <li><a href="#什么是redis持久化">什么是Redis持久化？</a></li>
+    <li><a href="#redis-的持久化机制有哪些">Redis 的持久化机制有哪些？</a></li>
+    <li><a href="#如何选择合适的持久化方式">如何选择合适的持久化方式?</a></li>
+    <li><a href="#过期键的删除策略">过期键的删除策略?</a></li>
+    <li><a href="#redis-key的过期时间和永久有效怎么设置">Redis key的过期时间和永久有效怎么设置？</a></li>
+    <li><a href="#redis的内存淘汰策略有哪些">Redis的内存淘汰策略有哪些?</a></li>
+    <li><a href="#redis的内存用完了会发生什么">Redis的内存用完了会发生什么？</a></li>
+    <li><a href="#redis如何做内存优化">Redis如何做内存优化？</a></li>
+    <li><a href="#redis线程模型">Redis线程模型？</a></li>
+    <li><a href="#什么是事务">什么是事务？</a></li>
+    <li><a href="#redis事务的概念">Redis事务的概念?</a></li>
+    <li><a href="#redis事务的三个阶段">Redis事务的三个阶段?</a></li>
+    <li><a href="#redis事务相关命令">Redis事务相关命令?</a></li>
+    <li><a href="#事务管理acid概述">事务管理（ACID）概述</a></li>
+    <li><a href="#redis事务支持隔离性吗">Redis事务支持隔离性吗？</a></li>
+    <li><a href="#redis事务保证原子性吗支持回滚吗">Redis事务保证原子性吗，支持回滚吗？</a></li>
+    <li><a href="#redis事务其他实现">Redis事务其他实现？</a></li>
+    <li><a href="#redis实现分布式锁">Redis实现分布式锁</a></li>
+    <li><a href="#如何解决redis的并发竞争-key-问题">如何解决Redis的并发竞争 Key 问题</a></li>
+    <li><a href="#什么是-redlock">什么是 RedLock</a></li>
+    <li><a href="#缓存雪崩">缓存雪崩</a></li>
+    <li><a href="#缓存穿透">缓存穿透</a></li>
+    <li><a href="#缓存击穿">缓存击穿</a></li>
+    <li><a href="#缓存预热">缓存预热</a></li>
+    <li><a href="#如何保证缓存与数据库双写时的数据一致性">如何保证缓存与数据库双写时的数据一致性？</a></li>
+    <li><a href="#redis回收进程如何工作的">Redis回收进程如何工作的？</a></li>
+    <li><a href="#redis回收使用的是什么算法">Redis回收使用的是什么算法？</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

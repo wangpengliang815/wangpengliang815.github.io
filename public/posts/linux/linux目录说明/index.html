@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content=" 目录 描述 /boot 该目录默认下存放的是Linux的启动文件和内核 /bin Binary的缩写，该目录中存放Linux的常用命令 /sbin Supaer User；该目录用来存放系统管理员使用的管理程序 /var 该目录存放那些经常被修改的文件，包括各种日志、数据文件 /etc 该目录存放系统管理时要用到的各种配置文件和子目录，例如网络配置文件、文件系统、系统配置文件、设备配置信息、设置用户信息等 /dev d是Device的缩写；该目录包含了Linux系统中使用的所有外部设备，它实际上是访问这些外部设备的端口，访问这些外部设备与访问一个文件或一个目录没有区别 /mnt 临时将别的文件系统挂在该目录下 /root 如果你是以超级用户的身份登录的，这个就是超级用户的主目录 /home 如果建立一个名为“xx”的用户，那么在/home目录下就有一个对应的“/home/xx”路径，用来存放该用户的主目录 /usr 用户的应用程序和文件几乎都存放在该目录下 /lib 该目录用来存放系统动态链接共享库，几乎所有的应用程序都会用到该目录下的共享库 /opt 第三方软件在安装时默认会找这个目录,所以你没有安装此类软件时它是空的,但如果你一旦把它删除了,以后在安装此类软件时就有可能碰到麻烦 /tmp 用来存放不同程序执行时产生的临时文件，该目录会被系统自动清理干净 /lost＋found 该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在此 /proc 可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里 ">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="目录 描述 /boot 该目录默认下存放的是Linux的启动文件和内核 /bin Binary的缩写，该目录中存放Linux的常用命令 /sbin Supaer User；该目录用来存放系统管理员使用的管理程序 /var 该目录存放那些经常被修改的文件，包括各种日志、数据文件 /etc 该目录存放系统管理时要用到的各种配置文件和子目录，例如网络配置文件、文件系统、系统配置文件、设备配置信息、设置用户信息等 /dev d是Device的缩写；该目录包含了Linux系统中使用的所有外部设备，它实际上是访问这些外部设备的端口，访问这些外部设备与访问一个文件或一个目录没有区别 /mnt 临时将别的文件系统挂在该目录下 /root 如果你是以超级用户的身份登录的，这个就是超级用户的主目录 /home 如果建立一个名为“xx”的用户，那么在/home目录下就有一个对应的“/home/xx”路径，用来存放该用户的主目录 /usr 用户的应用程序和文件几乎都存放在该目录下 /lib 该目录用来存放系统动态链接共享库，几乎所有的应用程序都会用到该目录下的共享库 /opt 第三方软件在安装时默认会找这个目录,所以你没有安装此类软件时它是空的,但如果你一旦把它删除了,以后在安装此类软件时就有可能碰到麻烦 /tmp 用来存放不同程序执行时产生的临时文件，该目录会被系统自动清理干净 /lost＋found 该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在此 /proc 可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="目录 描述 /boot 该目录默认下存放的是Linux的启动文件和内核 /bin Binary的缩写，该目录中存放Linux的常用命令 /sbin Supaer User；该目录用来存放系统管理员使用的管理程序 /var 该目录存放那些经常被修改的文件，包括各种日志、数据文件 /etc 该目录存放系统管理时要用到的各种配置文件和子目录，例如网络配置文件、文件系统、系统配置文件、设备配置信息、设置用户信息等 /dev d是Device的缩写；该目录包含了Linux系统中使用的所有外部设备，它实际上是访问这些外部设备的端口，访问这些外部设备与访问一个文件或一个目录没有区别 /mnt 临时将别的文件系统挂在该目录下 /root 如果你是以超级用户的身份登录的，这个就是超级用户的主目录 /home 如果建立一个名为“xx”的用户，那么在/home目录下就有一个对应的“/home/xx”路径，用来存放该用户的主目录 /usr 用户的应用程序和文件几乎都存放在该目录下 /lib 该目录用来存放系统动态链接共享库，几乎所有的应用程序都会用到该目录下的共享库 /opt 第三方软件在安装时默认会找这个目录,所以你没有安装此类软件时它是空的,但如果你一旦把它删除了,以后在安装此类软件时就有可能碰到麻烦 /tmp 用来存放不同程序执行时产生的临时文件，该目录会被系统自动清理干净 /lost＋found 该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在此 /proc 可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里">
+  <meta itemprop="wordCount" content="33">
+
+<title>Linux目录说明 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Linux目录说明</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Linux目录说明
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><table>
+  <thead>
+      <tr>
+          <th style="text-align: center">目录</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><code>/boot</code></td>
+          <td style="text-align: left">该目录默认下存放的是Linux的启动文件和内核</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/bin</code></td>
+          <td style="text-align: left">Binary的缩写，该目录中存放Linux的常用命令</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/sbin</code></td>
+          <td style="text-align: left">Supaer User；该目录用来存放系统管理员使用的管理程序</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/var</code></td>
+          <td style="text-align: left">该目录存放那些经常被修改的文件，包括各种日志、数据文件</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/etc</code></td>
+          <td style="text-align: left">该目录存放系统管理时要用到的各种配置文件和子目录，例如网络配置文件、文件系统、系统配置文件、设备配置信息、设置用户信息等</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/dev</code></td>
+          <td style="text-align: left">d是Device的缩写；该目录包含了Linux系统中使用的所有外部设备，它实际上是访问这些外部设备的端口，访问这些外部设备与访问一个文件或一个目录没有区别</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/mnt</code></td>
+          <td style="text-align: left">临时将别的文件系统挂在该目录下</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/root</code></td>
+          <td style="text-align: left">如果你是以超级用户的身份登录的，这个就是超级用户的主目录</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/home</code></td>
+          <td style="text-align: left">如果建立一个名为“xx”的用户，那么在/home目录下就有一个对应的“/home/xx”路径，用来存放该用户的主目录</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/usr</code></td>
+          <td style="text-align: left">用户的应用程序和文件几乎都存放在该目录下</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/lib</code></td>
+          <td style="text-align: left">该目录用来存放系统动态链接共享库，几乎所有的应用程序都会用到该目录下的共享库</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/opt</code></td>
+          <td style="text-align: left">第三方软件在安装时默认会找这个目录,所以你没有安装此类软件时它是空的,但如果你一旦把它删除了,以后在安装此类软件时就有可能碰到麻烦</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/tmp</code></td>
+          <td style="text-align: left">用来存放不同程序执行时产生的临时文件，该目录会被系统自动清理干净</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/lost＋found</code></td>
+          <td style="text-align: left">该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在此</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>/proc</code></td>
+          <td style="text-align: left">可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Linux常用命令</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/linux/vmware%E5%AE%89%E8%A3%85centos/" class="flex align-center">
+      <span>Vmware安装 Centos</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

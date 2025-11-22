@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/">1.5 Grafana监控可视化</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p><a href="https://grafana.com/">关于 Grafana 更多资料参考</a></p>
+<h1 id="grafana-安装">Grafana 安装<a class="anchor" href="#grafana-%e5%ae%89%e8%a3%85">#</a></h1>
+<p>这里采用 Dokcer 安装 Grafana，如果防火墙处于开启状态需要开放对应端口。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d -p 3000:3000 --user root --name<span style="color:#f92672">=</span>grafana -v /home/grafana:/var/lib/grafana grafana/grafana:7.3.6</span></span></code></pre></div><h1 id="grafana-登录">Grafana 登录<a class="anchor" href="#grafana-%e7%99%bb%e5%bd%95">#</a></h1>
+<p>访问：http://ipaddress:3000，默认账号/密码：<code>admin/admin</code></p>
+<p><img src="/images/2022-07-13-16-54-53.png" alt="" /></p>
+<h1 id="添加数据源">添加数据源<a class="anchor" href="#%e6%b7%bb%e5%8a%a0%e6%95%b0%e6%8d%ae%e6%ba%90">#</a></h1>
+<p>登陆成功后，点击 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/">1.1 Rabbit Mq概念及安装</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>消息(<code>Message</code> )是指在应用间传送的数据。消息可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
+<p>消息队列（<code>Message Queue</code>）是一种应用间的通信方式，消息发送后可以立即返回，由消息系统来确保消息的可靠传递。消息发布者只管把消息发布到 MQ 中而不用管谁来取，消息使用者只管从MQ中取消息而不管是谁发布的。发布者和使用者都不用知道对方的存在。</p>
+<!-- more -->
+<h1 id="消息队列应用场景">消息队列应用场景<a class="anchor" href="#%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af">#</a></h1>
+<p>消息队列是一种应用间的异步协作机制，以常见的订单系统为例，用户点击【下单】按钮之后的业务逻辑可能包括：扣减库存、生 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/">1.2工作模式介绍</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>使用C#连接rabbitMq测试各工作模式区别</p>
+<!-- more -->
+<p>C#创建RabbitMq连接</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> RabbitMQPublisher
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> RabbitMQ.Client;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BasePublisher</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ConnectionFactory CreateRabbitMqConnection()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/">1.3消息确认及持久化</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>学习rabbitMq中的消息确认和持久化机制</p>
+<!-- more -->
+<h1 id="生产端消息确认">生产端消息确认<a class="anchor" href="#%e7%94%9f%e4%ba%a7%e7%ab%af%e6%b6%88%e6%81%af%e7%a1%ae%e8%ae%a4">#</a></h1>
+<h2 id="tx机制">tx机制<a class="anchor" href="#tx%e6%9c%ba%e5%88%b6">#</a></h2>
+<blockquote class='book-hint '>
+<p>tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：<code>txSelect()</code>、<code>txCommit()</code>、<code>txRollback()</code></p>
+</blockquote><ul>
+<li><code>channel.txSelect()</code>： 用于将当前<code>channel</code>设置成<code>transaction</code>模式</li>
+<li><code>channel.txCommit()</code> ：提交事务</li>
+<li><code>channel.txRollback()</code> ：回滚事务</li>
+</ul>
+<p>使用 <code>tx</code> 机制，首先要通过<code>txSelect</code> 方法开启事务，然后发布消息给 <code>broker</code> 服 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/">1.4两种消费模式和 Qos的实现</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>学习rabbitMq的消费模式</p>
+<!-- more -->
+<h1 id="消费模式">消费模式<a class="anchor" href="#%e6%b6%88%e8%b4%b9%e6%a8%a1%e5%bc%8f">#</a></h1>
+<h2 id="eventingbasicconsumer">EventingBasicConsumer<a class="anchor" href="#eventingbasicconsumer">#</a></h2>
+<p><code>EventingBasicConsumer </code>是发布/订阅模式的消费者，即只要订阅的 <code>queue</code> 中有了新消息，Broker就会立即把消息推送给消费者，这种模式可以保证消息及时地被消费者接收到。<code>EventingBasicConsumer </code>是长连接的，只需要创建一个 <code>Connection</code> ,然后在 <code>Connection</code> 的基础上创建通道 <code>channel</code>，消息的发送都是通过 <code>channel</code> 来执行的，这样可以减少 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/">1.5 Channel常见方法</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>记录rabbitMq中Channel常见的方法</p>
+<!-- more -->
+<h1 id="channelexchangedeclare">channel.exchangeDeclare()<a class="anchor" href="#channelexchangedeclare">#</a></h1>
+<ul>
+<li><code>type</code>：direct、fanout、topic</li>
+<li><code>durable</code>：(<code>true、false</code>) true：服务器重启会保留下来Exchange。警告：仅设置此选项，不代表消息持久化。即不保证重启后消息还在。</li>
+</ul>
+<blockquote class='book-hint '>
+<p>原文：true if we are declaring a durable exchange (the exchange will survive a server restart …</p></blockquote></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">1.6 Rabbit Mq常用命令</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>记录rabbitMq中常见的命令</p>
+<!-- more -->
+<h1 id="用户角色分类">用户角色分类<a class="anchor" href="#%e7%94%a8%e6%88%b7%e8%a7%92%e8%89%b2%e5%88%86%e7%b1%bb">#</a></h1>
+<h2 id="none">none<a class="anchor" href="#none">#</a></h2>
+<p>通常就是普通的生产者和消费者,无法登录控制台,不能访问 <code>management plugin</code> ，通常就是普通的生产者和消费者。</p>
+<h2 id="management">management<a class="anchor" href="#management">#</a></h2>
+<p><strong>普通管理者</strong>，仅可登陆管理控制台(启用 <code>management plugin</code> 的情况下)，无法看到节点信息，也无法对 <code>policies</code> 进行管理。可以通过 <code>AMQP</code> 做的任何事外加：</p>
+<ul>
+<li>列出自己可以通过<code>AMQP</code>登入的 <code>virtual hosts</code></li>
+<li>查看自己的 <code>virtual hosts</code> 中的 …</li></ul></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/">1.7 Rabbit Mq常见策略</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>rabbitMq策略学习</p>
+<!-- more -->
+<h1 id="死信队列">死信队列<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e9%98%9f%e5%88%97">#</a></h1>
+<p>死信队列：DLX，<code>dead-letter-exchang</code>，利用DLX，当消息在一个队列中变成死信 (dead message) 之后，它能被重新publish到另一个Exchange，这个Exchange就是DLX。</p>
+<h2 id="死信判断条件">死信判断条件<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e5%88%a4%e6%96%ad%e6%9d%a1%e4%bb%b6">#</a></h2>
+<ul>
+<li>消息被拒绝(<code>basic.reject</code> / <code>basic.nack</code>)，并且 <code>requeue = false</code></li>
+<li>消息 <code>TTL</code> 过期</li>
+<li>队列达到最大长度</li>
+</ul>
+<h2 id="死信处理过程">死信处理过程<a class="anchor" href="#%e6%ad%bb%e4%bf%a1%e5%a4%84%e7%90%86%e8%bf%87%e7%a8%8b">#</a></h2>
+<ul>
+<li>DLX也是一个正常的Exchange，和一般的Exchange没有区别，它 …</li></ul></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">1.8 Rabbit Mq常见问题</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>rabbitMq常见问题记录</p>
+<!-- more -->
+<h1 id="为什么要使用消息队列">为什么要使用消息队列<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e4%bd%bf%e7%94%a8%e6%b6%88%e6%81%af%e9%98%9f%e5%88%97">#</a></h1>
+<h2 id="解耦">解耦<a class="anchor" href="#%e8%a7%a3%e8%80%a6">#</a></h2>
+<p><strong>传统模式</strong>：系统间耦合度强 如系统A直接调用系统B系统C的代码，如果再有系统D接入，则系统A还要修改代码。
+<strong>中间件模式</strong>：系统A将消息写入消息队列，系统B、系统C 订阅消息队列，如果再有系统D介入，直接订阅消息队列即可 系统A不必修改代码。</p>
+<h2 id="异步">异步<a class="anchor" href="#%e5%bc%82%e6%ad%a5">#</a></h2>
+<p><strong>传统模式</strong>：一些非必的业务逻辑以同步得方式运行浪费时间。
+<strong>中间件模式</strong>：将消息写入消息队列 一些非必要的业务逻辑以异步得方式运行提高响应速度。</p>
+<h2 id="削峰限流">削峰/限流<a class="anchor" href="#%e5%89%8a%e5%b3%b0%e9%99%90%e6%b5%81">#</a></h2>
+<p><strong>传统模式</strong>：并发量大得时候所有请求全部到数据库，造 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/">1.9 Rabbit Mq集群方案</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>集群方案</p>
+<!-- more --></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/8/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/7/">7</a><a href="/posts/page/8/">8</a><a >9</a><a href="/posts/page/10/">10</a><a href="/posts/page/11/">11</a></span>
+  
+  <span>
+    <a href="/posts/page/10/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

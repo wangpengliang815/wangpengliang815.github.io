@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="C数组# 数组是一种特殊类型的数据类型，它可以使用特殊语法 顺序存储固定数量的值。
+数组声明：
+int [] intArr;数组初始化：使用new关键字同时声明和初始化数组，下面三种方式等价
+int[] intArr = new int[5]; int[] intArr = new int[5]{1， 2， 3， 4， 5}; int[] intArr = {1， 2， 3， 4， 5};延迟初始化：可以先声明后再初始化数组
+string[] strArr， strArr; strArr = new string[5]{ &#34;1st Element&#34;，&#34;2nd Element&#34;， &#34;3rd Element&#34;}; strArr = new string[]{ &#34;1st Element&#34;，&#34;2nd Element&#34;， &#34;3rd Element&#34;};索引访问数组中元素：
+intArr[索引位置];常用方法和属性：
+方法名称 描述 GetLength(int维度) 返回指定维度中的元素数 GetLowerBound(int维度) 返回指定维度的最低索引 GetUpperBound(int维度) 返回指定维度的最高索引 GetValue(int index) 返回指定索引处的值 属性 描述 Length 返回数组中元素的总数 [TestMethod] public void ArrayDefinition() { // 数组可以先声明后赋值,也可以声明同时赋值,下面的方式是等价的,数组中必须存储同一类型数据,这在数组被定义时就已经确定 // 第一种 int[] intArr = new int[5]; intArr[0] = 1; intArr[1] = 2; intArr[2] = 3; intArr[3] = 4; intArr[4] = 5; // 第二种 int[] intArr2 = new int[5] { 1, 2, 3, 4, 5 }; // 第三种 int[] intArr3 = { 1, 2, 3, 4, 5 }; // 注意这里是维度不是索引 Console.WriteLine(&#34;GetLength(int维度):返回指定维度中的元素数,值为：{0}&#34;, intArr.GetLength(0)); Console.WriteLine(&#34;GetLowerBound(int维度):返回指定维度的最低索引,值为：{0}&#34;, intArr.GetLowerBound(0)); Console.WriteLine(&#34;GetUpperBound(int维度):返回指定维度的最高索引,值为：{0}&#34;, intArr.GetUpperBound(0)); Console.WriteLine(&#34;GetValue(int index):	返回指定索引处的值,值为：{0}&#34;, intArr.GetValue(2)); Console.WriteLine(&#34;属性:Length:返回数组中元素的总数,值为：{0}&#34;, intArr.Length); // 使用索引来访问数组元素 Console.WriteLine(&#34;使用索引访问数组元素,索引为2的值为：{0}&#34;, intArr[2]); // 试图访问数组中不存在的索引元素,会发生数组越界 Assert.ThrowsException&lt;IndexOutOfRangeException&gt;(() =&gt; { Console.WriteLine(&#34;使用索引访问数组元素,索引为10的值为：{0}&#34;, intArr[10]); }); for (int i = 0; i &lt; intArr.Length; i&#43;&#43;) { Console.WriteLine(intArr[i]); } foreach (var item in intArr) { Console.WriteLine(item); } Person p1 = new() { Address = &#34;wang&#34; }; Person p2 = new() { Address = &#34;li&#34; }; Person[] persons = new Person[2] { p1, p2 }; Assert.AreEqual(&#34;wang&#34;, persons[0].Address); Assert.AreEqual(&#34;li&#34;, persons[1].Address); }多维数组# 多维数组是行和列的二维系列。多维数组又称为矩形数组；在本质上，是个一维数组的列表。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="C数组# 数组是一种特殊类型的数据类型，它可以使用特殊语法 顺序存储固定数量的值。
+数组声明：
+int [] intArr;数组初始化：使用new关键字同时声明和初始化数组，下面三种方式等价
+int[] intArr = new int[5]; int[] intArr = new int[5]{1， 2， 3， 4， 5}; int[] intArr = {1， 2， 3， 4， 5};延迟初始化：可以先声明后再初始化数组
+string[] strArr， strArr; strArr = new string[5]{ &#34;1st Element&#34;，&#34;2nd Element&#34;， &#34;3rd Element&#34;}; strArr = new string[]{ &#34;1st Element&#34;，&#34;2nd Element&#34;， &#34;3rd Element&#34;};索引访问数组中元素：
+intArr[索引位置];常用方法和属性：
+方法名称 描述 GetLength(int维度) 返回指定维度中的元素数 GetLowerBound(int维度) 返回指定维度的最低索引 GetUpperBound(int维度) 返回指定维度的最高索引 GetValue(int index) 返回指定索引处的值 属性 描述 Length 返回数组中元素的总数 [TestMethod] public void ArrayDefinition() { // 数组可以先声明后赋值,也可以声明同时赋值,下面的方式是等价的,数组中必须存储同一类型数据,这在数组被定义时就已经确定 // 第一种 int[] intArr = new int[5]; intArr[0] = 1; intArr[1] = 2; intArr[2] = 3; intArr[3] = 4; intArr[4] = 5; // 第二种 int[] intArr2 = new int[5] { 1, 2, 3, 4, 5 }; // 第三种 int[] intArr3 = { 1, 2, 3, 4, 5 }; // 注意这里是维度不是索引 Console.WriteLine(&#34;GetLength(int维度):返回指定维度中的元素数,值为：{0}&#34;, intArr.GetLength(0)); Console.WriteLine(&#34;GetLowerBound(int维度):返回指定维度的最低索引,值为：{0}&#34;, intArr.GetLowerBound(0)); Console.WriteLine(&#34;GetUpperBound(int维度):返回指定维度的最高索引,值为：{0}&#34;, intArr.GetUpperBound(0)); Console.WriteLine(&#34;GetValue(int index):	返回指定索引处的值,值为：{0}&#34;, intArr.GetValue(2)); Console.WriteLine(&#34;属性:Length:返回数组中元素的总数,值为：{0}&#34;, intArr.Length); // 使用索引来访问数组元素 Console.WriteLine(&#34;使用索引访问数组元素,索引为2的值为：{0}&#34;, intArr[2]); // 试图访问数组中不存在的索引元素,会发生数组越界 Assert.ThrowsException&lt;IndexOutOfRangeException&gt;(() =&gt; { Console.WriteLine(&#34;使用索引访问数组元素,索引为10的值为：{0}&#34;, intArr[10]); }); for (int i = 0; i &lt; intArr.Length; i&#43;&#43;) { Console.WriteLine(intArr[i]); } foreach (var item in intArr) { Console.WriteLine(item); } Person p1 = new() { Address = &#34;wang&#34; }; Person p2 = new() { Address = &#34;li&#34; }; Person[] persons = new Person[2] { p1, p2 }; Assert.AreEqual(&#34;wang&#34;, persons[0].Address); Assert.AreEqual(&#34;li&#34;, persons[1].Address); }多维数组# 多维数组是行和列的二维系列。多维数组又称为矩形数组；在本质上，是个一维数组的列表。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="C数组# 数组是一种特殊类型的数据类型，它可以使用特殊语法 顺序存储固定数量的值。
+数组声明：
+int [] intArr;数组初始化：使用new关键字同时声明和初始化数组，下面三种方式等价
+int[] intArr = new int[5]; int[] intArr = new int[5]{1， 2， 3， 4， 5}; int[] intArr = {1， 2， 3， 4， 5};延迟初始化：可以先声明后再初始化数组
+string[] strArr， strArr; strArr = new string[5]{ &#34;1st Element&#34;，&#34;2nd Element&#34;， &#34;3rd Element&#34;}; strArr = new string[]{ &#34;1st Element&#34;，&#34;2nd Element&#34;， &#34;3rd Element&#34;};索引访问数组中元素：
+intArr[索引位置];常用方法和属性：
+方法名称 描述 GetLength(int维度) 返回指定维度中的元素数 GetLowerBound(int维度) 返回指定维度的最低索引 GetUpperBound(int维度) 返回指定维度的最高索引 GetValue(int index) 返回指定索引处的值 属性 描述 Length 返回数组中元素的总数 [TestMethod] public void ArrayDefinition() { // 数组可以先声明后赋值,也可以声明同时赋值,下面的方式是等价的,数组中必须存储同一类型数据,这在数组被定义时就已经确定 // 第一种 int[] intArr = new int[5]; intArr[0] = 1; intArr[1] = 2; intArr[2] = 3; intArr[3] = 4; intArr[4] = 5; // 第二种 int[] intArr2 = new int[5] { 1, 2, 3, 4, 5 }; // 第三种 int[] intArr3 = { 1, 2, 3, 4, 5 }; // 注意这里是维度不是索引 Console.WriteLine(&#34;GetLength(int维度):返回指定维度中的元素数,值为：{0}&#34;, intArr.GetLength(0)); Console.WriteLine(&#34;GetLowerBound(int维度):返回指定维度的最低索引,值为：{0}&#34;, intArr.GetLowerBound(0)); Console.WriteLine(&#34;GetUpperBound(int维度):返回指定维度的最高索引,值为：{0}&#34;, intArr.GetUpperBound(0)); Console.WriteLine(&#34;GetValue(int index):	返回指定索引处的值,值为：{0}&#34;, intArr.GetValue(2)); Console.WriteLine(&#34;属性:Length:返回数组中元素的总数,值为：{0}&#34;, intArr.Length); // 使用索引来访问数组元素 Console.WriteLine(&#34;使用索引访问数组元素,索引为2的值为：{0}&#34;, intArr[2]); // 试图访问数组中不存在的索引元素,会发生数组越界 Assert.ThrowsException&lt;IndexOutOfRangeException&gt;(() =&gt; { Console.WriteLine(&#34;使用索引访问数组元素,索引为10的值为：{0}&#34;, intArr[10]); }); for (int i = 0; i &lt; intArr.Length; i&#43;&#43;) { Console.WriteLine(intArr[i]); } foreach (var item in intArr) { Console.WriteLine(item); } Person p1 = new() { Address = &#34;wang&#34; }; Person p2 = new() { Address = &#34;li&#34; }; Person[] persons = new Person[2] { p1, p2 }; Assert.AreEqual(&#34;wang&#34;, persons[0].Address); Assert.AreEqual(&#34;li&#34;, persons[1].Address); }多维数组# 多维数组是行和列的二维系列。多维数组又称为矩形数组；在本质上，是个一维数组的列表。">
+  <meta itemprop="wordCount" content="1295">
+
+<title>数据结构 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>数据结构</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#多维数组">多维数组</a></li>
+    <li><a href="#锯齿状数组">锯齿状数组</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#arraylist">ArrayList</a></li>
+    <li><a href="#sortedlist">SortedList</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#queue">Queue</a></li>
+    <li><a href="#hashtable">Hashtable</a></li>
+    <li><a href="#bitarray">BitArray</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#listt"><code>List&lt;T&gt;</code></a></li>
+    <li><a href="#stackt"><code>Stack&lt;T&gt;</code></a></li>
+    <li><a href="#quenuet"><code>Quenue&lt;T&gt;</code></a></li>
+    <li><a href="#sortedsett"><code>SortedSet&lt;T&gt;</code></a></li>
+    <li><a href="#observablecollectiont"><code>ObservableCollection&lt;T&gt;</code></a></li>
+    <li><a href="#dictionarykv"><code>Dictionary&lt;k,v&gt;</code></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    数据结构
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="c数组">C数组<a class="anchor" href="#c%e6%95%b0%e7%bb%84">#</a></h1>
+<p>数组是一种特殊类型的数据类型，它可以使用特殊语法 <strong>顺序存储固定数量的值。</strong></p>
+<p><img src="http://www.tutorialsteacher.com/Content/images/csharp/array.png#align=left&amp;display=inline&amp;height=147&amp;margin=%5Bobject%20Object%5D&amp;originHeight=147&amp;originWidth=404&amp;status=done&amp;style=none&amp;width=404" alt="" /></p>
+<p>数组声明：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> [] intArr;</span></span></code></pre></div><p>数组初始化：使用<code>new</code>关键字同时声明和初始化数组，下面三种方式等价</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] intArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">5</span>]; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] intArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">5</span>]{<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">5</span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] intArr = {<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">5</span>};</span></span></code></pre></div><p>延迟初始化：可以先声明后再初始化数组</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span>[] strArr<span style="color:#960050;background-color:#1e0010">，</span> strArr;
+</span></span><span style="display:flex;"><span>strArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[<span style="color:#ae81ff">5</span>]{ <span style="color:#e6db74">&#34;1st Element&#34;</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#e6db74">&#34;2nd Element&#34;</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#e6db74">&#34;3rd Element&#34;</span>};
+</span></span><span style="display:flex;"><span>strArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[]{ <span style="color:#e6db74">&#34;1st Element&#34;</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#e6db74">&#34;2nd Element&#34;</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#e6db74">&#34;3rd Element&#34;</span>};</span></span></code></pre></div><p>索引访问数组中元素：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>intArr[<span style="color:#960050;background-color:#1e0010">索引位置</span>];</span></span></code></pre></div><p>常用方法和属性：</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>方法名称</strong></th>
+          <th style="text-align: left"><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">GetLength(int维度)</td>
+          <td style="text-align: left">返回指定维度中的元素数</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetLowerBound(int维度)</td>
+          <td style="text-align: left">返回指定维度的最低索引</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetUpperBound(int维度)</td>
+          <td style="text-align: left">返回指定维度的最高索引</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetValue(int index)</td>
+          <td style="text-align: left">返回指定索引处的值</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Length</td>
+          <td>返回数组中元素的总数</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ArrayDefinition()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 数组可以先声明后赋值,也可以声明同时赋值,下面的方式是等价的,数组中必须存储同一类型数据,这在数组被定义时就已经确定</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 第一种</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[] intArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">5</span>];
+</span></span><span style="display:flex;"><span>    intArr[<span style="color:#ae81ff">0</span>] = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    intArr[<span style="color:#ae81ff">1</span>] = <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>    intArr[<span style="color:#ae81ff">2</span>] = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>    intArr[<span style="color:#ae81ff">3</span>] = <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>    intArr[<span style="color:#ae81ff">4</span>] = <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 第二种</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[] intArr2 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">5</span>] { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 第三种</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[] intArr3 = { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 注意这里是维度不是索引</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;GetLength(int维度):返回指定维度中的元素数,值为：{0}&#34;</span>, intArr.GetLength(<span style="color:#ae81ff">0</span>));
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;GetLowerBound(int维度):返回指定维度的最低索引,值为：{0}&#34;</span>, intArr.GetLowerBound(<span style="color:#ae81ff">0</span>));
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;GetUpperBound(int维度):返回指定维度的最高索引,值为：{0}&#34;</span>, intArr.GetUpperBound(<span style="color:#ae81ff">0</span>));
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;GetValue(int index):	返回指定索引处的值,值为：{0}&#34;</span>, intArr.GetValue(<span style="color:#ae81ff">2</span>));
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;属性:Length:返回数组中元素的总数,值为：{0}&#34;</span>, intArr.Length);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用索引来访问数组元素</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;使用索引访问数组元素,索引为2的值为：{0}&#34;</span>, intArr[<span style="color:#ae81ff">2</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 试图访问数组中不存在的索引元素,会发生数组越界</span>
+</span></span><span style="display:flex;"><span>    Assert.ThrowsException&lt;IndexOutOfRangeException&gt;(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;使用索引访问数组元素,索引为10的值为：{0}&#34;</span>, intArr[<span style="color:#ae81ff">10</span>]);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; intArr.Length; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(intArr[i]);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> intArr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Person p1 = <span style="color:#66d9ef">new</span>() { Address = <span style="color:#e6db74">&#34;wang&#34;</span> };
+</span></span><span style="display:flex;"><span>    Person p2 = <span style="color:#66d9ef">new</span>() { Address = <span style="color:#e6db74">&#34;li&#34;</span> };
+</span></span><span style="display:flex;"><span>    Person[] persons = <span style="color:#66d9ef">new</span> Person[<span style="color:#ae81ff">2</span>] { p1, p2 };
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#e6db74">&#34;wang&#34;</span>, persons[<span style="color:#ae81ff">0</span>].Address);
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#e6db74">&#34;li&#34;</span>, persons[<span style="color:#ae81ff">1</span>].Address);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="多维数组">多维数组<a class="anchor" href="#%e5%a4%9a%e7%bb%b4%e6%95%b0%e7%bb%84">#</a></h2>
+<p>多维数组是行和列的二维系列。多维数组又称为矩形数组；在本质上，是个一维数组的列表。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> MultidimensionalArray()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 下面的两种创建方式等价</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 第一种</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[,] intArray1 = { { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span> }, { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span> }, { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span> } };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//第二种</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[,] intArray2 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>    {    <span style="color:#75715e">/*  初始化化一个三行四列的数组 */</span>
+</span></span><span style="display:flex;"><span>           {<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>} ,                <span style="color:#75715e">/*  初始化索引号为 0 的行 */</span>
+</span></span><span style="display:flex;"><span>           {<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>} ,                <span style="color:#75715e">/*  初始化索引号为 1 的行 */</span>
+</span></span><span style="display:flex;"><span>           {<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">11</span>}                <span style="color:#75715e">/*  初始化索引号为 2 的行 */</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取数组中第3行第4个元素                                </span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;二维数组中的元素是通过使用下标（即数组的行索引和列索引）来访问,值为：{0}&#34;</span>, intArray2[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;属性:Length:返回数组中元素的总数,值为：{0}&#34;</span>, intArray1.Length);
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#ae81ff">11</span>, intArray2[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>可以使用两个索引访问多维数组的值。第一个索引用于行，第二个索引用于列。两个索引都从零开始。</p>
+<h2 id="锯齿状数组">锯齿状数组<a class="anchor" href="#%e9%94%af%e9%bd%bf%e7%8a%b6%e6%95%b0%e7%bb%84">#</a></h2>
+<p>锯齿状数组是数组的数组。<code>Jagged</code>数组直接存储数组而不是任何其他数据类型值。锯齿状数组用两个方括号 <code>[][]</code> 初始化。</p>
+<p>第一个括号指定数组的大小，第二个括号指定将作为值存储的数组的维度。(锯齿状数组总是存储一个数组)，二维数组的大小是矩形的。</p>
+<p><strong>例如：</strong> 3×3个元素。而锯齿数组的大小设置是比较灵活的，在锯齿数组中，每一行都可以有不同的大小</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> JaggedArray()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[][] intJaggedArray = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">2</span>][];
+</span></span><span style="display:flex;"><span>    intJaggedArray[<span style="color:#ae81ff">0</span>] = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">3</span>] { <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span> };
+</span></span><span style="display:flex;"><span>    intJaggedArray[<span style="color:#ae81ff">1</span>] = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">2</span>] { <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#ae81ff">1</span>, intJaggedArray[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#ae81ff">3</span>, intJaggedArray[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">2</span>]);
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#ae81ff">5</span>, intJaggedArray[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="array">Array<a class="anchor" href="#array">#</a></h1>
+<p>.NET提供了一个抽象类 <code>Array</code> ，作为所有数组的基类。它提供了用于创建，操作，搜索和排序数组的静态方法。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>IsFixedSize</td>
+          <td>获取一个值，该值指示数组是否带有固定大小</td>
+      </tr>
+      <tr>
+          <td>IsReadOnly</td>
+          <td>获取一个值，该值指示数组是否只读</td>
+      </tr>
+      <tr>
+          <td>Length</td>
+          <td>获取一个 32 位整数，该值表示所有维度的数组中的元素总数</td>
+      </tr>
+      <tr>
+          <td>LongLength</td>
+          <td>获取一个 64 位整数，该值表示所有维度的数组中的元素总数</td>
+      </tr>
+      <tr>
+          <td>Rank</td>
+          <td>获取数组的秩（维度）</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>方法</strong></th>
+          <th style="text-align: left"><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Clear</td>
+          <td style="text-align: left">根据元素的类型，设置数组中某个范围的元素为零、为 false 或者为 null</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Copy(Array,Array,Int32)</td>
+          <td style="text-align: left">从数组的第一个元素开始复制某个范围的元素到另一个数组的第一个元素位置。长度由一个 32 位整数指定</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">CopyTo(Array,Int32)</td>
+          <td style="text-align: left">从当前的一维数组中复制所有的元素到一个指定的一维数组的指定索引位置。索引由一个 32 位整数指定</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetLength</td>
+          <td style="text-align: left">获取一个 32 位整数，该值表示指定维度的数组中的元素总数</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetLongLength</td>
+          <td style="text-align: left">获取一个 64 位整数，该值表示指定维度的数组中的元素总数</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetLowerBound</td>
+          <td style="text-align: left">获取数组中指定维度的下界</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetType</td>
+          <td style="text-align: left">获取当前实例的类型。从对象（Object）继承</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetUpperBound</td>
+          <td style="text-align: left">获取数组中指定维度的上界</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GetValue(Int32)</td>
+          <td style="text-align: left">获取一维数组中指定位置的值。索引由一个 32 位整数指定</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">IndexOf(Array,Object)</td>
+          <td style="text-align: left">搜索指定的对象，返回整个一维数组中第一次出现的索引</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Reverse(Array)</td>
+          <td style="text-align: left">逆转整个一维数组中元素的顺序</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SetValue(Object, Int32)</td>
+          <td style="text-align: left">给一维数组中指定位置的元素设置值。索引由一个 32 位整数指定</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Sort(Array)</td>
+          <td style="text-align: left">使用数组的每个元素的 IComparable 实现来排序整个一维数组中的元素</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">ToString</td>
+          <td style="text-align: left">返回一个表示当前对象的字符串。从对象（Object）继承</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ArrayClass()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Array arr = Array.CreateInstance(<span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">int</span>), <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">3</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 第一个参数是value,第二个参数是index</span>
+</span></span><span style="display:flex;"><span>        arr.SetValue(i, i);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;IsFixedSize:数组是否带有固定大小,值为：{0}&#34;</span>, arr.IsFixedSize);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;IsReadOnly :数组是否只读,值为：{0}&#34;</span>, arr.IsReadOnly);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Length     :32位整数,数组元素总数,值为：{0}&#34;</span>, arr.Length);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;LongLength :64位整数,数组元素总数,值为：{0}&#34;</span>, arr.LongLength);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Rank       :数组的维度,值为：{0}&#34;</span>, arr.Rank);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Array.Clear(arr, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; arr.Length; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Assert.AreEqual(<span style="color:#ae81ff">0</span>, arr.GetValue(i));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 显式将arr转换为数组</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span>[] arr2 = (<span style="color:#66d9ef">int</span>[])arr;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; arr2.Length; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Assert.AreEqual(<span style="color:#ae81ff">0</span>, arr2[i]);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="非泛型集合">非泛型集合<a class="anchor" href="#%e9%9d%9e%e6%b3%9b%e5%9e%8b%e9%9b%86%e5%90%88">#</a></h1>
+<p>每个集合类都实现 <code>IEnumerable</code>接口，因此可以使用 <code>foreach</code> 循环访问集合中的值。<code>System.Collections</code> 命名空间中包括以下非泛型集合：</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>类型</strong></th>
+          <th style="text-align: left"><strong>用法</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">ArrayList</td>
+          <td style="text-align: left">ArrayList存储任何类型的对象，如数组。但是，当数组自动增长时，无需像数组那样指定ArrayList的大小</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">SortedList</td>
+          <td style="text-align: left">SortedList存储键和值对。它默认按键的升序自动排列元素。C＃包括泛型和非泛型SortedList集合</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Stack</td>
+          <td style="text-align: left">Stack以LIFO样式存储值(后进先出)。它提供了一个Push()方法来添加一个值，Pop()和Peek()方法来检索值。C＃包括通用和非通用堆栈</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Queue</td>
+          <td style="text-align: left">队列以FIFO样式(先进先出)存储值。它保持添加值的顺序。它提供了一个Enqueue()方法来添加值，还提供了一个Dequeue()方法来从集合中检索值。C＃包括通用和非通用队列</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Hashtable</td>
+          <td style="text-align: left">Hashtable存储键和值对。它通过比较键的哈希值来检索值</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">BitArray</td>
+          <td style="text-align: left">BitArray管理一个紧凑的位值数组，表示为布尔值，其中true表示该位为on(1)，false表示该位为off(0)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="arraylist">ArrayList<a class="anchor" href="#arraylist">#</a></h2>
+<p>可以包含任何数据类型的元素。类似于数组，但是在添加元素时不需要指定大小， <code>ArrayList</code> 的大小会自动增长。</p>
+<p>要点：</p>
+<ul>
+<li>可以存储任何数据类型的项(元素)</li>
+<li>添加元素时会自动调整大小</li>
+<li>可以包含多个<code>null</code></li>
+<li>可以使用 <code>foreach</code> 或 <code>for</code> 循环或索引器访问</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Capacity</td>
+          <td>获取或设置ArrayList可以包含的元素数</td>
+      </tr>
+      <tr>
+          <td>Count</td>
+          <td>获取ArrayList中实际包含的元素数</td>
+      </tr>
+      <tr>
+          <td>IsFixedSize</td>
+          <td>获取一个值，该值指示ArrayList是否具有固定大小</td>
+      </tr>
+      <tr>
+          <td>IsReadOnly</td>
+          <td>获取一个值，该值指示ArrayList是否为只读</td>
+      </tr>
+      <tr>
+          <td>Item</td>
+          <td>获取或设置指定索引处的元素</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Add()/AddRange()</td>
+          <td>Add()方法在ArrayList的末尾添加单个元素。 AddRange()方法将指定集合中的所有元素添加到ArrayList中</td>
+      </tr>
+      <tr>
+          <td>Insert()/InsertRange()</td>
+          <td>Insert()方法在ArrayList中的指定索引处插入单个元素。 InsertRange()方法从ArrayList中的指定索引开始插入指定collection的所有元素</td>
+      </tr>
+      <tr>
+          <td>Remove()/RemoveRange()</td>
+          <td>Remove()方法从ArrayList中删除指定的元素。 RemoveRange()方法从ArrayList中删除一系列元素</td>
+      </tr>
+      <tr>
+          <td>RemoveAt()</td>
+          <td>从ArrayList中删除指定索引处的元素</td>
+      </tr>
+      <tr>
+          <td>Sort()</td>
+          <td>对ArrayList的整个元素进行排序</td>
+      </tr>
+      <tr>
+          <td>Reverse()</td>
+          <td>反转整个ArrayList中元素的顺序</td>
+      </tr>
+      <tr>
+          <td>Contains</td>
+          <td>检查ArrayList中是否存在指定的元素。如果存在则返回true，否则返回false</td>
+      </tr>
+      <tr>
+          <td>Clear</td>
+          <td>删除ArrayList中的所有元素</td>
+      </tr>
+      <tr>
+          <td>CopyTo</td>
+          <td>将所有元素或元素范围复制到compitible Array</td>
+      </tr>
+      <tr>
+          <td>GetRange</td>
+          <td>从ArrayList返回指定索引中指定数量的元素</td>
+      </tr>
+      <tr>
+          <td>IndexOf</td>
+          <td>搜索指定的元素并返回零基索引(如果找到)。如果找不到元素，则返回-1</td>
+      </tr>
+      <tr>
+          <td>ToArray</td>
+          <td>从ArrayList返回compitible数组</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ArrayList()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ArrayList arrayList = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    arrayList.Add(<span style="color:#e6db74">&#34;wang&#34;</span>);
+</span></span><span style="display:flex;"><span>    arrayList.Add(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ArrayList允许插入null</span>
+</span></span><span style="display:flex;"><span>    arrayList.Add(<span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> arrayList)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Assert.AreEqual(<span style="color:#e6db74">&#34;wang&#34;</span>, arrayList[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="sortedlist">SortedList<a class="anchor" href="#sortedlist">#</a></h2>
+<p><code>SortedList</code> 集合默认按键的升序存储键值对。<code>SortedList</code> 类实现了 <code>IDictionary</code> 和 <code>ICollection</code> 接口，因此可以通过键和索引访问元素。</p>
+<p>要点：</p>
+<ul>
+<li>C#具有泛型和非泛型 <code>SortedList</code></li>
+<li><code>SortedList</code> 按键的升序存储键值对。键必须是唯一的，不能为<code>null</code>，而值可以为<code>null</code>或重复项</li>
+<li>非泛型 <code>SortedList</code> 存储任何数据类型的键和值。因此，需要将值转换为适当的数据类型</li>
+<li>键值对可以强制转换为 <code>DictionaryEntry</code></li>
+<li>使用索引器访问单个值。<code>SortedList</code> 索引器接受键并返回与之关联的值</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Capacity</td>
+          <td>获取或设置SortedList实例可以存储的元素数</td>
+      </tr>
+      <tr>
+          <td>Count</td>
+          <td>获取SortedList中实际包含的元素数</td>
+      </tr>
+      <tr>
+          <td>IsFixedSize</td>
+          <td>获取SortedList中实际包含的元素数</td>
+      </tr>
+      <tr>
+          <td>IsReadOnly</td>
+          <td>获取一个值，该值指示SortedList是否为只读</td>
+      </tr>
+      <tr>
+          <td>Item</td>
+          <td>获取或设置SortedList中指定键的元素</td>
+      </tr>
+      <tr>
+          <td>Keys</td>
+          <td>获取SortedList的键列表</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>获取SortedList中的值列表</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Add(object key， object value)</td>
+          <td>将键值对添加到SortedList中</td>
+      </tr>
+      <tr>
+          <td>Remove(object key)</td>
+          <td>删除具有指定键的元素</td>
+      </tr>
+      <tr>
+          <td>RemoveAt(int index)</td>
+          <td>删除指定索引处的元素</td>
+      </tr>
+      <tr>
+          <td>Contains(object key)</td>
+          <td>检查SortedList中是否存在指定的键</td>
+      </tr>
+      <tr>
+          <td>Clear()</td>
+          <td>从SortedList中删除所有元素</td>
+      </tr>
+      <tr>
+          <td>GetByIndex(int index)</td>
+          <td>返回存储在内部数组中的索引值</td>
+      </tr>
+      <tr>
+          <td>GetKey(int index)</td>
+          <td>检返回存储在内部数组中指定索引处的键</td>
+      </tr>
+      <tr>
+          <td>IndexOfKey(object key)</td>
+          <td>返回存储在内部数组中的指定键的索引</td>
+      </tr>
+      <tr>
+          <td>IndexOfValue(object value)</td>
+          <td>返回存储在内部数组中的指定值的索引</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> SortedList()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    SortedList sortedList = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    sortedList.Add(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;wang&#34;</span>);
+</span></span><span style="display:flex;"><span>    sortedList.Add(<span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34;li&#34;</span>);
+</span></span><span style="display:flex;"><span>    sortedList.Add(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// SortedList键可以是任何数据类型，但不能在同一SortedList中添加不同数据类型的键。</span>
+</span></span><span style="display:flex;"><span>    Assert.ThrowsException&lt;InvalidOperationException&gt;(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        sortedList.Add(<span style="color:#e6db74">&#34;wang&#34;</span>, <span style="color:#ae81ff">32</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; sortedList.Count; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;key:{0}，value:{1}&#34;</span>, sortedList.GetKey(i), sortedList.GetByIndex(i));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (DictionaryEntry item <span style="color:#66d9ef">in</span> sortedList)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;key:{0}，value:{1}&#34;</span>, item.Key, item.Value);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="stack">Stack<a class="anchor" href="#stack">#</a></h2>
+<p>以 <code>LIFO</code> 样式存储元素（后进先出）。C#包括通用和非通用堆栈，非泛型堆栈。<code>Stack</code>允许空值以及重复值。它提供了一个 <code>Push()</code> 方法来添加一个值， <code>Pop()</code> 或 <code>Peek()</code> 方法来检索值。</p>
+<p>要点：</p>
+<ul>
+<li>最后添加的元素将是首先出现的元素<code>LIFO(后进先出)</code></li>
+<li>使用 <code>Push()</code> 方法添加元素</li>
+<li><code>Pop() </code>方法返回并从堆栈顶部删除元素。在空 <code>Stack</code> 上调用 <code>Pop()</code> 方法将引发异常</li>
+<li><code>Peek()</code> 方法返回 <code>Stack</code> 中最顶层的元素</li>
+</ul>
+<p><img src="http://www.tutorialsteacher.com/Content/images/csharp/stack.png#align=left&amp;display=inline&amp;height=223&amp;margin=%5Bobject%20Object%5D&amp;originHeight=254&amp;originWidth=296&amp;status=done&amp;style=none&amp;width=260" alt="" /></p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>方法</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Count</td>
+          <td>返回Stack中元素的总数</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>方法</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Push</td>
+          <td>在堆栈顶部插入一个项目</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Peek</td>
+          <td>返回堆栈中的顶部项</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Pop</td>
+          <td>从堆栈顶部删除并返回项目</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Contains</td>
+          <td>检查堆栈中是否存在项目</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Clear</td>
+          <td>从堆栈中删除所有项目</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Stack()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Stack stack = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    stack.Push(<span style="color:#e6db74">&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span>    stack.Push(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    stack.Push(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> stack)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="queue">Queue<a class="anchor" href="#queue">#</a></h2>
+<p>以<code>FIFO</code>样式(先进先出)存储元素。与<code>Stack</code>集合完全相反，它按照添加顺序包含元素。队列集合允许多个空值和重复值。使用 <code>Enqueue()</code> 方法添加值，使用<code>Dequeue()</code>方法从队列中检索值。</p>
+<p>要点：</p>
+<ul>
+<li>首先添加的元素将首先出现<code>FIFO(先进先出)</code></li>
+<li>使用<code>Enqueue()</code>方法添加元素</li>
+<li><code>Dequeue()</code>方法返回并从队列的开头删除元素。在空队列上调用<code>Dequeue()</code>方法将引发异常</li>
+<li><code>Peek()</code>方法总是返回最顶层的元素</li>
+</ul>
+<p><img src="http://www.tutorialsteacher.com/Content/images/csharp/csharp-queue.png#align=left&amp;display=inline&amp;height=221&amp;margin=%5Bobject%20Object%5D&amp;originHeight=221&amp;originWidth=460&amp;status=done&amp;style=none&amp;width=460" alt="" /></p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Count</td>
+          <td>返回Stack中元素的总数</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Enqueue</td>
+          <td>将项添加到队列中</td>
+      </tr>
+      <tr>
+          <td>Dequeue</td>
+          <td>从队列的开头删除并返回一个项目</td>
+      </tr>
+      <tr>
+          <td>Peek</td>
+          <td>返回队列中的第一个项目</td>
+      </tr>
+      <tr>
+          <td>Contains</td>
+          <td>检查项目是否在队列中</td>
+      </tr>
+      <tr>
+          <td>Clear</td>
+          <td>从队列中删除所有项目</td>
+      </tr>
+      <tr>
+          <td>TrimToSize</td>
+          <td>将队列的容量设置为队列中的实际项目数</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Queue()
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     Queue queue = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>     queue.Enqueue(<span style="color:#e6db74">&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span>     queue.Enqueue(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>     queue.Enqueue(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> queue)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><h2 id="hashtable">Hashtable<a class="anchor" href="#hashtable">#</a></h2>
+<p>类似于通用字典集合。<code>Hashtable</code>集合存储键值对。通过计算每个密钥的哈希码来优化查找，并在内部将其存储在不同的存储桶中，然后在访问值时匹配指定密钥的哈希码。</p>
+<p>要点：</p>
+<ul>
+<li>存储<code>Key</code>必须唯一的任何数据类型的键值对</li>
+<li>键不能为<code>null</code>，而值可以为<code>null</code></li>
+<li>通过比较键的哈希码来检索项目。因此性能比 <code>Dictionary</code> 集合慢</li>
+<li>使用默认的哈希码提供程序，即 <code>object.GetHash()</code>。还可以使用自定义哈希码提供程序</li>
+<li>将 <code>DictionaryEntry</code> 与 <code>foreach</code> 语句一起使用以迭代 <code>Hashtable</code></li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Count</td>
+          <td>获取Hashtable中键/值对的总数</td>
+      </tr>
+      <tr>
+          <td>IsReadOnly</td>
+          <td>获取布尔值，指示Hashtable是否为只读</td>
+      </tr>
+      <tr>
+          <td>Item</td>
+          <td>获取或设置与指定键关联的值</td>
+      </tr>
+      <tr>
+          <td>Keys</td>
+          <td>获取Hashtable中的键的ICollection</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>获取Hashtable中值的ICollection</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Add</td>
+          <td>将具有键和值的项添加到哈希表中</td>
+      </tr>
+      <tr>
+          <td>Remove</td>
+          <td>从散列表中删除具有指定键的项</td>
+      </tr>
+      <tr>
+          <td>Clear</td>
+          <td>从哈希表中删除所有项目</td>
+      </tr>
+      <tr>
+          <td>Contains</td>
+          <td>检查哈希表是否包含特定密钥</td>
+      </tr>
+      <tr>
+          <td>ContainsKey</td>
+          <td>检查哈希表是否包含特定密钥</td>
+      </tr>
+      <tr>
+          <td>ContainsValue</td>
+          <td>检查哈希表是否包含特定值</td>
+      </tr>
+      <tr>
+          <td>GetHash</td>
+          <td>返回指定键的哈希码</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Hashtable()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Hashtable hashtable = <span style="color:#66d9ef">new</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        { <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;wang&#34;</span> },
+</span></span><span style="display:flex;"><span>        { <span style="color:#ae81ff">3</span>, <span style="color:#66d9ef">false</span> },
+</span></span><span style="display:flex;"><span>        { <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;li&#34;</span> }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (DictionaryEntry item <span style="color:#66d9ef">in</span> hashtable)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;key:{0}, value:{1}&#34;</span>, item.Key, item.Value);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="bitarray">BitArray<a class="anchor" href="#bitarray">#</a></h2>
+<p><code>BitArray</code> 类管理一个紧凑型的位值数组，它使用布尔值来表示，其中<code>true</code>表示位是开启的(1)，false 表示位是关闭的(0)。当需要存储位但是事先不知道位数时，则使用点阵列。可以使用整型索引从点阵列集合中访问各项，索引从零开始。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>属性</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Count</td>
+          <td>获取 BitArray 中包含的元素个数。</td>
+      </tr>
+      <tr>
+          <td>IsReadOnly</td>
+          <td>获取一个值，表示 BitArray 是否只读。</td>
+      </tr>
+      <tr>
+          <td>Item</td>
+          <td>获取或设置 BitArray 中指定位置的位的值。</td>
+      </tr>
+      <tr>
+          <td>Length</td>
+          <td>获取或设置 BitArray 中的元素个数。</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>public BitArray And( BitArray value );</td>
+          <td>对当前的 BitArray 中的元素和指定的 BitArray 中的相对应的元素执行按位与操作。</td>
+      </tr>
+      <tr>
+          <td>public bool Get( int index );</td>
+          <td>获取 BitArray 中指定位置的位的值。</td>
+      </tr>
+      <tr>
+          <td>public BitArray Not();</td>
+          <td>把当前的 BitArray 中的位值反转，以便设置为 true 的元素变为 false，设置为 false 的元素变为 true。</td>
+      </tr>
+      <tr>
+          <td>public BitArray Or( BitArray value );</td>
+          <td>对当前的 BitArray 中的元素和指定的 BitArray 中的相对应的元素执行按位或操作。</td>
+      </tr>
+      <tr>
+          <td>public void Set( int index, bool value );</td>
+          <td>把 BitArray 中指定位置的位设置为指定的值。</td>
+      </tr>
+      <tr>
+          <td>public void SetAll( bool value );</td>
+          <td>把 BitArray 中的所有位设置为指定的值。</td>
+      </tr>
+      <tr>
+          <td>public BitArray Xor( BitArray value );</td>
+          <td>对当前的 BitArray 中的元素和指定的 BitArray 中的相对应的元素执行按位异或操作。</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="泛型集合">泛型集合<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e9%9b%86%e5%90%88">#</a></h1>
+<p>同传统的集合相比，泛型集合是一种强类型的集合，它解决了类型安全问题，同时避免了集合中每次的装箱与拆箱的操作，提升了性能。</p>
+<h2 id="listt"><code>List&lt;T&gt;</code><a class="anchor" href="#listt">#</a></h2>
+<p><code>List&lt;T&gt;</code> 在C#应用程序中是一种快捷、易于使用的泛型集合类型，使用泛型编程为编写面向对象程序增加了极大的效率和灵活性，不会强行对值类型进行装箱和拆箱，或对引用类型进行向下强制类型转换。</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>名称</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Add</td>
+          <td>将对象添加到 List的结尾处</td>
+      </tr>
+      <tr>
+          <td>AddRange</td>
+          <td>将指定集合的元素添加到 List的末尾</td>
+      </tr>
+      <tr>
+          <td>AsReadOnly</td>
+          <td>返回当前集合的只读 IList包装</td>
+      </tr>
+      <tr>
+          <td>BinarySearch(T)</td>
+          <td>使用默认的比较器在整个已排序的 List中搜索元素，并返回该元素从零开始的索引</td>
+      </tr>
+      <tr>
+          <td>BinarySearch(T, IComparer)</td>
+          <td>使用指定的比较器在整个已排序的 List中搜索元素，并返回该元素从零开始的索引</td>
+      </tr>
+      <tr>
+          <td>BinarySearch(Int32, Int32, T, IComparer)</td>
+          <td>使用指定的比较器在已排序 List的某个元素范围中搜索元素，并返回该元素从零开始的索引</td>
+      </tr>
+      <tr>
+          <td>Clear</td>
+          <td>从 List中移除所有元素</td>
+      </tr>
+      <tr>
+          <td>Contains</td>
+          <td>确定某元素是否在 List中</td>
+      </tr>
+      <tr>
+          <td>ConvertAll</td>
+          <td>将当前 List&lt;T中的元素转换为另一种类型，并返回包含转换后的元素的列表</td>
+      </tr>
+      <tr>
+          <td>CopyTo(T[])</td>
+          <td>将整个 List&lt;T复制到兼容的一维数组中，从目标数组的开头开始放置</td>
+      </tr>
+      <tr>
+          <td>Exists</td>
+          <td>确定 List&lt;T是否包含与指定谓词所定义的条件相匹配的元素</td>
+      </tr>
+      <tr>
+          <td>Find</td>
+          <td>搜索与指定谓词所定义的条件相匹配的元素，并返回整个 List中的第一个匹配 元素</td>
+      </tr>
+      <tr>
+          <td>FindIndex(Predicate)</td>
+          <td>搜索与指定谓词所定义的条件相匹配的元素，并返回整个List 中第一个匹配元素的从零开始的索引</td>
+      </tr>
+      <tr>
+          <td>ForEach</td>
+          <td>对 List的每个元素执行指定操作。  GetEnumerator  返回循环访问 List的枚举器</td>
+      </tr>
+      <tr>
+          <td>IndexOf(T)</td>
+          <td>搜索指定的对象，并返回整个 List中第一个匹配项的从零开始的索引</td>
+      </tr>
+      <tr>
+          <td>Insert</td>
+          <td>将元素插入 List的指定索引处</td>
+      </tr>
+      <tr>
+          <td>InsertRange</td>
+          <td>将集合中的某个元素插入 List的指定索引处</td>
+      </tr>
+      <tr>
+          <td>LastIndexOf(T)</td>
+          <td>搜索指定的对象，并返回整个 List中最后一个匹配项的从零开始的索引</td>
+      </tr>
+      <tr>
+          <td>Remove</td>
+          <td>从 List中移除特定对象的第一个匹配项</td>
+      </tr>
+      <tr>
+          <td>Reverse()</td>
+          <td>将整个 List中元素的顺序反转</td>
+      </tr>
+      <tr>
+          <td>Sort()</td>
+          <td>使用默认比较器对整个 List中的元素进行排序</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="stackt"><code>Stack&lt;T&gt;</code><a class="anchor" href="#stackt">#</a></h2>
+<p>以 <strong>后进先出</strong> 的方式维护数据的集合，包含 <code>pop()</code> 和 <code>push()</code> 从栈内压入或移除数据。</p>
+<h2 id="quenuet"><code>Quenue&lt;T&gt;</code><a class="anchor" href="#quenuet">#</a></h2>
+<p>以 <strong>先进先出</strong> 的方式访问数据，使用 <code>Enqueue()</code> 和 <code>Dequeue()</code>添加数据和移除数据。</p>
+<h2 id="sortedsett"><code>SortedSet&lt;T&gt;</code><a class="anchor" href="#sortedsett">#</a></h2>
+<p>这个类中的数据是排序的，在插入和移除数据之后仍然能自动排序，需要向其构造函数中传递一个实现了<code>IComparer&lt;T&gt;</code>，该接口定义了<code>Compare</code>方法。</p>
+<h2 id="observablecollectiont"><code>ObservableCollection&lt;T&gt;</code><a class="anchor" href="#observablecollectiont">#</a></h2>
+<p>表示能在添加、移除或者刷新整个列表时提供通知的动态数据集合， <code>ReadOnlyObservableCollection&lt;T&gt;</code> 的操作与之类似，不过是只读的<code>ObservableCollection&lt;T&gt;</code> 实现了一个名为<code>CollectionChanged</code>事件，该事件在插入新的数据或者移除数据时触发。</p>
+<h2 id="dictionarykv"><code>Dictionary&lt;k,v&gt;</code><a class="anchor" href="#dictionarykv">#</a></h2>
+<p>提供快速的基于键值的元素查找。结构是：<code>Dictionary &lt;[key],[value]&gt;</code>，当有很多元素的时候可以用它。在使用前，必须声明它的键类型和值类型。</p>
+<h1 id="数组池">数组池<a class="anchor" href="#%e6%95%b0%e7%bb%84%e6%b1%a0">#</a></h1>
+<p>如果需要多次创建/销毁数组,为了减少GC操作,可以通过ArrayPool类使用数组池</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ArrayPool()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// maxArrayLengthDefaultValue: 1024 * 1024</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// maxArraysPerBucketDefaultValue: 50</span>
+</span></span><span style="display:flex;"><span>    ArrayPool&lt;<span style="color:#66d9ef">int</span>&gt; arrayPool = ArrayPool&lt;<span style="color:#66d9ef">int</span>&gt;
+</span></span><span style="display:flex;"><span>        .Create(maxArrayLength: <span style="color:#ae81ff">4000</span>, maxArraysPerBucket: <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用预定义的共享池</span>
+</span></span><span style="display:flex;"><span>    ArrayPool&lt;<span style="color:#66d9ef">int</span>&gt; sharePool = ArrayPool&lt;<span style="color:#66d9ef">int</span>&gt;.Shared;
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;{arrayPool},{sharePool}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(sharePool != <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="数组arraylistlist区别">数组/ArrayList/List区别<a class="anchor" href="#%e6%95%b0%e7%bb%84arraylistlist%e5%8c%ba%e5%88%ab">#</a></h1>
+<ul>
+<li>数组：针对特定类型固定长度，值不可为<code>null</code>，在声明数组的时候必须指定数组的长度，可有多个维度</li>
+<li>Array：数组的另一种创建方式抽象类，作为所有数组的基类，针对任意类型固定长度，值可以为<code>null</code>，输出会被替换为0</li>
+<li>ArrayList：针对任意类型、任意长度的，值可以为<code>null</code>，存储或检索值类型时通常发生装箱和拆箱操作，带来很大的性能耗损</li>
+<li>List：强类型的集合，固定类型、任意长度，值不可为<code>null</code>，是类型安全的</li>
+</ul>
+<h1 id="枚举器">枚举器<a class="anchor" href="#%e6%9e%9a%e4%b8%be%e5%99%a8">#</a></h1>
+<h1 id="迭代器">迭代器<a class="anchor" href="#%e8%bf%ad%e4%bb%a3%e5%99%a8">#</a></h1>
+<h1 id="索引器">索引器<a class="anchor" href="#%e7%b4%a2%e5%bc%95%e5%99%a8">#</a></h1>
+<p><code>Indexer </code>是一种特殊类型的属性，允许以访问数组相同的方式访问类或结构。除了使用带有方括号和参数的此关键字定义的属性外，它与属性相同。</p>
+<ul>
+<li>索引器与属性相同，除了它使用带有方括号的此关键字定义，该参数具有参数</li>
+<li>可以通过具有不同类型的参数来覆盖索引器</li>
+<li>不支持使用索引器的<code>Ref</code>和<code>out</code>参数</li>
+<li>索引器可以作为接口成员包含在内</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> &lt;<span style="color:#66d9ef">return</span> typethis[&lt;parameter typeindex]
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Get{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// return the value from the specified index</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Set{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// set values at the specified index</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Indexer</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span>[] indexs = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">10</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#66d9ef">this</span>[<span style="color:#66d9ef">int</span> index]
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> indexs[index]; }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">set</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                indexs[index] = <span style="color:#66d9ef">value</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Indexer是一种特殊类型的属性，允许以与其内部集合的数组相同的方式访问类或结构。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">除了使用带有方括号和参数的此关键字定义的属性外，它与属性相同。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#e6db74">&#34;********************索引器*********************&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Indexer indexer = <span style="color:#66d9ef">new</span> Indexer();
+</span></span><span style="display:flex;"><span>indexer[<span style="color:#ae81ff">0</span>] = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>indexer[<span style="color:#ae81ff">1</span>] = <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>Console.WriteLine(indexer[<span style="color:#ae81ff">1</span>]);</span></span></code></pre></div><h1 id="可观察的集合">可观察的集合<a class="anchor" href="#%e5%8f%af%e8%a7%82%e5%af%9f%e7%9a%84%e9%9b%86%e5%90%88">#</a></h1>
+<p>如果需要知道集合中的元素何时删除或添加的信息，就可以使用 <code>ObservableCollection&lt;T&gt;</code> 类。.Net Core中要使用，需要引用Nuget包System.ObjectModel。这个类的名称空间是System.Collections.ObjectModel。</p>
+<p><code>ObservableCollection&lt;T&gt;</code> 类派生自 <code>Collection&lt;T&gt;</code> 基类。该基类用于创建自定义集合。并在内部使用List<T>类。重写基类中的虚方法SetItem()和RemoveItem(),以触发 <code>CollectionChanged</code> 事件。这个类的用户就可以使用 <code>INotifyCollectionChanged</code> 接口注册这个事件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// 可观察的集合</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [TestMethod]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ObservableArray()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> arr = <span style="color:#66d9ef">new</span> ObservableCollection&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>            arr.CollectionChanged += (<span style="color:#66d9ef">object</span> sender, NotifyCollectionChangedEventArgs e) =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (e.OldItems != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Console.WriteLine(<span style="color:#e6db74">$&#34;index:{e.OldStartingIndex}&#34;</span>);
+</span></span><span style="display:flex;"><span>                    Console.WriteLine(<span style="color:#e6db74">&#34;old items:&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> e.OldItems)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (e.NewItems != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Console.WriteLine(<span style="color:#e6db74">$&#34;index:{e.NewStartingIndex}&#34;</span>);
+</span></span><span style="display:flex;"><span>                    Console.WriteLine(<span style="color:#e6db74">&#34;new items:&#34;</span>);
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> e.NewItems)
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            arr.Add(<span style="color:#e6db74">&#34;One&#34;</span>);
+</span></span><span style="display:flex;"><span>            arr.Add(<span style="color:#e6db74">&#34;Two&#34;</span>);
+</span></span><span style="display:flex;"><span>            arr.Insert(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;Three&#34;</span>);
+</span></span><span style="display:flex;"><span>            arr.Remove(<span style="color:#e6db74">&#34;One&#34;</span>);
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div><h1 id="不可变集合">不可变集合<a class="anchor" href="#%e4%b8%8d%e5%8f%af%e5%8f%98%e9%9b%86%e5%90%88">#</a></h1>
+<p>如果对象可以改变其状态，就很难在多个同时运行的任务中使用。这些集合必须同步。</p>
+<p>如果对象不能改变其状态，就很容易在多个线程中使用。不能改变的对象称为不变的对象。</p>
+<p>不能改变的集合称为不变的集合。</p>
+<p>为了使用不可变的集合。可以添加Nuget包 <code>System.Collections.Immutable</code>。命名空间 <code>System.Collections.Immutable</code> 中的集合类。</p>
+<p><strong>在使用不变数组的每个阶段，都没有复制完整的集合。相反，不变类型使用了共享状态，仅在需要时复制集合。</strong></p>
+<blockquote class='book-hint '>
+<p>注意：先填充集合，再将它变成不变的数组会更高效。</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ImmutableArray()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 先正常创建个集合</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> accounts = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;()
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;world&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;a&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 使用ToImmutableList扩展方法创建一个不变的集合。</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 也可以像其他集合那样枚举，只是不能改变。</span>
+</span></span><span style="display:flex;"><span>            ImmutableList&lt;<span style="color:#66d9ef">string</span>&gt; immutableList = accounts.ToImmutableList();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> immutableList)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>异步编程</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="flex align-center">
+      <span>泛型技术</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#多维数组">多维数组</a></li>
+    <li><a href="#锯齿状数组">锯齿状数组</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#arraylist">ArrayList</a></li>
+    <li><a href="#sortedlist">SortedList</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#queue">Queue</a></li>
+    <li><a href="#hashtable">Hashtable</a></li>
+    <li><a href="#bitarray">BitArray</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#listt"><code>List&lt;T&gt;</code></a></li>
+    <li><a href="#stackt"><code>Stack&lt;T&gt;</code></a></li>
+    <li><a href="#quenuet"><code>Quenue&lt;T&gt;</code></a></li>
+    <li><a href="#sortedsett"><code>SortedSet&lt;T&gt;</code></a></li>
+    <li><a href="#observablecollectiont"><code>ObservableCollection&lt;T&gt;</code></a></li>
+    <li><a href="#dictionarykv"><code>Dictionary&lt;k,v&gt;</code></a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

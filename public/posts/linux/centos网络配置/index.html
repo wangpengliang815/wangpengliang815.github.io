@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="网络模式# VMnet0（桥接模式） VMnet1（仅主机模式） VMnet8（NAT模式） NAT-VMnet8# NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。
+NAT 模式下的虚拟系统的 TCP/IP 配置信息是由 VMnet8(NAT) 虚拟网络的 DHCP 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。
+虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机
+Bridged-VMnet0# Bridged(桥接)-VMnet0：虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。
+需要手工为虚拟系统配置IP地址、子网掩码，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。
+这个模式里，虚拟机和宿主机可以互相ping通
+查看IP及网卡信息# ip addr
+编辑网卡信息# vi /etc/sysconfig/network-scripts/ifcfg-ens33TYPE=Ethernet BOOTPROTO=static #修改成static DEFROUTE=yes IPV4_FAILURE_FATAL=no IPV6INIT=yes IPV6_AUTOCONF=yes IPV6_DEFROUTE=yes IPV6_FAILURE_FATAL=no NAME=eno16777736 UUID=bf5337ab-c044-4af7-9143-12da0d493b89 DEVICE=eno16777736 ONBOOT=yes #修改成yes PEERDNS=yes PEERROUTES=yes IPV6_PEERDNS=yes IPV6_PEERROUTES=yes IPADDR=192.168.31.32 # 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段 NETMASK=255.255.255.0 # 设置子网掩码，跟宿主一样 GATEWAY=192.168.31.1 # 默认网关，跟宿主一样 DNS1=192.168.31.1 # DNS，跟宿主一样重启 network# service network restart">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="网络模式# VMnet0（桥接模式） VMnet1（仅主机模式） VMnet8（NAT模式） NAT-VMnet8# NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。
+NAT 模式下的虚拟系统的 TCP/IP 配置信息是由 VMnet8(NAT) 虚拟网络的 DHCP 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。
+虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机
+Bridged-VMnet0# Bridged(桥接)-VMnet0：虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。
+需要手工为虚拟系统配置IP地址、子网掩码，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。
+这个模式里，虚拟机和宿主机可以互相ping通
+查看IP及网卡信息# ip addr
+编辑网卡信息# vi /etc/sysconfig/network-scripts/ifcfg-ens33TYPE=Ethernet BOOTPROTO=static #修改成static DEFROUTE=yes IPV4_FAILURE_FATAL=no IPV6INIT=yes IPV6_AUTOCONF=yes IPV6_DEFROUTE=yes IPV6_FAILURE_FATAL=no NAME=eno16777736 UUID=bf5337ab-c044-4af7-9143-12da0d493b89 DEVICE=eno16777736 ONBOOT=yes #修改成yes PEERDNS=yes PEERROUTES=yes IPV6_PEERDNS=yes IPV6_PEERROUTES=yes IPADDR=192.168.31.32 # 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段 NETMASK=255.255.255.0 # 设置子网掩码，跟宿主一样 GATEWAY=192.168.31.1 # 默认网关，跟宿主一样 DNS1=192.168.31.1 # DNS，跟宿主一样重启 network# service network restart">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="网络模式# VMnet0（桥接模式） VMnet1（仅主机模式） VMnet8（NAT模式） NAT-VMnet8# NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。
+NAT 模式下的虚拟系统的 TCP/IP 配置信息是由 VMnet8(NAT) 虚拟网络的 DHCP 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。
+虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机
+Bridged-VMnet0# Bridged(桥接)-VMnet0：虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。
+需要手工为虚拟系统配置IP地址、子网掩码，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。
+这个模式里，虚拟机和宿主机可以互相ping通
+查看IP及网卡信息# ip addr
+编辑网卡信息# vi /etc/sysconfig/network-scripts/ifcfg-ens33TYPE=Ethernet BOOTPROTO=static #修改成static DEFROUTE=yes IPV4_FAILURE_FATAL=no IPV6INIT=yes IPV6_AUTOCONF=yes IPV6_DEFROUTE=yes IPV6_FAILURE_FATAL=no NAME=eno16777736 UUID=bf5337ab-c044-4af7-9143-12da0d493b89 DEVICE=eno16777736 ONBOOT=yes #修改成yes PEERDNS=yes PEERROUTES=yes IPV6_PEERDNS=yes IPV6_PEERROUTES=yes IPADDR=192.168.31.32 # 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段 NETMASK=255.255.255.0 # 设置子网掩码，跟宿主一样 GATEWAY=192.168.31.1 # 默认网关，跟宿主一样 DNS1=192.168.31.1 # DNS，跟宿主一样重启 network# service network restart">
+  <meta itemprop="wordCount" content="60">
+
+<title>Centos网络配置 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Centos网络配置</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#nat-vmnet8">NAT-VMnet8</a></li>
+    <li><a href="#bridged-vmnet0">Bridged-VMnet0</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    Centos网络配置
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="网络模式">网络模式<a class="anchor" href="#%e7%bd%91%e7%bb%9c%e6%a8%a1%e5%bc%8f">#</a></h1>
+<ul>
+<li><code>VMnet0</code>（桥接模式）</li>
+<li><code>VMnet1</code>（仅主机模式）</li>
+<li><code>VMnet8</code>（NAT模式）</li>
+</ul>
+<h2 id="nat-vmnet8">NAT-VMnet8<a class="anchor" href="#nat-vmnet8">#</a></h2>
+<p>NAT(地址转换)-VMnet8：虚拟机要联网得先通过宿主机才能和外面进行通信。</p>
+<p><code>NAT</code> 模式下的虚拟系统的 <code>TCP/IP</code> 配置信息是由 <code>VMnet8(NAT)</code> 虚拟网络的 <code>DHCP</code> 服务器提供的，无法进行手工修改，因此虚拟系统也就无法和本局域网中的其他真实主机进行通讯。使得虚拟局域网内的虚拟机在对外访问时，使用的则是宿主机的IP地址，这样从外部网络来看只能看到宿主机，完全看不到新建的虚拟局域网。就是虚拟系统会通过宿主机的网络来访问外网，而这里的宿主机相当于有两个网卡，一个是真实网卡，一个是虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而宿主机的虚拟网卡，相当于连接了一个可以认为是虚拟交换机。</p>
+<p><img src="/images/2021-09-03-15-22-27.png" alt="" /></p>
+<blockquote class='book-hint '>
+<p>虚拟机可以上网可以ping通主机，但是主机ping不通虚拟机</p>
+</blockquote><h2 id="bridged-vmnet0">Bridged-VMnet0<a class="anchor" href="#bridged-vmnet0">#</a></h2>
+<p>Bridged(桥接)-VMnet0：虚拟机和宿主机在网络上就是平级的关系，相当于连接在同一交换机上。</p>
+<p>需要手工为虚拟系统配置<code>IP地址</code>、<code>子网掩码</code>，而且还要和宿主机器处于同一网段，这样虚拟机才能和宿主机器进行通信，实现通过局域网的网关或路由器访问互联网。使用 Bridged 模式的虚拟系统和宿主机器的关系，就像连接在同一个Hub上的两台电脑。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机，但是需要手动配置IP地址，子网掩码，并且需要和真实主机在同一网段（nat是两个网段）。</p>
+<p><img src="/images/2021-09-03-15-23-07.png" alt="" /></p>
+<blockquote class='book-hint '>
+<p>这个模式里，虚拟机和宿主机可以互相ping通</p>
+</blockquote><h1 id="查看ip及网卡信息">查看IP及网卡信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8bip%e5%8f%8a%e7%bd%91%e5%8d%a1%e4%bf%a1%e6%81%af">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ip addr</span></span></code></pre></div><p><img src="/images/2021-09-03-15-23-43.png" alt="" /></p>
+<h1 id="编辑网卡信息">编辑网卡信息<a class="anchor" href="#%e7%bc%96%e8%be%91%e7%bd%91%e5%8d%a1%e4%bf%a1%e6%81%af">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vi /etc/sysconfig/network-scripts/ifcfg-ens33</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>TYPE<span style="color:#f92672">=</span>Ethernet
+</span></span><span style="display:flex;"><span>BOOTPROTO<span style="color:#f92672">=</span>static <span style="color:#75715e">#修改成static</span>
+</span></span><span style="display:flex;"><span>DEFROUTE<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPV4_FAILURE_FATAL<span style="color:#f92672">=</span>no
+</span></span><span style="display:flex;"><span>IPV6INIT<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPV6_AUTOCONF<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPV6_DEFROUTE<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPV6_FAILURE_FATAL<span style="color:#f92672">=</span>no
+</span></span><span style="display:flex;"><span>NAME<span style="color:#f92672">=</span>eno16777736
+</span></span><span style="display:flex;"><span>UUID<span style="color:#f92672">=</span>bf5337ab-c044-4af7-9143-12da0d493b89
+</span></span><span style="display:flex;"><span>DEVICE<span style="color:#f92672">=</span>eno16777736
+</span></span><span style="display:flex;"><span>ONBOOT<span style="color:#f92672">=</span>yes <span style="color:#75715e">#修改成yes</span>
+</span></span><span style="display:flex;"><span>PEERDNS<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>PEERROUTES<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPV6_PEERDNS<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPV6_PEERROUTES<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPADDR<span style="color:#f92672">=</span>192.168.31.32  <span style="color:#75715e"># 自定义虚拟机的ip地址（主机是192.168.31.31），必须与主机在同一网段</span>
+</span></span><span style="display:flex;"><span>NETMASK<span style="color:#f92672">=</span>255.255.255.0 <span style="color:#75715e"># 设置子网掩码，跟宿主一样</span>
+</span></span><span style="display:flex;"><span>GATEWAY<span style="color:#f92672">=</span>192.168.31.1  <span style="color:#75715e"># 默认网关，跟宿主一样</span>
+</span></span><span style="display:flex;"><span>DNS1<span style="color:#f92672">=</span>192.168.31.1 <span style="color:#75715e"># DNS，跟宿主一样</span></span></span></code></pre></div><h1 id="重启-network">重启 network<a class="anchor" href="#%e9%87%8d%e5%90%af-network">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>service network restart</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/linux/centos%E5%AE%89%E8%A3%85hexo/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>Centos安装 Hexo</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="flex align-center">
+      <span>Linux常用命令</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#nat-vmnet8">NAT-VMnet8</a></li>
+    <li><a href="#bridged-vmnet0">Bridged-VMnet0</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="前言# 上一篇使用 Consul 完成了服务的注册与发现，实际中光有服务注册与发现往往是不够的，需要一个统一的入口来连接客户端与服务。
+Ocelot# 官网：https://ocelot.readthedocs.io ，Ocelot 正是为.Net微服务体系提供一个统一的入口点，称为：Gateway（网关）。
+首先创建一个空的 asp.net core web 项目：
+注意：ocelot.json 是Ocelot的配置文件，设置生成时需要复制到输出目录。ocelot.json 文件名不是固定的可以自己定义
+使用 NuGet 安装 Ocelot，简单修改几处默认代码：
+Program.cs：
+public class Program { public static void Main(string[] args) { CreateHostBuilder(args).Build().Run(); } public static IHostBuilder CreateHostBuilder(string[] args) =&gt; Host.CreateDefaultBuilder(args) .ConfigureAppConfiguration((hostingContext, config) =&gt; { config.AddJsonFile(&#34;ocelot.json&#34;, optional: false, reloadOnChange: true); }) .ConfigureWebHostDefaults(webBuilder =&gt; { webBuilder.UseStartup&lt;Startup&gt;(); }); }Startup.cs：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="前言# 上一篇使用 Consul 完成了服务的注册与发现，实际中光有服务注册与发现往往是不够的，需要一个统一的入口来连接客户端与服务。
+Ocelot# 官网：https://ocelot.readthedocs.io ，Ocelot 正是为.Net微服务体系提供一个统一的入口点，称为：Gateway（网关）。
+首先创建一个空的 asp.net core web 项目：
+注意：ocelot.json 是Ocelot的配置文件，设置生成时需要复制到输出目录。ocelot.json 文件名不是固定的可以自己定义
+使用 NuGet 安装 Ocelot，简单修改几处默认代码：
+Program.cs：
+public class Program { public static void Main(string[] args) { CreateHostBuilder(args).Build().Run(); } public static IHostBuilder CreateHostBuilder(string[] args) =&gt; Host.CreateDefaultBuilder(args) .ConfigureAppConfiguration((hostingContext, config) =&gt; { config.AddJsonFile(&#34;ocelot.json&#34;, optional: false, reloadOnChange: true); }) .ConfigureWebHostDefaults(webBuilder =&gt; { webBuilder.UseStartup&lt;Startup&gt;(); }); }Startup.cs：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="前言# 上一篇使用 Consul 完成了服务的注册与发现，实际中光有服务注册与发现往往是不够的，需要一个统一的入口来连接客户端与服务。
+Ocelot# 官网：https://ocelot.readthedocs.io ，Ocelot 正是为.Net微服务体系提供一个统一的入口点，称为：Gateway（网关）。
+首先创建一个空的 asp.net core web 项目：
+注意：ocelot.json 是Ocelot的配置文件，设置生成时需要复制到输出目录。ocelot.json 文件名不是固定的可以自己定义
+使用 NuGet 安装 Ocelot，简单修改几处默认代码：
+Program.cs：
+public class Program { public static void Main(string[] args) { CreateHostBuilder(args).Build().Run(); } public static IHostBuilder CreateHostBuilder(string[] args) =&gt; Host.CreateDefaultBuilder(args) .ConfigureAppConfiguration((hostingContext, config) =&gt; { config.AddJsonFile(&#34;ocelot.json&#34;, optional: false, reloadOnChange: true); }) .ConfigureWebHostDefaults(webBuilder =&gt; { webBuilder.UseStartup&lt;Startup&gt;(); }); }Startup.cs：">
+  <meta itemprop="wordCount" content="635">
+
+<title>1.3微服务入门之网关 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.3微服务入门之网关</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#缓存">缓存</a></li>
+    <li><a href="#限流">限流</a></li>
+    <li><a href="#超时熔断">超时/熔断</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.3微服务入门之网关
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="前言">前言<a class="anchor" href="#%e5%89%8d%e8%a8%80">#</a></h1>
+<p>上一篇使用 Consul 完成了服务的注册与发现，实际中光有服务注册与发现往往是不够的，需要一个统一的入口来连接客户端与服务。</p>
+<!-- more -->
+<h1 id="ocelot">Ocelot<a class="anchor" href="#ocelot">#</a></h1>
+<p>官网：https://ocelot.readthedocs.io ，Ocelot 正是为.Net微服务体系提供一个统一的入口点，称为：Gateway（网关）。</p>
+<p>首先创建一个空的 <code>asp.net core web</code> 项目：</p>
+<p><img src="/images/2021-09-19-04-33-35.png" alt="" /></p>
+<blockquote class='book-hint '>
+<p>注意：<code>ocelot.json</code> 是Ocelot的配置文件，设置生成时需要复制到输出目录。<code>ocelot.json</code> 文件名不是固定的可以自己定义</p>
+</blockquote><p>使用 <code>NuGet</code> 安装 <code>Ocelot</code>，简单修改几处默认代码：</p>
+<p>Program.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         CreateHostBuilder(args).Build().Run();
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IHostBuilder CreateHostBuilder(<span style="color:#66d9ef">string</span>[] args) =&gt;
+</span></span><span style="display:flex;"><span>         Host.CreateDefaultBuilder(args)
+</span></span><span style="display:flex;"><span>             .ConfigureAppConfiguration((hostingContext, config) =&gt;
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  config.AddJsonFile(<span style="color:#e6db74">&#34;ocelot.json&#34;</span>, optional: <span style="color:#66d9ef">false</span>, reloadOnChange: <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>              })
+</span></span><span style="display:flex;"><span>             .ConfigureWebHostDefaults(webBuilder =&gt;
+</span></span><span style="display:flex;"><span>              {
+</span></span><span style="display:flex;"><span>                  webBuilder.UseStartup&lt;Startup&gt;();
+</span></span><span style="display:flex;"><span>              });
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><p>Startup.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加ocelot服务</span>
+</span></span><span style="display:flex;"><span>    services.AddOcelot();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Configure(IApplicationBuilder app, IWebHostEnvironment env)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 启用Ocelot中间件</span>
+</span></span><span style="display:flex;"><span>    app.UseOcelot().Wait();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>ocelot.json：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Routes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamHostAndPorts&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">81</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">82</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Get&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span> <span style="color:#75715e">//负载均衡，轮询机制 LeastConnection/RoundRobin/NoLoadBalancer/CookieStickySessions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;GlobalConfiguration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BaseUrl&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>这里将服务实例的地址写在配置文件中。</p>
+<p><code>Routes</code> 节点用来配置路由：</p>
+<ul>
+<li><code>Downstream</code> 代表下游，也就是服务实例</li>
+<li><code>Upstream</code> 代表上游，也就是客户端。这里路径比较简单，只有 <code>/orders</code> 路径中如果有不固定参数则使用 <code>{}</code> 匹配。</li>
+</ul>
+<p>这里配置的意思是：客户端访问网关的 <code>/orders</code>，网关会转发给服务实例的 <code>/orders</code> 。注意：上游的路径不一定要和下游一致，比如上游路径可以配置成 <code>/api/orders</code>。</p>
+<p><code>LoadBalancerOptions</code> 节点用来配置负载均衡，Ocelot 内置了 <code>LeastConnection</code> 、<code>RoundRobin</code> 、<code>NoLoadBalancer</code> 、<code>CookieStickySessions</code>  4种负载均衡策略：</p>
+<ul>
+<li><code>LeastConnection</code> 最少连接，跟踪哪些服务正在处理请求，并把新请求发送到现有请求最少的服务上。该算法状态不在整个Ocelot集群中分布</li>
+<li><code>RoundRobin</code> 轮询可用的服务并发送请求。 该算法状态不在整个Ocelot集群中分布</li>
+<li><code>NoLoadBalancer</code> 不负载均衡，从配置或服务发现提供程序中取第一个可用的下游服务</li>
+<li><code>CookieStickySessions</code> 使用cookie关联所有相关的请求到制定的服务</li>
+</ul>
+<p><code>BaseUrl</code> 节点用来配置 Ocelot 网关将要运行的地址。</p>
+<p>浏览器访问：</p>
+<p><img src="/images/2021-09-17-21-18-20.png" alt="" /></p>
+<h1 id="客户端">客户端<a class="anchor" href="#%e5%ae%a2%e6%88%b7%e7%ab%af">#</a></h1>
+<p>上面实现通过 Ocelot 网关访问服务实例，调整客户端代码：这里选择直接新建 <code>GatewayServiceHelper</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> RestSharp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading.Tasks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Web.Client
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 通过OcelotGateway调用服务</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GatewayServiceHelper</span> : IServiceHelper
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; GetOrder()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> client = <span style="color:#66d9ef">new</span> RestClient(<span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> RestRequest(<span style="color:#e6db74">&#34;/orders&#34;</span>, Method.GET);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.ExecuteAsync(request);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response.Content;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GetServices()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>Startup.cs：修改注入类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddSingleton&lt;IServiceHelper, GatewayServiceHelper&gt;();</span></span></code></pre></div><p>下面获取服务地址的代码也不需要了</p>
+<pre tabindex="0"><code>// 程序启动时获取服务列表
+serviceHelper.GetServices();</code></pre><p>经过以上调整现在客户端对服务的调用都通过网关进行中转，客户端不再关心服务实例的地址，只需要知道网关地址就可以。另外服务端也避免了服务地址直接暴露给客户端。这样做对客户端，服务都非常友好。但是又出现了一个新的问题：目前服务地址写在 <code>ocelot.json</code> 配置文件中，一旦服务变化，需要人为的修改配置文件，这又显得不太合理。这里比较常用的方案是：结合Consul来实现服务发现。</p>
+<h1 id="服务发现">服务发现<a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e5%8f%91%e7%8e%b0">#</a></h1>
+<p><code>NuGet</code> 安装<code>Ocelot.Provider.Consul</code>后，修改Startup.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加Ocelot服务并添加Consul支持</span>
+</span></span><span style="display:flex;"><span>    services.AddOcelot().AddConsul();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>修改ocelot.json配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Routes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [ <span style="color:#e6db74">&#34;Get&#34;</span> ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;GlobalConfiguration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BaseUrl&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceDiscoveryProvider&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Scheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">8500</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Consul&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>这个配置很好理解，就是把 <code>DownstreamHostAndPorts</code> 节点去掉然后增加了 <code>ServiceDiscoveryProvider</code> 服务发现相关配置。</p>
+<blockquote class='book-hint '>
+<p>注意，Ocelot 除了支持 Consul 服务发现以外，还有 Eureka 也可以，Eureka 也是一个类似的注册中心</p>
+</blockquote><p>浏览器测试：</p>
+<p><img src="/images/2021-09-17-21-35-46.png" alt="" /></p>
+<p>至此就实现了服务注册与发现和api网关的基本功能。接下来就要提到：服务治理。</p>
+<h1 id="服务治理">服务治理<a class="anchor" href="#%e6%9c%8d%e5%8a%a1%e6%b2%bb%e7%90%86">#</a></h1>
+<p>服务治理没有非常明确的定义。它的作用简单来说，就是帮我们更好的管理服务，提升服务的可用性。缓存、限流、熔断、链路追踪等等都属于常用的服务治理手段。之前讲的负载均衡，服务发现也可以算是服务治理。</p>
+<h2 id="缓存">缓存<a class="anchor" href="#%e7%bc%93%e5%ad%98">#</a></h2>
+<p>在 Ocelot 中启用缓存，需要<code>NuGet</code> 安装<code>Ocelot.Cache.CacheManager</code>，修改<code>Startup.cs</code> 中的 <code>ConfigureServices()</code> 方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddOcelot()
+</span></span><span style="display:flex;"><span>            .AddConsul()
+</span></span><span style="display:flex;"><span>            .AddCacheManager(p =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                p.WithDictionaryHandle();
+</span></span><span style="display:flex;"><span>            });
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>修改 <code>ocelot.json</code> 配置文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Routes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [ <span style="color:#e6db74">&#34;Get&#34;</span> ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;FileCacheOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TtlSeconds&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Region&#34;</span>: <span style="color:#e6db74">&#34;regionname&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;GlobalConfiguration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BaseUrl&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceDiscoveryProvider&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Scheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">8500</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Consul&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>在 Routes 路由配置中增加 <code>FileCacheOptions</code>：</p>
+<ul>
+<li><code>TtlSeconds</code> 缓存的过期时间</li>
+<li><code>Region</code> 缓冲区名称，目前用不到</li>
+</ul>
+<p>代码修改完编译重启一下网关项目，然后打开浏览器测试会发现5秒之内的请求都是同样的缓存数据。Ocelot也支持自定义缓存。</p>
+<h2 id="限流">限流<a class="anchor" href="#%e9%99%90%e6%b5%81">#</a></h2>
+<p>限流就是限制客户端一定时间内的请求次数。</p>
+<p>修改 <code>ocelot.json</code> 配置文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Routes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [ <span style="color:#e6db74">&#34;Get&#34;</span> ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;FileCacheOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TtlSeconds&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Region&#34;</span>: <span style="color:#e6db74">&#34;regionname&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 限流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ClientWhitelist&#34;</span>: [ <span style="color:#e6db74">&#34;SuperClient&#34;</span> ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;EnableRateLimiting&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Period&#34;</span>: <span style="color:#e6db74">&#34;2s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;PeriodTimespan&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Limit&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;GlobalConfiguration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BaseUrl&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceDiscoveryProvider&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Scheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.31.191&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">8500</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Consul&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DisableRateLimitHeaders&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;QuotaExceededMessage&#34;</span>: <span style="color:#e6db74">&#34;too many requests...&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;HttpStatusCode&#34;</span>: <span style="color:#ae81ff">999</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ClientIdHeader&#34;</span>: <span style="color:#e6db74">&#34;Test&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>在 Routes 路由配置中增加 <code>RateLimitOptions</code> ：</p>
+<ul>
+<li><code>ClientWhitelist</code> 客户端白名单（白名单中的客户端不受限流影响）</li>
+<li><code>EnableRateLimiting</code> 是否限流</li>
+<li><code>Period</code> 限流的单位时间，例如1s、5m、1h、1d等</li>
+<li><code>PeriodTimespan</code> 客户端达到请求上限多少秒后可以重试</li>
+<li><code>Limit</code> 客户端在定义的时间内可以发出的最大请求数</li>
+</ul>
+<p>在 GlobalConfiguration  配置中也增加 <code>RateLimitOptions</code>：</p>
+<ul>
+<li><code>DisableRateLimitHeaders</code> 是否禁用 <code>X-Rate-Limit</code> 和 <code>Retry-After</code> 标头（请求达到上限时response header中的限制数和多少秒后能重试）</li>
+<li><code>QuotaExceededMessage</code> ：请求达到上限时返回给客户端的消息</li>
+<li><code>HttpStatusCode</code> ：请求达到上限时返回给客户端的 <code>HTTP状态码</code></li>
+<li><code>ClientIdHeader</code> 可以允许自定义用于标识客户端的标头。默认情况下为 <code>ClientId</code></li>
+</ul>
+<p>代码修改完编译重启一下网关项目，然后打开浏览器测试会发现限制已经生效。</p>
+<h2 id="超时熔断">超时/熔断<a class="anchor" href="#%e8%b6%85%e6%97%b6%e7%86%94%e6%96%ad">#</a></h2>
+<ul>
+<li>超时：网关请求服务时可容忍的最长响应时间</li>
+<li>熔断：当请求某个服务的异常次数达到一定量时，网关在一定时间内就不再对这个服务发起请求直接熔断</li>
+</ul>
+<p>在 Ocelot 中启用超时/熔断，需要 <code>NuGet</code> 安装<code>Ocelot.Provider.Polly</code>，修改<code>Startup.cs</code> 中的 <code>ConfigureServices()</code> 方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddOcelot()
+</span></span><span style="display:flex;"><span>            .AddConsul()
+</span></span><span style="display:flex;"><span>            .AddCacheManager(p =&gt;
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                p.WithDictionaryHandle();
+</span></span><span style="display:flex;"><span>            }).AddPolly();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>修改 <code>ocelot.json</code> 配置文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Routes&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DownstreamScheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamPathTemplate&#34;</span>: <span style="color:#e6db74">&#34;/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;UpstreamHttpMethod&#34;</span>: [ <span style="color:#e6db74">&#34;Get&#34;</span> ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ServiceName&#34;</span>: <span style="color:#e6db74">&#34;order.service&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;LoadBalancerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;RoundRobin&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 缓存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;FileCacheOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TtlSeconds&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Region&#34;</span>: <span style="color:#e6db74">&#34;regionname&#34;</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 限流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ClientWhitelist&#34;</span>: [ <span style="color:#e6db74">&#34;SuperClient&#34;</span> ],
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;EnableRateLimiting&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Period&#34;</span>: <span style="color:#e6db74">&#34;2s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;PeriodTimespan&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Limit&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 超时熔断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;QoSOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;ExceptionsAllowedBeforeBreaking&#34;</span>: <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;DurationOfBreak&#34;</span>: <span style="color:#ae81ff">10000</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;TimeoutValue&#34;</span>: <span style="color:#ae81ff">5000</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;GlobalConfiguration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BaseUrl&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:5000&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceDiscoveryProvider&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Scheme&#34;</span>: <span style="color:#e6db74">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;192.168.201.191&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Port&#34;</span>: <span style="color:#ae81ff">8500</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Type&#34;</span>: <span style="color:#e6db74">&#34;Consul&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;RateLimitOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;DisableRateLimitHeaders&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;QuotaExceededMessage&#34;</span>: <span style="color:#e6db74">&#34;too many requests...&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;HttpStatusCode&#34;</span>: <span style="color:#ae81ff">999</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;ClientIdHeader&#34;</span>: <span style="color:#e6db74">&#34;Test&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><ul>
+<li><code>ExceptionsAllowedBeforeBreaking</code> 发生错误的次数</li>
+<li><code>DurationOfBreak</code> 熔断时间</li>
+<li><code>TimeoutValue</code> 超时时间</li>
+</ul>
+<p>以上配置意思是当请求服务发生3次错误时，就熔断10秒，期间客户端的请求直接返回错误，10秒后恢复。</p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.2微服务入门之服务注册与发现</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="flex align-center">
+      <span>1.4微服务入门之事件总线</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#缓存">缓存</a></li>
+    <li><a href="#限流">限流</a></li>
+    <li><a href="#超时熔断">超时/熔断</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

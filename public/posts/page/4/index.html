@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/">委托和事件</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="委托">委托<a class="anchor" href="#%e5%a7%94%e6%89%98">#</a></h1>
+<p>委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得<strong>可以将方法当作另一个方法的参数来进行传递</strong></p>
+<blockquote class='book-hint '>
+<p><strong>不管什么函数只要返回值类型和参数能匹配委托所指定的返回值类型和参数能匹配上，那么这个函数就能存储为一个委托变量的引用。</strong></p>
+</blockquote><h2 id="为什么需要委托">为什么需要委托<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%a7%94%e6%89%98">#</a></h2>
+<ul>
+<li>委托可以将方法作为参数</li>
+<li>逻辑解耦，保持稳定</li>
+<li>代码复用，保证项目规范</li>
+</ul>
+<h2 id="委托使用步骤">委托使用步骤<a class="anchor" href="#%e5%a7%94%e6%89%98%e4%bd%bf%e7%94%a8%e6%ad%a5%e9%aa%a4">#</a></h2>
+<ul>
+<li>使用 <code>delegate</code> 关键字定义委托</li>
+<li>声明委托对应的方法</li>
+<li>实例化委托将方法作为参数传入</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>   <span style="color:#66d9ef">class …</span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/">并行编程</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>并行开发要做的事情就是将任务分摊给硬件线程去并行执行来达到负载和加速，传统的代码都是串行的，就一个主线程，为了实现加速而开了很多工作线程，这些工作线程就是软件线程。</p>
+<h1 id="parallel">Parallel<a class="anchor" href="#parallel">#</a></h1>
+<p><code>Parallel</code> 类是对线程的抽象，位于 <code>System.Threading.Tasks</code> 名称空间下,提供了 <code>任务和数据并行性</code> .在<code>Parallel</code> 下有三个常用的方法 <code>Invoke</code> 、 <code>For</code> 、<code>ForEach</code>，其中：</p>
+<ul>
+<li><code>Parallel</code>.<code>Invoke</code> 用于任务并行性</li>
+<li><code>Parallel.ForEach</code>/ …</li></ul></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">异步编程</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>对于多线程，经常使用的是 <code>Thread</code>。在了解 <code>Task</code> 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 <code>.net 4.0</code> 之后被一种称为 <code>基于“任务的编程模型”</code> 所冲击，这就是 <code>Task</code>。</p>
+<p><code>Task </code>会比 <code>Thread</code> 具有更小的性能开销，<code>Task </code>是架构在 <code>Thread</code> 之上的就是说 <code>Task</code> 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。<code>Task</code> 类的表示 …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="c数组">C数组<a class="anchor" href="#c%e6%95%b0%e7%bb%84">#</a></h1>
+<p>数组是一种特殊类型的数据类型，它可以使用特殊语法 <strong>顺序存储固定数量的值。</strong></p>
+<p><img src="http://www.tutorialsteacher.com/Content/images/csharp/array.png#align=left&amp;display=inline&amp;height=147&amp;margin=%5Bobject%20Object%5D&amp;originHeight=147&amp;originWidth=404&amp;status=done&amp;style=none&amp;width=404" alt="" /></p>
+<p>数组声明：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> [] intArr;</span></span></code></pre></div><p>数组初始化：使用<code>new</code>关键字同时声明和初始化数组，下面三种方式等价</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] intArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">5</span>]; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] intArr = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">5</span>]{<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">5</span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] intArr = {<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">5</span>};</span></span></code></pre></div><p>延迟初始化：可以先声明后再初始化数组</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">string</span>[] strArr<span style="color:#960050;background-color:#1e0010">，</span> strArr;
+</span></span><span style="display:flex;"><span>strArr = <span style="color:#66d9ef">new …</span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/">泛型技术</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>.Net 从2.0版开始支持泛型。泛型允许在编译时实现类型安全。允许创建一个数据结构而不限于特定的数据类型。当使用该数据结构时，编译器保证它使用的类型与类型安全是相一致的。泛型提供了类型安全，但是没有造成任何性能损失和代码臃肿。泛型不仅限于类，还可用于接口、方法、委托&hellip;。</p>
+<h1 id="为什么使用泛型">为什么使用泛型<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8%e6%b3%9b%e5%9e%8b">#</a></h1>
+<p>泛型主要具有以下优势：</p>
+<ul>
+<li>类型安全</li>
+<li>避免装箱拆箱带来的性能损耗</li>
+<li>二进制代码重用</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> ArrayList arrs = <span style="color:#66d9ef">new</span> ArrayList
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;wang&#34;</span><span style="color:#960050;background-color:#1e0010">， …</span></span></span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/">线程同步</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>当有一个线程在对内存进行操作时，其他线程都不可以对这个内存地址进行操作。直到该线程完成操作，其他线程才能对该内存地址进行操作，而其他线程又处于等待状态，这种时候很容易出现问题。</p>
+<h1 id="争用条件">争用条件<a class="anchor" href="#%e4%ba%89%e7%94%a8%e6%9d%a1%e4%bb%b6">#</a></h1>
+<p>如果两个或多个线程访问相同的对象。并且对共享状态的访问没有同步，就会出现争用条件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StateObject</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> state = <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ChangeState()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            state++; …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="类class">类（Class）<a class="anchor" href="#%e7%b1%bbclass">#</a></h1>
+<p>类中的数据和函数称为类的成员，除了这些成员外，类还可以包含嵌套的类型(如其它类)，成员的可访问性有：</p>
+<ul>
+<li><code>public</code></li>
+<li><code>protected</code></li>
+<li><code>internalprotected</code></li>
+<li><code>private</code></li>
+<li><code>internal</code></li>
+</ul>
+<h2 id="数据成员">数据成员<a class="anchor" href="#%e6%95%b0%e6%8d%ae%e6%88%90%e5%91%98">#</a></h2>
+<p>数据成员指包含类的数据：字段、常量和事件的成员，数据成员可以是静态成员，类成员总是实例成员，除非用 <code>static</code> 进行显式声明。</p>
+<h2 id="函数成员">函数成员<a class="anchor" href="#%e5%87%bd%e6%95%b0%e6%88%90%e5%91%98">#</a></h2>
+<p>函数成员提供了操作类中数据的某些功能，包括方法、属性、构造函数和终结器、运算符以及索引器</p>
+<ul>
+<li>方法是与某个类相关的函数，与数据成员 …</li></ul></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/">1.1 Elastatic Search入门</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>Elasticsearch 简称 ES，是一个<strong>开源</strong>、<strong>高扩展</strong>的<strong>分布式全文检索引擎</strong>，可以实现近乎实时的存储、检索数据且扩展性很好，可以扩展到上百台服务器，处理PB级别的数据。ES 底层是开源库 Lucene，ES 实现了对 Lucene 的封装，并提供  <code>REST</code> 风格的操作接口开箱即用。通过简单的 RESTful API 来隐藏Lucene的复杂性，从而让全文搜索变得简单。</p>
+<!-- more -->
+<h1 id="elasticsearch-对比-solr">ElasticSearch 对比 Solr<a class="anchor" href="#elasticsearch-%e5%af%b9%e6%af%94-solr">#</a></h1>
+<ul>
+<li>Solr 利用 <code>Zookeeper</code> 进行分布式管理， Elasticsearch 自身 …</li></ul></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/">1.2 Elastatic Search配置</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>配置文件所在目录路径：<code>安装目录/config/elasticsearch.yml</code></p>
+<!-- more -->
+<p><code>cluster.name: elasticsearch</code></p>
+<blockquote class='book-hint '>
+<p>配置集群名称。默认为 elasticsearch，如果在同一网段下有多个集群，可以用这个属性来区分不同的集群</p>
+</blockquote><p><code>node.name: “Franz Kafka”</code></p>
+<blockquote class='book-hint '>
+<p>节点名称。默认为随机指定一个name列表中名字，该列表在ES的jar包中config文件夹里name.txt文件中，其中有很多作者添加的有趣名字，大部分是漫威动漫里的人物名称</p>
+</blockquote><p><code>node.master: …</code></p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/">1.3使用 Kibana操作 Es</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>之前说到 ES 提供了 <code>RESTful</code> 风格的接口以便于我们操作，需要借助能够发送HTTP请求的工具调用这些API，工具是可以任意的，包括网页浏览器，当然也可以使用比如 <code>Postman</code> / <code>Talend API tester</code>等工具。这里为了学习 <code>ElK</code> 所以选择使用  <code>Kibana</code>，关于 <code>Kibana</code> 如何安装参考其他文章。</p>
+<!-- more -->
+<h1 id="集群相关">集群相关<a class="anchor" href="#%e9%9b%86%e7%be%a4%e7%9b%b8%e5%85%b3">#</a></h1>
+<h2 id="查看集群健康信息">查看集群健康信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%9b%86%e7%be%a4%e5%81%a5%e5%ba%b7%e4%bf%a1%e6%81%af">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET _cat/health?v</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>epoch      timestamp cluster       status node.total …</span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/3/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/2/">2</a><a href="/posts/page/3/">3</a><a >4</a><a href="/posts/page/5/">5</a><a href="/posts/page/6/">6</a></span>
+  
+  <span>
+    <a href="/posts/page/5/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

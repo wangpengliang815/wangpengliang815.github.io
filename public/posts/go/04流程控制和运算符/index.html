@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="流程控制# If# score := 60 if score &gt;= 90 { fmt.Println(&#34;A&#34;) } else if score &gt; 70 { fmt.Println(&#34;B&#34;) } else { fmt.Println(&#34;C&#34;) }If 特殊写法# 可以在 if 表达式之前添加一个执行语句，再根据变量值进行判断。这种写法可以将返回值与判断放在一行进行处理，而且返回值的作用范围被限制在 if、else 语句组合中。这么做的好处在于：在编程中，变量的作用范围越小，所造成的问题可能性越小，每一个变量代表一个状态，有状态的地方，状态就会被修改，函数的局部变量只会影响一个函数的执行，但全局变量可能会影响所有代码的执行状态，因此限制变量的作用范围对代码的稳定性有很大的帮助。
+if score := 60; score &gt;= 90 { fmt.Println(&#34;A&#34;) } else if score &gt; 75 { fmt.Println(&#34;B&#34;) } else { fmt.Println(&#34;C&#34;) }for# 条件表达式返回 true 时循环体不停地进行循环，直到条件表达式返回 false 时自动退出循环，例如：
+sum := 0 for i := 0; i &lt; 5; i&#43;&#43; { sum &#43;= i // 1&#43;2&#43;3&#43;4 } fmt.Println(sum)for 循环的初始语句可以被忽略，但是初始语句后的分号必须要写，例如：
+i := 0 for ; i &lt; 10; i&#43;&#43; { fmt.Println(i) }for 循环的初始语句和结束语句都可以省略，类似于C#中的 while（满足条件表达式时持续循环，否则结束循环。），比如：
+j := 0 // 循环的初始语句和结束语句都可以省略: for j &lt; 10 { fmt.Println(j) j&#43;&#43; }无限循环：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="流程控制# If# score := 60 if score &gt;= 90 { fmt.Println(&#34;A&#34;) } else if score &gt; 70 { fmt.Println(&#34;B&#34;) } else { fmt.Println(&#34;C&#34;) }If 特殊写法# 可以在 if 表达式之前添加一个执行语句，再根据变量值进行判断。这种写法可以将返回值与判断放在一行进行处理，而且返回值的作用范围被限制在 if、else 语句组合中。这么做的好处在于：在编程中，变量的作用范围越小，所造成的问题可能性越小，每一个变量代表一个状态，有状态的地方，状态就会被修改，函数的局部变量只会影响一个函数的执行，但全局变量可能会影响所有代码的执行状态，因此限制变量的作用范围对代码的稳定性有很大的帮助。
+if score := 60; score &gt;= 90 { fmt.Println(&#34;A&#34;) } else if score &gt; 75 { fmt.Println(&#34;B&#34;) } else { fmt.Println(&#34;C&#34;) }for# 条件表达式返回 true 时循环体不停地进行循环，直到条件表达式返回 false 时自动退出循环，例如：
+sum := 0 for i := 0; i &lt; 5; i&#43;&#43; { sum &#43;= i // 1&#43;2&#43;3&#43;4 } fmt.Println(sum)for 循环的初始语句可以被忽略，但是初始语句后的分号必须要写，例如：
+i := 0 for ; i &lt; 10; i&#43;&#43; { fmt.Println(i) }for 循环的初始语句和结束语句都可以省略，类似于C#中的 while（满足条件表达式时持续循环，否则结束循环。），比如：
+j := 0 // 循环的初始语句和结束语句都可以省略: for j &lt; 10 { fmt.Println(j) j&#43;&#43; }无限循环：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="流程控制# If# score := 60 if score &gt;= 90 { fmt.Println(&#34;A&#34;) } else if score &gt; 70 { fmt.Println(&#34;B&#34;) } else { fmt.Println(&#34;C&#34;) }If 特殊写法# 可以在 if 表达式之前添加一个执行语句，再根据变量值进行判断。这种写法可以将返回值与判断放在一行进行处理，而且返回值的作用范围被限制在 if、else 语句组合中。这么做的好处在于：在编程中，变量的作用范围越小，所造成的问题可能性越小，每一个变量代表一个状态，有状态的地方，状态就会被修改，函数的局部变量只会影响一个函数的执行，但全局变量可能会影响所有代码的执行状态，因此限制变量的作用范围对代码的稳定性有很大的帮助。
+if score := 60; score &gt;= 90 { fmt.Println(&#34;A&#34;) } else if score &gt; 75 { fmt.Println(&#34;B&#34;) } else { fmt.Println(&#34;C&#34;) }for# 条件表达式返回 true 时循环体不停地进行循环，直到条件表达式返回 false 时自动退出循环，例如：
+sum := 0 for i := 0; i &lt; 5; i&#43;&#43; { sum &#43;= i // 1&#43;2&#43;3&#43;4 } fmt.Println(sum)for 循环的初始语句可以被忽略，但是初始语句后的分号必须要写，例如：
+i := 0 for ; i &lt; 10; i&#43;&#43; { fmt.Println(i) }for 循环的初始语句和结束语句都可以省略，类似于C#中的 while（满足条件表达式时持续循环，否则结束循环。），比如：
+j := 0 // 循环的初始语句和结束语句都可以省略: for j &lt; 10 { fmt.Println(j) j&#43;&#43; }无限循环：">
+  <meta itemprop="wordCount" content="569">
+
+<title>04流程控制和运算符 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>04流程控制和运算符</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#if">If</a></li>
+    <li><a href="#if-特殊写法">If 特殊写法</a></li>
+    <li><a href="#for">for</a></li>
+    <li><a href="#for-range">for range</a></li>
+    <li><a href="#switch-case">switch case</a></li>
+    <li><a href="#goto">goto</a></li>
+    <li><a href="#break">break</a></li>
+    <li><a href="#continue">continue</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#算术运算符">算术运算符</a></li>
+    <li><a href="#关系运算符">关系运算符</a></li>
+    <li><a href="#逻辑运算符">逻辑运算符</a></li>
+    <li><a href="#位运算符">位运算符</a></li>
+    <li><a href="#赋值运算符">赋值运算符</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    04流程控制和运算符
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="流程控制">流程控制<a class="anchor" href="#%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6">#</a></h1>
+<h2 id="if">If<a class="anchor" href="#if">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">score</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">score</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">90</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;A&#34;</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">score</span> &gt; <span style="color:#ae81ff">70</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;B&#34;</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;C&#34;</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><h2 id="if-特殊写法">If 特殊写法<a class="anchor" href="#if-%e7%89%b9%e6%ae%8a%e5%86%99%e6%b3%95">#</a></h2>
+<p>可以在 if 表达式之前添加一个执行语句，再根据变量值进行判断。这种写法可以将返回值与判断放在一行进行处理，而且返回值的作用范围被限制在 <code>if、else</code> 语句组合中。这么做的好处在于：在编程中，变量的作用范围越小，所造成的问题可能性越小，每一个变量代表一个状态，有状态的地方，状态就会被修改，函数的局部变量只会影响一个函数的执行，但全局变量可能会影响所有代码的执行状态，因此限制变量的作用范围对代码的稳定性有很大的帮助。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">score</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">60</span>; <span style="color:#a6e22e">score</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">90</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;A&#34;</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">score</span> &gt; <span style="color:#ae81ff">75</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;B&#34;</span>)
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;C&#34;</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><h2 id="for">for<a class="anchor" href="#for">#</a></h2>
+<p>条件表达式返回 <code>true</code> 时循环体不停地进行循环，直到条件表达式返回 <code>false</code> 时自动退出循环，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">sum</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">i</span> <span style="color:#75715e">// 1+2+3+4</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">sum</span>)</span></span></code></pre></div><p><code>for</code> 循环的初始语句可以被忽略，但是初始语句后的分号必须要写，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> ; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p><code>for</code> 循环的初始语句和结束语句都可以省略，类似于C#中的 <code>while</code>（满足条件表达式时持续循环，否则结束循环。），比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 循环的初始语句和结束语句都可以省略:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> &lt; <span style="color:#ae81ff">10</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">j</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p>无限循环：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Print</span>(<span style="color:#e6db74">&#34;hello word&#34;</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p><code>for</code> 循环可以通过<code>break</code>、<code>goto</code>、<code>return</code>、<code>panic </code>语句强制退出循环。</p>
+<h2 id="for-range">for range<a class="anchor" href="#for-range">#</a></h2>
+<p>Go 语言中可以使用 <code>for range</code> 遍历数组、切片、字符串、<code>map</code>  及通道（channel）。 通过 <code>for range</code> 遍历的返回值有以下规律：</p>
+<ol>
+<li>数组、切片、字符串返回索引和值</li>
+<li><code>map</code> 返回键和值</li>
+<li><code>channel</code> 只返回通道内的值</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> [<span style="color:#f92672">...</span>]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">c</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;value:%d\n&#34;</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="switch-case">switch case<a class="anchor" href="#switch-case">#</a></h2>
+<p>使用 <code>switch</code> 语句可方便地对大量的值进行条件判断。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">sex</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;男&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">sex</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;男&#34;</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;男性&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;女&#34;</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;女性&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;无效的输入！&#34;</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p>Go语言规定每个<code>switch</code>只能有一个<code>default</code>分支。</p>
+<p>一个分支可以有多个值，多个case值中间使用英文逗号分隔。比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">7</span>; <span style="color:#a6e22e">n</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">9</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;奇数&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">8</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;偶数&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p>分支还可以使用表达式，这时候switch语句后面不需要再跟判断变量。例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">age</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">age</span> &lt; <span style="color:#ae81ff">25</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;好好学习吧&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">age</span> &gt; <span style="color:#ae81ff">25</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">age</span> &lt; <span style="color:#ae81ff">35</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;好好工作吧&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">age</span> &gt; <span style="color:#ae81ff">60</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;好好享受吧&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;活着真好&#34;</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p><code>fallthrough</code>语法可以执行满足条件的case的下一个case，是为了兼容C语言中的case设计的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;a&#34;</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">fallthrough</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;b&#34;</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;b&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;c&#34;</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;c&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;...&#34;</span>)
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>b</span></span></code></pre></div><h2 id="goto">goto<a class="anchor" href="#goto">#</a></h2>
+<p><code>goto</code>  语句通过标签进行代码间的无条件跳转。C#中也有只是不推荐使用，只在特定场景下才考虑使用。因为goto可以无条件地转移到过程中指定的行会造成程序流程的混乱，使理解和调试程序都产生困难。Go语言中使用  <code>goto</code> 语句能简化一些代码的实现过程。 例如双层嵌套的for循环要退出时：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#75715e">// 示例一：内层循环打印到2时结束，外层循环也随即结束</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">breakFlag</span> <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 设置退出标签</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">breakFlag</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v-%v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 外层for循环判断</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">breakFlag</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}</span></span></code></pre></div><p>使用 <code>goto</code> 简化</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 设置退出标签</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">goto</span> <span style="color:#a6e22e">breakTag</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v-%v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 标签</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">breakTag</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;结束for循环&#34;</span>)</span></span></code></pre></div><h2 id="break">break<a class="anchor" href="#break">#</a></h2>
+<p><code>break</code> 语句可以结束 <code>for</code> 、 <code>switch</code> 和 <code>select</code> 的代码块。<code>break</code>语句还可以在语句后面添加标签，如果加了标签就会跳出标签对应的for循环，标签要求必须定义在对应的 <code>for</code>、 <code>switch</code> 和  <code>select </code>的代码块上。 例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">breakTest</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">BREAKDEMO1</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span> <span style="color:#a6e22e">BREAKDEMO1</span> <span style="color:#75715e">// 如果加了标签就会跳出标签对应的for循环</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v-%v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="continue">continue<a class="anchor" href="#continue">#</a></h2>
+<p><code>continue </code>语句可以结束当前循环，开始下一次的循环迭代过程，仅限在<code>for</code>循环内使用。在 <code>continue</code>语句后添加标签时，表示开始标签对应的循环。例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">processControlContinue</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">forloop1</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// forloop2:</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">j</span> &lt; <span style="color:#ae81ff">5</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">continue</span> <span style="color:#a6e22e">forloop1</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v-%v\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">10</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="运算符">运算符<a class="anchor" href="#%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h1>
+<p>运算符用于在程序运行时执行数学或逻辑运算，Go 语言内置的运算符有：</p>
+<ul>
+<li>算术运算符</li>
+<li>关系运算符</li>
+<li>逻辑运算符</li>
+<li>位运算符</li>
+<li>赋值运算符</li>
+</ul>
+<h2 id="算术运算符">算术运算符<a class="anchor" href="#%e7%ae%97%e6%9c%af%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">运算符</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">+</td>
+          <td style="text-align: center">相加</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">-</td>
+          <td style="text-align: center">相减</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">*</td>
+          <td style="text-align: center">相乘</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">/</td>
+          <td style="text-align: center">相除</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">%</td>
+          <td style="text-align: center">求余</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>注意：</strong> <code>++</code>（自增）和<code>--</code>（自减）在Go语言中是单独的语句，并不是运算符。</p>
+<h2 id="关系运算符">关系运算符<a class="anchor" href="#%e5%85%b3%e7%b3%bb%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">运算符</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">==</td>
+          <td style="text-align: center">检查两个值是否相等，如果相等返回 True 否则返回 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">!=</td>
+          <td style="text-align: center">检查两个值是否不相等，如果不相等返回 True 否则返回 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&gt;</td>
+          <td style="text-align: center">检查左边值是否大于右边值，如果是返回 True 否则返回 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&gt;=</td>
+          <td style="text-align: center">检查左边值是否大于等于右边值，如果是返回 True 否则返回 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&lt;</td>
+          <td style="text-align: center">检查左边值是否小于右边值，如果是返回 True 否则返回 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&lt;=</td>
+          <td style="text-align: center">检查左边值是否小于等于右边值，如果是返回 True 否则返回 False。</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="逻辑运算符">逻辑运算符<a class="anchor" href="#%e9%80%bb%e8%be%91%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">运算符</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">&amp;&amp;</td>
+          <td style="text-align: center">逻辑 AND 运算符。 如果两边的操作数都是 True，则为 True，否则为 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">||</td>
+          <td style="text-align: center">逻辑 OR 运算符。 如果两边的操作数有一个 True，则为 True，否则为 False。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">!</td>
+          <td style="text-align: center">逻辑 NOT 运算符。 如果条件为 True，则为 False，否则为 True。</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="位运算符">位运算符<a class="anchor" href="#%e4%bd%8d%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<p>位运算符对整数在内存中的二进制位进行操作。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">运算符</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">&amp;</td>
+          <td style="text-align: center">参与运算的两数各对应的二进位相与。 （两位均为1才为1）</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">|</td>
+          <td style="text-align: center">参与运算的两数各对应的二进位相或。 （两位有一个为1就为1）</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">^</td>
+          <td style="text-align: center">参与运算的两数各对应的二进位相异或，当两对应的二进位相异时，结果为1。 （两位不一样则为1）</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&laquo;</td>
+          <td style="text-align: center">左移n位就是乘以2的n次方。 “a&laquo;b”是把a的各二进位全部左移b位，高位丢弃，低位补0。</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&raquo;</td>
+          <td style="text-align: center">右移n位就是除以2的n次方。 “a&raquo;b”是把a的各二进位全部右移b位。</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="赋值运算符">赋值运算符<a class="anchor" href="#%e8%b5%8b%e5%80%bc%e8%bf%90%e7%ae%97%e7%ac%a6">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">运算符</th>
+          <th style="text-align: center">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">=</td>
+          <td style="text-align: center">简单的赋值运算符，将一个表达式的值赋给一个左值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">+=</td>
+          <td style="text-align: center">相加后再赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">-=</td>
+          <td style="text-align: center">相减后再赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">*=</td>
+          <td style="text-align: center">相乘后再赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">/=</td>
+          <td style="text-align: center">相除后再赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">%=</td>
+          <td style="text-align: center">求余后再赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&laquo;=</td>
+          <td style="text-align: center">左移后赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&raquo;=</td>
+          <td style="text-align: center">右移后赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">&amp;=</td>
+          <td style="text-align: center">按位与后赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">|=</td>
+          <td style="text-align: center">按位或后赋值</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">^=</td>
+          <td style="text-align: center">按位异或后赋值</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>03基本数据类型</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/go/05%E6%95%B0%E7%BB%84/" class="flex align-center">
+      <span>05数组</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#if">If</a></li>
+    <li><a href="#if-特殊写法">If 特殊写法</a></li>
+    <li><a href="#for">for</a></li>
+    <li><a href="#for-range">for range</a></li>
+    <li><a href="#switch-case">switch case</a></li>
+    <li><a href="#goto">goto</a></li>
+    <li><a href="#break">break</a></li>
+    <li><a href="#continue">continue</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#算术运算符">算术运算符</a></li>
+    <li><a href="#关系运算符">关系运算符</a></li>
+    <li><a href="#逻辑运算符">逻辑运算符</a></li>
+    <li><a href="#位运算符">位运算符</a></li>
+    <li><a href="#赋值运算符">赋值运算符</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

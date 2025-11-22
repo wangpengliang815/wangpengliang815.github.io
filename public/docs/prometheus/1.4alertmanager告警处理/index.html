@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="告警简介# 告警能力在 Prometheus 的架构中被划分为两个部分：
+在 Prometheus Server 中定义告警规则以及产生告警
+Alertmanager 组件用于处理由 Prometheus 产生的告警
+Alertmanager 是 Prometheus 体系中告警的统一处理中心。Alertmanager 提供了多种内置第三方告警通知方式，同时还提供对 Webhook 通知的支持，通过 Webhook 可以完成对告警更多个性化的扩展。
+Prometheus会周期性的对告警规则进行计算，如果满足告警触发条件就会向 Alertmanager 发送告警信息
+告警规则主要由以下几部分组成：
+告警名称：需要为告警规则命名，对于命名而言，需要能够直接表达出该告警的主要内容 告警规则：告警规则主要由 PromQL 进行定义，其实际意义是当表达式（PromQL）查询结果持续多长时间（During）后触发告警 在 Prometheus 中，还可以通过Group（告警组）对一组相关的告警进行统一定义。这些定义通过 YAML 文件统一管理。
+Alertmanager 作为一个独立的组件，负责接收并处理来自 Prometheus Server (也可以是其它的客户端程序)的告警信息。Alertmanager 可以对这些告警信息进行进一步的处理，比如当接收到大量重复告警时能够消除重复的告警信息，同时对告警信息进行分组并且路由到正确的通知方，Prometheus 内置了对邮件，Slack 等多种通知方式的支持，同时还支持与 Webhook 的集成，以支持更多定制化的场景。
+例如，目前 Alertmanager 还不支持钉钉，可以通过 Webhook 与钉钉机器人进行集成，从而通过钉钉接收告警信息。同时 AlertManager 还提供了静默和告警抑制机制来对告警通知行为进行优化。
+Alertmanager 特性# Alertmanager 除了提供基本的告警通知能力以外，还主要提供了如：分组、抑制以及静默等告警特性：
+分组# 分组机制可以将详细的告警信息合并成一个通知。在某些情况下，比如由于系统宕机导致大量的告警被同时触发，在这种情况下分组机制可以将这些被触发的告警合并为一个告警通知，避免一次性接受大量的告警通知，而无法对问题进行快速定位。
+例如，当集群中有数百个正在运行的服务实例，并且为每一个实例设置了告警规则。假如此时发生了网络故障，可能导致大量的服务实例无法连接到数据库，结果就会有数百个告警被发送到 Alertmanager。
+而作为用户，可能只希望能够在一个通知中就能查看哪些服务实例收到影响。这时可以按照服务所在集群或者告警名称对告警进行分组，而将这些告警内聚在一起成为一个通知。
+告警分组，告警时间，以及告警的接受方式可以通过 Alertmanager 的配置文件进行配置。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="告警简介# 告警能力在 Prometheus 的架构中被划分为两个部分：
+在 Prometheus Server 中定义告警规则以及产生告警
+Alertmanager 组件用于处理由 Prometheus 产生的告警
+Alertmanager 是 Prometheus 体系中告警的统一处理中心。Alertmanager 提供了多种内置第三方告警通知方式，同时还提供对 Webhook 通知的支持，通过 Webhook 可以完成对告警更多个性化的扩展。
+Prometheus会周期性的对告警规则进行计算，如果满足告警触发条件就会向 Alertmanager 发送告警信息
+告警规则主要由以下几部分组成：
+告警名称：需要为告警规则命名，对于命名而言，需要能够直接表达出该告警的主要内容 告警规则：告警规则主要由 PromQL 进行定义，其实际意义是当表达式（PromQL）查询结果持续多长时间（During）后触发告警 在 Prometheus 中，还可以通过Group（告警组）对一组相关的告警进行统一定义。这些定义通过 YAML 文件统一管理。
+Alertmanager 作为一个独立的组件，负责接收并处理来自 Prometheus Server (也可以是其它的客户端程序)的告警信息。Alertmanager 可以对这些告警信息进行进一步的处理，比如当接收到大量重复告警时能够消除重复的告警信息，同时对告警信息进行分组并且路由到正确的通知方，Prometheus 内置了对邮件，Slack 等多种通知方式的支持，同时还支持与 Webhook 的集成，以支持更多定制化的场景。
+例如，目前 Alertmanager 还不支持钉钉，可以通过 Webhook 与钉钉机器人进行集成，从而通过钉钉接收告警信息。同时 AlertManager 还提供了静默和告警抑制机制来对告警通知行为进行优化。
+Alertmanager 特性# Alertmanager 除了提供基本的告警通知能力以外，还主要提供了如：分组、抑制以及静默等告警特性：
+分组# 分组机制可以将详细的告警信息合并成一个通知。在某些情况下，比如由于系统宕机导致大量的告警被同时触发，在这种情况下分组机制可以将这些被触发的告警合并为一个告警通知，避免一次性接受大量的告警通知，而无法对问题进行快速定位。
+例如，当集群中有数百个正在运行的服务实例，并且为每一个实例设置了告警规则。假如此时发生了网络故障，可能导致大量的服务实例无法连接到数据库，结果就会有数百个告警被发送到 Alertmanager。
+而作为用户，可能只希望能够在一个通知中就能查看哪些服务实例收到影响。这时可以按照服务所在集群或者告警名称对告警进行分组，而将这些告警内聚在一起成为一个通知。
+告警分组，告警时间，以及告警的接受方式可以通过 Alertmanager 的配置文件进行配置。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="告警简介# 告警能力在 Prometheus 的架构中被划分为两个部分：
+在 Prometheus Server 中定义告警规则以及产生告警
+Alertmanager 组件用于处理由 Prometheus 产生的告警
+Alertmanager 是 Prometheus 体系中告警的统一处理中心。Alertmanager 提供了多种内置第三方告警通知方式，同时还提供对 Webhook 通知的支持，通过 Webhook 可以完成对告警更多个性化的扩展。
+Prometheus会周期性的对告警规则进行计算，如果满足告警触发条件就会向 Alertmanager 发送告警信息
+告警规则主要由以下几部分组成：
+告警名称：需要为告警规则命名，对于命名而言，需要能够直接表达出该告警的主要内容 告警规则：告警规则主要由 PromQL 进行定义，其实际意义是当表达式（PromQL）查询结果持续多长时间（During）后触发告警 在 Prometheus 中，还可以通过Group（告警组）对一组相关的告警进行统一定义。这些定义通过 YAML 文件统一管理。
+Alertmanager 作为一个独立的组件，负责接收并处理来自 Prometheus Server (也可以是其它的客户端程序)的告警信息。Alertmanager 可以对这些告警信息进行进一步的处理，比如当接收到大量重复告警时能够消除重复的告警信息，同时对告警信息进行分组并且路由到正确的通知方，Prometheus 内置了对邮件，Slack 等多种通知方式的支持，同时还支持与 Webhook 的集成，以支持更多定制化的场景。
+例如，目前 Alertmanager 还不支持钉钉，可以通过 Webhook 与钉钉机器人进行集成，从而通过钉钉接收告警信息。同时 AlertManager 还提供了静默和告警抑制机制来对告警通知行为进行优化。
+Alertmanager 特性# Alertmanager 除了提供基本的告警通知能力以外，还主要提供了如：分组、抑制以及静默等告警特性：
+分组# 分组机制可以将详细的告警信息合并成一个通知。在某些情况下，比如由于系统宕机导致大量的告警被同时触发，在这种情况下分组机制可以将这些被触发的告警合并为一个告警通知，避免一次性接受大量的告警通知，而无法对问题进行快速定位。
+例如，当集群中有数百个正在运行的服务实例，并且为每一个实例设置了告警规则。假如此时发生了网络故障，可能导致大量的服务实例无法连接到数据库，结果就会有数百个告警被发送到 Alertmanager。
+而作为用户，可能只希望能够在一个通知中就能查看哪些服务实例收到影响。这时可以按照服务所在集群或者告警名称对告警进行分组，而将这些告警内聚在一起成为一个通知。
+告警分组，告警时间，以及告警的接受方式可以通过 Alertmanager 的配置文件进行配置。">
+  <meta itemprop="wordCount" content="904">
+
+<title>1.4 Alertmanager告警处理 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle" checked />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="active">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.4 Alertmanager告警处理</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#分组">分组</a></li>
+    <li><a href="#抑制">抑制</a></li>
+    <li><a href="#静默">静默</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#定义告警规则">定义告警规则</a></li>
+    <li><a href="#模板化">模板化</a></li>
+    <li><a href="#实践">实践</a></li>
+    <li><a href="#查看告警状态">查看告警状态</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#二进制包部署">二进制包部署</a></li>
+    <li><a href="#容器部署">容器部署</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="告警简介">告警简介<a class="anchor" href="#%e5%91%8a%e8%ad%a6%e7%ae%80%e4%bb%8b">#</a></h1>
+<p>告警能力在 Prometheus 的架构中被划分为两个部分：</p>
+<ol>
+<li>
+<p>在 Prometheus Server 中定义告警规则以及产生告警</p>
+</li>
+<li>
+<p>Alertmanager 组件用于处理由 Prometheus 产生的告警</p>
+</li>
+</ol>
+<p><strong>Alertmanager 是 Prometheus 体系中告警的统一处理中心</strong>。Alertmanager 提供了多种内置第三方告警通知方式，同时还提供对 Webhook 通知的支持，通过 Webhook 可以完成对告警更多个性化的扩展。</p>
+<blockquote class='book-hint '>
+<p>Prometheus会周期性的对告警规则进行计算，如果满足告警触发条件就会向 Alertmanager 发送告警信息</p>
+</blockquote><p><img src="/images/2022-07-04-16-48-03.png" alt="" /></p>
+<p>告警规则主要由以下几部分组成：</p>
+<ul>
+<li>告警名称：需要为告警规则命名，对于命名而言，需要能够直接表达出该告警的主要内容</li>
+<li>告警规则：告警规则主要由 <code>PromQL</code> 进行定义，其实际意义是当表达式（PromQL）查询结果持续多长时间（During）后触发告警</li>
+</ul>
+<p>在 Prometheus 中，还可以通过Group（告警组）对一组相关的告警进行统一定义。这些定义通过 <code>YAML</code> 文件统一管理。</p>
+<p>Alertmanager 作为一个独立的组件，负责接收并处理来自 Prometheus Server (也可以是其它的客户端程序)的告警信息。Alertmanager 可以对这些告警信息进行进一步的处理，比如当接收到大量重复告警时能够消除重复的告警信息，同时对告警信息进行分组并且路由到正确的通知方，Prometheus 内置了对邮件，Slack 等多种通知方式的支持，同时还支持与 Webhook 的集成，以支持更多定制化的场景。</p>
+<blockquote class='book-hint '>
+<p>例如，目前 Alertmanager 还不支持钉钉，可以通过 Webhook 与钉钉机器人进行集成，从而通过钉钉接收告警信息。同时 AlertManager 还提供了静默和告警抑制机制来对告警通知行为进行优化。</p>
+</blockquote><h1 id="alertmanager-特性">Alertmanager 特性<a class="anchor" href="#alertmanager-%e7%89%b9%e6%80%a7">#</a></h1>
+<p>Alertmanager 除了提供基本的告警通知能力以外，还主要提供了如：分组、抑制以及静默等告警特性：</p>
+<p><img src="/images/2022-07-04-16-51-28.png" alt="" /></p>
+<h2 id="分组">分组<a class="anchor" href="#%e5%88%86%e7%bb%84">#</a></h2>
+<p>分组机制可以将详细的告警信息合并成一个通知。在某些情况下，比如由于系统宕机导致大量的告警被同时触发，在这种情况下分组机制可以将这些被触发的告警合并为一个告警通知，避免一次性接受大量的告警通知，而无法对问题进行快速定位。</p>
+<blockquote class='book-hint '>
+<p>例如，当集群中有数百个正在运行的服务实例，并且为每一个实例设置了告警规则。假如此时发生了网络故障，可能导致大量的服务实例无法连接到数据库，结果就会有数百个告警被发送到 Alertmanager。</p>
+<p>而作为用户，可能只希望能够在一个通知中就能查看哪些服务实例收到影响。这时可以按照服务所在集群或者告警名称对告警进行分组，而将这些告警内聚在一起成为一个通知。</p>
+</blockquote><p>告警分组，告警时间，以及告警的接受方式可以通过 Alertmanager 的配置文件进行配置。</p>
+<h2 id="抑制">抑制<a class="anchor" href="#%e6%8a%91%e5%88%b6">#</a></h2>
+<p>抑制是指当某一告警发出后，可以停止重复发送由此告警引发的其它告警的机制。</p>
+<blockquote class='book-hint '>
+<p>例如，当集群不可访问时触发了一次告警，通过配置 Alertmanager 可以忽略与该集群有关的其它所有告警。这样可以避免接收到大量与实际问题无关的告警通知。</p>
+</blockquote><p>抑制机制同样通过 Alertmanager 的配置文件进行设置。</p>
+<h2 id="静默">静默<a class="anchor" href="#%e9%9d%99%e9%bb%98">#</a></h2>
+<p>静默提供了一个简单的机制可以快速根据标签对告警进行静默处理。如果接收到的告警符合静默的配置，Alertmanager 则不会发送告警通知。</p>
+<p>静默设置需要在 Alertmanager 的 Werb 页面上进行设置。</p>
+<h1 id="自定义告警规则">自定义告警规则<a class="anchor" href="#%e8%87%aa%e5%ae%9a%e4%b9%89%e5%91%8a%e8%ad%a6%e8%a7%84%e5%88%99">#</a></h1>
+<p>告警规则允许基于 PromQL 表达式定义告警触发条件，Prometheus 后端对这些触发规则进行周期性计算，当满足触发条件后则会触发告警通知。默认情况下可以通过 Prometheus 的 Web 界面查看这些告警规则以及告警的触发状态。当 Promthues 与 Alertmanager 关联之后，可以将告警发送到外部服务如 Alertmanager 中并通过 Alertmanager 可以对这些告警进行进一步的处理。</p>
+<h2 id="定义告警规则">定义告警规则<a class="anchor" href="#%e5%ae%9a%e4%b9%89%e5%91%8a%e8%ad%a6%e8%a7%84%e5%88%99">#</a></h2>
+<p>一条典型的告警规则如下所示：</p>
+<pre tabindex="0"><code>groups:
+- name: example
+  rules:
+  - alert: HighErrorRate
+    expr: job:request_latency_seconds:mean5m{job=&#34;myjob&#34;} &gt; 0.5
+    for: 10m
+    labels:
+      severity: page
+    annotations:
+      summary: High request latency
+      description: description info</code></pre><p>在告警规则文件中，可以将一组相关的规则设置定义在一个 group下。在每一个 group 中可以定义多个告警规则(rule)。一条告警规则主要由以下几部分组成：</p>
+<ul>
+<li><code>alert</code>：告警规则的名称</li>
+<li><code>expr</code>：基于 PromQL 表达式告警触发条件，用于计算是否有时间序列满足该条件</li>
+<li><code>for</code> ：评估等待时间，可选参数。用于表示只有当触发条件持续一段时间后才发送告警。在等待期间新产生告警的状态为 <code>pending</code></li>
+<li><code>labels</code>：自定义标签，允许用户指定要附加到告警上的一组附加标签</li>
+<li><code>annotations</code>：用于指定一组附加信息，比如用于描述告警详细信息的文字等，annotations 的内容在告警产生时会一同作为参数发送到 Alertmanager</li>
+</ul>
+<p>为了能够让 Prometheus 启用定义的告警规则，需要在 Prometheus 全局配置文件中通过 <code>rule_files</code> 指定一组告警规则文件的访问路径，Prometheus 启动后会自动扫描这些路径下规则文件中定义的内容，并且根据这些规则计算是否向外部发送通知。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">rule_files</span>:
+</span></span><span style="display:flex;"><span>  [ - <span style="color:#ae81ff">&lt;filepath_glob&gt; ... ]</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 示例</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">rule_files</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#34;/etc/prometheus/rules.yml&#34;</span></span></span></code></pre></div><p>默认情况下 Prometheus 会每分钟对这些告警规则进行计算，如果想定义自己的告警计算周期，可以通过<code>evaluation_interval</code> 来覆盖默认的计算周期：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">global</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[ evaluation_interval</span>: <span style="color:#ae81ff">&lt;duration&gt; | default = 1m ]</span></span></span></code></pre></div><h2 id="模板化">模板化<a class="anchor" href="#%e6%a8%a1%e6%9d%bf%e5%8c%96">#</a></h2>
+<p>一般来说，在告警规则文件的 annotations 中使用 <code>summary</code> 描述告警的概要信息，<code>description </code>用于描述告警的详细信息。同时 Alertmanager 的UI也会根据这两个标签值显示告警信息。为了让告警信息具有更好的可读性，Prometheus 支持模板化 label 和 annotations 的中标签的值。</p>
+<p>通过 <code>$labels.&lt;labelname&gt;</code> 变量可以访问当前告警实例中指定标签的值。<code>$value</code> 则可以获取当前 PromQL 表达式计算的样本值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># To insert a firing element&#39;s label values:</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{{</span> $labels.&lt;labelname&gt; <span style="color:#f92672">}}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># To insert the numeric expression value of the firing element:</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{{</span> $value <span style="color:#f92672">}}</span></span></span></code></pre></div><p>例如，可以通过模板化优化 summary 以及 description 的内容的可读性：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">groups</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">example</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Alert for any instance that is unreachable for &gt;5 minutes.</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">InstanceDown</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">up == 0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">5m</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">severity</span>: <span style="color:#ae81ff">page</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;Instance {{ $labels.instance }} down&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Alert for any instance that has a median request latency &gt;1s.</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">APIHighRequestLatency</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">api_http_request_latencies_second{quantile=&#34;0.5&#34;} &gt; 1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">10m</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">summary</span>: <span style="color:#e6db74">&#34;High request latency on {{ $labels.instance }}&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)&#34;</span></span></span></code></pre></div><h2 id="实践">实践<a class="anchor" href="#%e5%ae%9e%e8%b7%b5">#</a></h2>
+<p>在目录 <code>/etc/prometheus/</code> 下创建 <code>rules.yml</code> 文件，内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">groups</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">主机监控</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">alert</span>: <span style="color:#ae81ff">HostOutOfMemory</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e"># 下面为了测试内存使用率高于1%告警</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">expr</span>: <span style="color:#ae81ff">node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 &lt; 99</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">for</span>: <span style="color:#ae81ff">10s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">severity</span>: <span style="color:#ae81ff">warning</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">annotations</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">summary</span>: <span style="color:#ae81ff">Host out of memory (instance {{ $labels.instance }})</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">description</span>: <span style="color:#e6db74">&#34;Node memory is filling up (&lt; 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}&#34;</span></span></span></code></pre></div><p>调整 <code>prometheus.yml</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">rule_files</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#e6db74">&#34;/etc/prometheus/rules.yml&#34;</span></span></span></code></pre></div><p>重新启动 Prometheus 容器，将 <code>rules.yml</code> 也挂载到容器内：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d --name prometheus -p 9090:9090 -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml -v /etc/prometheus/rules.yml:/etc/prometheus/rules.yml prom/prometheus</span></span></code></pre></div><h2 id="查看告警状态">查看告警状态<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e5%91%8a%e8%ad%a6%e7%8a%b6%e6%80%81">#</a></h2>
+<p>如下所示，可以通过 Prometheus WEB界面中的 Alerts 菜单查看当前 Prometheus 下的所有告警规则，以及其当前所处的活动状态。</p>
+<p><img src="/images/2022-07-04-21-35-32.png" alt="" /></p>
+<p>这里可以看到规则已经生效，同时对于已经 <code>pending</code> 或者 <code>firing</code> 的告警，Prometheus也会将它们存储到时间序列  <code>ALERTS{}</code> 中。</p>
+<h1 id="alertmanager-部署">Alertmanager 部署<a class="anchor" href="#alertmanager-%e9%83%a8%e7%bd%b2">#</a></h1>
+<p>上面看到配置的规则已经生效并且产生了告警，下面开始集成 Alertmanager 实现后续对告警信息的处理，Alertmanager 和 Prometheus Server 一样均采用 Golang 实现，并且没有第三方依赖。一般可以通过以下几种方式来部署 ：</p>
+<ul>
+<li>二进制包</li>
+<li>容器部署</li>
+<li>源码方式安装</li>
+</ul>
+<h2 id="二进制包部署">二进制包部署<a class="anchor" href="#%e4%ba%8c%e8%bf%9b%e5%88%b6%e5%8c%85%e9%83%a8%e7%bd%b2">#</a></h2>
+<p>Alertmanager 最新版本的下载地址可以从 Prometheus 官方网站 <a href="https://prometheus.io/download/">https://prometheus.io/download/</a> 获取</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -LO https://github.com/prometheus/alertmanager/releases/download/v$VERSION/alertmanager-$VERSION.darwin-amd64.tar.gz
+</span></span><span style="display:flex;"><span>tar xvf alertmanager-$VERSION.darwin-amd64.tar.gz</span></span></code></pre></div><p>Alertmanager 解压后会包含一个默认的 <code>alertmanager.yml</code> 配置文件，内容如下所示：</p>
+<pre tabindex="0"><code>global:
+  resolve_timeout: 5m
+
+route:
+  group_by: [&#39;alertname&#39;]
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: &#39;web.hook&#39;
+receivers:
+- name: &#39;web.hook&#39;
+  webhook_configs:
+  - url: &#39;http://127.0.0.1:5001/&#39;
+inhibit_rules:
+  - source_match:
+      severity: &#39;critical&#39;
+    target_match:
+      severity: &#39;warning&#39;
+    equal: [&#39;alertname&#39;, &#39;dev&#39;, &#39;instance&#39;]</code></pre><h2 id="容器部署">容器部署<a class="anchor" href="#%e5%ae%b9%e5%99%a8%e9%83%a8%e7%bd%b2">#</a></h2>
+<p>在 <code>etc</code> 目录下新建 <code>alertmanager</code> 目录：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang100ecs ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /etc/</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang100ecs etc<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir alertmanager</span></span></span></code></pre></div><p>在 <code>etc/alertmanager</code> 目录下新建 <code>alertmanager.yml</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">global</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resolve_timeout</span>: <span style="color:#ae81ff">5m</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">route</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">group_by</span>: [<span style="color:#e6db74">&#39;alertname&#39;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">group_wait</span>: <span style="color:#ae81ff">10s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">group_interval</span>: <span style="color:#ae81ff">10s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">repeat_interval</span>: <span style="color:#ae81ff">30h</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#39;web.hook&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">receivers</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;web.hook&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">webhook_configs</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">url</span>: <span style="color:#e6db74">&#39;http://127.0.0.1:5001/&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">inhibit_rules</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">source_match</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">severity</span>: <span style="color:#e6db74">&#39;critical&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">target_match</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">severity</span>: <span style="color:#e6db74">&#39;warning&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">equal</span>: [<span style="color:#e6db74">&#39;alertname&#39;</span>, <span style="color:#e6db74">&#39;dev&#39;</span>, <span style="color:#e6db74">&#39;instance&#39;</span>]</span></span></code></pre></div><p>启动 <code>alertmanager</code> 容器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d --name alertmanager -p 9093:9093 -v /etc/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml  prom/alertmanager:v0.23.0</span></span></code></pre></div><p>访问 http://ipaddress:9093 在浏览器中查看：</p>
+<p><img src="/images/2022-07-04-21-54-56.png" alt="" /></p>
+<p>Alert 菜单下可以查看 Alertmanager 接收到的告警内容。Silences 菜单下则可以通过UI创建静默规则，Status菜单可以看到当前系统的运行状态以及配置信息。</p>
+<h1 id="alertmanager-集成">Alertmanager 集成<a class="anchor" href="#alertmanager-%e9%9b%86%e6%88%90">#</a></h1>
+<p>Alertmanager 部署完成后，需要在 Prometheus 中设置 Alertmanager 相关的信息</p>
+<p>调整 <code>prometheus.yml</code> ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">alerting</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">alertmanagers</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">static_configs</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">targets</span>:
+</span></span><span style="display:flex;"><span>       - <span style="color:#ae81ff">47.93.56.197</span>:<span style="color:#ae81ff">9093</span></span></span></code></pre></div><p>重新启动 <code>prometheus</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang100ecs etc<span style="color:#f92672">]</span><span style="color:#75715e"># docker restart prometheus</span></span></span></code></pre></div><p><img src="/images/2022-07-04-22-03-48.png" alt="prometheus" /></p>
+<p><img src="/images/2022-07-04-22-04-09.png" alt="alertmanager" /></p>
+<h1 id="集成163邮箱">集成163邮箱<a class="anchor" href="#%e9%9b%86%e6%88%90163%e9%82%ae%e7%ae%b1">#</a></h1>
+<p>上面看到 Prometheus 的告警信息已经推送到了  Alertmanager，下面将告警信息发送到邮箱。这里使用163邮箱进行测试，需要在邮箱中开启  <code>POP3/SMTP服务</code>，具体方法自行百度。</p>
+<p>调整 <code>alertmanager.yml</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># 全局配置,包括报警解决后的超时时间、SMTP 相关配置、各种渠道通知的 API 地址等等。</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">global</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 告警超时时间</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resolve_timeout</span>: <span style="color:#ae81ff">5m</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 发送者邮箱地址</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">smtp_from</span>: <span style="color:#e6db74">&#39;15101587969@163.com&#39;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 邮箱smtp服务器地址及端口  </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">smtp_smarthost</span>: <span style="color:#e6db74">&#39;smtp.163.com:465&#39;</span> <span style="color:#75715e"># 因为阿里云默认封了25端口,所以选择465端口  </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 发送者邮箱账号</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">smtp_auth_username</span>: <span style="color:#e6db74">&#39;15101587969@163.com&#39;</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 发送者邮箱密码，这里填入邮箱开启SMTP中获取的授权码</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">smtp_auth_password</span>: <span style="color:#e6db74">&#39;xxxxxx&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 是否使用tls </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">smtp_require_tls</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 路由配置,设置报警的分发策略，它是一个树状结构，按照深度优先从左向右的顺序进行匹配。</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">route</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 用于将传入警报分组在一起的标签。</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 基于告警中包含的标签，如果满足group_by中定义标签名称，那么这些告警将会合并为一个通知发送给接收器。</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">group_by</span>: [<span style="color:#e6db74">&#39;alertname&#39;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 发送通知的初始等待时间</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">group_wait</span>: <span style="color:#ae81ff">30s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 在发送有关新警报的通知之前需要等待多长时间 </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">group_interval</span>: <span style="color:#ae81ff">30s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 如果已发送通知，则在再次发送通知之前要等待多长时间，通常约3小时或更长时间</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">repeat_interval</span>: <span style="color:#ae81ff">30s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 接受者名称</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">receiver</span>: <span style="color:#e6db74">&#39;163.email&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 配置告警消息接受者信息，例如常用的 email、wechat、slack、webhook 等消息通知方式</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">receivers</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#39;163.email&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">email_configs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 配置接受邮箱地址</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">to </span>: <span style="color:#e6db74">&#39;15101587969@163.com&#39;</span></span></span></code></pre></div><p>重启 <code>alertmanager</code> 容器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang100ecs etc<span style="color:#f92672">]</span><span style="color:#75715e"># docker restart alertmanager</span></span></span></code></pre></div><p><img src="/images/2022-07-04-22-37-22.png" alt="测试邮件" /></p>
+<h1 id="配置邮件模板">配置邮件模板<a class="anchor" href="#%e9%85%8d%e7%bd%ae%e9%82%ae%e4%bb%b6%e6%a8%a1%e6%9d%bf">#</a></h1>
+<p>上面看到已经成功接收到了邮件，但是格式比较乱，可以使用邮件模板，Alertmanager 带有默认模板，可以自定义模板内容，Alertmanager 的通知模板基于 Go 模板系统，具体支持哪些变量请参照 <a href="https://prometheus.io/docs/alerting/latest/notifications/">官网说明</a>。</p>
+<p>在 <code>etc/alertmanager</code> 目录下新建 <code>email.tmpl</code> 文件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>{{ define &#34;email.html&#34; }}
+</span></span><span style="display:flex;"><span>{{ range .Alerts }}
+</span></span><span style="display:flex;"><span>告警程序: prometheus_alert &lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>告警类型: {{ .Labels.alertname }} &lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>故障主机: {{ .Labels.instance }} &lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>告警主题: {{ .Annotations.summary }} &lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>告警详情: {{ .Annotations.description }} &lt;<span style="color:#f92672">br</span>&gt;
+</span></span><span style="display:flex;"><span>{{ end }}
+</span></span><span style="display:flex;"><span>{{ end }}</span></span></code></pre></div><p>调整 <code>alertmanager.yml</code> 添加模板扫描，及邮件使用模板</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">templates</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;templates/*.tmpl
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">receivers:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- name: &#39;</span><span style="color:#ae81ff">163.</span><span style="color:#ae81ff">email&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">email_configs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 配置接受邮箱地址</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">to </span>: <span style="color:#e6db74">&#39;15101587969@163.com&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">html</span>: <span style="color:#e6db74">&#39;{{ template &#34;email.html&#34; . }}&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 邮件主题信息 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">headers</span>: {<span style="color:#f92672">Subject</span>: <span style="color:#e6db74">&#34;[WARN] 报警邮件 {{ .CommonLabels.instance }} {{ .CommonAnnotations.summary }}&#34;</span>}  </span></span></code></pre></div><p>重启容器并映射邮件模板文件到容器内：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d --name alertmanager -p 9093:9093 -v /etc/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml -v /etc/alertmanager/email.tmpl:/etc/alertmanager/templates/email.tmpl prom/alertmanager:v0.23.0</span></span></code></pre></div><p>查看邮件：</p>
+<p><img src="/images/2022-07-04-22-52-22.png" alt="" /></p>
+<h1 id="alertmanager-配置">Alertmanager 配置<a class="anchor" href="#alertmanager-%e9%85%8d%e7%bd%ae">#</a></h1>
+<p>在 Alertmanager 中通过路由(Route)来定义告警的处理方式。路由是一个基于标签匹配的树状匹配结构。根据接收到告警的标签匹配相应的处理方式。</p>
+<p>Alertmanager 主要负责对 Prometheus 产生的告警进行统一处理，因此在 Alertmanager 配置中一般会包含以下几个主要部分：</p>
+<ul>
+<li>全局配置（global）：用于定义一些全局的公共参数，如全局的SMTP配置，Slack配置等内容；</li>
+<li>模板（templates）：用于定义告警通知时的模板，如HTML模板，邮件模板等；</li>
+<li>告警路由（route）：根据标签匹配，确定当前告警应该如何处理；</li>
+<li>接收人（receivers）：接收人是一个抽象的概念，它可以是一个邮箱也可以是微信，Slack或者Webhook等，接收人一般配合告警路由使用；</li>
+<li>抑制规则（inhibit_rules）：合理设置抑制规则可以减少垃圾告警的产生</li>
+</ul>
+<p>完整配置格式如下：</p>
+<pre tabindex="0"><code>global:
+  [ resolve_timeout: &lt;duration&gt; | default = 5m ]
+  [ smtp_from: &lt;tmpl_string&gt; ] 
+  [ smtp_smarthost: &lt;string&gt; ] 
+  [ smtp_hello: &lt;string&gt; | default = &#34;localhost&#34; ]
+  [ smtp_auth_username: &lt;string&gt; ]
+  [ smtp_auth_password: &lt;secret&gt; ]
+  [ smtp_auth_identity: &lt;string&gt; ]
+  [ smtp_auth_secret: &lt;secret&gt; ]
+  [ smtp_require_tls: &lt;bool&gt; | default = true ]
+  [ slack_api_url: &lt;secret&gt; ]
+  [ victorops_api_key: &lt;secret&gt; ]
+  [ victorops_api_url: &lt;string&gt; | default = &#34;https://alert.victorops.com/integrations/generic/20131114/alert/&#34; ]
+  [ pagerduty_url: &lt;string&gt; | default = &#34;https://events.pagerduty.com/v2/enqueue&#34; ]
+  [ opsgenie_api_key: &lt;secret&gt; ]
+  [ opsgenie_api_url: &lt;string&gt; | default = &#34;https://api.opsgenie.com/&#34; ]
+  [ hipchat_api_url: &lt;string&gt; | default = &#34;https://api.hipchat.com/&#34; ]
+  [ hipchat_auth_token: &lt;secret&gt; ]
+  [ wechat_api_url: &lt;string&gt; | default = &#34;https://qyapi.weixin.qq.com/cgi-bin/&#34; ]
+  [ wechat_api_secret: &lt;secret&gt; ]
+  [ wechat_api_corp_id: &lt;string&gt; ]
+  [ http_config: &lt;http_config&gt; ]
+
+templates:
+  [ - &lt;filepath&gt; ... ]
+
+route: &lt;route&gt;
+
+receivers:
+  - &lt;receiver&gt; ...
+
+inhibit_rules:
+  [ - &lt;inhibit_rule&gt; ... ]</code></pre><p>在全局配置中需要注意的是 <code>resolve_timeout</code>，该参数定义了当 Alertmanager 持续多长时间未接收到告警后标记告警状态为 resolved（已解决）。该参数的定义可能会影响到告警恢复通知的接收时间，可根据自己的实际场景进行定义，其默认值为5分钟。</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>1.3 Prom Ql查询语言</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="flex align-center">
+        <span>1.5 Grafana监控可视化</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#分组">分组</a></li>
+    <li><a href="#抑制">抑制</a></li>
+    <li><a href="#静默">静默</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#定义告警规则">定义告警规则</a></li>
+    <li><a href="#模板化">模板化</a></li>
+    <li><a href="#实践">实践</a></li>
+    <li><a href="#查看告警状态">查看告警状态</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#二进制包部署">二进制包部署</a></li>
+    <li><a href="#容器部署">容器部署</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

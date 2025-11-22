@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="之前说到 ES 提供了 RESTful 风格的接口以便于我们操作，需要借助能够发送HTTP请求的工具调用这些API，工具是可以任意的，包括网页浏览器，当然也可以使用比如 Postman / Talend API tester等工具。这里为了学习 ElK 所以选择使用 Kibana，关于 Kibana 如何安装参考其他文章。
+集群相关# 查看集群健康信息# GET _cat/health?vepoch timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent 1646502528 17:48:48 elasticsearch green 1 1 3 3 0 0 0 0 - 100.0%主要字段描述：
+cluster：集群名称 status：集群状态 node.total：集群中的节点数 node.data：集群中的数据节点数 shards：集群中总的分片数量 pri：主分片数量，英文全称为 private relo：复制分片总数 unassign：未指定的分片数量，是应有分片数和现有的分片数的差值（包括主分片和复制分片） 集群共有 green 、yellow 、 red 三种状态：
+green 代表一切正常，集群功能齐全 yellow 代表所有数据都是可用的，但是某些复制没有被分配（集群功能齐全） red 代表因为某些原因，某些数据不可用。如果是red状态，数据很有可能已经丢失 可以在请求中添加 help 参数来查看每个操作返回结果字段的描述
+GET _cat/health?helpepoch | t,time | seconds since 1970-01-01 00:00:00 timestamp | ts,hms,hhmmss | time in HH:MM:SS cluster | cl | cluster name status | st | health status node.total | nt,nodeTotal | total number of nodes node.data | nd,nodeData | number of nodes that can store data shards | t,sh,shards.total,shardsTotal | total number of shards pri | p,shards.primary,shardsPrimary | number of primary shards relo | r,shards.relocating,shardsRelocating | number of relocating nodes init | i,shards.initializing,shardsInitializing | number of initializing nodes unassign | u,shards.unassigned,shardsUnassigned | number of unassigned shards pending_tasks | pt,pendingTasks | number of pending tasks max_task_wait_time | mtwt,maxTaskWaitTime | wait time of longest task pending active_shards_percent | asp,activeShardsPercent | active number of shards in percent ES中许多API都可以添加 help 参数来显示字段含义，如果觉得返回的东西太多看着烦，也可以人为指定返回的字段，比如：
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="之前说到 ES 提供了 RESTful 风格的接口以便于我们操作，需要借助能够发送HTTP请求的工具调用这些API，工具是可以任意的，包括网页浏览器，当然也可以使用比如 Postman / Talend API tester等工具。这里为了学习 ElK 所以选择使用 Kibana，关于 Kibana 如何安装参考其他文章。
+集群相关# 查看集群健康信息# GET _cat/health?vepoch timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent 1646502528 17:48:48 elasticsearch green 1 1 3 3 0 0 0 0 - 100.0%主要字段描述：
+cluster：集群名称 status：集群状态 node.total：集群中的节点数 node.data：集群中的数据节点数 shards：集群中总的分片数量 pri：主分片数量，英文全称为 private relo：复制分片总数 unassign：未指定的分片数量，是应有分片数和现有的分片数的差值（包括主分片和复制分片） 集群共有 green 、yellow 、 red 三种状态：
+green 代表一切正常，集群功能齐全 yellow 代表所有数据都是可用的，但是某些复制没有被分配（集群功能齐全） red 代表因为某些原因，某些数据不可用。如果是red状态，数据很有可能已经丢失 可以在请求中添加 help 参数来查看每个操作返回结果字段的描述
+GET _cat/health?helpepoch | t,time | seconds since 1970-01-01 00:00:00 timestamp | ts,hms,hhmmss | time in HH:MM:SS cluster | cl | cluster name status | st | health status node.total | nt,nodeTotal | total number of nodes node.data | nd,nodeData | number of nodes that can store data shards | t,sh,shards.total,shardsTotal | total number of shards pri | p,shards.primary,shardsPrimary | number of primary shards relo | r,shards.relocating,shardsRelocating | number of relocating nodes init | i,shards.initializing,shardsInitializing | number of initializing nodes unassign | u,shards.unassigned,shardsUnassigned | number of unassigned shards pending_tasks | pt,pendingTasks | number of pending tasks max_task_wait_time | mtwt,maxTaskWaitTime | wait time of longest task pending active_shards_percent | asp,activeShardsPercent | active number of shards in percent ES中许多API都可以添加 help 参数来显示字段含义，如果觉得返回的东西太多看着烦，也可以人为指定返回的字段，比如：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="之前说到 ES 提供了 RESTful 风格的接口以便于我们操作，需要借助能够发送HTTP请求的工具调用这些API，工具是可以任意的，包括网页浏览器，当然也可以使用比如 Postman / Talend API tester等工具。这里为了学习 ElK 所以选择使用 Kibana，关于 Kibana 如何安装参考其他文章。
+集群相关# 查看集群健康信息# GET _cat/health?vepoch timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent 1646502528 17:48:48 elasticsearch green 1 1 3 3 0 0 0 0 - 100.0%主要字段描述：
+cluster：集群名称 status：集群状态 node.total：集群中的节点数 node.data：集群中的数据节点数 shards：集群中总的分片数量 pri：主分片数量，英文全称为 private relo：复制分片总数 unassign：未指定的分片数量，是应有分片数和现有的分片数的差值（包括主分片和复制分片） 集群共有 green 、yellow 、 red 三种状态：
+green 代表一切正常，集群功能齐全 yellow 代表所有数据都是可用的，但是某些复制没有被分配（集群功能齐全） red 代表因为某些原因，某些数据不可用。如果是red状态，数据很有可能已经丢失 可以在请求中添加 help 参数来查看每个操作返回结果字段的描述
+GET _cat/health?helpepoch | t,time | seconds since 1970-01-01 00:00:00 timestamp | ts,hms,hhmmss | time in HH:MM:SS cluster | cl | cluster name status | st | health status node.total | nt,nodeTotal | total number of nodes node.data | nd,nodeData | number of nodes that can store data shards | t,sh,shards.total,shardsTotal | total number of shards pri | p,shards.primary,shardsPrimary | number of primary shards relo | r,shards.relocating,shardsRelocating | number of relocating nodes init | i,shards.initializing,shardsInitializing | number of initializing nodes unassign | u,shards.unassigned,shardsUnassigned | number of unassigned shards pending_tasks | pt,pendingTasks | number of pending tasks max_task_wait_time | mtwt,maxTaskWaitTime | wait time of longest task pending active_shards_percent | asp,activeShardsPercent | active number of shards in percent ES中许多API都可以添加 help 参数来显示字段含义，如果觉得返回的东西太多看着烦，也可以人为指定返回的字段，比如：">
+  <meta itemprop="wordCount" content="468">
+
+<title>1.3使用 Kibana操作 Es | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle"  />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle" checked />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="active">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.3使用 Kibana操作 Es</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#查看集群健康信息">查看集群健康信息</a></li>
+    <li><a href="#查看集群中节点信息">查看集群中节点信息</a></li>
+    <li><a href="#查看集群中索引信息">查看集群中索引信息</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#创建索引">创建索引</a></li>
+    <li><a href="#查看索引">查看索引</a></li>
+    <li><a href="#删除索引">删除索引</a></li>
+    <li><a href="#查看某字母开头的索引">查看某字母开头的索引</a></li>
+    <li><a href="#查询所有索引">查询所有索引</a></li>
+    <li><a href="#mappings--settings">mappings / settings</a>
+      <ul>
+        <li><a href="#创建索引时指定-map">创建索引时指定 map</a></li>
+        <li><a href="#创建索引后指定-map">创建索引后指定 map</a></li>
+        <li><a href="#创建索引时同时指定">创建索引时同时指定</a></li>
+        <li><a href="#修改副本数量">修改副本数量</a></li>
+        <li><a href="#修改分片数量">修改分片数量</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#语法">语法</a></li>
+    <li><a href="#实例">实例</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>之前说到 ES 提供了 <code>RESTful</code> 风格的接口以便于我们操作，需要借助能够发送HTTP请求的工具调用这些API，工具是可以任意的，包括网页浏览器，当然也可以使用比如 <code>Postman</code> / <code>Talend API tester</code>等工具。这里为了学习 <code>ElK</code> 所以选择使用  <code>Kibana</code>，关于 <code>Kibana</code> 如何安装参考其他文章。</p>
+<!-- more -->
+<h1 id="集群相关">集群相关<a class="anchor" href="#%e9%9b%86%e7%be%a4%e7%9b%b8%e5%85%b3">#</a></h1>
+<h2 id="查看集群健康信息">查看集群健康信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%9b%86%e7%be%a4%e5%81%a5%e5%ba%b7%e4%bf%a1%e6%81%af">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET _cat/health?v</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>epoch      timestamp cluster       status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1646502528</span> 17:48:48  elasticsearch green           <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">3</span>   <span style="color:#ae81ff">3</span>    <span style="color:#ae81ff">0</span>    <span style="color:#ae81ff">0</span>        <span style="color:#ae81ff">0</span>             <span style="color:#ae81ff">0</span>                  -                100.0%</span></span></code></pre></div><p>主要字段描述：</p>
+<ul>
+<li><code>cluster</code>：集群名称</li>
+<li><code>status</code>：集群状态</li>
+<li><code>node.total</code>：集群中的节点数</li>
+<li><code>node.data</code>：集群中的数据节点数</li>
+<li><code>shards</code>：集群中总的分片数量</li>
+<li><code>pri</code>：主分片数量，英文全称为 <code>private</code></li>
+<li><code>relo</code>：复制分片总数</li>
+<li><code>unassign</code>：未指定的分片数量，是应有分片数和现有的分片数的差值（包括主分片和复制分片）</li>
+</ul>
+<p>集群共有 <code>green</code> 、<code>yellow</code> 、 <code>red</code> 三种状态：</p>
+<ul>
+<li><code>green</code> 代表一切正常，集群功能齐全</li>
+<li><code>yellow</code> 代表所有数据都是可用的，但是某些复制没有被分配（集群功能齐全）</li>
+<li><code>red</code> 代表因为某些原因，某些数据不可用。如果是red状态，数据很有可能已经丢失</li>
+</ul>
+<p>可以在请求中添加 <code>help</code> 参数来查看每个操作返回结果字段的描述</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET _cat/health?help</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>epoch                 | t,time                                   | seconds since 1970-01-01 00:00:00  
+</span></span><span style="display:flex;"><span>timestamp             | ts,hms,hhmmss                            | time in HH:MM:SS                   
+</span></span><span style="display:flex;"><span>cluster               | cl                                       | cluster name                       
+</span></span><span style="display:flex;"><span>status                | st                                       | health status                      
+</span></span><span style="display:flex;"><span>node.total            | nt,nodeTotal                             | total number of nodes              
+</span></span><span style="display:flex;"><span>node.data             | nd,nodeData                              | number of nodes that can store data
+</span></span><span style="display:flex;"><span>shards                | t,sh,shards.total,shardsTotal            | total number of shards             
+</span></span><span style="display:flex;"><span>pri                   | p,shards.primary,shardsPrimary           | number of primary shards           
+</span></span><span style="display:flex;"><span>relo                  | r,shards.relocating,shardsRelocating     | number of relocating nodes         
+</span></span><span style="display:flex;"><span>init                  | i,shards.initializing,shardsInitializing | number of initializing nodes       
+</span></span><span style="display:flex;"><span>unassign              | u,shards.unassigned,shardsUnassigned     | number of unassigned shards        
+</span></span><span style="display:flex;"><span>pending_tasks         | pt,pendingTasks                          | number of pending tasks            
+</span></span><span style="display:flex;"><span>max_task_wait_time    | mtwt,maxTaskWaitTime                     | wait time of longest task pending  
+</span></span><span style="display:flex;"><span>active_shards_percent | asp,activeShardsPercent                  | active number of shards in percent </span></span></code></pre></div><p>ES中许多API都可以添加 <code>help</code> 参数来显示字段含义，如果觉得返回的东西太多看着烦，也可以人为指定返回的字段，比如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET _cat/health?h<span style="color:#f92672">=</span>cluster,status&amp;v</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cluster       status
+</span></span><span style="display:flex;"><span>elasticsearch green</span></span></code></pre></div><h2 id="查看集群中节点信息">查看集群中节点信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%9b%86%e7%be%a4%e4%b8%ad%e8%8a%82%e7%82%b9%e4%bf%a1%e6%81%af">#</a></h2>
+<pre tabindex="0"><code>GET _cat/nodes?v</code></pre><pre tabindex="0"><code>ip        heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+127.0.0.1           28          59  11                          dilm      *      WANGPENGLIANG</code></pre><h2 id="查看集群中索引信息">查看集群中索引信息<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e9%9b%86%e7%be%a4%e4%b8%ad%e7%b4%a2%e5%bc%95%e4%bf%a1%e6%81%af">#</a></h2>
+<pre tabindex="0"><code>GET _cat/indices?v</code></pre><pre tabindex="0"><code>health status index                    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   .kibana_task_manager_1   BT3RImw0S9mVrEwQaKIc1Q   1   0          2            0     41.3kb         41.3kb
+green  open   .apm-agent-configuration 82PMto3PSt2UsRf7qYmfJg   1   0          0            0       283b           283b
+green  open   .kibana_1                xSc4xPL6TXica1mIT8005A   1   0         12            6     60.4kb         60.4kb</code></pre><p>更多的查看和监视 <code>ElastaticSearch</code> 的API查看：<a href="http://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html">官网文档</a></p>
+<h1 id="索引相关index">索引相关（Index）<a class="anchor" href="#%e7%b4%a2%e5%bc%95%e7%9b%b8%e5%85%b3index">#</a></h1>
+<h2 id="创建索引">创建索引<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e7%b4%a2%e5%bc%95">#</a></h2>
+<p>创建名为 <code>movies</code> 的 <code>index</code> ，两种写法等同，名字不能包含特殊字符，只能小写，不能以<code>-</code> , <code>_</code> , <code>+</code> 开头，不能超过255字节。</p>
+<p>第一种方式：</p>
+<pre tabindex="0"><code>PUT movies</code></pre><p>第二种方式：本质是 <code>PUT http://ip:9200/test</code>，kibana 做了优化因此写不写之前的 <code>/</code> 都可以</p>
+<pre tabindex="0"><code>PUT /movies</code></pre><p>第三种方式：当向一个不存在的索引写入文档时，索引会自动被创建</p>
+<pre tabindex="0"><code>PUT movies/_doc/1
+{
+  &#34;name&#34;:&#34;大话西游&#34;
+}</code></pre><h2 id="查看索引">查看索引<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e7%b4%a2%e5%bc%95">#</a></h2>
+<p>如果试图访问一个不存在的索引会报错。</p>
+<pre tabindex="0"><code>GET movies</code></pre><h2 id="删除索引">删除索引<a class="anchor" href="#%e5%88%a0%e9%99%a4%e7%b4%a2%e5%bc%95">#</a></h2>
+<p>如果试图删除一个不存在的索引会报错。</p>
+<pre tabindex="0"><code>DELETE movies</code></pre><h2 id="查看某字母开头的索引">查看某字母开头的索引<a class="anchor" href="#%e6%9f%a5%e7%9c%8b%e6%9f%90%e5%ad%97%e6%af%8d%e5%bc%80%e5%a4%b4%e7%9a%84%e7%b4%a2%e5%bc%95">#</a></h2>
+<pre tabindex="0"><code>GET _cat/indices/m*?v</code></pre><h2 id="查询所有索引">查询所有索引<a class="anchor" href="#%e6%9f%a5%e8%af%a2%e6%89%80%e6%9c%89%e7%b4%a2%e5%bc%95">#</a></h2>
+<pre tabindex="0"><code>GET _cat/indices</code></pre><h2 id="mappings--settings">mappings / settings<a class="anchor" href="#mappings--settings">#</a></h2>
+<h3 id="创建索引时指定-map">创建索引时指定 map<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e7%b4%a2%e5%bc%95%e6%97%b6%e6%8c%87%e5%ae%9a-map">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>PUT movies
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  &#34;mappings&#34; : {
+</span></span><span style="display:flex;"><span>    &#34;properties&#34; : {
+</span></span><span style="display:flex;"><span>      &#34;name&#34; : {
+</span></span><span style="display:flex;"><span>        &#34;type&#34; : &#34;keyword&#34;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h3 id="创建索引后指定-map">创建索引后指定 map<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e7%b4%a2%e5%bc%95%e5%90%8e%e6%8c%87%e5%ae%9a-map">#</a></h3>
+<pre tabindex="0"><code>PUT movies</code></pre><pre tabindex="0"><code>PUT movies/_mapping
+{
+    &#34;properties&#34; : {
+      &#34;name&#34; : {
+        &#34;type&#34; : &#34;keyword&#34;
+      }
+    }
+}</code></pre><h3 id="创建索引时同时指定">创建索引时同时指定<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e7%b4%a2%e5%bc%95%e6%97%b6%e5%90%8c%e6%97%b6%e6%8c%87%e5%ae%9a">#</a></h3>
+<p>创建索引时指定分片数和副本数。</p>
+<pre tabindex="0"><code>PUT movies
+{
+  &#34;mappings&#34; : {
+    &#34;properties&#34; : {
+      &#34;name&#34; : {
+        &#34;type&#34; : &#34;keyword&#34;
+      }
+    }
+  },
+  &#34;settings&#34; : {
+    &#34;index&#34; : {
+      &#34;number_of_shards&#34; : 1,
+      &#34;number_of_replicas&#34; : 2
+    }
+  }
+}</code></pre><h3 id="修改副本数量">修改副本数量<a class="anchor" href="#%e4%bf%ae%e6%94%b9%e5%89%af%e6%9c%ac%e6%95%b0%e9%87%8f">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">PUT</span> <span style="color:#960050;background-color:#1e0010">movie/_settings</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;index&#34;</span> : {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;number_of_replicas&#34;</span> : <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h3 id="修改分片数量">修改分片数量<a class="anchor" href="#%e4%bf%ae%e6%94%b9%e5%88%86%e7%89%87%e6%95%b0%e9%87%8f">#</a></h3>
+<p>分片数量必须在索引创建时指定，创建后无法修改。尝试修改时会报错：</p>
+<pre tabindex="0"><code># 请求
+PUT movie/_settings
+{
+  &#34;index&#34; : {
+    &#34;number_of_shards&#34; : 3
+  }
+}
+
+# 响应
+{
+  &#34;error&#34;: {
+    &#34;root_cause&#34;: [
+      {
+        &#34;type&#34;: &#34;illegal_argument_exception&#34;,
+        &#34;reason&#34;: &#34;Can&#39;t update non dynamic settings [[index.number_of_shards]] for open indices [[movie/BPnIxSCwTvWNtze-4gDJaw]]&#34;
+      }
+    ],
+    &#34;type&#34;: &#34;illegal_argument_exception&#34;,
+    &#34;reason&#34;: &#34;Can&#39;t update non dynamic settings [[index.number_of_shards]] for open indices [[movie/BPnIxSCwTvWNtze-4gDJaw]]&#34;
+  },
+  &#34;status&#34;: 400
+}</code></pre><h1 id="数据相关">数据相关<a class="anchor" href="#%e6%95%b0%e6%8d%ae%e7%9b%b8%e5%85%b3">#</a></h1>
+<h2 id="语法">语法<a class="anchor" href="#%e8%af%ad%e6%b3%95">#</a></h2>
+<p>添加</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>  *****************添加*************************
+</span></span><span style="display:flex;"><span>  // 如果不传id, 则系统自动生成一个UUID
+</span></span><span style="display:flex;"><span>  POST /index/type/
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#e6db74">&#34;属性名&#34;</span>:修改值
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 或者</span>
+</span></span><span style="display:flex;"><span>  POST /index/type/id
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#e6db74">&#34;属性名&#34;</span>:修改值
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  *****************修改*************************
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 没有带上的属性会被清除</span>
+</span></span><span style="display:flex;"><span>  POST /index/type/id
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#e6db74">&#34;属性名&#34;</span>:修改值
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  *****************查询*************************
+</span></span><span style="display:flex;"><span>  GET /index/type/id  
+</span></span><span style="display:flex;"><span>  *****************删除*************************
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 只是逻辑删除, 将其标记为 `delete` ，数据越来越多时, ES会自动物理删除</span>
+</span></span><span style="display:flex;"><span>  DELETE /index/type/id</span></span></code></pre></div><h2 id="实例">实例<a class="anchor" href="#%e5%ae%9e%e4%be%8b">#</a></h2>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>1.2 Elastatic Search配置</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="flex align-center">
+        <span>1.1 Docker概念及安装</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#查看集群健康信息">查看集群健康信息</a></li>
+    <li><a href="#查看集群中节点信息">查看集群中节点信息</a></li>
+    <li><a href="#查看集群中索引信息">查看集群中索引信息</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#创建索引">创建索引</a></li>
+    <li><a href="#查看索引">查看索引</a></li>
+    <li><a href="#删除索引">删除索引</a></li>
+    <li><a href="#查看某字母开头的索引">查看某字母开头的索引</a></li>
+    <li><a href="#查询所有索引">查询所有索引</a></li>
+    <li><a href="#mappings--settings">mappings / settings</a>
+      <ul>
+        <li><a href="#创建索引时指定-map">创建索引时指定 map</a></li>
+        <li><a href="#创建索引后指定-map">创建索引后指定 map</a></li>
+        <li><a href="#创建索引时同时指定">创建索引时同时指定</a></li>
+        <li><a href="#修改副本数量">修改副本数量</a></li>
+        <li><a href="#修改分片数量">修改分片数量</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#语法">语法</a></li>
+    <li><a href="#实例">实例</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

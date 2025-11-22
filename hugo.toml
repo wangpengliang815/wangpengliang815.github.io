@@ -1,0 +1,19 @@
+baseURL = "https://github.com/wangpengliang815/wangpengliang815.github.io/"
+languageCode = "zh-cn"
+title = "CODE'NOTE"
+theme = "hugo-book"
+
+[params]
+  BookMenuBundle = "/menu"
+  BookSearch = true
+  BookToC = true
+  BookComments = false
+  BookTheme = "auto"
+  BookHomePath = "/posts"
+  BookSectionPages = true
+  EnableGitInfo = true
+  BookCollapseSections = true
+
+[markup.goldmark.renderer]
+  unsafe = true
+

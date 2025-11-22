@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="什么是NoSQL# 在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd’s提出的关系模型的论文 “A relational model of data for large shared data banks”，这使得数据建模和应用程序编程更加简单。
+NoSQL(NoSQL = Not Only SQL )，意即&#34;不仅仅是SQL&#34;
+为什么要使用NoSQL# 传统关系型数据库面对海量数据的存储，以及实现高访问量、高并发读/写，显得力不从心。尤其是当面对超大规模、高并发、高吞吐量的大型动态网站的时候，就会暴露出很多难以克服的问题，影响用户体验。为了满足对海量数据的高速存储需求，实现高并发、高吞吐量，NoSQL 应运而生。NoSQL 的出现可以解决传统关系型数据库所不能解决的问题。
+1) ：NoSQL 解决了高并发读/写问题
+Web 2.0 动态网站需要根据用户的个性化信息来实时生成动态页面和提供动态信息，而无法使用动态页面的静态化技术，因此数据库的并发负载就会非常高。比如，微博、朋友圈的实时更新，就会出现每秒上万次的读/写需求。关系型数据库在面对每秒上万次的 SQL 查询操作时还能应对自如，但是在面对每秒上万次的 SQL 写操作时就难以胜任了。普通的 BBS 系统网站也存在高并发读/写的需求，比如，实时统计在线人数、记录热门帖子的浏览次数等，当面对这些需求时，传统的关系型数据库就会出现大量问题。
+2) NoSQL 解决了海量数据的高效率存储和访问问题
+面对实时产生的大数据量的存储与查询，关系型数据库是难以应付的，会显得效率非常低。而利用 NoSQL 的高效存储与查询能力，就能解决这个问题。
+3) NoSQL 实现了高可用性及高可扩展性
+在基于 Web 的架构中，关系型数据库难以进行横向扩展。当一个网站系统的用户量和访问量与日俱增的时候，数据库没有办法像 Web 服务器或应用服务器那样通过添加更多的硬件来搭建负载均衡的服务器。对于很多提供 24 小时不间断服务的网站来说，对数据库系统的维护升级和扩展是非常折磨人的一件事，往往需要停机维护和数据迁移。
+NoSQL 数据库特点# NoSQL 数据库具有如下特点
+容易扩展，方便使用。数据之间没有关系 数据模型非常灵活，无须提前为要存储的数据建立字段类型，随时可以存储自定义的数据格式 适合大数据量、高性能的存储 具有高并发读/写、高可用性 在什么应用场景下使用 NoSQL# NoSQL 数据库的应用场景比较广泛
+对于大数据量、高并发的存储系统及相关应用 对于一些数据模型比较简单的相关应用 对数据一致性要求不是很高的业务场景 对于给定 key 来映射一些复杂值的环境 对一些大型系统的日志信息的存储 存储用户信息，如大型电商系统的购物车、会话等 对于多数据源的数据存储 对易变化、热点高频信息、关键字等信息的存储 NoSQL四大分类# 键值(Key-Value)# 键值数据库就像在传统语言中使用的哈希表。可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/redis/1.1nosql%E6%A6%82%E8%BF%B0/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="什么是NoSQL# 在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd’s提出的关系模型的论文 “A relational model of data for large shared data banks”，这使得数据建模和应用程序编程更加简单。
+NoSQL(NoSQL = Not Only SQL )，意即&#34;不仅仅是SQL&#34;
+为什么要使用NoSQL# 传统关系型数据库面对海量数据的存储，以及实现高访问量、高并发读/写，显得力不从心。尤其是当面对超大规模、高并发、高吞吐量的大型动态网站的时候，就会暴露出很多难以克服的问题，影响用户体验。为了满足对海量数据的高速存储需求，实现高并发、高吞吐量，NoSQL 应运而生。NoSQL 的出现可以解决传统关系型数据库所不能解决的问题。
+1) ：NoSQL 解决了高并发读/写问题
+Web 2.0 动态网站需要根据用户的个性化信息来实时生成动态页面和提供动态信息，而无法使用动态页面的静态化技术，因此数据库的并发负载就会非常高。比如，微博、朋友圈的实时更新，就会出现每秒上万次的读/写需求。关系型数据库在面对每秒上万次的 SQL 查询操作时还能应对自如，但是在面对每秒上万次的 SQL 写操作时就难以胜任了。普通的 BBS 系统网站也存在高并发读/写的需求，比如，实时统计在线人数、记录热门帖子的浏览次数等，当面对这些需求时，传统的关系型数据库就会出现大量问题。
+2) NoSQL 解决了海量数据的高效率存储和访问问题
+面对实时产生的大数据量的存储与查询，关系型数据库是难以应付的，会显得效率非常低。而利用 NoSQL 的高效存储与查询能力，就能解决这个问题。
+3) NoSQL 实现了高可用性及高可扩展性
+在基于 Web 的架构中，关系型数据库难以进行横向扩展。当一个网站系统的用户量和访问量与日俱增的时候，数据库没有办法像 Web 服务器或应用服务器那样通过添加更多的硬件来搭建负载均衡的服务器。对于很多提供 24 小时不间断服务的网站来说，对数据库系统的维护升级和扩展是非常折磨人的一件事，往往需要停机维护和数据迁移。
+NoSQL 数据库特点# NoSQL 数据库具有如下特点
+容易扩展，方便使用。数据之间没有关系 数据模型非常灵活，无须提前为要存储的数据建立字段类型，随时可以存储自定义的数据格式 适合大数据量、高性能的存储 具有高并发读/写、高可用性 在什么应用场景下使用 NoSQL# NoSQL 数据库的应用场景比较广泛
+对于大数据量、高并发的存储系统及相关应用 对于一些数据模型比较简单的相关应用 对数据一致性要求不是很高的业务场景 对于给定 key 来映射一些复杂值的环境 对一些大型系统的日志信息的存储 存储用户信息，如大型电商系统的购物车、会话等 对于多数据源的数据存储 对易变化、热点高频信息、关键字等信息的存储 NoSQL四大分类# 键值(Key-Value)# 键值数据库就像在传统语言中使用的哈希表。可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="什么是NoSQL# 在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd’s提出的关系模型的论文 “A relational model of data for large shared data banks”，这使得数据建模和应用程序编程更加简单。
+NoSQL(NoSQL = Not Only SQL )，意即&#34;不仅仅是SQL&#34;
+为什么要使用NoSQL# 传统关系型数据库面对海量数据的存储，以及实现高访问量、高并发读/写，显得力不从心。尤其是当面对超大规模、高并发、高吞吐量的大型动态网站的时候，就会暴露出很多难以克服的问题，影响用户体验。为了满足对海量数据的高速存储需求，实现高并发、高吞吐量，NoSQL 应运而生。NoSQL 的出现可以解决传统关系型数据库所不能解决的问题。
+1) ：NoSQL 解决了高并发读/写问题
+Web 2.0 动态网站需要根据用户的个性化信息来实时生成动态页面和提供动态信息，而无法使用动态页面的静态化技术，因此数据库的并发负载就会非常高。比如，微博、朋友圈的实时更新，就会出现每秒上万次的读/写需求。关系型数据库在面对每秒上万次的 SQL 查询操作时还能应对自如，但是在面对每秒上万次的 SQL 写操作时就难以胜任了。普通的 BBS 系统网站也存在高并发读/写的需求，比如，实时统计在线人数、记录热门帖子的浏览次数等，当面对这些需求时，传统的关系型数据库就会出现大量问题。
+2) NoSQL 解决了海量数据的高效率存储和访问问题
+面对实时产生的大数据量的存储与查询，关系型数据库是难以应付的，会显得效率非常低。而利用 NoSQL 的高效存储与查询能力，就能解决这个问题。
+3) NoSQL 实现了高可用性及高可扩展性
+在基于 Web 的架构中，关系型数据库难以进行横向扩展。当一个网站系统的用户量和访问量与日俱增的时候，数据库没有办法像 Web 服务器或应用服务器那样通过添加更多的硬件来搭建负载均衡的服务器。对于很多提供 24 小时不间断服务的网站来说，对数据库系统的维护升级和扩展是非常折磨人的一件事，往往需要停机维护和数据迁移。
+NoSQL 数据库特点# NoSQL 数据库具有如下特点
+容易扩展，方便使用。数据之间没有关系 数据模型非常灵活，无须提前为要存储的数据建立字段类型，随时可以存储自定义的数据格式 适合大数据量、高性能的存储 具有高并发读/写、高可用性 在什么应用场景下使用 NoSQL# NoSQL 数据库的应用场景比较广泛
+对于大数据量、高并发的存储系统及相关应用 对于一些数据模型比较简单的相关应用 对数据一致性要求不是很高的业务场景 对于给定 key 来映射一些复杂值的环境 对一些大型系统的日志信息的存储 存储用户信息，如大型电商系统的购物车、会话等 对于多数据源的数据存储 对易变化、热点高频信息、关键字等信息的存储 NoSQL四大分类# 键值(Key-Value)# 键值数据库就像在传统语言中使用的哈希表。可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。">
+  <meta itemprop="wordCount" content="153">
+
+<title>1.1 No Sql概述 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/redis/1.1nosql%E6%A6%82%E8%BF%B0/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.1 No Sql概述</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#键值key-value">键值(Key-Value)</a></li>
+    <li><a href="#列存储"><strong>列存储</strong></a></li>
+    <li><a href="#文档型"><strong>文档型</strong></a></li>
+    <li><a href="#图形graph"><strong>图形(Graph)</strong></a></li>
+    <li><a href="#nosql数据库对比"><strong>NoSQL数据库对比</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.1 No Sql概述
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="什么是nosql">什么是NoSQL<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afnosql">#</a></h1>
+<p>在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd&rsquo;s提出的关系模型的论文 &ldquo;A relational model of data for large shared data banks&rdquo;，这使得数据建模和应用程序编程更加简单。</p>
+<blockquote class='book-hint '>
+<p>NoSQL(NoSQL = Not Only SQL )，意即&quot;不仅仅是SQL&quot;</p>
+</blockquote><!-- more -->
+<h1 id="为什么要使用nosql">为什么要使用NoSQL<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e4%bd%bf%e7%94%a8nosql">#</a></h1>
+<p>传统关系型数据库面对海量数据的存储，以及实现高访问量、高并发读/写，显得力不从心。尤其是当面对超大规模、高并发、高吞吐量的大型动态网站的时候，就会暴露出很多难以克服的问题，影响用户体验。为了满足对海量数据的高速存储需求，实现高并发、高吞吐量，NoSQL 应运而生。NoSQL 的出现可以解决传统关系型数据库所不能解决的问题。</p>
+<p><strong>1) ：NoSQL 解决了高并发读/写问题</strong></p>
+<p>Web 2.0 动态网站需要根据用户的个性化信息来实时生成动态页面和提供动态信息，而无法使用动态页面的静态化技术，因此数据库的并发负载就会非常高。比如，微博、朋友圈的实时更新，就会出现每秒上万次的读/写需求。关系型数据库在面对每秒上万次的 SQL 查询操作时还能应对自如，但是在面对每秒上万次的 SQL 写操作时就难以胜任了。普通的 BBS 系统网站也存在高并发读/写的需求，比如，实时统计在线人数、记录热门帖子的浏览次数等，当面对这些需求时，传统的关系型数据库就会出现大量问题。</p>
+<p><strong>2) NoSQL 解决了海量数据的高效率存储和访问问题</strong></p>
+<p>面对实时产生的<a href="http://c.biancheng.net/big_data/">大数据</a>量的存储与查询，关系型数据库是难以应付的，会显得效率非常低。而利用 NoSQL 的高效存储与查询能力，就能解决这个问题。</p>
+<p><strong>3) NoSQL 实现了高可用性及高可扩展性</strong></p>
+<p>在基于 Web 的架构中，关系型数据库难以进行横向扩展。当一个网站系统的用户量和访问量与日俱增的时候，数据库没有办法像 Web 服务器或应用服务器那样通过添加更多的硬件来搭建负载均衡的服务器。对于很多提供 24 小时不间断服务的网站来说，对数据库系统的维护升级和扩展是非常折磨人的一件事，往往需要停机维护和数据迁移。</p>
+<h1 id="nosql-数据库特点">NoSQL 数据库特点<a class="anchor" href="#nosql-%e6%95%b0%e6%8d%ae%e5%ba%93%e7%89%b9%e7%82%b9">#</a></h1>
+<p>NoSQL 数据库具有如下特点</p>
+<ul>
+<li>容易扩展，方便使用。数据之间没有关系</li>
+<li>数据模型非常灵活，无须提前为要存储的数据建立字段类型，随时可以存储自定义的数据格式</li>
+<li>适合大数据量、高性能的存储</li>
+<li>具有高并发读/写、高可用性</li>
+</ul>
+<h1 id="在什么应用场景下使用-nosql">在什么应用场景下使用 NoSQL<a class="anchor" href="#%e5%9c%a8%e4%bb%80%e4%b9%88%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af%e4%b8%8b%e4%bd%bf%e7%94%a8-nosql">#</a></h1>
+<p>NoSQL 数据库的应用场景比较广泛</p>
+<ul>
+<li>对于大数据量、高并发的存储系统及相关应用</li>
+<li>对于一些数据模型比较简单的相关应用</li>
+<li>对数据一致性要求不是很高的业务场景</li>
+<li>对于给定 key 来映射一些复杂值的环境</li>
+<li>对一些大型系统的日志信息的存储</li>
+<li>存储用户信息，如大型电商系统的购物车、会话等</li>
+<li>对于多数据源的数据存储</li>
+<li>对易变化、热点高频信息、关键字等信息的存储</li>
+</ul>
+<h1 id="nosql四大分类">NoSQL四大分类<a class="anchor" href="#nosql%e5%9b%9b%e5%a4%a7%e5%88%86%e7%b1%bb">#</a></h1>
+<h2 id="键值key-value">键值(Key-Value)<a class="anchor" href="#%e9%94%ae%e5%80%bckey-value">#</a></h2>
+<p>键值数据库就像在传统语言中使用的哈希表。可以通过key来添加、查询或者删除数据，鉴于使用主键访问，所以会获得不错的性能及扩展性。</p>
+<p><strong>产品</strong>：Riak、Redis、Memcached、Amazon’s Dynamo、Project Voldemort</p>
+<p><strong>适用场景</strong>：</p>
+<p>储存用户信息，比如会话、配置文件、参数、购物车等等。这些信息一般都和ID(键)挂钩，这种情景下键值数据库是个很好的选择。</p>
+<p><strong>不适用场景</strong>：</p>
+<p>取代通过键查询，而是通过值来查询。Key-Value数据库中根本没有通过值查询的途径</p>
+<p>需要储存数据之间的关系。在Key-Value数据库中不能通过两个或以上的键来关联数据</p>
+<p>事务的支持。在Key-Value数据库中故障产生时不可以进行回滚</p>
+<h2 id="列存储"><strong>列存储</strong><a class="anchor" href="#%e5%88%97%e5%ad%98%e5%82%a8">#</a></h2>
+<p>列存储数据库将数据储存在列族(column family)中，一个列族存储经常被一起查询的相关数据。举个例子，如果我们有一个Person类，我们通常会一起查询他们的姓名和年龄而不是薪资。这种情况下，姓名和年龄就会被放入一个列族中，而薪资则在另一个列族中。</p>
+<p><strong>产品</strong>：Cassandra、HBase</p>
+<p><strong>适用场景</strong></p>
+<p>可以将数据储存在不同的列中，每个应用程序可以将信息写入自己的列族中。</p>
+<p>博客平台。储存每个信息到不同的列族中。举例：标签储存在一个，类别在一个，文章则在另一个。</p>
+<p><strong>不适用场景</strong></p>
+<p>如果需要ACID事务。Vassandra就不支持事务</p>
+<p>原型设计。如果分析Cassandra的数据结构，就会发现结构是基于期望的数据查询方式而定。在模型设计之初，根本不可能去预测它的查询方式，而一旦查询方式改变，就必须重新设计列族。</p>
+<h2 id="文档型"><strong>文档型</strong><a class="anchor" href="#%e6%96%87%e6%a1%a3%e5%9e%8b">#</a></h2>
+<p>面向文档数据库会将数据以文档的形式储存。每个文档都是自包含的数据单元，是一系列数据项的集合。每个数据项都有一个名称与对应的值，值既可以是简单的数据类型，如字符串、数字和日期等;也可以是复杂的类型，如有序列表和关联对象。数据存储的最小单位是文档，同一个表中存储的文档属性可以是不同的，数据可以使用XML、JSON或者JSONB等多种形式存储。</p>
+<p><strong>产品</strong>：MongoDB、CouchDB、RavenDB</p>
+<p><strong>适用场景</strong></p>
+<p>日志，企业环境下，每个应用程序都有不同的日志信息。Document-Oriented数据库并没有固定的模式，所以可以使用它储存不同的信息</p>
+<p>分析，鉴于它的弱模式结构，不改变模式下就可以储存不同的度量方法及添加新的度量</p>
+<p><strong>不适用场景</strong></p>
+<p>在不同的文档上添加事务。Document-Oriented数据库并不支持文档间的事务，如果对这方面有需求则不应该选用这个解决方案。</p>
+<h2 id="图形graph"><strong>图形(Graph)</strong><a class="anchor" href="#%e5%9b%be%e5%bd%a2graph">#</a></h2>
+<p>图数据库允许将数据以图的方式储存。实体会被作为顶点，而实体之间的关系则会被作为边。比如我们有三个实体，Steve Jobs、Apple和Next，则会有两个“Founded by”的边将Apple和Next连接到Steve Jobs。</p>
+<p><strong>产品</strong>：Neo4J、Infinite Graph、OrientDB</p>
+<p><strong>适用场景</strong></p>
+<p>在一些关系性强的数据中</p>
+<p>推荐引擎。如果将数据以图的形式表现，那么将会非常有益于推荐的制定</p>
+<p><strong>不适用场景</strong></p>
+<p>不适合的数据模型。图数据库的适用范围很小，因为很少有操作涉及到整个图</p>
+<h2 id="nosql数据库对比"><strong>NoSQL数据库对比</strong><a class="anchor" href="#nosql%e6%95%b0%e6%8d%ae%e5%ba%93%e5%af%b9%e6%af%94">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>分类</strong></th>
+          <th><strong>Examples举例</strong></th>
+          <th><strong>典型应用场景</strong></th>
+          <th><strong>数据模型</strong></th>
+          <th><strong>优点</strong></th>
+          <th style="text-align: left"><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>键值（key-value）</td>
+          <td>Key 指向 Value 的键值对，通常用hash table来实现</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td>列存储数据库</td>
+          <td>Cassandra, HBase, Riak</td>
+          <td>分布式的文件系统</td>
+          <td>以列簇式存储，将同一列数据存在一起</td>
+          <td>查找速度快，可扩展性强，更容易进行分布式扩展</td>
+          <td style="text-align: left">功能相对局限</td>
+      </tr>
+      <tr>
+          <td>文档型数据库</td>
+          <td>CouchDB, MongoDb</td>
+          <td>Web应用（与Key-Value类似，Value是结构化的，不同的是数据库能够了解Value的内容）</td>
+          <td>Key-Value对应的键值对，Value为结构化数据</td>
+          <td>数据结构要求不严格，表结构可变，不需要像关系型数据库一样需要预先定义表结构</td>
+          <td style="text-align: left">查询性能不高，而且缺乏统一的查询语法。</td>
+      </tr>
+      <tr>
+          <td>图形(Graph)数据库</td>
+          <td>Neo4J, InfoGrid, Infinite Graph</td>
+          <td>社交网络，推荐系统等。专注于构建关系图谱</td>
+          <td>图结构</td>
+          <td>利用图结构相关算法。比如最短路径寻址，N度关系查找等</td>
+          <td style="text-align: left">很多时候需要对整个图做计算才能得出需要的信息，而且这种结构不太好做分布式的集群方案。</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.10 Redis常见问题</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/redis/1.2redis%E5%AE%89%E8%A3%85/" class="flex align-center">
+      <span>1.2 Redis安装</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#键值key-value">键值(Key-Value)</a></li>
+    <li><a href="#列存储"><strong>列存储</strong></a></li>
+    <li><a href="#文档型"><strong>文档型</strong></a></li>
+    <li><a href="#图形graph"><strong>图形(Graph)</strong></a></li>
+    <li><a href="#nosql数据库对比"><strong>NoSQL数据库对比</strong></a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

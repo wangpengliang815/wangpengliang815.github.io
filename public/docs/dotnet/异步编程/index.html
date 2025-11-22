@@ -1,0 +1,2651 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="对于多线程，经常使用的是 Thread。在了解 Task 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 .net 4.0 之后被一种称为 基于“任务的编程模型” 所冲击，这就是 Task。
+Task 会比 Thread 具有更小的性能开销，Task 是架构在 Thread 之上的就是说 Task 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。Task 类的表示单个操作不返回一个值，通常以异步方式执行，Task 对象是 &#34;基于任务的异步模式“ 首次引入 .NET Framework 4 中。
+因为由执行工作 Task 对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用Status 属性，以及 IsCanceled,IsCompleted, 和 IsFaulted属性，以确定任务的状态。
+相关概念理解# 同步（Synchronous） 异步 (Asynchronous) 阻塞 (Blocking) 非阻塞(Nonblocking) 同步/异步指的是在客户端
+同步意味着：客户端提出了一个请求以后，在回应之前只能等待 异步意味着：客户端提出一个请求以后，还可以继续提其他请求
+阻塞/非阻塞指的是服务器端
+阻塞意味着：服务器接受一个请求后，在返回结果以前不能接受其他请求 非阻塞意味着：服务器接受一个请求后，尽管没有返回结果，还是可以继续接受其他请求
+同步与异步# 同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)
+所谓同步，就是在发出一个调用时，在没有得到结果之前，该调用就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由调用者主动等待这个调用的结果。
+而异步则是相反，调用在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在调用发出后，被调用者通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)
+同步通信机制
+你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，“我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）
+异步通信机制
+书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&#34;回电&#34;这种方式来回调
+阻塞与非阻塞# 阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态，阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程
+Example
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="对于多线程，经常使用的是 Thread。在了解 Task 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 .net 4.0 之后被一种称为 基于“任务的编程模型” 所冲击，这就是 Task。
+Task 会比 Thread 具有更小的性能开销，Task 是架构在 Thread 之上的就是说 Task 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。Task 类的表示单个操作不返回一个值，通常以异步方式执行，Task 对象是 &#34;基于任务的异步模式“ 首次引入 .NET Framework 4 中。
+因为由执行工作 Task 对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用Status 属性，以及 IsCanceled,IsCompleted, 和 IsFaulted属性，以确定任务的状态。
+相关概念理解# 同步（Synchronous） 异步 (Asynchronous) 阻塞 (Blocking) 非阻塞(Nonblocking) 同步/异步指的是在客户端
+同步意味着：客户端提出了一个请求以后，在回应之前只能等待 异步意味着：客户端提出一个请求以后，还可以继续提其他请求
+阻塞/非阻塞指的是服务器端
+阻塞意味着：服务器接受一个请求后，在返回结果以前不能接受其他请求 非阻塞意味着：服务器接受一个请求后，尽管没有返回结果，还是可以继续接受其他请求
+同步与异步# 同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)
+所谓同步，就是在发出一个调用时，在没有得到结果之前，该调用就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由调用者主动等待这个调用的结果。
+而异步则是相反，调用在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在调用发出后，被调用者通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)
+同步通信机制
+你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，“我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）
+异步通信机制
+书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&#34;回电&#34;这种方式来回调
+阻塞与非阻塞# 阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态，阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程
+Example">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="对于多线程，经常使用的是 Thread。在了解 Task 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 .net 4.0 之后被一种称为 基于“任务的编程模型” 所冲击，这就是 Task。
+Task 会比 Thread 具有更小的性能开销，Task 是架构在 Thread 之上的就是说 Task 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。Task 类的表示单个操作不返回一个值，通常以异步方式执行，Task 对象是 &#34;基于任务的异步模式“ 首次引入 .NET Framework 4 中。
+因为由执行工作 Task 对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用Status 属性，以及 IsCanceled,IsCompleted, 和 IsFaulted属性，以确定任务的状态。
+相关概念理解# 同步（Synchronous） 异步 (Asynchronous) 阻塞 (Blocking) 非阻塞(Nonblocking) 同步/异步指的是在客户端
+同步意味着：客户端提出了一个请求以后，在回应之前只能等待 异步意味着：客户端提出一个请求以后，还可以继续提其他请求
+阻塞/非阻塞指的是服务器端
+阻塞意味着：服务器接受一个请求后，在返回结果以前不能接受其他请求 非阻塞意味着：服务器接受一个请求后，尽管没有返回结果，还是可以继续接受其他请求
+同步与异步# 同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)
+所谓同步，就是在发出一个调用时，在没有得到结果之前，该调用就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由调用者主动等待这个调用的结果。
+而异步则是相反，调用在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在调用发出后，被调用者通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)
+同步通信机制
+你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，“我查一下”，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）
+异步通信机制
+书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&#34;回电&#34;这种方式来回调
+阻塞与非阻塞# 阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态，阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程
+Example">
+  <meta itemprop="wordCount" content="948">
+
+<title>异步编程 | CODE&#39;NOTE</title>
+<link rel="icon" href="/wangpengliang815/wangpengliang815.github.io/favicon.png" >
+<link rel="manifest" href="/wangpengliang815/wangpengliang815.github.io/manifest.json">
+<link rel="canonical" href="https://github.com/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">
+<link rel="stylesheet" href="/wangpengliang815/wangpengliang815.github.io/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/fuse.min.js"></script>
+  <script defer src="/wangpengliang815/wangpengliang815.github.io/en.search.min.8fc611428ac3de10742ceb0169ea3df0598714dcd6cbc84ebe57dc6739a7521c.js" integrity="sha256-j8YRQorD3hB0LOsBaeo98FmHFNzWy8hOvlfcZzmnUhw=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/wangpengliang815/wangpengliang815.github.io/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0a19d3a7daa7f2a902390735b978f141" class="toggle" checked />
+    <label for="section-0a19d3a7daa7f2a902390735b978f141" class="flex">
+      <a role="button" class="">
+        📚 .NET</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" class="">
+      值类型和引用类型的内存分配</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%8F%8D%E5%B0%84%E6%8A%80%E6%9C%AF/" class="">
+      反射技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%9F%BA%E7%A1%80%E5%90%88%E9%9B%86/" class="">
+      基础合集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="">
+      多线程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/" class="">
+      委托和事件</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="">
+      并行编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="active">
+      异步编程</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="">
+      数据结构</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%B3%9B%E5%9E%8B%E6%8A%80%E6%9C%AF/" class="">
+      泛型技术</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" class="">
+      线程同步</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="">
+      面向对象</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a711e15e6217a03d3f896c4001f054af" class="toggle"  />
+    <label for="section-a711e15e6217a03d3f896c4001f054af" class="flex">
+      <a role="button" class="">
+        🎭 PMI-ACP</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3/" class="">
+      Pmi Acp基础了解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acpdown/" class="">
+      Pmi Acpdown</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B001/" class="">
+      Pmi Acp备考笔记01</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B002/" class="">
+      Pmi Acp备考笔记02</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/acp/pmi-acp%E5%A4%87%E8%80%83%E7%AC%94%E8%AE%B003/" class="">
+      Pmi Acp备考笔记03</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-158c55270b3b873b36b554def2308a8c" class="toggle"  />
+    <label for="section-158c55270b3b873b36b554def2308a8c" class="flex">
+      <a role="button" class="">
+        ⌛ 软件测试</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="">
+      单元测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95k6/" class="">
+      压力测试k6</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E8%87%AA%E5%8A%A8%E5%8C%96ui%E6%B5%8B%E8%AF%95/" class="">
+      自动化 Ui测试</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/test/%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95/" class="">
+      集成测试</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e4cd5c9690a397be164e18996eeec25" class="toggle"  />
+    <label for="section-9e4cd5c9690a397be164e18996eeec25" class="flex">
+      <a role="button" class="">
+        ⛷️ Prometheus</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.1prometheus%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Prometheus简介及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.2exporter%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86/" class="">
+      1.2 Exporter数据采集</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.3promql%E6%9F%A5%E8%AF%A2%E8%AF%AD%E8%A8%80/" class="">
+      1.3 Prom Ql查询语言</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.4alertmanager%E5%91%8A%E8%AD%A6%E5%A4%84%E7%90%86/" class="">
+      1.4 Alertmanager告警处理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/prometheus/1.5grafana%E7%9B%91%E6%8E%A7%E5%8F%AF%E8%A7%86%E5%8C%96/" class="">
+      1.5 Grafana监控可视化</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ed189cb26f56d17bb0a62923d94a7183" class="toggle"  />
+    <label for="section-ed189cb26f56d17bb0a62923d94a7183" class="flex">
+      <a role="button" class="">
+        🐇 RabbitMq</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.1rabbitmq%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Rabbit Mq概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="">
+      1.2工作模式介绍</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.3消息确认及持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="">
+      1.4两种消费模式和 Qos的实现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.5channel%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95/" class="">
+      1.5 Channel常见方法</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.6rabbitmq%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      1.6 Rabbit Mq常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.7rabbitmq%E5%B8%B8%E8%A7%81%E7%AD%96%E7%95%A5/" class="">
+      1.7 Rabbit Mq常见策略</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.8rabbitmq%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.8 Rabbit Mq常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/1.9rabbitmq%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Rabbit Mq集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/" class="">
+      客户端连接 Rabbit Mq</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-41a08237d2a583bb6567a7bd11f94f3e" class="toggle"  />
+    <label for="section-41a08237d2a583bb6567a7bd11f94f3e" class="flex">
+      <a role="button" class="">
+        🐹 Golang</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/01%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="">
+      01开发环境搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/02%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F/" class="">
+      02变量和常量</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/03%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      03基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/04%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6/" class="">
+      04流程控制和运算符</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/05%E6%95%B0%E7%BB%84/" class="">
+      05数组</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/06%E5%88%87%E7%89%87/" class="">
+      06切片</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/07map/" class="">
+      07map</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/08%E5%87%BD%E6%95%B0/" class="">
+      08函数</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/09%E6%8C%87%E9%92%88/" class="">
+      09指针</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/10%E5%8F%8D%E5%B0%84/" class="">
+      10反射</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/11%E7%BB%93%E6%9E%84%E4%BD%93/" class="">
+      11结构体</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/12%E6%8E%A5%E5%8F%A3/" class="">
+      12接口</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/channel/" class="">
+      Channel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="">
+      Csp并发模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/goroutine/" class="">
+      Goroutine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/gpm%E5%8E%9F%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6/" class="">
+      Gpm原理与调度</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="">
+      原子操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E5%92%8C%E9%94%81/" class="">
+      并发安全和锁</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/flag/" class="">
+      Flag</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/fmt/" class="">
+      Fmt</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/log/" class="">
+      Log</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/go/%E6%A0%87%E5%87%86%E5%BA%93/time/" class="">
+      Time</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a212feaafca18e39712c162267ab7930" class="toggle"  />
+    <label for="section-a212feaafca18e39712c162267ab7930" class="flex">
+      <a role="button" class="">
+        💫 Microservice</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.1%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/" class="">
+      1.1微服务入门之项目搭建</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" class="">
+      1.2微服务入门之服务注册与发现</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.3%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E7%BD%91%E5%85%B3/" class="">
+      1.3微服务入门之网关</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.4%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8B%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF/" class="">
+      1.4微服务入门之事件总线</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/1.5%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8%E4%B9%8Bdockercompose/" class="">
+      1.5微服务入门之 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/microservice/consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%8F%91%E7%8E%B0/" class="">
+      Consul服务注册发现</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-797c59d4c24223beac308482801fe996" class="toggle"  />
+    <label for="section-797c59d4c24223beac308482801fe996" class="flex">
+      <a role="button" class="">
+        📦 Redis</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="">
+      1.10 Redis常见问题</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.1nosql%E6%A6%82%E8%BF%B0/" class="">
+      1.1 No Sql概述</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.2redis%E5%AE%89%E8%A3%85/" class="">
+      1.2 Redis安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.3 Redis基本数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="">
+      1.4 Redis特殊数据类型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/" class="">
+      1.5 Redis事务操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" class="">
+      1.6 Redis配置文件详解</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/" class="">
+      1.7 Redis持久化</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="">
+      1.8 Redis发布订阅</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/1.9redis%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88/" class="">
+      1.9 Redis集群方案</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAredis%E9%9B%86%E7%BE%A4/" class="">
+      使用 Docker搭建 Redis集群</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/redis/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5redis/" class="">
+      客户端连接 Redis</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-146aedbcf8714fb62838757a1082a467" class="toggle"  />
+    <label for="section-146aedbcf8714fb62838757a1082a467" class="flex">
+      <a role="button" class="">
+        🔎 ELK</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="">
+      1.1 Elastatic Search入门</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/" class="">
+      1.2 Elastatic Search配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="">
+      1.3使用 Kibana操作 Es</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e876d2a6c86b79fe88fd120640b84773" class="toggle"  />
+    <label for="section-e876d2a6c86b79fe88fd120640b84773" class="flex">
+      <a role="button" class="">
+        🚢 Docker</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.1docker%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%AE%89%E8%A3%85/" class="">
+      1.1 Docker概念及安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.2docker%E9%95%9C%E5%83%8F/" class="">
+      1.2 Docker镜像</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="">
+      1.3 Docker容器</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.4docker%E4%BB%93%E5%BA%93/" class="">
+      1.4 Docker仓库</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="">
+      1.5 Docker数据管理</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.6docker%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F/" class="">
+      1.6 Docker容器网络模式</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.7docker%E9%AB%98%E7%BA%A7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      1.7 Docker高级网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.8dockerfile/" class="">
+      1.8 Dockerfile</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/1.9dockercompose/" class="">
+      1.9 Docker Compose</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.0dockermachine/" class="">
+      2.0 Docker Machine</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.1dockerswarm/" class="">
+      2.1 Docker Swarm</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.2docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      2.2 Docker常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/docker/2.3portainer%E5%8F%AF%E8%A7%86%E5%8C%96%E9%9D%A2%E6%9D%BF/" class="">
+      2.3 Portainer可视化面板</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="toggle"  />
+    <label for="section-31ced7a6f12c0e1d312f5c9d5aa42f8e" class="flex">
+      <a role="button" class="">
+        🕸️ K8s</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="">
+      Kubernetes基础知识</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/kubernetes/kubernetes%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/" class="">
+      Kubernetes集群安装</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b7939089f2d38db5071ac1464e01a040" class="toggle"  />
+    <label for="section-b7939089f2d38db5071ac1464e01a040" class="flex">
+      <a role="button" class="">
+        🖥️ Linux</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos7%E5%8D%87%E7%BA%A7gcc%E7%89%88%E6%9C%AC/" class="">
+      Centos7升级gcc版本</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E5%AE%89%E8%A3%85hexo/" class="">
+      Centos安装 Hexo</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/centos%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="">
+      Centos网络配置</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="">
+      Linux常用命令</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/linux%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E/" class="">
+      Linux目录说明</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/linux/vmware%E5%AE%89%E8%A3%85centos/" class="">
+      Vmware安装 Centos</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="toggle"  />
+    <label for="section-3f1b0bb4bbdd3ea5d43f21f5b8664c28" class="flex">
+      <a role="button" class="">
+        🛍️ Devops</a>
+      <img src="/wangpengliang815/wangpengliang815.github.io/icons/chevron-right.svg" class="book-icon" alt="Expand" />
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/gitlab%E5%AE%89%E8%A3%85/" class="">
+      Gitlab安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%AE%89%E8%A3%85/" class="">
+      Jenkins安装</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/jenkins%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C/" class="">
+      Jenkins常见操作</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/wangpengliang815/wangpengliang815.github.io/docs/devops/nugetserver%E6%90%AD%E5%BB%BA/" class="">
+      Nuget Server搭建</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>异步编程</h3>
+
+  <label for="toc-control">
+    
+    <img src="/wangpengliang815/wangpengliang815.github.io/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#单线程同步模型">单线程同步模型</a></li>
+    <li><a href="#多线程模型">多线程模型</a></li>
+    <li><a href="#异步模型">异步模型</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#创建任务">创建任务</a>
+      <ul>
+        <li><a href="#new-taskfactory">new TaskFactory()</a></li>
+        <li><a href="#taskfactory">Task.Factory</a></li>
+        <li><a href="#new-task">new Task()</a></li>
+        <li><a href="#taskrun">Task.Run</a></li>
+      </ul>
+    </li>
+    <li><a href="#同步任务">同步任务</a></li>
+    <li><a href="#使用单独线程的任务">使用单独线程的任务</a></li>
+    <li><a href="#task生命周期">Task生命周期</a></li>
+    <li><a href="#task任务控制">Task任务控制</a></li>
+    <li><a href="#task返回类型">Task返回类型</a>
+      <ul>
+        <li><a href="#void">void</a></li>
+        <li><a href="#task">Task</a></li>
+        <li><a href="#taskt"><code>Task&lt;T&gt;</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#连续任务">连续任务</a></li>
+    <li><a href="#嵌套task">嵌套Task</a>
+      <ul>
+        <li><a href="#关联嵌套">关联嵌套</a></li>
+        <li><a href="#非关联嵌套">非关联嵌套</a></li>
+      </ul>
+    </li>
+    <li><a href="#task取消">Task取消</a>
+      <ul>
+        <li><a href="#单个任务">单个任务</a></li>
+        <li><a href="#多个任务">多个任务</a></li>
+        <li><a href="#定时取消">定时取消</a></li>
+      </ul>
+    </li>
+    <li><a href="#取消时回调">取消时回调</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#asyncawait并不能提升性能">async/await并不能提升性能?</a></li>
+    <li><a href="#asyncawait死锁问题">async/await死锁问题</a>
+      <ul>
+        <li><a href="#可能发生死锁的程序类型">可能发生死锁的程序类型</a></li>
+        <li><a href="#什么情况下会产生死锁">什么情况下会产生死锁?</a></li>
+        <li><a href="#死锁的原因">死锁的原因?</a></li>
+        <li><a href="#there-is-no-thread">There Is No Thread</a></li>
+        <li><a href="#不会造成死锁的充分条件">不会造成死锁的充分条件</a></li>
+      </ul>
+    </li>
+    <li><a href="#如何避免死锁">如何避免死锁</a></li>
+    <li><a href="#更多死锁相关">更多死锁相关</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><p>对于多线程，经常使用的是 <code>Thread</code>。在了解 <code>Task</code> 之前，如果要使用多核的功能可能就会自己来开线程，然而这种线程模型在 <code>.net 4.0</code> 之后被一种称为 <code>基于“任务的编程模型”</code> 所冲击，这就是 <code>Task</code>。</p>
+<p><code>Task </code>会比 <code>Thread</code> 具有更小的性能开销，<code>Task </code>是架构在 <code>Thread</code> 之上的就是说 <code>Task</code> 最终还是会抛给线程去做，并且任务跟线程不是一对一的关系，比如开 10 个任务并不是说会开 10 个线程，这一点任务有点类似线程池，但是任务相比线程池有很小的开销和精确的控制。<code>Task</code> 类的表示单个操作不返回一个值，通常以异步方式执行，<code>Task</code>  对象是 <code>&quot;基于任务的异步模式“</code> 首次引入 <code>.NET Framework 4</code>  中。</p>
+<p>因为由执行工作  <code>Task</code> 对象通常以异步方式执行在线程池线程上而不是以同步方式在主应用程序线程，可以使用<code>Status </code>属性，以及 <code>IsCanceled</code>,<code>IsCompleted</code>, 和 <code>IsFaulted</code>属性，以确定任务的状态。</p>
+<h1 id="相关概念理解">相关概念理解<a class="anchor" href="#%e7%9b%b8%e5%85%b3%e6%a6%82%e5%bf%b5%e7%90%86%e8%a7%a3">#</a></h1>
+<ul>
+<li>同步（Synchronous）</li>
+<li>异步 (Asynchronous)</li>
+<li>阻塞 (Blocking)</li>
+<li>非阻塞(Nonblocking)</li>
+</ul>
+<p>同步/异步指的是在客户端</p>
+<blockquote class='book-hint '>
+<p>同步意味着：客户端提出了一个请求以后，在回应之前只能等待
+异步意味着：客户端提出一个请求以后，还可以继续提其他请求</p>
+</blockquote><p>阻塞/非阻塞指的是服务器端</p>
+<blockquote class='book-hint '>
+<p>阻塞意味着：服务器接受一个请求后，在返回结果以前不能接受其他请求
+非阻塞意味着：服务器接受一个请求后，尽管没有返回结果，还是可以继续接受其他请求</p>
+</blockquote><h1 id="同步与异步">同步与异步<a class="anchor" href="#%e5%90%8c%e6%ad%a5%e4%b8%8e%e5%bc%82%e6%ad%a5">#</a></h1>
+<p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)</p>
+<p>所谓同步，就是在发出一个<strong>调用</strong>时，在没有得到结果之前，该<strong>调用</strong>就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<strong>调用者</strong>主动等待这个<strong>调用</strong>的结果。</p>
+<p>而异步则是相反，<strong>调用</strong>在发出之后，这个调用就直接返回了，所以没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果,而是在<strong>调用</strong>发出后，<strong>被调用者</strong>通过状态、通知来通知调用者，或通过回调函数处理这个调用。(典型的异步编程模型比如Node.js)</p>
+<p><strong>同步通信机制</strong></p>
+<blockquote class='book-hint '>
+<p>你打电话问书店老板有没有《分布式系统》这本书，如果是同步通信机制，书店老板会说，你稍等，&ldquo;我查一下&rdquo;，然后开始查啊查，等查好了（可能是5秒，也可能是一天）告诉你结果（返回结果）</p>
+</blockquote><p><strong>异步通信机制</strong></p>
+<blockquote class='book-hint '>
+<p>书店老板直接告诉你我查一下啊，查好了打电话给你，然后直接挂电话了（不返回结果）。然后查好了，他会主动打电话给你。在这里老板通过&quot;回电&quot;这种方式来回调</p>
+</blockquote><h1 id="阻塞与非阻塞">阻塞与非阻塞<a class="anchor" href="#%e9%98%bb%e5%a1%9e%e4%b8%8e%e9%9d%9e%e9%98%bb%e5%a1%9e">#</a></h1>
+<p>阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态，阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会返回。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程</p>
+<p>Example</p>
+<blockquote class='book-hint '>
+<p>你打电话问书店老板有没有《分布式系统》这本书，如果是阻塞式调用，你会一直把自己“挂起”，直到得到这本书有没有的结果，如果是非阻塞式调用，你不管老板有没有告诉你，你自己先一边去玩了， 当然你也要偶尔过几分钟check一下老板有没有返回结果，在这里阻塞与非阻塞与是否同步异步无关。跟老板通过什么方式回答你结果无关</p>
+</blockquote><h1 id="模型图例">模型图例<a class="anchor" href="#%e6%a8%a1%e5%9e%8b%e5%9b%be%e4%be%8b">#</a></h1>
+<h2 id="单线程同步模型">单线程同步模型<a class="anchor" href="#%e5%8d%95%e7%ba%bf%e7%a8%8b%e5%90%8c%e6%ad%a5%e6%a8%a1%e5%9e%8b">#</a></h2>
+<p><img src="/images/2021-09-02-22-35-08.png" alt="" /></p>
+<h2 id="多线程模型">多线程模型<a class="anchor" href="#%e5%a4%9a%e7%ba%bf%e7%a8%8b%e6%a8%a1%e5%9e%8b">#</a></h2>
+<p><img src="/images/2021-09-02-22-35-45.png" alt="" /></p>
+<h2 id="异步模型">异步模型<a class="anchor" href="#%e5%bc%82%e6%ad%a5%e6%a8%a1%e5%9e%8b">#</a></h2>
+<p><img src="/images/2021-09-02-22-36-14.png" alt="" /></p>
+<h1 id="基础">基础<a class="anchor" href="#%e5%9f%ba%e7%a1%80">#</a></h1>
+<h2 id="创建任务">创建任务<a class="anchor" href="#%e5%88%9b%e5%bb%ba%e4%bb%bb%e5%8a%a1">#</a></h2>
+<h3 id="new-taskfactory">new TaskFactory()<a class="anchor" href="#new-taskfactory">#</a></h3>
+<p>使用实例化的TaskFactory类</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> <span style="color:#66d9ef">var</span> t1 = <span style="color:#66d9ef">new</span> TaskFactory().StartNew(() =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;new TaskFactory().StartNew&#34;</span>));</span></span></code></pre></div><h3 id="taskfactory">Task.Factory<a class="anchor" href="#taskfactory">#</a></h3>
+<p>使用Task静态属性Factory</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> t2 = Task.Factory.StartNew(() =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;Task.Factory&#34;</span>));</span></span></code></pre></div><h3 id="new-task">new Task()<a class="anchor" href="#new-task">#</a></h3>
+<p>使用<code>Task</code>的构造函数, 实例化<code>Task</code>对象时，任务不会立即执行，而是指定<code>Created</code>状态，通过<code>Task.Start()</code>方法启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> t3 = <span style="color:#66d9ef">new</span> Task(() =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;Task Constructor&#34;</span>));
+</span></span><span style="display:flex;"><span>	t3.Start();</span></span></code></pre></div><h3 id="taskrun">Task.Run<a class="anchor" href="#taskrun">#</a></h3>
+<p>.Net4.5 新增功能使用<code>Task</code>类的<code>Run</code>方法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>var t4 <span style="color:#f92672">=</span> Task.Run<span style="color:#f92672">(()</span> <span style="color:#f92672">=</span>&gt; Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Task.Run&#34;</span><span style="color:#f92672">))</span>;</span></span></code></pre></div><p>注意：使用<code>Task.Run/Task.Factory.StartNew/new TaskFactory().StartNew()</code>方法运行的任务会立即开始工作，无需显式调用这些任务的<code>Start</code>方法</p>
+<h2 id="同步任务">同步任务<a class="anchor" href="#%e5%90%8c%e6%ad%a5%e4%bb%bb%e5%8a%a1">#</a></h2>
+<p>任务不一定要使用线程池中的线程，也可以使用其他线程，任务也可以同步进行，以相同的线程作为主调线程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> t1 = <span style="color:#66d9ef">new</span> Task(() =&gt; TaskMethod(<span style="color:#e6db74">&#34;t1&#34;</span>));
+</span></span><span style="display:flex;"><span>            t1.Start();
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;主线程调用结束&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.ReadKey();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> TaskMethod(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Task {0} 运行在线程id为{1}的线程上。是否是线程池中线程？:{2}&#34;</span>,
+</span></span><span style="display:flex;"><span>taskName, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoolThread);
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> t1 = <span style="color:#66d9ef">new</span> Task(() =&gt; TaskMethod(<span style="color:#e6db74">&#34;t1&#34;</span>));
+</span></span><span style="display:flex;"><span>    t1.RunSynchronously();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;主线程调用结束&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.ReadKey();</span></span></code></pre></div><h2 id="使用单独线程的任务">使用单独线程的任务<a class="anchor" href="#%e4%bd%bf%e7%94%a8%e5%8d%95%e7%8b%ac%e7%ba%bf%e7%a8%8b%e7%9a%84%e4%bb%bb%e5%8a%a1">#</a></h2>
+<p>如果任务的代码需要长时间运行，应该使用<code>TaskCreationOptions.LongRuning</code>告诉任务调度器创建一个新线程，而不是使用线程池中的线程。此时线程可以不受线程池管理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> <span style="color:#66d9ef">var</span> t1 = <span style="color:#66d9ef">new</span> Task(TaskMethod, TaskCreationOptions.LongRunning);
+</span></span><span style="display:flex;"><span> t1.Start();</span></span></code></pre></div><h2 id="task生命周期">Task生命周期<a class="anchor" href="#task%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">状态</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Created</td>
+          <td style="text-align: left">该任务已初始化，但尚未被计划</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">WaitingForActivation</td>
+          <td style="text-align: left">该任务正在等待 .NET Framework 基础结构在内部将其激活并进行计划</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">WaitingToRun</td>
+          <td style="text-align: left">该任务已被计划执行，但尚未开始执行</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Running</td>
+          <td style="text-align: left">该任务正在运行，但尚未完成</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">WaitingForChildrenToComplete</td>
+          <td style="text-align: left">该任务已完成执行，正在隐式等待附加的子任务完成</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">RanToCompletion</td>
+          <td style="text-align: left">已成功完成执行的任务</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Canceled</td>
+          <td style="text-align: left">该任务已通过对其自身的 CancellationToken 引发 OperationCanceledException 对取消进行了确认，此时该标记处于已发送信号状态；或者在该任务开始执行之前，已向该任务的 CancellationToken 发出了信号</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Faulted</td>
+          <td style="text-align: left">由于未处理异常的原因而完成的任务</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="task任务控制">Task任务控制<a class="anchor" href="#task%e4%bb%bb%e5%8a%a1%e6%8e%a7%e5%88%b6">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">方法</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Task.Wait</td>
+          <td style="text-align: left">task1.Wait();就是等待任务执行完成，task 的状态变为 Completed</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Task.WaitAll</td>
+          <td style="text-align: left">待所有的任务都执行完成</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Task.WaitAny</td>
+          <td style="text-align: left">等待任何一个任务完成就继续向下执行</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Task.ContinueWith</td>
+          <td style="text-align: left">第一个 Task 完成后自动启动下一个 Task，实现 Task 的延续 CancellationTokenSource</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">CancellationTokenSource</td>
+          <td style="text-align: left">通过 cancellation 的 tokens 来取消一个 Task</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="task返回类型">Task返回类型<a class="anchor" href="#task%e8%bf%94%e5%9b%9e%e7%b1%bb%e5%9e%8b">#</a></h2>
+<h3 id="void">void<a class="anchor" href="#void">#</a></h3>
+<p>不关心结果，返回 void 类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>TestMethod<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>public void Task_Result_Void<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;不关心结果,返回Void,--Start,线程Id:{Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    Print<span style="color:#f92672">()</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;不关心结果,返回Void,--End,线程Id:{Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    Assert.IsTrue<span style="color:#f92672">(</span>true<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    static async void Print<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        await Task.Run<span style="color:#f92672">(()</span> <span style="color:#f92672">=</span>&gt;
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>           Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;Hello, 线程Id:{ Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">})</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div><h3 id="task">Task<a class="anchor" href="#task">#</a></h3>
+<p>关心是否完成，返回 Task 类型</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>public void Task_Result_Task<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;看电视中...,线程Id:{Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;突然停电，看下是不是跳闸了&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    var task <span style="color:#f92672">=</span> OpenMainsSwitch<span style="color:#f92672">()</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;没电了先玩会儿手机吧，线程Id为：{Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    Thread.Sleep<span style="color:#f92672">(</span>100<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    // 等着电源开关被打开
+</span></span><span style="display:flex;"><span>    task.Wait<span style="color:#f92672">()</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;又有电了,继续看电视...,线程Id:{Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    Assert.IsTrue<span style="color:#f92672">(</span>true<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    static async Task OpenMainsSwitch<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;准备打开电源开关，线程Id：{ Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>        await Task.Run<span style="color:#f92672">(()</span> <span style="color:#f92672">=</span>&gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;打开电源开关, 线程Id:{ Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>            Thread.Sleep<span style="color:#f92672">(</span>2000<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">})</span>;
+</span></span><span style="display:flex;"><span>        Console.WriteLine<span style="color:#f92672">(</span><span style="color:#e6db74">$&#34;电源开关打开了，线程Id：{ Thread.CurrentThread.ManagedThreadId}&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div><h3 id="taskt"><code>Task&lt;T&gt;</code><a class="anchor" href="#taskt">#</a></h3>
+<p>调用方法要从调用中获取一个<code>T</code>类型的值，异步方法的返回类型就必须是<code>Task&lt;T&gt;</code>。调用方法从<code>Task</code>的<code>Result</code>属性获取的就是<code>T</code>类型的值</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Task_Result_TaskTAsync()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message = <span style="color:#e6db74">$&#34;Today is {DateTime.Today:D}\n&#34;</span> + <span style="color:#e6db74">&#34;Today&#39;s hours of leisure: &#34;</span> + <span style="color:#e6db74">$&#34;{await GetLeisureHoursAsync()}&#34;</span>;
+</span></span><span style="display:flex;"><span>    Console.WriteLine(message);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">int</span>&gt; GetLeisureHoursAsync()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        DayOfWeek today = <span style="color:#66d9ef">await</span> Task.FromResult(DateTime.Now.DayOfWeek);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> leisureHours =
+</span></span><span style="display:flex;"><span>            today <span style="color:#66d9ef">is</span> DayOfWeek.Saturday || today <span style="color:#66d9ef">is</span> DayOfWeek.Sunday
+</span></span><span style="display:flex;"><span>            ? <span style="color:#ae81ff">16</span> : <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> leisureHours;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="连续任务">连续任务<a class="anchor" href="#%e8%bf%9e%e7%bb%ad%e4%bb%bb%e5%8a%a1">#</a></h2>
+<p>在指定任务完成后调用另一个指定任务</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Task_ContinueWith_Example()
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     Task&lt;<span style="color:#66d9ef">string</span>&gt; t1 = <span style="color:#66d9ef">new</span> Task&lt;<span style="color:#66d9ef">string</span>&gt;(
+</span></span><span style="display:flex;"><span>         () =&gt; TaskMethod1(<span style="color:#e6db74">&#34;t1&#34;</span>));
+</span></span><span style="display:flex;"><span>     Console.WriteLine(<span style="color:#e6db74">&#34;Task1-创建,状态为:{0}&#34;</span>, t1.Status);
+</span></span><span style="display:flex;"><span>     t1.Start();
+</span></span><span style="display:flex;"><span>     Console.WriteLine(<span style="color:#e6db74">&#34;Task1-启动,状态为:{0}&#34;</span>, t1.Status);
+</span></span><span style="display:flex;"><span>     Console.WriteLine(t1.Result);
+</span></span><span style="display:flex;"><span>     Console.WriteLine(<span style="color:#e6db74">&#34;Task1-完成,状态为:{0}&#34;</span>, t1.Status);
+</span></span><span style="display:flex;"><span>     Task t2 = t1.ContinueWith(TaskMethod2);
+</span></span><span style="display:flex;"><span>     Console.WriteLine(<span style="color:#e6db74">&#34;Task2,状态为:{0}&#34;</span>, t2.Status);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">string</span> TaskMethod1(<span style="color:#66d9ef">string</span> taskName)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">string</span>.Format(<span style="color:#e6db74">$&#34;Task:{taskName} 运行在线程id:{ Thread.CurrentThread.ManagedThreadId}的线程上,&#34;</span> +
+</span></span><span style="display:flex;"><span>             <span style="color:#e6db74">$&#34;是否是线程池中线程？:{Thread.CurrentThread.IsThreadPoolThread}&#34;</span>);
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> TaskMethod2(Task t)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(<span style="color:#e6db74">$&#34;TaskID:{ t.Id} 运行在线程id:{Thread.CurrentThread.ManagedThreadId}的线程上。是否是线程池中线程？:{Thread.CurrentThread.IsThreadPoolThread}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><p>使用<code>TaskContinuationOptions</code>枚举的值可以指定连续任务只有在起始任务成功或失败结束时启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Task t2 = t1.ContinueWith(TaskMethod2, TaskContinuationOptions.NotOnCanceled);</span></span></code></pre></div><h2 id="嵌套task">嵌套Task<a class="anchor" href="#%e5%b5%8c%e5%a5%97task">#</a></h2>
+<h3 id="关联嵌套">关联嵌套<a class="anchor" href="#%e5%85%b3%e8%81%94%e5%b5%8c%e5%a5%97">#</a></h3>
+<p>在创建<code>cTask</code>时，加入了参数<code>TaskCreationOptions.AttachedToParent</code>，这个时候，<code>cTask</code>和<code>pTask</code>就会建立关联，<code>cTask</code>就会成为<code>pTask</code>的一部分</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Task_Relevance_Example()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> pTask = Task.Factory.StartNew(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">var</span> cTask= Task.Factory.StartNew(() =&gt;
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             Console.WriteLine(<span style="color:#e6db74">&#34;Childen task finished!&#34;</span>);
+</span></span><span style="display:flex;"><span>         }, TaskCreationOptions.AttachedToParent);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Parent task finished!&#34;</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    pTask.Wait();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Flag&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h3 id="非关联嵌套">非关联嵌套<a class="anchor" href="#%e9%9d%9e%e5%85%b3%e8%81%94%e5%b5%8c%e5%a5%97">#</a></h3>
+<p>外层的<code>pTask</code>运行完后，并不会等待内层的<code>cTask</code>，直接向下走先输出了<code>Flag</code>。这种嵌套有时候相当于创建两个Task，但是嵌套在一起的话，在Task比较多时会方便查找和管理，并且还可以在一个Task中途加入多个Task，让进度并行前进</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Task_NoRelevance_Example()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> pTask = Task.Factory.StartNew(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Task.Factory.StartNew(() =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Childen task finished!&#34;</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Parent task finished!&#34;</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    pTask.Wait();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Flag&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>在<code>Task</code>内部创建<code>Task</code>，如果父任务在子任务之前结束，父任务状态就显示为<code>WaitingForChilderenToComplete</code>。所有的子任务也结束时，父任务的状态就改为<code>RanToCompletion</code>，如果使用<code>TaskContinuationOptions</code>枚举值创建子任务时会有不同结果，取消父任务也会取消子任务</p>
+<h2 id="task取消">Task取消<a class="anchor" href="#task%e5%8f%96%e6%b6%88">#</a></h2>
+<h3 id="单个任务">单个任务<a class="anchor" href="#%e5%8d%95%e4%b8%aa%e4%bb%bb%e5%8a%a1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Task_CancellationToken_SingleTask_Example()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    CancellationTokenSource cts = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>    Task t1 = Task.Run(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">30</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (cts.Token.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                cts.Token.ThrowIfCancellationRequested();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Thread.Sleep(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;任务t1,共执行30次,当前第{0}次&#34;</span>, i + <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }, cts.Token);
+</span></span><span style="display:flex;"><span>    Thread.Sleep(<span style="color:#ae81ff">2000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 传达取消请求</span>
+</span></span><span style="display:flex;"><span>    cts.Cancel();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;已停止,Status{t1.Status}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h3 id="多个任务">多个任务<a class="anchor" href="#%e5%a4%9a%e4%b8%aa%e4%bb%bb%e5%8a%a1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Task_CancellationToken_MultiTask_Example()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    CancellationTokenSource cts1 = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>    CancellationTokenSource cts2 = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 任何Task处于取消状态时其余也将取消</span>
+</span></span><span style="display:flex;"><span>    CancellationTokenSource ctsCombine =
+</span></span><span style="display:flex;"><span>         CancellationTokenSource.CreateLinkedTokenSource(cts1.Token, cts2.Token);
+</span></span><span style="display:flex;"><span>    Task t1 = Task.Run(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">30</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (!ctsCombine.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Thread.Sleep(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;任务t1,共执行30次,当前第{0}次&#34;</span>, i + <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }, ctsCombine.Token);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Task t2 = Task.Run(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">30</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (!ctsCombine.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Thread.Sleep(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;任务t2,共执行30次,当前第{0}次&#34;</span>, i + <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }, ctsCombine.Token);
+</span></span><span style="display:flex;"><span>    Thread.Sleep(<span style="color:#ae81ff">2000</span>);
+</span></span><span style="display:flex;"><span>    cts1.Cancel();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;t1:Status_{t1.Status},t2:Status_{t2.Status}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h3 id="定时取消">定时取消<a class="anchor" href="#%e5%ae%9a%e6%97%b6%e5%8f%96%e6%b6%88">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    CancellationTokenSource cts = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>    cts.CancelAfter(<span style="color:#ae81ff">8000</span>);
+</span></span><span style="display:flex;"><span>    Task t1 = Task.Run(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">30</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (cts.Token.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                cts.Token.ThrowIfCancellationRequested();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Thread.Sleep(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;任务t1,共执行30次,当前第{0}次&#34;</span>, i);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }, cts.Token);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        t1.Wait();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (AggregateException e)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> e.InnerExceptions)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    Console.ReadKey();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><strong>工作原理</strong>
+程序运行主线程创建-&gt;创建<code>CancellationTokenSource</code>对象-&gt;设置<code>task</code>在指定毫秒数后取消(这里是 8000)-&gt;创建<code>task</code>并传入<code>CancellationTokenSource</code>对象生成的<code>token</code>，循环打印 1~30，取消标记为<code>true</code>则抛出异常中止任务，<code>false</code>则正常输出。在输出前等待 500 毫秒(避免 8000 毫秒还没到任务就已经执行完成)-&gt;使用<code>try/catch</code>包裹<code>t1.Wait()</code>等待任务执行完成语句，并捕获处理异常。这里任务在执行完 15 次的时候被取消</p>
+<h2 id="取消时回调">取消时回调<a class="anchor" href="#%e5%8f%96%e6%b6%88%e6%97%b6%e5%9b%9e%e8%b0%83">#</a></h2>
+<p><code>CancellationTokenSource.Token.Register()</code>，使用<code>Register</code>，向取消标记登记一个回调方法。应用程序调用<code>CancellationTokenSource</code> 对象的 <code>Cancel</code> 方法时，这个回调就会运行。但是不能保证这个方法在什么时候执行,可能在任务执行完自己的取消处理之前或之后,也可能在那个过程之中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Task_CancellationToken_Register_Example()
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     CancellationTokenSource cts = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">var</span> token = cts.Token;
+</span></span><span style="display:flex;"><span>     cts.CancelAfter(<span style="color:#ae81ff">8000</span>);
+</span></span><span style="display:flex;"><span>     token.Register(Callback);
+</span></span><span style="display:flex;"><span>     Task t1 = Task.Run(() =&gt;
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">30</span>; i++)
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             <span style="color:#66d9ef">if</span> (token.IsCancellationRequested)
+</span></span><span style="display:flex;"><span>             {
+</span></span><span style="display:flex;"><span>                 token.ThrowIfCancellationRequested();
+</span></span><span style="display:flex;"><span>             }
+</span></span><span style="display:flex;"><span>             <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>             {
+</span></span><span style="display:flex;"><span>                 Thread.Sleep(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>                 Console.WriteLine(<span style="color:#e6db74">&#34;任务t1,共执行30次,当前第{0}次&#34;</span>, i);
+</span></span><span style="display:flex;"><span>             }
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }, token);
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         t1.Wait();
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">catch</span> (AggregateException e)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> e.InnerExceptions)
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             Console.WriteLine(item);
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Callback()
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(<span style="color:#e6db74">&#34;Register登记的任务取消回调函数&#34;</span>);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><h1 id="问题记录">问题记录<a class="anchor" href="#%e9%97%ae%e9%a2%98%e8%ae%b0%e5%bd%95">#</a></h1>
+<h2 id="asyncawait并不能提升性能">async/await并不能提升性能?<a class="anchor" href="#asyncawait%e5%b9%b6%e4%b8%8d%e8%83%bd%e6%8f%90%e5%8d%87%e6%80%a7%e8%83%bd">#</a></h2>
+<p>问题描述：所谓的异步操作就是A线程在执行任务的时候，执行到一半再把任务交给B线程，然后A线程开始等待B的执行完成了，这不还是同步的吗?</p>
+<blockquote class='book-hint '>
+<p>异步编程不能提高性能。异步编程只是提供一种简单的编程模型来提高系统的响应能力，比如，如果在UI线程上执行长时间IO操作，在操作完成之前界面就处在无法操作的状态。
+可以提高性能的是并行技术，比如任务并行库（TPL，Task Parallel Library）、并行LINQ（PLINQ）等，这些技术可以充分利用CPU来提高计算性能。一般来说，耗时的IO操作使用异步简化代码，耗时的计算操作使用并行来提高性能</p>
+</blockquote><blockquote class='book-hint '>
+<p>比如服务端最大处理请求是100个线程，那么同步模式下，150个请求过来，就有50个请求需要等待执行。async/await 模式下，正在执行的100个线程 可以空闲出来 处理后来的50个请求，前面100个请求异步完成后，再通过上下文切换到当前的100个线程，处理完后续的流程。工作线程是在不停的切换过程中提升了并发效率。而在单个请求中，async/await是有线程上下文切换的性能损耗，所以在处理一个本来就很快速的逻辑,例如读一个Redis缓存，那么性能会有比较显著的下降</p>
+</blockquote><p>总结：异步编程只是提高了线程的利用率，针对一个本来就很“快”的操作，可能异步还不如同步。因为线程上下文的切换也会带来性能损耗</p>
+<h2 id="asyncawait死锁问题">async/await死锁问题<a class="anchor" href="#asyncawait%e6%ad%bb%e9%94%81%e9%97%ae%e9%a2%98">#</a></h2>
+<h3 id="可能发生死锁的程序类型">可能发生死锁的程序类型<a class="anchor" href="#%e5%8f%af%e8%83%bd%e5%8f%91%e7%94%9f%e6%ad%bb%e9%94%81%e7%9a%84%e7%a8%8b%e5%ba%8f%e7%b1%bb%e5%9e%8b">#</a></h3>
+<ul>
+<li><code>WPF/WinForm</code>程序</li>
+<li>asp.net(不包括asp.net core)程序</li>
+</ul>
+<h3 id="什么情况下会产生死锁">什么情况下会产生死锁?<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%83%85%e5%86%b5%e4%b8%8b%e4%bc%9a%e4%ba%a7%e7%94%9f%e6%ad%bb%e9%94%81">#</a></h3>
+<p>调用 <code>Task.Wait()</code> 或者 <code>Task.Result</code> 立刻产生死锁的充分条件</p>
+<ul>
+<li>调用 <code>Wait()</code>或<code>Result</code>的代码位于<code>UI</code>线程</li>
+<li><code>Task</code>的实际执行在其他线程，且需要返回<code>UI</code>线程</li>
+</ul>
+<h3 id="死锁的原因">死锁的原因?<a class="anchor" href="#%e6%ad%bb%e9%94%81%e7%9a%84%e5%8e%9f%e5%9b%a0">#</a></h3>
+<blockquote class='book-hint '>
+<p><code>UWP</code>、<code>WPF</code>、<code>Windows Forms</code>程序的 UI 线程都是单线程的。为了让使用了<code>async/await</code>的代码像使用同步代码一样简单，WPF 程序的<code>Application</code>类在构造的时候会将<code>主UI线程</code> Task的同步上下文设置为<code>DispatcherSynchronizationContext</code>的实例，当<code>Task</code>的任务结束时，会从<code>AsyncMethodStateMachine</code>中调用<code>Awaiter</code>的<code>OnComplete()</code>方法，而<code>await</code>后续方法的执行靠的就是<code>OnComplete()</code>方法中一层层调用到 <code>DispatcherSynchronizationContext</code>里的<code>Post</code>方法</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Asynchronously invoke the callback in the SynchronizationContext.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Post(SendOrPostCallback d, Object state)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Call BeginInvoke with the cached priority.  Note that BeginInvoke</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// preserves the behavior of passing exceptions to</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Dispatcher.UnhandledException unlike InvokeAsync.  This is</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// desireable because there is no way to await the call to Post, so</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// exceptions are hard to observe.</span>
+</span></span><span style="display:flex;"><span>    _dispatcher.BeginInvoke(_priority, d, state);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>这里就是问题的关键！！！</p>
+<p>如果<code>_dispatcher.BeginInvoke(_priority, d, state);</code>这句代码在后台线程。那么此时<code>UI线程</code>处于<code>Wait()/Result</code>调用中的阻塞状态，<code>BeginInvoke</code>中的任务是无论如何也无法执行到的，于是无论如何都无法完成这个<code>Post</code>任务，即无论如何也无法退出此异步任务的执行，于是<code>Wait()</code>便无法完成等待，产生死锁</p>
+<p>Example</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>DoAsync().Wait();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task DoAsync()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.Run(() =&gt; { });
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>无论是<code>WPF</code>还是<code>UWP</code>，只要在<code>UI</code>线程上调用上述代码，必然死锁</p>
+<h3 id="there-is-no-thread">There Is No Thread<a class="anchor" href="#there-is-no-thread">#</a></h3>
+<p>读写文件，访问网络，这些 IO 阻塞的操作执行时，里面根本就没有线程。详情请阅读：<a href="https://blog.stephencleary.com/2013/11/there-is-no-thread.html">There Is No Thread</a></p>
+<p>还有另一些操作，也没有后台线程的参与，于是也不存在从后台线程回到主线程导致死锁的情况。如<code>Task.Yield</code>，还有<code>InvokeAsync</code>，它们也不会造成死锁。如果是控制台程序，或者一个普通的非UI线程，其<code>SynchronizationContext</code>为<code>null</code>，那么异步任务执行完后不需要回到原有线程，也不会造成死锁</p>
+<h3 id="不会造成死锁的充分条件">不会造成死锁的充分条件<a class="anchor" href="#%e4%b8%8d%e4%bc%9a%e9%80%a0%e6%88%90%e6%ad%bb%e9%94%81%e7%9a%84%e5%85%85%e5%88%86%e6%9d%a1%e4%bb%b6">#</a></h3>
+<ul>
+<li>异步操作执行完后不需要回到原有线程（例如非 UI 线程和控制台线程）</li>
+<li>异步操作不需要单独的线程执行任务</li>
+</ul>
+<h2 id="如何避免死锁">如何避免死锁<a class="anchor" href="#%e5%a6%82%e4%bd%95%e9%81%bf%e5%85%8d%e6%ad%bb%e9%94%81">#</a></h2>
+<ul>
+<li>在 UI 线程，如果使用了<code>async/await</code>，就尽量不要再使用<code>Task.Wait()/Task.Result</code>了，就一直异步一条路走到黑好了（微软称其为<code>Async All the Way</code>）</li>
+<li>如果可能，尽量在异步任务后添加<code>.ConfigureAwait(false);</code>这样，异步任务后面继续执行的代码就不会回到原<code>UI</code>线程了，而是直接从线程池中再取出一个线程执行；这样，即便<code>UI</code>线程后续可能有别的原因造成阻塞，也不会产生死锁了；把原来的代码改成这样，就不会死锁了</li>
+</ul>
+<p>只能是一路 <code>async/await</code>。微软将其描述为：<code>async/await 会像病毒一样在你的代码中传播</code>。</p>
+<blockquote class='book-hint '>
+<p>Others have also noticed the spreading behavior of asynchronous programming and have called it “contagious” or compared it to a zombie virus.</p>
+</blockquote><p>这句话的原文参见：<a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming">Async/Await - Best Practices in Asynchronous Programming</a></p>
+<p>如果你是类库提供者，因为不确定调用者程序是<code>WPF</code>/<code>Winform</code>..，为了防止代码调用者在同步方法中使用<code>Wait()/Result</code>调用异步方法，还需要考虑添加<code>.ConfigureAwait(false);</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task DoAsync()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.Run(() =&gt; { }).ConfigureAwait(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>这一句的目的是防止执行上下文切换回 UI 线程。</p>
+<p>这样，即便真的使用 DoAsync().Wait() 也不会发生死锁。注意，整个方法调用链都需要使用 <code>.ConfigureAwait(false)</code> 才能够防止线程切换，在调用方的 Wait() 方法中发生死锁。</p>
+<h2 id="更多死锁相关">更多死锁相关<a class="anchor" href="#%e6%9b%b4%e5%a4%9a%e6%ad%bb%e9%94%81%e7%9b%b8%e5%85%b3">#</a></h2>
+<ul>
+<li><a href="https://blog.walterlv.com/post/deadlock-in-task-wait.html">https://blog.walterlv.com/post/deadlock-in-task-wait.html</a></li>
+<li><a href="https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html">https://blog.walterlv.com/post/deadlock-of-invoke-in-lazy.html</a></li>
+<li><a href="https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html">https://blog.walterlv.com/post/deadlock-if-await-in-ui-lock-context.html</a></li>
+<li><a href="https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html">https://blog.walterlv.com/post/task-wait-may-cause-long-time-waiting.html</a></li>
+</ul>
+<p><strong>解决方法</strong></p>
+<ul>
+<li><a href="https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html">https://blog.walterlv.com/post/using-configure-await-to-avoid-deadlocks.html</a></li>
+<li><a href="https://blog.walterlv.com/post/convert-async-to-sync-by-push-frame.html">https://blog.walterlv.com/post/convert-async-to-sync-by-push-frame.html</a></li>
+</ul>
+<p><strong>参考</strong></p>
+<ul>
+<li><a href="https://blog.csdn.net/WPwalter/article/details/78370706">https://blog.csdn.net/WPwalter/article/details/78370706</a></li>
+<li><a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming">https://docs.microsoft.com/en-us/archive/msdn-magazine/2013/march/async-await-best-practices-in-asynchronous-programming</a></li>
+<li><a href="https://www.cnblogs.com/qingfenglin/p/12058267.html">https://www.cnblogs.com/qingfenglin/p/12058267.html</a></li>
+<li><a href="https://www.cnblogs.com/liqingwen/p/5844095.html">https://www.cnblogs.com/liqingwen/p/5844095.html</a></li>
+<li><a href="https://www.cnblogs.com/zhaoshujie/p/11082753.html">https://www.cnblogs.com/zhaoshujie/p/11082753.html</a></li>
+<li><a href="https://q.cnblogs.com/q/107005/">https://q.cnblogs.com/q/107005/</a></li>
+<li><a href="https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/">https://rubikscode.net/2018/06/11/asynchronous-programming-in-net-benefits-and-tradeoffs-of-using-valuetask/</a></li>
+<li><a href="https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/">https://blog.scooletz.com/2018/05/14/task-async-await-valuetask-ivaluetasksource-and-how-to-keep-your-sanity-in-modern-net-world/</a></li>
+<li><a href="https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html">https://www.cnblogs.com/ms27946/p/understanding-task-valuetask.html</a></li>
+<li><a href="https://www.cnblogs.com/ittranslator/p/13703279.html">https://www.cnblogs.com/ittranslator/p/13703279.html</a></li>
+<li><a href="https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/">https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/</a></li>
+<li><a href="https://www.cnblogs.com/wcrBlog/p/11690460.html">https://www.cnblogs.com/wcrBlog/p/11690460.html</a></li>
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult">https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/concepts/async/async-return-types#generalized-async-return-types-and-valuetasktresult</a></li>
+<li><a href="https://q.cnblogs.com/q/124633/">https://q.cnblogs.com/q/124633/</a></li>
+<li><a href="https://www.cnblogs.com/dudu/p/9860959.html#!comments">https://www.cnblogs.com/dudu/p/9860959.html#!comments</a></li>
+<li><a href="http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/">http://labs.criteo.com/2018/10/net-threadpool-starvation-and-how-queuing-makes-it-worse/</a></li>
+<li><a href="https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html">https://www.cnblogs.com/xishuai/p/asp-net-sync-over-async.html</a></li>
+</ul>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="flex align-center">
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>并行编程</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/wangpengliang815/wangpengliang815.github.io/docs/dotnet/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="flex align-center">
+        <span>数据结构</span>
+        <img src="/wangpengliang815/wangpengliang815.github.io/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#单线程同步模型">单线程同步模型</a></li>
+    <li><a href="#多线程模型">多线程模型</a></li>
+    <li><a href="#异步模型">异步模型</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#创建任务">创建任务</a>
+      <ul>
+        <li><a href="#new-taskfactory">new TaskFactory()</a></li>
+        <li><a href="#taskfactory">Task.Factory</a></li>
+        <li><a href="#new-task">new Task()</a></li>
+        <li><a href="#taskrun">Task.Run</a></li>
+      </ul>
+    </li>
+    <li><a href="#同步任务">同步任务</a></li>
+    <li><a href="#使用单独线程的任务">使用单独线程的任务</a></li>
+    <li><a href="#task生命周期">Task生命周期</a></li>
+    <li><a href="#task任务控制">Task任务控制</a></li>
+    <li><a href="#task返回类型">Task返回类型</a>
+      <ul>
+        <li><a href="#void">void</a></li>
+        <li><a href="#task">Task</a></li>
+        <li><a href="#taskt"><code>Task&lt;T&gt;</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#连续任务">连续任务</a></li>
+    <li><a href="#嵌套task">嵌套Task</a>
+      <ul>
+        <li><a href="#关联嵌套">关联嵌套</a></li>
+        <li><a href="#非关联嵌套">非关联嵌套</a></li>
+      </ul>
+    </li>
+    <li><a href="#task取消">Task取消</a>
+      <ul>
+        <li><a href="#单个任务">单个任务</a></li>
+        <li><a href="#多个任务">多个任务</a></li>
+        <li><a href="#定时取消">定时取消</a></li>
+      </ul>
+    </li>
+    <li><a href="#取消时回调">取消时回调</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#asyncawait并不能提升性能">async/await并不能提升性能?</a></li>
+    <li><a href="#asyncawait死锁问题">async/await死锁问题</a>
+      <ul>
+        <li><a href="#可能发生死锁的程序类型">可能发生死锁的程序类型</a></li>
+        <li><a href="#什么情况下会产生死锁">什么情况下会产生死锁?</a></li>
+        <li><a href="#死锁的原因">死锁的原因?</a></li>
+        <li><a href="#there-is-no-thread">There Is No Thread</a></li>
+        <li><a href="#不会造成死锁的充分条件">不会造成死锁的充分条件</a></li>
+      </ul>
+    </li>
+    <li><a href="#如何避免死锁">如何避免死锁</a></li>
+    <li><a href="#更多死锁相关">更多死锁相关</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

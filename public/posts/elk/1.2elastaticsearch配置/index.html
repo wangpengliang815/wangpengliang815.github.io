@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="配置文件所在目录路径：安装目录/config/elasticsearch.yml
+cluster.name: elasticsearch
+配置集群名称。默认为 elasticsearch，如果在同一网段下有多个集群，可以用这个属性来区分不同的集群
+node.name: “Franz Kafka”
+节点名称。默认为随机指定一个name列表中名字，该列表在ES的jar包中config文件夹里name.txt文件中，其中有很多作者添加的有趣名字，大部分是漫威动漫里的人物名称
+node.master: true
+指定该节点是否有资格被选举成为 node ，默认为 true。ES 默认集群中的第一台启动的机器为 master ，如果这台挂了就会重新选举 master
+node.data: true
+指定该节点是否存储索引数据，默认为 true。如果节点配置 node.master:false 并且 node.data: false ，则该节点将只起到负载均衡作用
+index.number_of_shards: 5
+设置默认索引分片个数，默认为5片。索引分片对ES的查询性能有很大的影响，在生产环境应该选择适合的分片大小
+index.number_of_replicas: 1
+设置默认索引副本个数，默认为1个副本。此处1个副本是指 index.number_of_shards 的一个完全拷贝；默认5个分片1个拷贝。即总分片数为10
+path.conf: /path/to/conf
+设置配置文件存储路径。默认是ES根目录下的 config 文件夹
+path.data:/path/to/data1,/path/to/data2
+设置索引数据存储路径。默认是ES根目录下的 data 文件夹，可以设置多个存储路径，用逗号分割
+path.work:/path/to/work
+设置临时文件存储路径。默认是ES根目录下的 work 文件夹
+path.logs: /path/to/logs
+设置日志文件存储路径。默认是ES根目录下的 logs 文件夹
+path.plugins: /path/to/plugins
+设置插件的存放路径。默认是ES根目录下的 plugins 文件夹
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="配置文件所在目录路径：安装目录/config/elasticsearch.yml
+cluster.name: elasticsearch
+配置集群名称。默认为 elasticsearch，如果在同一网段下有多个集群，可以用这个属性来区分不同的集群
+node.name: “Franz Kafka”
+节点名称。默认为随机指定一个name列表中名字，该列表在ES的jar包中config文件夹里name.txt文件中，其中有很多作者添加的有趣名字，大部分是漫威动漫里的人物名称
+node.master: true
+指定该节点是否有资格被选举成为 node ，默认为 true。ES 默认集群中的第一台启动的机器为 master ，如果这台挂了就会重新选举 master
+node.data: true
+指定该节点是否存储索引数据，默认为 true。如果节点配置 node.master:false 并且 node.data: false ，则该节点将只起到负载均衡作用
+index.number_of_shards: 5
+设置默认索引分片个数，默认为5片。索引分片对ES的查询性能有很大的影响，在生产环境应该选择适合的分片大小
+index.number_of_replicas: 1
+设置默认索引副本个数，默认为1个副本。此处1个副本是指 index.number_of_shards 的一个完全拷贝；默认5个分片1个拷贝。即总分片数为10
+path.conf: /path/to/conf
+设置配置文件存储路径。默认是ES根目录下的 config 文件夹
+path.data:/path/to/data1,/path/to/data2
+设置索引数据存储路径。默认是ES根目录下的 data 文件夹，可以设置多个存储路径，用逗号分割
+path.work:/path/to/work
+设置临时文件存储路径。默认是ES根目录下的 work 文件夹
+path.logs: /path/to/logs
+设置日志文件存储路径。默认是ES根目录下的 logs 文件夹
+path.plugins: /path/to/plugins
+设置插件的存放路径。默认是ES根目录下的 plugins 文件夹">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="配置文件所在目录路径：安装目录/config/elasticsearch.yml
+cluster.name: elasticsearch
+配置集群名称。默认为 elasticsearch，如果在同一网段下有多个集群，可以用这个属性来区分不同的集群
+node.name: “Franz Kafka”
+节点名称。默认为随机指定一个name列表中名字，该列表在ES的jar包中config文件夹里name.txt文件中，其中有很多作者添加的有趣名字，大部分是漫威动漫里的人物名称
+node.master: true
+指定该节点是否有资格被选举成为 node ，默认为 true。ES 默认集群中的第一台启动的机器为 master ，如果这台挂了就会重新选举 master
+node.data: true
+指定该节点是否存储索引数据，默认为 true。如果节点配置 node.master:false 并且 node.data: false ，则该节点将只起到负载均衡作用
+index.number_of_shards: 5
+设置默认索引分片个数，默认为5片。索引分片对ES的查询性能有很大的影响，在生产环境应该选择适合的分片大小
+index.number_of_replicas: 1
+设置默认索引副本个数，默认为1个副本。此处1个副本是指 index.number_of_shards 的一个完全拷贝；默认5个分片1个拷贝。即总分片数为10
+path.conf: /path/to/conf
+设置配置文件存储路径。默认是ES根目录下的 config 文件夹
+path.data:/path/to/data1,/path/to/data2
+设置索引数据存储路径。默认是ES根目录下的 data 文件夹，可以设置多个存储路径，用逗号分割
+path.work:/path/to/work
+设置临时文件存储路径。默认是ES根目录下的 work 文件夹
+path.logs: /path/to/logs
+设置日志文件存储路径。默认是ES根目录下的 logs 文件夹
+path.plugins: /path/to/plugins
+设置插件的存放路径。默认是ES根目录下的 plugins 文件夹">
+  <meta itemprop="wordCount" content="176">
+
+<title>1.2 Elastatic Search配置 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/elk/1.2elastaticsearch%E9%85%8D%E7%BD%AE/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.2 Elastatic Search配置</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.2 Elastatic Search配置
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>配置文件所在目录路径：<code>安装目录/config/elasticsearch.yml</code></p>
+<!-- more -->
+<p><code>cluster.name: elasticsearch</code></p>
+<blockquote class='book-hint '>
+<p>配置集群名称。默认为 elasticsearch，如果在同一网段下有多个集群，可以用这个属性来区分不同的集群</p>
+</blockquote><p><code>node.name: “Franz Kafka”</code></p>
+<blockquote class='book-hint '>
+<p>节点名称。默认为随机指定一个name列表中名字，该列表在ES的jar包中config文件夹里name.txt文件中，其中有很多作者添加的有趣名字，大部分是漫威动漫里的人物名称</p>
+</blockquote><p><code>node.master: true</code></p>
+<blockquote class='book-hint '>
+<p>指定该节点是否有资格被选举成为 <code>node</code> ，默认为 <code>true</code>。ES 默认集群中的第一台启动的机器为 <code>master</code> ，如果这台挂了就会重新选举 <code>master</code></p>
+</blockquote><p><code>node.data: true</code></p>
+<blockquote class='book-hint '>
+<p>指定该节点是否存储索引数据，默认为 <code>true</code>。如果节点配置 <code>node.master:false</code> 并且 <code>node.data: false</code> ，则该节点将只起到负载均衡作用</p>
+</blockquote><p><code>index.number_of_shards: 5</code></p>
+<blockquote class='book-hint '>
+<p>设置默认索引分片个数，默认为5片。索引分片对ES的查询性能有很大的影响，在生产环境应该选择适合的分片大小</p>
+</blockquote><p><code>index.number_of_replicas: 1</code></p>
+<blockquote class='book-hint '>
+<p>设置默认索引副本个数，默认为1个副本。此处1个副本是指 <code>index.number_of_shards</code> 的一个完全拷贝；默认5个分片1个拷贝。即总分片数为10</p>
+</blockquote><p><code>path.conf: /path/to/conf</code></p>
+<blockquote class='book-hint '>
+<p>设置配置文件存储路径。默认是ES根目录下的 <code>config</code> 文件夹</p>
+</blockquote><p><code>path.data:/path/to/data1,/path/to/data2</code></p>
+<blockquote class='book-hint '>
+<p>设置索引数据存储路径。默认是ES根目录下的 <code>data</code> 文件夹，可以设置多个存储路径，用逗号分割</p>
+</blockquote><p><code>path.work:/path/to/work</code></p>
+<blockquote class='book-hint '>
+<p>设置临时文件存储路径。默认是ES根目录下的 <code>work</code> 文件夹</p>
+</blockquote><p><code>path.logs: /path/to/logs</code></p>
+<blockquote class='book-hint '>
+<p>设置日志文件存储路径。默认是ES根目录下的 <code>logs</code> 文件夹</p>
+</blockquote><p><code>path.plugins: /path/to/plugins</code></p>
+<blockquote class='book-hint '>
+<p>设置插件的存放路径。默认是ES根目录下的 <code>plugins</code> 文件夹</p>
+</blockquote><p><code>bootstrap.mlockall: true</code></p>
+<blockquote class='book-hint '>
+<p>设置为 <code>true</code> 来锁住内存。因为当jvm开始 <code>swapping</code> 时es的效率会降低，所以要保证它不swap，可以把<code>ES_MIN_MEM</code> 和 <code>ES_MAX_MEM</code> 两个环境变量设置成同一个值，并且保证机器有足够的内存分配给es。同时也要允许elasticsearch的进程可以锁住内存，linux下可以通过<code>ulimit -l unlimited</code>命令</p>
+</blockquote><p><code>network.bind_host: 192.168.0.1</code></p>
+<blockquote class='book-hint '>
+<p>设置绑定的ip地址，可以是ipv4或ipv6的，默认为 <code>0.0.0.0</code></p>
+</blockquote><p><code>network.publish_host: 192.168.0.1</code></p>
+<blockquote class='book-hint '>
+<p>设置其它节点和该节点交互的ip地址，如果不设置它会自动判断，必须是个真实的ip地址</p>
+</blockquote><p><code>network.host: 192.168.0.1</code></p>
+<blockquote class='book-hint '>
+<p>同时设置 <code>bind_host</code> 和 <code>publish_host</code> (上面两个参数)</p>
+</blockquote><p><code>transport.tcp.port: 9300</code></p>
+<blockquote class='book-hint '>
+<p>设置节点间交互的tcp端口，默认是 <code>9300</code></p>
+</blockquote><p><code>transport.tcp.compress: true</code></p>
+<blockquote class='book-hint '>
+<p>设置是否压缩tcp传输时的数据，默认为 <code>false</code> 不压缩</p>
+</blockquote><p><code>http.port: 9200</code></p>
+<blockquote class='book-hint '>
+<p>设置对外服务的http端口，默认为 <code>9200</code></p>
+</blockquote><p><code>http.max_content_length: 100mb</code></p>
+<blockquote class='book-hint '>
+<p>设置内容的最大容量，默认 <code>100mb</code></p>
+</blockquote><p><code>http.enabled: false</code></p>
+<blockquote class='book-hint '>
+<p>是否使用http协议对外提供服务，默认为 <code>true</code> 开启</p>
+</blockquote><p><code>gateway.type: local</code></p>
+<blockquote class='book-hint '>
+<p>gateway的类型，默认为local即为本地文件系统，可以设置为本地文件系统，分布式文件系统，hadoop的HDFS，和amazon的s3服务器，其它文件系统的设置</p>
+</blockquote><p><code>gateway.recover_after_nodes: 1</code></p>
+<blockquote class='book-hint '>
+<p>设置集群中N个节点启动时进行数据恢复，默认为1</p>
+</blockquote><p><code>gateway.recover_after_time: 5m</code></p>
+<blockquote class='book-hint '>
+<p>设置初始化数据恢复进程的超时时间，默认是5分钟</p>
+</blockquote><p><code>gateway.expected_nodes: 2</code></p>
+<blockquote class='book-hint '>
+<p>设置集群中节点的数量，默认为2，一旦这N个节点启动，就会立即进行数据恢复</p>
+</blockquote><p><code>cluster.routing.allocation.node_initial_primaries_recoveries: 4</code></p>
+<blockquote class='book-hint '>
+<p>初始化数据恢复时，并发恢复线程的个数，默认为4</p>
+</blockquote><p><code>cluster.routing.allocation.node_concurrent_recoveries: 2</code></p>
+<blockquote class='book-hint '>
+<p>添加删除节点或负载均衡时并发恢复线程的个数，默认为4</p>
+</blockquote><p><code>indices.recovery.max_size_per_sec: 0</code></p>
+<blockquote class='book-hint '>
+<p>设置数据恢复时限制的带宽，如入 <code>100mb</code> ，默认为0，即无限制。</p>
+</blockquote><p><code>indices.recovery.concurrent_streams: 5</code></p>
+<blockquote class='book-hint '>
+<p>设置这个参数来限制从其它分片恢复数据时最大同时打开并发流的个数，默认为5</p>
+</blockquote><p><code>discovery.zen.minimum_master_nodes: 1</code></p>
+<blockquote class='book-hint '>
+<p>设置这个参数来保证集群中的节点可以知道其它N个有master资格的节点。默认为1，对于大的集群来说，可以设置大一点的值（2-4）</p>
+</blockquote><p><code>discovery.zen.ping.timeout: 3s</code></p>
+<blockquote class='book-hint '>
+<p>设置集群中自动发现其它节点时 <code>ping</code> 连接超时时间，默认为3秒，对于比较差的网络环境可以高点的值来防止自动发现时出错</p>
+</blockquote><p><code>discovery.zen.ping.multicast.enabled: false</code></p>
+<blockquote class='book-hint '>
+<p>设置是否打开多播发现节点，默认是true</p>
+</blockquote><p><code>discovery.zen.ping.unicast.hosts: [“host1”, “host2:port”, “host3 [portX-portY] “]</code></p>
+<blockquote class='book-hint '>
+<p>设置集群中master节点的初始列表，可以通过这些节点来自动发现新加入集群的节点</p>
+</blockquote><p>上面是在安装时配置文件中就自带的配置项外，在实际使用过程还可能使用到下面的配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">threadpool</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">search</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">type</span>: <span style="color:#ae81ff">fixed</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">min</span>: <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">max</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">queue_size</span>: <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">// 配置es服务器的执行查询操作时所用线程池，fix固定线程数的线程池。</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">index </span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">store</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">type</span>: <span style="color:#ae81ff">memory</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">// 表示索引存储在内存中，当然es不太建议这么做。经本人测试，做查询时，使用内存索引并不会比正常的索引快。</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">index.mapper.dynamic</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">// 禁止自动创建mapping。默认情况下，es可以根据数据类型自动创建mapping</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">index.query.parse.allow_unmapped_fields</span>: <span style="color:#66d9ef">false</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">// 不能查找没有在mapping中定义的属性</span></span></span></code></pre></div><p>安装时自带的配置文件只包含一部分比较核心的配置项，更多的配置内容需要自己边搞边查了。<a href="https://www.elastic.co/guide/en/elasticsearch/reference/index.html">更多配置参考</a></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/elk/1.1elastaticsearch%E5%85%A5%E9%97%A8/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.1 Elastatic Search入门</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/elk/1.3%E4%BD%BF%E7%94%A8kibana%E6%93%8D%E4%BD%9Ces/" class="flex align-center">
+      <span>1.3使用 Kibana操作 Es</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="所有文章">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="所有文章">
+
+<title>所有文章 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/index.xml" title="CODE'NOTE" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>所有文章</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/rabbitmq/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5rabbitmq/">客户端连接 Rabbit Mq</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>客户端连接RabbitMQ</p>
+<!-- more -->
+<h1 id="rabbitmqclient">RabbitMQ.Client<a class="anchor" href="#rabbitmqclient">#</a></h1>
+<p>基于 <code>RabbitMQ.Client</code> 的封装，在 <code>NuGet</code> 中搜索 <code>RabbitMQ.Client</code> ，直接点击按钮安装即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> CommonLib.RabbitMQ
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> global::RabbitMQ.Client;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> global::RabbitMQ.Client.Events;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.10redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">1.10 Redis常见问题</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>redis常见问题记录</p>
+<!-- more -->
+<h2 id="什么是redis">什么是Redis？<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afredis">#</a></h2>
+<p>Redis(Remote Dictionary Server) 是一个使用 C 语言编写的，开源的（BSD许可）高性能非关系型（NoSQL）的键值对数据库。与传统数据库不同的是 Redis 数据存在内存中，所以读写速度非常快。</p>
+<h2 id="redis优缺点有哪些">Redis优缺点有哪些？<a class="anchor" href="#redis%e4%bc%98%e7%bc%ba%e7%82%b9%e6%9c%89%e5%93%aa%e4%ba%9b">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>读写性能优异：读 <code>110000次/s</code>，写 <code>81000次/s …</code></td></tr></tbody></table></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.1nosql%E6%A6%82%E8%BF%B0/">1.1 No Sql概述</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="什么是nosql">什么是NoSQL<a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%afnosql">#</a></h1>
+<p>在现代的计算系统上每天网络上都会产生庞大的数据量。这些数据有很大一部分是由关系数据库管理系统（RDBMS）来处理。 1970年 E.F.Codd&rsquo;s提出的关系模型的论文 &ldquo;A relational model of data for large shared data banks&rdquo;，这使得数据建模和应用程序编程更加简单。</p>
+<blockquote class='book-hint '>
+<p>NoSQL(NoSQL = Not Only SQL )，意即&quot;不仅仅是SQL&quot;</p>
+</blockquote><!-- more -->
+<h1 id="为什么要使用nosql">为什么要使用NoSQL<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e4%bd%bf%e7%94%a8nosql"># …</a></h1></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.2redis%E5%AE%89%E8%A3%85/">1.2 Redis安装</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="下载安装包">下载安装包<a class="anchor" href="#%e4%b8%8b%e8%bd%bd%e5%ae%89%e8%a3%85%e5%8c%85">#</a></h1>
+<p>Redis（<code>Remote Dictionary Server</code>  )，即远程字典服务，是一个开源的使用 <code>ANSI C</code> 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p><code>Redis </code>是没有 Windows 平台下的官方支持版本的。Redis 官方不建议在 Windows 下使用，所以官网没有 Windows 版本可以下载；可以下载在 github 上的<code>ServiceStack</code>  提供的非官方 Windows 版本的 Redis 但不推荐，因为： …</p></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.3redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">1.3 Redis基本数据类型</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>Redis基本数据类型</p>
+<!-- more -->
+<h1 id="string字符串">String字符串<a class="anchor" href="#string%e5%ad%97%e7%ac%a6%e4%b8%b2">#</a></h1>
+<p>Redis 字符串是字节序列。Redis 字符串是二进制安全的，意味着他们有一个已知的长度没有任何特殊字符终止，所以可以存储任何东西，<code>512M</code> 为上限，主要的还是操作键值对。String的数据结构是简单的 <code>Key-Value</code>模型，Value可以是字符串，也可以是数字。</p>
+<h2 id="set-key-value"><code>set key value</code><a class="anchor" href="#set-key-value">#</a></h2>
+<p>普通添加</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379  set name wangpengliang
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379  get name …</span></span></span></span></span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.4redis%E7%89%B9%E6%AE%8A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">1.4 Redis特殊数据类型</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><p>redis特殊数据类型</p>
+<!-- more -->
+<h1 id="geospatial-地理位置">Geospatial 地理位置<a class="anchor" href="#geospatial-%e5%9c%b0%e7%90%86%e4%bd%8d%e7%bd%ae">#</a></h1>
+<h1 id="hyperloglog-基数统计">Hyperloglog 基数统计<a class="anchor" href="#hyperloglog-%e5%9f%ba%e6%95%b0%e7%bb%9f%e8%ae%a1">#</a></h1>
+<h1 id="bitmap位图">Bitmap位图<a class="anchor" href="#bitmap%e4%bd%8d%e5%9b%be">#</a></h1>
+<blockquote class='book-hint '>
+<p>TODO：知道有这个东西，需要用的时候看下文档即可，不做记录。</p>
+</blockquote></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.5redis%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C/">1.5 Redis事务操作</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="事务概念">事务概念<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e6%a6%82%e5%bf%b5">#</a></h1>
+<p>一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，<strong>按顺序的串行化执行</strong>而不会被其他命令插入，不许加塞。</p>
+<!-- more -->
+<h1 id="事务作用">事务作用<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e4%bd%9c%e7%94%a8">#</a></h1>
+<p>一个队列中，一次性、顺序性、排他性的执行一系列命令。</p>
+<h1 id="事务常用命令">事务常用命令<a class="anchor" href="#%e4%ba%8b%e5%8a%a1%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4">#</a></h1>
+<h2 id="multi"><code>multi</code><a class="anchor" href="#multi">#</a></h2>
+<p>标记一个事务块的开始</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>127.0.0.1:6379&gt; multi
+</span></span><span style="display:flex;"><span>OK
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k1 v1
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">)</span>&gt; set k2 v2
+</span></span><span style="display:flex;"><span>QUEUED
+</span></span><span style="display:flex;"><span>127.0.0.1:6379<span style="color:#f92672">(</span>TX<span style="color:#f92672">) …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.6redis%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/">1.6 Redis配置文件详解</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="redisconfig-配置文件"><code>Redis.Config</code> 配置文件<a class="anchor" href="#redisconfig-%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6">#</a></h1>
+<p>经常使用的配置使用“# =&gt;”方式写了注释</p>
+<!-- more -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Redis configuration file example.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Note that in order to read the configuration file, Redis must be</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># started with the file path as first argument:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ./redis-server /path/to/redis.conf</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Note on units: …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.7redis%E6%8C%81%E4%B9%85%E5%8C%96/">1.7 Redis持久化</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><h1 id="rdb">Rdb<a class="anchor" href="#rdb">#</a></h1>
+<p>Rdb （Redis DataBase）是Redis用来进行持久化的一种方式，是把当前内存中的数据集快照写入磁盘，也就是 <code>Snapshot</code> 快照（数据库中所有键值对数据）。恢复时将快照文件直接读到内存里。</p>
+<p>Rdb 是 Redis 默认的持久化方案。在指定的时间间隔内，执行指定次数的写操作，则会将内存中的数据写入到磁盘中。即在指定目录下生成一个 <code>dump.rdb</code> (默认名称)文件。<code>Redis</code> 重启会通过加载<code>dump.rdb</code>文件恢复数据。</p>
+<!-- more -->
+<h2 id="基本原理">基本原理<a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86">#</a></h2>
+<p>Rdb 持久化主要是通过 <code>SAVE</code> 和 …</p></!--></div>
+      </div></div>
+  </article>
+  
+  <article class="book-post markdown">
+    <h2>
+      <a href="/posts/redis/1.8redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/">1.8 Redis发布订阅</a>
+    </h2>
+    <div class="book-post-container flex gap">
+      <div>
+        
+
+
+  
+
+  
+
+
+        <div class="book-post-content markdown-inner"><blockquote class='book-hint '>
+<p>TODO：知道有这个东西，需要用的时候看下文档即可。</p>
+</blockquote></div>
+      </div></div>
+  </article>
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <span>
+    <a href="/posts/page/9/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+    </a>
+  
+  </span>
+  
+  <span class="flex gap"><a href="/posts/page/8/">8</a><a href="/posts/page/9/">9</a><a >10</a><a href="/posts/page/11/">11</a></span>
+  
+  <span>
+    <a href="/posts/page/11/" class="flex align-center">
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </span>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <a>Categories</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <a>Tags</a>
+      <ul>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </div>
+</aside>
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

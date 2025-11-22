@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="仓库是集中存放镜像的地方。注册服务器是管理仓库的具体服务器，每个服务器上可以有多个仓库，每个仓库下面有多个镜像。
+Docker Hub# Docker 官方维护了一个公共仓库 Docker Hub，其中已经包括了数量超过 15,000 的镜像。大部分需求都可以通过在 Docker Hub 中直接下载镜像来实现。
+注册# 在 Docker Hub 免费注册一个 Docker 账号。
+登录# 通过执行 docker login 命令交互式的输入用户名及密码来完成在命令行界面登录 Docker Hub，通过 docker logout 退出登录。
+拉取镜像# 通过 docker search 命令查找官方仓库中的镜像，并利用 docker pull 命令来下载到本地，以 centos 为关键词为例
+[root@wangpengliang ~]# docker search centos NAME DESCRIPTION STARS OFFICIAL AUTOMATED centos The official build of CentOS. 6582 [OK] ansible/centos7-ansible Ansible on Centos7 134 [OK] consol/centos-xfce-vnc Centos container with &#34;headless&#34; VNC session… 129 [OK] jdeathe/centos-ssh OpenSSH / Supervisor / EPEL/IUS/SCL Repos - … 118 [OK] centos/systemd systemd enabled base container. 99 [OK] imagine10255/centos6-lnmp-php56 centos6-lnmp-php56 58 [OK] tutum/centos Simple CentOS docker image with SSH access 48 kinogmt/centos-ssh CentOS with SSH 29 [OK] pivotaldata/centos-gpdb-dev CentOS image for GPDB development. Tag names… 13 guyton/centos6 From official centos6 container with full up… 10 [OK] centos/tools Docker image that has systems administration… 7 [OK] drecom/centos-ruby centos ruby 6 [OK] pivotaldata/centos Base centos, freshened up a little with a Do… 5 mamohr/centos-java Oracle Java 8 Docker image based on Centos 7 3 [OK] pivotaldata/centos-gcc-toolchain CentOS with a toolchain, but unaffiliated wi… 3 darksheer/centos Base Centos Image -- Updated hourly 3 [OK] pivotaldata/centos-mingw Using the mingw toolchain to cross-compile t… 3 dokken/centos-7 CentOS 7 image for kitchen-dokken 2 indigo/centos-maven Vanilla CentOS 7 with Oracle Java Developmen… 2 [OK] amd64/centos The official build of CentOS. 2 pivotaldata/centos6.8-dev CentosOS 6.8 image for GPDB development 1 mcnaughton/centos-base centos base image 1 [OK] blacklabelops/centos CentOS Base Image! Built and Updates Daily! 1 [OK] pivotaldata/centos7-dev CentosOS 7 image for GPDB development 0 smartentry/centos centos with smartentry 0 [OK]看到返回了很多包含关键字的镜像，其中包括镜像名字、描述、收藏数（表示该镜像的受关注程度）、是否官方创建（OFFICIAL）、是否自动构建。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/docker/1.4docker%E4%BB%93%E5%BA%93/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="仓库是集中存放镜像的地方。注册服务器是管理仓库的具体服务器，每个服务器上可以有多个仓库，每个仓库下面有多个镜像。
+Docker Hub# Docker 官方维护了一个公共仓库 Docker Hub，其中已经包括了数量超过 15,000 的镜像。大部分需求都可以通过在 Docker Hub 中直接下载镜像来实现。
+注册# 在 Docker Hub 免费注册一个 Docker 账号。
+登录# 通过执行 docker login 命令交互式的输入用户名及密码来完成在命令行界面登录 Docker Hub，通过 docker logout 退出登录。
+拉取镜像# 通过 docker search 命令查找官方仓库中的镜像，并利用 docker pull 命令来下载到本地，以 centos 为关键词为例
+[root@wangpengliang ~]# docker search centos NAME DESCRIPTION STARS OFFICIAL AUTOMATED centos The official build of CentOS. 6582 [OK] ansible/centos7-ansible Ansible on Centos7 134 [OK] consol/centos-xfce-vnc Centos container with &#34;headless&#34; VNC session… 129 [OK] jdeathe/centos-ssh OpenSSH / Supervisor / EPEL/IUS/SCL Repos - … 118 [OK] centos/systemd systemd enabled base container. 99 [OK] imagine10255/centos6-lnmp-php56 centos6-lnmp-php56 58 [OK] tutum/centos Simple CentOS docker image with SSH access 48 kinogmt/centos-ssh CentOS with SSH 29 [OK] pivotaldata/centos-gpdb-dev CentOS image for GPDB development. Tag names… 13 guyton/centos6 From official centos6 container with full up… 10 [OK] centos/tools Docker image that has systems administration… 7 [OK] drecom/centos-ruby centos ruby 6 [OK] pivotaldata/centos Base centos, freshened up a little with a Do… 5 mamohr/centos-java Oracle Java 8 Docker image based on Centos 7 3 [OK] pivotaldata/centos-gcc-toolchain CentOS with a toolchain, but unaffiliated wi… 3 darksheer/centos Base Centos Image -- Updated hourly 3 [OK] pivotaldata/centos-mingw Using the mingw toolchain to cross-compile t… 3 dokken/centos-7 CentOS 7 image for kitchen-dokken 2 indigo/centos-maven Vanilla CentOS 7 with Oracle Java Developmen… 2 [OK] amd64/centos The official build of CentOS. 2 pivotaldata/centos6.8-dev CentosOS 6.8 image for GPDB development 1 mcnaughton/centos-base centos base image 1 [OK] blacklabelops/centos CentOS Base Image! Built and Updates Daily! 1 [OK] pivotaldata/centos7-dev CentosOS 7 image for GPDB development 0 smartentry/centos centos with smartentry 0 [OK]看到返回了很多包含关键字的镜像，其中包括镜像名字、描述、收藏数（表示该镜像的受关注程度）、是否官方创建（OFFICIAL）、是否自动构建。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="仓库是集中存放镜像的地方。注册服务器是管理仓库的具体服务器，每个服务器上可以有多个仓库，每个仓库下面有多个镜像。
+Docker Hub# Docker 官方维护了一个公共仓库 Docker Hub，其中已经包括了数量超过 15,000 的镜像。大部分需求都可以通过在 Docker Hub 中直接下载镜像来实现。
+注册# 在 Docker Hub 免费注册一个 Docker 账号。
+登录# 通过执行 docker login 命令交互式的输入用户名及密码来完成在命令行界面登录 Docker Hub，通过 docker logout 退出登录。
+拉取镜像# 通过 docker search 命令查找官方仓库中的镜像，并利用 docker pull 命令来下载到本地，以 centos 为关键词为例
+[root@wangpengliang ~]# docker search centos NAME DESCRIPTION STARS OFFICIAL AUTOMATED centos The official build of CentOS. 6582 [OK] ansible/centos7-ansible Ansible on Centos7 134 [OK] consol/centos-xfce-vnc Centos container with &#34;headless&#34; VNC session… 129 [OK] jdeathe/centos-ssh OpenSSH / Supervisor / EPEL/IUS/SCL Repos - … 118 [OK] centos/systemd systemd enabled base container. 99 [OK] imagine10255/centos6-lnmp-php56 centos6-lnmp-php56 58 [OK] tutum/centos Simple CentOS docker image with SSH access 48 kinogmt/centos-ssh CentOS with SSH 29 [OK] pivotaldata/centos-gpdb-dev CentOS image for GPDB development. Tag names… 13 guyton/centos6 From official centos6 container with full up… 10 [OK] centos/tools Docker image that has systems administration… 7 [OK] drecom/centos-ruby centos ruby 6 [OK] pivotaldata/centos Base centos, freshened up a little with a Do… 5 mamohr/centos-java Oracle Java 8 Docker image based on Centos 7 3 [OK] pivotaldata/centos-gcc-toolchain CentOS with a toolchain, but unaffiliated wi… 3 darksheer/centos Base Centos Image -- Updated hourly 3 [OK] pivotaldata/centos-mingw Using the mingw toolchain to cross-compile t… 3 dokken/centos-7 CentOS 7 image for kitchen-dokken 2 indigo/centos-maven Vanilla CentOS 7 with Oracle Java Developmen… 2 [OK] amd64/centos The official build of CentOS. 2 pivotaldata/centos6.8-dev CentosOS 6.8 image for GPDB development 1 mcnaughton/centos-base centos base image 1 [OK] blacklabelops/centos CentOS Base Image! Built and Updates Daily! 1 [OK] pivotaldata/centos7-dev CentosOS 7 image for GPDB development 0 smartentry/centos centos with smartentry 0 [OK]看到返回了很多包含关键字的镜像，其中包括镜像名字、描述、收藏数（表示该镜像的受关注程度）、是否官方创建（OFFICIAL）、是否自动构建。">
+  <meta itemprop="wordCount" content="1102">
+
+<title>1.4 Docker仓库 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/docker/1.4docker%E4%BB%93%E5%BA%93/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.4 Docker仓库</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#注册">注册</a></li>
+    <li><a href="#登录">登录</a></li>
+    <li><a href="#拉取镜像">拉取镜像</a></li>
+    <li><a href="#下载镜像">下载镜像</a></li>
+    <li><a href="#推送镜像">推送镜像</a></li>
+    <li><a href="#自动构建">自动构建</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#下载镜像-1">下载镜像</a></li>
+    <li><a href="#启动容器并开放端口">启动容器并开放端口</a></li>
+    <li><a href="#上传搜索下载镜像">上传/搜索/下载镜像</a></li>
+    <li><a href="#daemonjson">daemon.json</a></li>
+    <li><a href="#私有仓库高级配置">私有仓库高级配置</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.4 Docker仓库
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>仓库是集中存放镜像的地方。注册服务器是管理仓库的具体服务器，每个服务器上可以有多个仓库，每个仓库下面有多个镜像。</p>
+<h1 id="docker-hub">Docker Hub<a class="anchor" href="#docker-hub">#</a></h1>
+<p>Docker 官方维护了一个公共仓库 Docker Hub，其中已经包括了数量超过 15,000 的镜像。大部分需求都可以通过在 Docker Hub 中直接下载镜像来实现。</p>
+<h2 id="注册">注册<a class="anchor" href="#%e6%b3%a8%e5%86%8c">#</a></h2>
+<p>在 <a href="https://hub.docker.com">Docker Hub</a> 免费注册一个 Docker 账号。</p>
+<p><img src="/images/2021-09-09-13-57-25.png" alt="" /></p>
+<h2 id="登录">登录<a class="anchor" href="#%e7%99%bb%e5%bd%95">#</a></h2>
+<p>通过执行 <code>docker login</code>  命令交互式的输入用户名及密码来完成在命令行界面登录 Docker Hub，通过 <code>docker logout</code>  退出登录。</p>
+<h2 id="拉取镜像">拉取镜像<a class="anchor" href="#%e6%8b%89%e5%8f%96%e9%95%9c%e5%83%8f">#</a></h2>
+<p>通过 <code>docker search</code> 命令查找官方仓库中的镜像，并利用 <code>docker pull</code>  命令来下载到本地，以 <code>centos</code>  为关键词为例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker search centos</span>
+</span></span><span style="display:flex;"><span>NAME                               DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+</span></span><span style="display:flex;"><span>centos                             The official build of CentOS.                   <span style="color:#ae81ff">6582</span>      <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>       
+</span></span><span style="display:flex;"><span>ansible/centos7-ansible            Ansible on Centos7                              <span style="color:#ae81ff">134</span>                  <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>consol/centos-xfce-vnc             Centos container with <span style="color:#e6db74">&#34;headless&#34;</span> VNC session…   <span style="color:#ae81ff">129</span>                  <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>jdeathe/centos-ssh                 OpenSSH / Supervisor / EPEL/IUS/SCL Repos - …   <span style="color:#ae81ff">118</span>                  <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>centos/systemd                     systemd enabled base container.                 <span style="color:#ae81ff">99</span>                   <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>imagine10255/centos6-lnmp-php56    centos6-lnmp-php56                              <span style="color:#ae81ff">58</span>                   <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>tutum/centos                       Simple CentOS docker image with SSH access      <span style="color:#ae81ff">48</span>                   
+</span></span><span style="display:flex;"><span>kinogmt/centos-ssh                 CentOS with SSH                                 <span style="color:#ae81ff">29</span>                   <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>pivotaldata/centos-gpdb-dev        CentOS image <span style="color:#66d9ef">for</span> GPDB development. Tag names…   <span style="color:#ae81ff">13</span>                   
+</span></span><span style="display:flex;"><span>guyton/centos6                     From official centos6 container with full up…   <span style="color:#ae81ff">10</span>                   <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>centos/tools                       Docker image that has systems administration…   <span style="color:#ae81ff">7</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>drecom/centos-ruby                 centos ruby                                     <span style="color:#ae81ff">6</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>pivotaldata/centos                 Base centos, freshened up a little with a Do…   <span style="color:#ae81ff">5</span>                    
+</span></span><span style="display:flex;"><span>mamohr/centos-java                 Oracle Java <span style="color:#ae81ff">8</span> Docker image based on Centos <span style="color:#ae81ff">7</span>    <span style="color:#ae81ff">3</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>pivotaldata/centos-gcc-toolchain   CentOS with a toolchain, but unaffiliated wi…   <span style="color:#ae81ff">3</span>                    
+</span></span><span style="display:flex;"><span>darksheer/centos                   Base Centos Image -- Updated hourly             <span style="color:#ae81ff">3</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>pivotaldata/centos-mingw           Using the mingw toolchain to cross-compile t…   <span style="color:#ae81ff">3</span>                    
+</span></span><span style="display:flex;"><span>dokken/centos-7                    CentOS <span style="color:#ae81ff">7</span> image <span style="color:#66d9ef">for</span> kitchen-dokken               <span style="color:#ae81ff">2</span>                    
+</span></span><span style="display:flex;"><span>indigo/centos-maven                Vanilla CentOS <span style="color:#ae81ff">7</span> with Oracle Java Developmen…   <span style="color:#ae81ff">2</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>amd64/centos                       The official build of CentOS.                   <span style="color:#ae81ff">2</span>                    
+</span></span><span style="display:flex;"><span>pivotaldata/centos6.8-dev          CentosOS 6.8 image <span style="color:#66d9ef">for</span> GPDB development         <span style="color:#ae81ff">1</span>                    
+</span></span><span style="display:flex;"><span>mcnaughton/centos-base             centos base image                               <span style="color:#ae81ff">1</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>blacklabelops/centos               CentOS Base Image! Built and Updates Daily!     <span style="color:#ae81ff">1</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>pivotaldata/centos7-dev            CentosOS <span style="color:#ae81ff">7</span> image <span style="color:#66d9ef">for</span> GPDB development           <span style="color:#ae81ff">0</span>                    
+</span></span><span style="display:flex;"><span>smartentry/centos                  centos with smartentry                          <span style="color:#ae81ff">0</span>                    <span style="color:#f92672">[</span>OK<span style="color:#f92672">]</span></span></span></code></pre></div><p>看到返回了很多包含关键字的镜像，其中包括镜像名字、描述、收藏数（表示该镜像的受关注程度）、是否官方创建（OFFICIAL）、是否自动构建。</p>
+<p>根据是否是官方提供，可将镜像分为两类：</p>
+<ul>
+<li>类似 <code>centos</code>  这样的镜像，被称为基础镜像或根镜像。这些基础镜像由 Docker 公司创建、验证、支持、提供。这样的镜像往往使用单个单词作为名字。</li>
+<li>还有一种类型，比如 <code>tianon/centos</code>  镜像，它是由 Docker Hub 的注册用户创建并维护的，往往带有用户名称前缀。可以通过前缀 <code>username/</code> 来指定使用某个用户提供的镜像，比如 tianon 用户</li>
+</ul>
+<blockquote class='book-hint '>
+<p>在查找的时候通过 <code>--filter=stars=N</code> 参数可以指定仅显示收藏数量为 N 以上的镜像</p>
+</blockquote><h2 id="下载镜像">下载镜像<a class="anchor" href="#%e4%b8%8b%e8%bd%bd%e9%95%9c%e5%83%8f">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker pull centos</span>
+</span></span><span style="display:flex;"><span>Using default tag: latest
+</span></span><span style="display:flex;"><span>latest: Pulling from library/centos
+</span></span><span style="display:flex;"><span>7a0437f04f83: Pull complete 
+</span></span><span style="display:flex;"><span>Digest: sha256:5528e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1
+</span></span><span style="display:flex;"><span>Status: Downloaded newer image <span style="color:#66d9ef">for</span> centos:latest
+</span></span><span style="display:flex;"><span>docker.io/library/centos:latest</span></span></code></pre></div><h2 id="推送镜像">推送镜像<a class="anchor" href="#%e6%8e%a8%e9%80%81%e9%95%9c%e5%83%8f">#</a></h2>
+<p>可以在登录后通过 <code>docker push</code>  命令来将自己的镜像推送到 <code>Docker Hub</code> </p>
+<blockquote class='book-hint '>
+<p>以下命令中的 username 替换为你的 Docker 账号用户名</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+</span></span><span style="display:flex;"><span>nginx         2.0       546ad28bcf61   <span style="color:#ae81ff">3</span> days ago     133MB
+</span></span><span style="display:flex;"><span>redis         6.2.4     fad0ee7e917a   <span style="color:#ae81ff">6</span> days ago     105MB
+</span></span><span style="display:flex;"><span>redis         latest    fad0ee7e917a   <span style="color:#ae81ff">6</span> days ago     105MB
+</span></span><span style="display:flex;"><span>ubuntu        latest    7e0aa2d69a15   <span style="color:#ae81ff">6</span> weeks ago    72.7MB
+</span></span><span style="display:flex;"><span>hello-world   latest    d1165f221234   <span style="color:#ae81ff">3</span> months ago   13.3kB
+</span></span><span style="display:flex;"><span>centos        latest    300e315adb2f   <span style="color:#ae81ff">6</span> months ago   209MB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker login</span>
+</span></span><span style="display:flex;"><span>Login with your Docker ID to push and pull images from Docker Hub. If you dont have a Docker ID, head over to https://hub.docker.com to create one
+</span></span><span style="display:flex;"><span>Username: wangpengliang
+</span></span><span style="display:flex;"><span>Password: 
+</span></span><span style="display:flex;"><span>WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+</span></span><span style="display:flex;"><span>Configure a credential helper to remove this warning. See
+</span></span><span style="display:flex;"><span>https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+</span></span><span style="display:flex;"><span>Login Succeeded
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker tag nginx:2.0 wangpengliang/nginx:mytest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY            TAG       IMAGE ID       CREATED        SIZE
+</span></span><span style="display:flex;"><span>nginx                 2.0       546ad28bcf61   <span style="color:#ae81ff">3</span> days ago     133MB
+</span></span><span style="display:flex;"><span>wangpengliang/nginx   mytest    546ad28bcf61   <span style="color:#ae81ff">3</span> days ago     133MB
+</span></span><span style="display:flex;"><span>redis                 6.2.4     fad0ee7e917a   <span style="color:#ae81ff">6</span> days ago     105MB
+</span></span><span style="display:flex;"><span>redis                 latest    fad0ee7e917a   <span style="color:#ae81ff">6</span> days ago     105MB
+</span></span><span style="display:flex;"><span>ubuntu                latest    7e0aa2d69a15   <span style="color:#ae81ff">6</span> weeks ago    72.7MB
+</span></span><span style="display:flex;"><span>hello-world           latest    d1165f221234   <span style="color:#ae81ff">3</span> months ago   13.3kB
+</span></span><span style="display:flex;"><span>centos                latest    300e315adb2f   <span style="color:#ae81ff">6</span> months ago   209MB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@wangpengliang ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker push wangpengliang/nginx:mytest </span>
+</span></span><span style="display:flex;"><span>The push refers to repository <span style="color:#f92672">[</span>docker.io/wangpengliang/nginx<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>8be9905423d3: Pushed 
+</span></span><span style="display:flex;"><span>075508cf8f04: Mounted from library/nginx 
+</span></span><span style="display:flex;"><span>5c865c78bc96: Mounted from library/nginx 
+</span></span><span style="display:flex;"><span>134e19b2fac5: Mounted from library/nginx 
+</span></span><span style="display:flex;"><span>83634f76e732: Mounted from library/nginx 
+</span></span><span style="display:flex;"><span>766fe2c3fc08: Mounted from library/nginx 
+</span></span><span style="display:flex;"><span>02c055ef67f5: Mounted from library/nginx 
+</span></span><span style="display:flex;"><span>mytest: digest: sha256:05cb206e7659009b6cfe41d4891078aecf1656e527c5a075af609b9cfcad74df size: <span style="color:#ae81ff">1778</span></span></span></code></pre></div><p><img src="/images/2021-09-09-13-58-30.png" alt="" /></p>
+<h2 id="自动构建">自动构建<a class="anchor" href="#%e8%87%aa%e5%8a%a8%e6%9e%84%e5%bb%ba">#</a></h2>
+<p>有时候构建了镜像，安装了某个软件，当软件发布新版本则需要手动更新镜像。而自动构建允许通过 Docker Hub 指定跟踪一个目标网站（支持 GitHub 或 BitBucket）上的项目，一旦项目发生新的提交 （commit）或者创建了新的标签（tag），Docker Hub 会自动构建镜像并推送到 Docker Hub 中。自动构建（Automated Builds）功能对于需要经常升级镜像内程序来说十分方便。</p>
+<p>要配置自动构建，包括如下步骤</p>
+<ol>
+<li>登录 Docker Hub</li>
+<li>在 Docker Hub 点击右上角头像，在账号设置（Account Settings）中关联（Linked Accounts）目标网站</li>
+<li>在 Docker Hub 中新建或选择已有的仓库，在 Builds 选项卡中选择 Configure Automated Builds</li>
+<li>选取一个目标网站中的项目（需要含 Dockerfile）和分支</li>
+<li>指定 Dockerfile 的位置并保存之后，可以在 Docker Hub 的仓库页面的 Timeline 选项卡中查看每次构建的状态</li>
+</ol>
+<h1 id="私有仓库">私有仓库<a class="anchor" href="#%e7%a7%81%e6%9c%89%e4%bb%93%e5%ba%93">#</a></h1>
+<p>创建Docker私有仓库的目的在于私密性，适用于团体内部，如公司部门，企业内部等需要在团体成员中共享Docker相关资源的场景。<a href="https://docs.docker.com/registry/">docker-registry</a> 是官方提供的工具，可以用于构建私有的镜像仓库。</p>
+<h2 id="下载镜像-1">下载镜像<a class="anchor" href="#%e4%b8%8b%e8%bd%bd%e9%95%9c%e5%83%8f-1">#</a></h2>
+<pre tabindex="0"><code>[root@centos-01 ~]# docker pull registry
+Using default tag: latest
+latest: Pulling from library/registry
+ddad3d7c1e96: Pull complete 
+6eda6749503f: Pull complete 
+363ab70c2143: Pull complete 
+5b94580856e6: Pull complete 
+12008541203a: Pull complete 
+Digest: sha256:bac2d7050dc4826516650267fe7dc6627e9e11ad653daca0641437abdf18df27
+Status: Downloaded newer image for registry:latest
+docker.io/library/registry:latest</code></pre><h2 id="启动容器并开放端口">启动容器并开放端口<a class="anchor" href="#%e5%90%af%e5%8a%a8%e5%ae%b9%e5%99%a8%e5%b9%b6%e5%bc%80%e6%94%be%e7%ab%af%e5%8f%a3">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -p 5000:5000 --restart=always --name registry registry</span>
+</span></span><span style="display:flex;"><span>63411fb8a1475200da83a72aed4c584d329f2d02a6d473a09a00be06cce189a2</span></span></code></pre></div><p>这里使用官方的 <code>registry</code> 镜像来启动私有仓库。默认情况下，仓库会被创建在容器的 <code>/var/lib/registry</code> 目录下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># docker run -d -p 5000:5000 --restart=always --name registry registry</span>
+</span></span><span style="display:flex;"><span>63411fb8a1475200da83a72aed4c584d329f2d02a6d473a09a00be06cce189a2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+</span></span><span style="display:flex;"><span>anaconda-ks.cfg
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
+</span></span><span style="display:flex;"><span>bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># docker ps -a</span>
+</span></span><span style="display:flex;"><span>CONTAINER ID   IMAGE      COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+</span></span><span style="display:flex;"><span>63411fb8a147   registry   <span style="color:#e6db74">&#34;/entrypoint.sh /etc…&#34;</span>   About a minute ago   Up About a minute   0.0.0.0:5000-&gt;5000/tcp, :::5000-&gt;5000/tcp   registry
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># docker exec -it 63411fb8a147 /bin/sh</span>
+</span></span><span style="display:flex;"><span>/ <span style="color:#75715e"># ls</span>
+</span></span><span style="display:flex;"><span>bin            entrypoint.sh  home           media          opt            root           sbin           sys            usr
+</span></span><span style="display:flex;"><span>dev            etc            lib            mnt            proc           run            srv            tmp            var
+</span></span><span style="display:flex;"><span>/ <span style="color:#75715e"># cd /var/lib/registry/</span>
+</span></span><span style="display:flex;"><span>/var/lib/registry <span style="color:#75715e"># ls</span></span></span></code></pre></div><p>可以通过 <code>-v</code> 参数将镜像文件存储在本地的指定路径。例如下面的例子将上传的镜像放到本地的 <code>/opt/data/registry</code> 目录：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ docker run -d <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -p 5000:5000 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -v /opt/data/registry:/var/lib/registry <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    registry</span></span></code></pre></div><h2 id="上传搜索下载镜像">上传/搜索/下载镜像<a class="anchor" href="#%e4%b8%8a%e4%bc%a0%e6%90%9c%e7%b4%a2%e4%b8%8b%e8%bd%bd%e9%95%9c%e5%83%8f">#</a></h2>
+<p>创建好私有仓库后，就可以使用 <code>docker tag</code> 来标记一个镜像，然后推送到仓库。这里私有仓库地址为 <code>192.168.31.32:5000</code> ，查看本机已有镜像：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+</span></span><span style="display:flex;"><span>nginx        latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>registry     latest    1fd8e1b0bb7e   <span style="color:#ae81ff">8</span> weeks ago   26.2MB</span></span></code></pre></div><p>使用 <code>docker tag </code>将 <code>nginx:latest</code> 这个镜像标记为 <code>192.168.31.32:5000/nginx:latest</code>，格式为 :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker tag IMAGE<span style="color:#f92672">[</span>:TAG<span style="color:#f92672">]</span> <span style="color:#f92672">[</span>REGISTRY_HOST<span style="color:#f92672">[</span>:REGISTRY_PORT<span style="color:#f92672">]</span>/<span style="color:#f92672">]</span>REPOSITORY<span style="color:#f92672">[</span>:TAG<span style="color:#f92672">]</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># docker tag nginx:latest 192.168.31.32:5000/nginx:latest</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY                 TAG       IMAGE ID       CREATED       SIZE
+</span></span><span style="display:flex;"><span>192.168.31.32:5000/nginx   latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>nginx                      latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>registry                   latest    1fd8e1b0bb7e   <span style="color:#ae81ff">8</span> weeks ago   26.2MB</span></span></code></pre></div><p>使用 <code>docker push</code> 上传标记的镜像：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 /<span style="color:#f92672">]</span><span style="color:#75715e"># docker push 192.168.31.32:5000/nginx</span>
+</span></span><span style="display:flex;"><span>Using default tag: latest
+</span></span><span style="display:flex;"><span>The push refers to repository <span style="color:#f92672">[</span>192.168.31.32:5000/nginx<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Get https://192.168.31.32:5000/v2/: http: server gave HTTP response to HTTPS client</span></span></code></pre></div><p>这里发现无法成功推送镜像，原因是因为：Docker 默认不允许以非 <code>HTTPS</code> 方式推送镜像。可以通过 Docker 的配置选项来取消这个限制。对于使用 <code>systemd</code> 的系统，请在 <code>/etc/docker/daemon.json</code> 中写入如下内容（如果文件不存在需要手动创建该文件）</p>
+<h2 id="daemonjson">daemon.json<a class="anchor" href="#daemonjson">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;registry-mirror&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;https://registry.docker-cn.com&#34;</span>
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;insecure-registries&#34;</span>: [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;192.168.31.32:5000&#34;</span>
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><blockquote class='book-hint '>
+<p>注意：该文件必须符合 <code>json</code> 规范，否则 Docker 将不能启动</p>
+</blockquote><p>增加配置文件后，重启docker服务：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>systemctl daemon-reload 
+</span></span><span style="display:flex;"><span>service docker restart</span></span></code></pre></div><p>再次测试 <code>docker push</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker push 192.168.31.32:5000/nginx</span>
+</span></span><span style="display:flex;"><span>Using default tag: latest
+</span></span><span style="display:flex;"><span>The push refers to repository <span style="color:#f92672">[</span>192.168.31.32:5000/nginx<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>075508cf8f04: Pushed 
+</span></span><span style="display:flex;"><span>5c865c78bc96: Pushed 
+</span></span><span style="display:flex;"><span>134e19b2fac5: Pushed 
+</span></span><span style="display:flex;"><span>83634f76e732: Pushed 
+</span></span><span style="display:flex;"><span>766fe2c3fc08: Pushed 
+</span></span><span style="display:flex;"><span>02c055ef67f5: Pushed 
+</span></span><span style="display:flex;"><span>latest: digest: sha256:61191087790c31e43eb37caa10de1135b002f10c09fdda7fa8a5989db74033aa size: <span style="color:#ae81ff">1570</span></span></span></code></pre></div><p><code>curl</code>查看仓库中的镜像：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># curl 192.168.31.32:5000/v2/_catalog</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;repositories&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;nginx&#34;</span><span style="color:#f92672">]}</span></span></span></code></pre></div><p>看到 <code>{&quot;repositories&quot;:[&quot;nginx&quot;]}</code>，说明镜像成功上传。</p>
+<p>下面演示先删除已有镜像，再尝试从私有仓库中下载这个镜像：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY                 TAG       IMAGE ID       CREATED       SIZE
+</span></span><span style="display:flex;"><span>nginx                      latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>192.168.31.32:5000/nginx   latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>registry                   latest    1fd8e1b0bb7e   <span style="color:#ae81ff">8</span> weeks ago   26.2MB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker rmi nginx:latest</span>
+</span></span><span style="display:flex;"><span>Untagged: nginx:latest
+</span></span><span style="display:flex;"><span>Untagged: nginx@sha256:6d75c99af15565a301e48297fa2d121e15d80ad526f8369c526324f0f7ccb750
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY                 TAG       IMAGE ID       CREATED       SIZE
+</span></span><span style="display:flex;"><span>192.168.31.32:5000/nginx   latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>registry                   latest    1fd8e1b0bb7e   <span style="color:#ae81ff">8</span> weeks ago   26.2MB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker rmi 192.168.31.32:5000/nginx:latest </span>
+</span></span><span style="display:flex;"><span>Untagged: 192.168.31.32:5000/nginx:latest
+</span></span><span style="display:flex;"><span>Untagged: 192.168.31.32:5000/nginx@sha256:61191087790c31e43eb37caa10de1135b002f10c09fdda7fa8a5989db74033aa
+</span></span><span style="display:flex;"><span>Deleted: sha256:d1a364dc548d5357f0da3268c888e1971bbdb957ee3f028fe7194f1d61c6fdee
+</span></span><span style="display:flex;"><span>Deleted: sha256:fcc8faba78fe8a1f75025781c8fa1841079b75b54fce8408d039f73a48b7a81b
+</span></span><span style="display:flex;"><span>Deleted: sha256:a476b265974ace4c857e3d88b358e848f126297a8249840c72d5f5ea1954a4bf
+</span></span><span style="display:flex;"><span>Deleted: sha256:56722ee1ee7e73a5c6f96ea2959fa442fb4db9f044399bcd939bb0a6eb7919dc
+</span></span><span style="display:flex;"><span>Deleted: sha256:c657df997c75f6c1a9c5cc683e8e34c6f29e5b4c1dee60b632d3477fd5fdd644
+</span></span><span style="display:flex;"><span>Deleted: sha256:e9e1f772d2a8dbbeb6a4a4dcb4f0d07ff1c432bf94fac7a2db2216837bf9ec5b
+</span></span><span style="display:flex;"><span>Deleted: sha256:02c055ef67f5904019f43a41ea5f099996d8e7633749b6e606c400526b2c4b33
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+</span></span><span style="display:flex;"><span>registry     latest    1fd8e1b0bb7e   <span style="color:#ae81ff">8</span> weeks ago   26.2MB
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker pull  192.168.31.32:5000/nginx:latest</span>
+</span></span><span style="display:flex;"><span>latest: Pulling from nginx
+</span></span><span style="display:flex;"><span>69692152171a: Pull complete 
+</span></span><span style="display:flex;"><span>30afc0b18f67: Pull complete 
+</span></span><span style="display:flex;"><span>596b1d696923: Pull complete 
+</span></span><span style="display:flex;"><span>febe5bd23e98: Pull complete 
+</span></span><span style="display:flex;"><span>8283eee92e2f: Pull complete 
+</span></span><span style="display:flex;"><span>351ad75a6cfa: Pull complete 
+</span></span><span style="display:flex;"><span>Digest: sha256:61191087790c31e43eb37caa10de1135b002f10c09fdda7fa8a5989db74033aa
+</span></span><span style="display:flex;"><span>Status: Downloaded newer image <span style="color:#66d9ef">for</span> 192.168.31.32:5000/nginx:latest
+</span></span><span style="display:flex;"><span>192.168.31.32:5000/nginx:latest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos-01 docker<span style="color:#f92672">]</span><span style="color:#75715e"># docker image ls</span>
+</span></span><span style="display:flex;"><span>REPOSITORY                 TAG       IMAGE ID       CREATED       SIZE
+</span></span><span style="display:flex;"><span>192.168.31.32:5000/nginx   latest    d1a364dc548d   <span style="color:#ae81ff">2</span> weeks ago   133MB
+</span></span><span style="display:flex;"><span>registry                   latest    1fd8e1b0bb7e   <span style="color:#ae81ff">8</span> weeks ago   26.2MB</span></span></code></pre></div><h2 id="私有仓库高级配置">私有仓库高级配置<a class="anchor" href="#%e7%a7%81%e6%9c%89%e4%bb%93%e5%ba%93%e9%ab%98%e7%ba%a7%e9%85%8d%e7%bd%ae">#</a></h2>
+<p>参考：<a href="https://www.bookstack.cn/read/docker_practice-v1.1.0/repository-registry_auth.md">https://www.bookstack.cn/read/docker_practice-v1.1.0/repository-registry_auth.md</a></p>
+<h1 id="nexus-3">Nexus 3<a class="anchor" href="#nexus-3">#</a></h1>
+<p>参考：<a href="https://www.bookstack.cn/read/docker_practice-v1.1.0/repository-nexus3_registry.md">https://www.bookstack.cn/read/docker_practice-v1.1.0/repository-nexus3_registry.md</a></p>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/docker/1.3docker%E5%AE%B9%E5%99%A8/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.3 Docker容器</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/docker/1.5docker%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" class="flex align-center">
+      <span>1.5 Docker数据管理</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#注册">注册</a></li>
+    <li><a href="#登录">登录</a></li>
+    <li><a href="#拉取镜像">拉取镜像</a></li>
+    <li><a href="#下载镜像">下载镜像</a></li>
+    <li><a href="#推送镜像">推送镜像</a></li>
+    <li><a href="#自动构建">自动构建</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#下载镜像-1">下载镜像</a></li>
+    <li><a href="#启动容器并开放端口">启动容器并开放端口</a></li>
+    <li><a href="#上传搜索下载镜像">上传/搜索/下载镜像</a></li>
+    <li><a href="#daemonjson">daemon.json</a></li>
+    <li><a href="#私有仓库高级配置">私有仓库高级配置</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

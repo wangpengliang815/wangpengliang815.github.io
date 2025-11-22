@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="委托# 委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得可以将方法当作另一个方法的参数来进行传递
+不管什么函数只要返回值类型和参数能匹配委托所指定的返回值类型和参数能匹配上，那么这个函数就能存储为一个委托变量的引用。
+为什么需要委托# 委托可以将方法作为参数 逻辑解耦，保持稳定 代码复用，保证项目规范 委托使用步骤# 使用 delegate 关键字定义委托 声明委托对应的方法 实例化委托将方法作为参数传入 class DelegateTest { //step01：使用delegate关键字定义委托 public delegate int Sum(int x， int y); static void Main(string[] args) { // step03：实例化委托将方法作为参数传入 Sum sum = new Sum(new DelegateTest().Add); int result = sum.Invoke(1， 2); Console.WriteLine(result); Console.ReadKey(); } // step02：声明委托对应的方法 public int Add(int x， int y) { return x &#43; y; } } 使用 delegate 关键字定义委托 声明委托对应的方法 实例化委托将方法作为参数传入 至此，一个委托就完成了。
+匿名方法定义委托# 上面说到完成一个委托要分三步走缺一步都不行，但是微软可能感觉这么实现比较麻烦，非要把三步做成两步来走！所以就用匿名方法来简化上边的三个步骤。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="委托# 委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得可以将方法当作另一个方法的参数来进行传递
+不管什么函数只要返回值类型和参数能匹配委托所指定的返回值类型和参数能匹配上，那么这个函数就能存储为一个委托变量的引用。
+为什么需要委托# 委托可以将方法作为参数 逻辑解耦，保持稳定 代码复用，保证项目规范 委托使用步骤# 使用 delegate 关键字定义委托 声明委托对应的方法 实例化委托将方法作为参数传入 class DelegateTest { //step01：使用delegate关键字定义委托 public delegate int Sum(int x， int y); static void Main(string[] args) { // step03：实例化委托将方法作为参数传入 Sum sum = new Sum(new DelegateTest().Add); int result = sum.Invoke(1， 2); Console.WriteLine(result); Console.ReadKey(); } // step02：声明委托对应的方法 public int Add(int x， int y) { return x &#43; y; } } 使用 delegate 关键字定义委托 声明委托对应的方法 实例化委托将方法作为参数传入 至此，一个委托就完成了。
+匿名方法定义委托# 上面说到完成一个委托要分三步走缺一步都不行，但是微软可能感觉这么实现比较麻烦，非要把三步做成两步来走！所以就用匿名方法来简化上边的三个步骤。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="委托# 委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得可以将方法当作另一个方法的参数来进行传递
+不管什么函数只要返回值类型和参数能匹配委托所指定的返回值类型和参数能匹配上，那么这个函数就能存储为一个委托变量的引用。
+为什么需要委托# 委托可以将方法作为参数 逻辑解耦，保持稳定 代码复用，保证项目规范 委托使用步骤# 使用 delegate 关键字定义委托 声明委托对应的方法 实例化委托将方法作为参数传入 class DelegateTest { //step01：使用delegate关键字定义委托 public delegate int Sum(int x， int y); static void Main(string[] args) { // step03：实例化委托将方法作为参数传入 Sum sum = new Sum(new DelegateTest().Add); int result = sum.Invoke(1， 2); Console.WriteLine(result); Console.ReadKey(); } // step02：声明委托对应的方法 public int Add(int x， int y) { return x &#43; y; } } 使用 delegate 关键字定义委托 声明委托对应的方法 实例化委托将方法作为参数传入 至此，一个委托就完成了。
+匿名方法定义委托# 上面说到完成一个委托要分三步走缺一步都不行，但是微软可能感觉这么实现比较麻烦，非要把三步做成两步来走！所以就用匿名方法来简化上边的三个步骤。">
+  <meta itemprop="wordCount" content="1037">
+
+<title>委托和事件 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/dotnet/%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>委托和事件</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#为什么需要委托">为什么需要委托</a></li>
+    <li><a href="#委托使用步骤">委托使用步骤</a></li>
+    <li><a href="#匿名方法定义委托">匿名方法定义委托</a></li>
+    <li><a href="#lambda-表达式定义委托">Lambda 表达式定义委托</a></li>
+    <li><a href="#lambda-表达式简写">Lambda 表达式简写</a></li>
+    <li><a href="#泛型委托">泛型委托</a>
+      <ul>
+        <li><a href="#action">Action</a></li>
+        <li><a href="#func">Func</a></li>
+      </ul>
+    </li>
+    <li><a href="#表达式树">表达式树</a></li>
+    <li><a href="#invoke">Invoke</a></li>
+    <li><a href="#委托数组">委托数组</a></li>
+    <li><a href="#多播委托">多播委托</a></li>
+    <li><a href="#-和--">+= 和 -=</a></li>
+    <li><a href="#多播委托异常处理">多播委托异常处理</a></li>
+    <li><a href="#getinvocationlist">GetInvocationList</a></li>
+    <li><a href="#闭包的陷阱">闭包的陷阱</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#有关事件的重要事项">有关事件的重要事项</a></li>
+    <li><a href="#有关事件的概念">有关事件的概念</a></li>
+    <li><a href="#发布订阅模式示例">发布订阅模式示例</a></li>
+    <li><a href="#标准-net事件模式">标准 .NET事件模式</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    委托和事件
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><h1 id="委托">委托<a class="anchor" href="#%e5%a7%94%e6%89%98">#</a></h1>
+<p>委托是一个类，它定义了方法的类型，指明了这个委托类型的变量可接受的函数，表示对具有特定参数列表和返回类型的方法的引用，使得<strong>可以将方法当作另一个方法的参数来进行传递</strong></p>
+<blockquote class='book-hint '>
+<p><strong>不管什么函数只要返回值类型和参数能匹配委托所指定的返回值类型和参数能匹配上，那么这个函数就能存储为一个委托变量的引用。</strong></p>
+</blockquote><h2 id="为什么需要委托">为什么需要委托<a class="anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%a7%94%e6%89%98">#</a></h2>
+<ul>
+<li>委托可以将方法作为参数</li>
+<li>逻辑解耦，保持稳定</li>
+<li>代码复用，保证项目规范</li>
+</ul>
+<h2 id="委托使用步骤">委托使用步骤<a class="anchor" href="#%e5%a7%94%e6%89%98%e4%bd%bf%e7%94%a8%e6%ad%a5%e9%aa%a4">#</a></h2>
+<ul>
+<li>使用 <code>delegate</code> 关键字定义委托</li>
+<li>声明委托对应的方法</li>
+<li>实例化委托将方法作为参数传入</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>   <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DelegateTest</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//step01：使用delegate关键字定义委托</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">delegate</span> <span style="color:#66d9ef">int</span> Sum(<span style="color:#66d9ef">int</span> x<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span> y);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// step03：实例化委托将方法作为参数传入</span>
+</span></span><span style="display:flex;"><span>            Sum sum = <span style="color:#66d9ef">new</span> Sum(<span style="color:#66d9ef">new</span> DelegateTest().Add);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> result = sum.Invoke(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(result);
+</span></span><span style="display:flex;"><span>            Console.ReadKey();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// step02：声明委托对应的方法</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Add(<span style="color:#66d9ef">int</span> x<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span> y)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> x + y;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }</span></span></code></pre></div><ol>
+<li>使用 <code>delegate</code> 关键字定义委托</li>
+<li>声明委托对应的方法</li>
+<li>实例化委托将方法作为参数传入</li>
+</ol>
+<p>至此，一个委托就完成了。</p>
+<h2 id="匿名方法定义委托">匿名方法定义委托<a class="anchor" href="#%e5%8c%bf%e5%90%8d%e6%96%b9%e6%b3%95%e5%ae%9a%e4%b9%89%e5%a7%94%e6%89%98">#</a></h2>
+<p>上面说到完成一个委托要分三步走缺一步都不行，但是微软可能感觉这么实现比较麻烦，非要把三步做成两步来走！所以就用匿名方法来简化上边的三个步骤。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// step01：首先用delegate定义一个委托 </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">delegate</span> <span style="color:#66d9ef">int</span> Sum(<span style="color:#66d9ef">int</span> x<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span> y);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// step02：使用匿名方法的写法把一个方法赋值给委托</span>
+</span></span><span style="display:flex;"><span>    Sum sum = <span style="color:#66d9ef">delegate</span> (<span style="color:#66d9ef">int</span> x<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span> y) { <span style="color:#66d9ef">return</span> x + y; };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result = sum.Invoke(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(result);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><strong>step01</strong>：使用 <code>delegate</code> 关键字定义委托
+<strong>step02</strong>：使用匿名方法的写法把一个方法赋值给委托</p>
+<p>这时会发现这里省略了定义方法这一步，将三步简化成了两步。</p>
+<h2 id="lambda-表达式定义委托">Lambda 表达式定义委托<a class="anchor" href="#lambda-%e8%a1%a8%e8%be%be%e5%bc%8f%e5%ae%9a%e4%b9%89%e5%a7%94%e6%89%98">#</a></h2>
+<p>微软对C#的设计理念是简单易用。这时候发现对匿名方法的方式依旧不太满意，就想方设法的来简化 <code>delegate(int x， int y) { return x + y; }</code> 这个匿名方法，<code>Lambda</code> 就出现了。</p>
+<p><code>lambda</code> 运算符 <code>=&gt;</code> 左边列出了需要的参数，右边定义了赋予 <code>lambda</code> 变量的方法实现代码。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// step01：首先用delegate定义一个委托 </span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">delegate</span> <span style="color:#66d9ef">int</span> Sum(<span style="color:#66d9ef">int</span> x<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span> y);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 方法一：</span>
+</span></span><span style="display:flex;"><span>    Sum sum1 = (<span style="color:#66d9ef">int</span> x<span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span> y) =&gt; { <span style="color:#66d9ef">return</span> x + y; };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result1 = sum1(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 方法二：</span>
+</span></span><span style="display:flex;"><span>    Sum sum2 = (x<span style="color:#960050;background-color:#1e0010">，</span> y) =&gt; { <span style="color:#66d9ef">return</span> x + y; };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result2 = sum2(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 方法三：</span>
+</span></span><span style="display:flex;"><span>    Sum sum3 = (x<span style="color:#960050;background-color:#1e0010">，</span> y) =&gt; x + y;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result3 = sum3(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><strong>方法一</strong>：简单的把 <code>delegate</code> 去掉，在 <code>()</code> 与 <code>{}</code> 之间加上 <code>=&gt;</code>
+<strong>方法二</strong>：在方法一的基础上把参数类型都干掉了
+<strong>方法三</strong>：要干就干彻底些，把 <code>{}</code> 以及 <code>return</code> 关键字都去掉了</p>
+<blockquote class='book-hint '>
+<p>注意：这三种方法随便怎么写都行</p>
+</blockquote><h2 id="lambda-表达式简写">Lambda 表达式简写<a class="anchor" href="#lambda-%e8%a1%a8%e8%be%be%e5%bc%8f%e7%ae%80%e5%86%99">#</a></h2>
+<p>如果 <code>lambda</code> 表达式只有一句，方法块内就可以省略花括号和 <code>return</code> 语句，这时编译器会添加一条隐式的 <code>return</code> 语句。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Func&lt;<span style="color:#66d9ef">double</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">double</span>&gt; func = param =&gt; param * param;</span></span></code></pre></div><p>等价于</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Func&lt;<span style="color:#66d9ef">double</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">double</span>&gt; func = param =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> param * <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>};</span></span></code></pre></div><h2 id="泛型委托">泛型委托<a class="anchor" href="#%e6%b3%9b%e5%9e%8b%e5%a7%94%e6%89%98">#</a></h2>
+<p>随着.Net版本的不断升级，微软又来玩新花样了，不管是匿名方法还是 <code>Lambda</code> 表达式，完成一个委托的应用，都逃不过两个步骤，一步是定义一个委托，另一步是用一个方法来实例化一个委托。微软干脆把这两步都合成一步来走了。用 <code>Func</code> 来简化一个委托的定义。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//方法一：</span>
+</span></span><span style="display:flex;"><span>    Func&lt;<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>&gt; add1 = (<span style="color:#66d9ef">int</span> x, <span style="color:#66d9ef">int</span> y) =&gt; { <span style="color:#66d9ef">return</span> x + y; };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result1 = add1(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//方法二：</span>
+</span></span><span style="display:flex;"><span>    Func&lt;<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>&gt; add2 = (x<span style="color:#960050;background-color:#1e0010">，</span> y) =&gt; { <span style="color:#66d9ef">return</span> x + y; };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result2 = add2(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//方法三：</span>
+</span></span><span style="display:flex;"><span>    Func&lt;<span style="color:#66d9ef">int</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#66d9ef">int</span>&gt; add3 = (x<span style="color:#960050;background-color:#1e0010">，</span> y) =&gt; x + y;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result3 = add3(<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">，</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>至此一个委托的应用就可用 <code>Func&lt;int， int， int&gt; add3 = (x， y) =&gt; x + y;</code>  一句话来完成了，其中的 <code>Func</code> 就是所谓的泛型委托。</p>
+<p>微软提供了 <code>Action&lt;T&gt;</code> 和 <code>Func&lt;T&gt;</code> 两种泛型委托，用于简化方法定义。</p>
+<h3 id="action">Action<a class="anchor" href="#action">#</a></h3>
+<p>表示引用一个 <code>void</code> 返回类型的方法，可以传递最多<strong>16种不同的参数类型</strong>，没有泛型参数的 <code>Action</code> 类可调用没有参数的方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>    <span style="color:#75715e">// Action：无参数</span>
+</span></span><span style="display:flex;"><span>    Action action1 = () =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;啦啦啦啦&#34;</span>); };
+</span></span><span style="display:flex;"><span>    action1();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Action：一个参数</span>
+</span></span><span style="display:flex;"><span>    Action&lt;<span style="color:#66d9ef">string</span>&gt; action2 = p =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;啦啦啦啦，name:{0}&#34;</span>,p); };
+</span></span><span style="display:flex;"><span>    action2(<span style="color:#e6db74">&#34;wang&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Action：多个参数</span>
+</span></span><span style="display:flex;"><span>    Action&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">int</span>&gt; action3 = (name,age) =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;啦，name:{0}，age:{1}&#34;</span>, name,age); };
+</span></span><span style="display:flex;"><span>    action3(<span style="color:#e6db74">&#34;wang&#34;</span>,<span style="color:#ae81ff">25</span>);</span></span></code></pre></div><h3 id="func">Func<a class="anchor" href="#func">#</a></h3>
+<p><code>Func&lt;T&gt;</code> 允许调用带返回类型的方法，可以传递 <strong>16种不同类型的参数和一个返回类型</strong>，<code>Func&lt;out TResult&gt;</code> 委托类型可以调用带返回值且无参数的方法。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li><code>Action&lt;T&gt;</code> 用于没有返回值的方法（参数根据自己情况进行传递）</li>
+<li><code>Func&lt;T&gt;</code> 用于有返回值的方法（参数根据自己情况传递）</li>
+</ul>
+<p>记住无返回就用 <code>Action&lt;T&gt;</code>，有返回就用 <code>Func&lt;T&gt;</code>。</p>
+<h2 id="表达式树">表达式树<a class="anchor" href="#%e8%a1%a8%e8%be%be%e5%bc%8f%e6%a0%91">#</a></h2>
+<p>表达式树其实与委托已经没什么关系了，如果非要扯上关系，表达式树是存放委托的容器。如果非要说的更专业一些，表达式树是存取 <code>Lambda</code> 表达式的一种数据结构。要用 <code>Lambda</code> 表达式的时候，直接从表达式中获取出来 <code>Compile()</code> 就可以直接用了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Expression&lt;Func&lt;<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>&gt;&gt; exp = (x, y) =&gt; x + y;
+</span></span><span style="display:flex;"><span>    Func&lt;<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span>&gt; fun = exp.Compile();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result = fun(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="invoke">Invoke<a class="anchor" href="#invoke">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> Sum sum = <span style="color:#66d9ef">delegate</span> (<span style="color:#66d9ef">int</span> x, <span style="color:#66d9ef">int</span> y) { <span style="color:#66d9ef">return</span> x + y; };
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">int</span> result = sum.Invoke(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">//等价于</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">int</span> result = sum(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>);</span></span></code></pre></div><h2 id="委托数组">委托数组<a class="anchor" href="#%e5%a7%94%e6%89%98%e6%95%b0%e7%bb%84">#</a></h2>
+<p>定义 <code>Math</code> 类提供两个静态方法接收一个 <code>double</code> 类型的参数，用于计算倍数和阶乘。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Math</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">double</span> MultipleTwo(<span style="color:#66d9ef">double</span> <span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">value</span> * <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">double</span> Square(<span style="color:#66d9ef">double</span> <span style="color:#66d9ef">value</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">value</span> * <span style="color:#66d9ef">value</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Delegate_Array()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义委托数组</span>
+</span></span><span style="display:flex;"><span>    Func&lt;<span style="color:#66d9ef">double</span>, <span style="color:#66d9ef">double</span>&gt;[] delegates = [
+</span></span><span style="display:flex;"><span>         Math.MultipleTwo,
+</span></span><span style="display:flex;"><span>         Math.Square
+</span></span><span style="display:flex;"><span>    ];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用委托数组</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; delegates.Length; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(delegates[i](<span style="color:#ae81ff">3.7</span>));
+</span></span><span style="display:flex;"><span>        Console.WriteLine(delegates[i](<span style="color:#ae81ff">3</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="多播委托">多播委托<a class="anchor" href="#%e5%a4%9a%e6%92%ad%e5%a7%94%e6%89%98">#</a></h2>
+<p>之前的每个委托都只包含一个方法调用，调用委托的次数与调用方法的次数相同，如果要调用多个方法，就需要多次显式调用这个委托。</p>
+<p>但委托中也可以包含多个方法，称为多播委托。多播委托可以按顺序调用多个方法，为此<strong>委托的签名必须返回<code>void</code>，否则就只能得到委托最后调用的最后一个方法的结果。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Func&lt;<span style="color:#66d9ef">double</span>, <span style="color:#66d9ef">double</span>&gt; func = Math.MultipleTwo;
+</span></span><span style="display:flex;"><span>func += Math.Square;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> result = func(<span style="color:#ae81ff">3.0</span>);
+</span></span><span style="display:flex;"><span>Console.WriteLine(result);</span></span></code></pre></div><p>只返回了3.0阶乘的值</p>
+<h2 id="-和--">+= 和 -=<a class="anchor" href="#-%e5%92%8c--">#</a></h2>
+<p>多播委托使用 <code>+=</code> 和 <code>-=</code>，在委托中增加或删除方法调用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Action action = Print.First;
+</span></span><span style="display:flex;"><span>    action += Print.Second;
+</span></span><span style="display:flex;"><span>    action();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Action action2 = Print.First;
+</span></span><span style="display:flex;"><span>    action2 += Print.Second;
+</span></span><span style="display:flex;"><span>    action2 -= Print.First;
+</span></span><span style="display:flex;"><span>    action2();
+</span></span><span style="display:flex;"><span>    Console.ReadKey();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Print</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> First()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;FirstMethod&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Second()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;SecondMethod&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>如果要使用多播委托，就要知道对同一个委托调用方法链的顺序并未正式定义，因此要避免编写依赖于特定顺序调用方法的代码。</p>
+<h2 id="多播委托异常处理">多播委托异常处理<a class="anchor" href="#%e5%a4%9a%e6%92%ad%e5%a7%94%e6%89%98%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86">#</a></h2>
+<p>使用多播委托，意味着多播委托里包含一个逐个调用的委托集合，如果集合其中一个方法抛出异常.整个迭代就会停止。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Action action = () =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception();
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>action += () =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;world&#34;</span>); };
+</span></span><span style="display:flex;"><span>action();</span></span></code></pre></div><p>委托只调用了第一个方法，因为第一个方法抛出了异常，委托的迭代停止</p>
+<h2 id="getinvocationlist">GetInvocationList<a class="anchor" href="#getinvocationlist">#</a></h2>
+<p>使用 <code>Delegate的GetInvocationList()</code> 方法迭代方法列表。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Delegate_GetInvocationList()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Action action = () =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;hello&#34;</span>); <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(); };
+</span></span><span style="display:flex;"><span>    action += () =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;world&#34;</span>); };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> delegates = action.GetInvocationList();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果不处理异常程序在抛出异常后停止</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//foreach (Action item in delegates)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    item();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这里必须显式指定item类型为Action委托</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (Action item <span style="color:#66d9ef">in</span> delegates)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 修改后，程序在捕获异常后，会迭代下一个方法</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            item();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">catch</span> (Exception error)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(error.Message);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>修改后，程序在捕获异常后，会迭代下一个方法。</p>
+<h2 id="闭包的陷阱">闭包的陷阱<a class="anchor" href="#%e9%97%ad%e5%8c%85%e7%9a%84%e9%99%b7%e9%98%b1">#</a></h2>
+<p><a href="https://www.cnblogs.com/aehyok/p/3730417.html">https://www.cnblogs.com/aehyok/p/3730417.html</a></p>
+<p>源码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>List&lt;Action&gt; list = <span style="color:#66d9ef">new</span> List&lt;Action&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Action t = () =&gt; Console.WriteLine(i.ToString());
+</span></span><span style="display:flex;"><span>    list.Add(t);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (Action t <span style="color:#66d9ef">in</span> list)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    t();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>IL反编译</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>List&lt;Action&gt; list = <span style="color:#66d9ef">new</span> List&lt;Action&gt;();
+</span></span><span style="display:flex;"><span>TempClass tempClass = <span style="color:#66d9ef">new</span> TempClass();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (tempClass.i = <span style="color:#ae81ff">0</span>; tempClass.i &lt; <span style="color:#ae81ff">5</span>; tempClass.i++)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Action t = tempClass.TempFunc;
+</span></span><span style="display:flex;"><span>    list.Add(t);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (Action t <span style="color:#66d9ef">in</span> list)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    t();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TempClass</span>
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> TempFunc()
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(i.ToString());
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><p>所谓的闭包对象，指的是上面这种情形中的 <code>TempClass</code> 对象。如果匿名方法（Lambda表达式）引用了某个局部变量，编译器就会自动将该引用提升到该闭包对象中。即将<code>for</code>循环中的变量 <code>i</code> 修改成了引用闭包对象的公共变量 <code>i</code>。这样一来，即使代码执行后离开了原局部变量 <code>i</code> 的作用域(如for循环)，包含该闭包对象的作用域也还存在。</p>
+<p>在Lambda表达式(或匿名方法)中所引用的外部变量称为<strong>捕获变量</strong>。而捕获变量的表达式就称为<strong>闭包</strong>。捕获的变量会在真正<strong>调用委托</strong>时“赋值”，而不是在捕获时“赋值”，即总是使用捕获变量的<strong>最新的值</strong></p>
+<blockquote class='book-hint '>
+<p>注意：<strong>从C#5.0开始</strong>，foreach认为循环变量都应该是“新”的变量。所以，每次循环中创建委托时捕获的变量都不是同一个变量。所以遍历时使用foreach会自动捕获不同变量</p>
+</blockquote><p><img src="/images/2021-09-02-22-09-49.png" alt="" />
+修改一下源代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>List&lt;Action&gt; list = <span style="color:#66d9ef">new</span> List&lt;Action&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> temp = i;
+</span></span><span style="display:flex;"><span>    Action t = () =&gt; Console.WriteLine(temp.ToString());
+</span></span><span style="display:flex;"><span>    list.Add(t);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> (Action t <span style="color:#66d9ef">in</span> list)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    t();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p><img src="/images/2021-09-02-22-10-27.png" alt="" /></p>
+<h1 id="事件">事件<a class="anchor" href="#%e4%ba%8b%e4%bb%b6">#</a></h1>
+<blockquote class='book-hint '>
+<p><strong>事件是一种引用类型</strong>，实际上也是一种特殊的委托。<strong>事件基于委托，是提供了发布/订阅机制的委托，事件是将委托封装，并对外公布了订阅和取消订阅的接口。</strong></p>
+</blockquote><h2 id="有关事件的重要事项">有关事件的重要事项<a class="anchor" href="#%e6%9c%89%e5%85%b3%e4%ba%8b%e4%bb%b6%e7%9a%84%e9%87%8d%e8%a6%81%e4%ba%8b%e9%a1%b9">#</a></h2>
+<p>1、事件提供了对它的私有控制委托的结构化访问。我们无法直接访问该委托。</p>
+<p>2、事件中可用的操作比委托要少，对于事件我们只可以添加、删除或调用事件处理程序。</p>
+<p>3、事件被触发时，它调用委托来依次调用调用列表中的方法。</p>
+<h2 id="有关事件的概念">有关事件的概念<a class="anchor" href="#%e6%9c%89%e5%85%b3%e4%ba%8b%e4%bb%b6%e7%9a%84%e6%a6%82%e5%bf%b5">#</a></h2>
+<p><code>发布者（Publisher）</code>：发布某个事件的类或结构，其他类可以在该事件发生时得到通知。</p>
+<p><code>订阅者（Subscriber）</code>：注册并在事件发生时得到通知的类或结构。</p>
+<p><code>事件处理程序（event handler）</code>：由订阅者注册到事件的方法，在发布者触发事件时执行。</p>
+<p><code>触发（raise）事件</code>：调用（invoke）或触发（fire）事件的术语。当事件触发时，所有注册到它的方法都会被依次调用。</p>
+<h2 id="发布订阅模式示例">发布订阅模式示例<a class="anchor" href="#%e5%8f%91%e5%b8%83%e8%ae%a2%e9%98%85%e6%a8%a1%e5%bc%8f%e7%a4%ba%e4%be%8b">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 发布者</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pub</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义事件所需委托</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">delegate</span> <span style="color:#66d9ef">void</span> OpenEventHandler();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用委托类型定义事件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">event</span> OpenEventHandler OpenEvent;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 定义事件触发的函数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Open()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 这个简单的修改可确保在检查空值和发送通知之间，如果一个不同的线程移除了所有OpenEvent订阅者，将不会引发NullReferenceException异常</span>
+</span></span><span style="display:flex;"><span>        OpenEventHandler openEventHandler = OpenEvent;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;总服务上线...&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 为确保有事件可用需要使用?.</span>
+</span></span><span style="display:flex;"><span>        OpenEvent?.Invoke();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 事件订阅者A</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceA</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ServiceAOpen()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;服务A已连接&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 事件订阅者B</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceB</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ServiceBOpen()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;服务B已连接&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><p>调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Example_01()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Pub pub = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    ServiceA serviceA = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>    ServiceB serviceB = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 事件订阅</span>
+</span></span><span style="display:flex;"><span>    pub.OpenEvent += serviceA.ServiceAOpen;
+</span></span><span style="display:flex;"><span>    pub.OpenEvent += serviceB.ServiceBOpen;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用函数触发事件</span>
+</span></span><span style="display:flex;"><span>    pub.Open();
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h2 id="标准-net事件模式">标准 .NET事件模式<a class="anchor" href="#%e6%a0%87%e5%87%86-net%e4%ba%8b%e4%bb%b6%e6%a8%a1%e5%bc%8f">#</a></h2>
+<ul>
+<li>委托类型的名称都应该以<code>EventHandler</code> 结束</li>
+<li>委托的原型定义：有一个 <code>void</code> 返回值，并接受两个输入参数：</li>
+<li>委托原型具有两个参数：sender表示事件触发者，e表示事件参数；一个 <code>Object</code> 类型，一个 <code>EventArgs</code> 类型(或继承自<code>EventArgs</code>)</li>
+<li>事件的命名为委托去掉 <code>EventHandler</code> 之后剩余的部分</li>
+<li>继承自 <code>EventArgs</code> 的类型应该以 <code>EventArgs</code> 结尾</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pub</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// 自定义事件参数以EventArgs结尾</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OpenEventArgs</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">public</span> OpenEventArgs()
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 标准事件模式委托名称以EventHandler结尾</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 委托的原型定义：有一个 void 返回值，并接受两个输入参数：一个 Object 类型，一个 EventArgs 类型(或继承自EventArgs)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">delegate</span> <span style="color:#66d9ef">void</span> OpenEventHandler(<span style="color:#66d9ef">object</span> sender, OpenEventArgs e);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 事件的命名为委托去掉 EventHandler 之后剩余的部分</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">event</span> OpenEventHandler Open;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> OpenConn()
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;总服务上线...&#34;</span>);
+</span></span><span style="display:flex;"><span>                OpenEventArgs e = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>                Open?.Invoke(<span style="color:#66d9ef">this</span>, e);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceA</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ServiceAOpen(<span style="color:#66d9ef">object</span> sender, Pub.OpenEventArgs e)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;服务B已连接&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceB</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ServiceBOpen(<span style="color:#66d9ef">object</span> sender, Pub.OpenEventArgs e)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;服务B已连接&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Example()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Pub pub = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>            ServiceA serviceA = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>            ServiceB serviceB = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 事件订阅</span>
+</span></span><span style="display:flex;"><span>            pub.Open += serviceA.ServiceAOpen;
+</span></span><span style="display:flex;"><span>            pub.Open += serviceB.ServiceBOpen;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 调用函数触发事件</span>
+</span></span><span style="display:flex;"><span>            pub.OpenConn();
+</span></span><span style="display:flex;"><span>        }</span></span></code></pre></div><h1 id="参考">参考<a class="anchor" href="#%e5%8f%82%e8%80%83">#</a></h1>
+<ul>
+<li><a href="https://www.cnblogs.com/jujusharp/archive/2011/08/04/2127999.html">https://www.cnblogs.com/jujusharp/archive/2011/08/04/2127999.html</a></li>
+<li><a href="https://www.cnblogs.com/HQFZ/p/4903400.html">https://www.cnblogs.com/HQFZ/p/4903400.html</a></li>
+<li><a href="https://www.cnblogs.com/wangjiming/p/8300103.html">https://www.cnblogs.com/wangjiming/p/8300103.html</a></li>
+</ul>
+</div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/dotnet/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>多线程</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/dotnet/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/" class="flex align-center">
+      <span>并行编程</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#为什么需要委托">为什么需要委托</a></li>
+    <li><a href="#委托使用步骤">委托使用步骤</a></li>
+    <li><a href="#匿名方法定义委托">匿名方法定义委托</a></li>
+    <li><a href="#lambda-表达式定义委托">Lambda 表达式定义委托</a></li>
+    <li><a href="#lambda-表达式简写">Lambda 表达式简写</a></li>
+    <li><a href="#泛型委托">泛型委托</a>
+      <ul>
+        <li><a href="#action">Action</a></li>
+        <li><a href="#func">Func</a></li>
+      </ul>
+    </li>
+    <li><a href="#表达式树">表达式树</a></li>
+    <li><a href="#invoke">Invoke</a></li>
+    <li><a href="#委托数组">委托数组</a></li>
+    <li><a href="#多播委托">多播委托</a></li>
+    <li><a href="#-和--">+= 和 -=</a></li>
+    <li><a href="#多播委托异常处理">多播委托异常处理</a></li>
+    <li><a href="#getinvocationlist">GetInvocationList</a></li>
+    <li><a href="#闭包的陷阱">闭包的陷阱</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#有关事件的重要事项">有关事件的重要事项</a></li>
+    <li><a href="#有关事件的概念">有关事件的概念</a></li>
+    <li><a href="#发布订阅模式示例">发布订阅模式示例</a></li>
+    <li><a href="#标准-net事件模式">标准 .NET事件模式</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

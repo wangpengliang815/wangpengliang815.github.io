@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="学习rabbitMq中的消息确认和持久化机制
+生产端消息确认# tx机制# tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：txSelect()、txCommit()、txRollback()
+channel.txSelect()： 用于将当前channel设置成transaction模式 channel.txCommit() ：提交事务 channel.txRollback() ：回滚事务 使用 tx 机制，首先要通过txSelect 方法开启事务，然后发布消息给 broker 服务器，如果 txCommit 提交成功，则说明消息成功被 broker 接收；如果在txCommit 执行之前 broker 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 txRollback 回滚事务。
+/// &lt;summary&gt; /// 生产端消息确认(tx事务机制) /// &lt;/summary&gt; [TestMethod] public void PublisherTest_Transaction() { channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); string message = &#34;hello world&#34;; byte[] messageBody = Encoding.UTF8.GetBytes(message); try { // 开启tx事务机制 channel.TxSelect(); // 消息发送 channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: messageBody); // 事务提交 channel.TxCommit(); } catch (Exception ex) { // 事务回滚 channel.TxRollback(); Assert.Fail(ex.Message); } }Confirm模式# C#的RabbitMQ API中，有三个与Confirm相关的方法：ConfirmSelect()、WaitForConfirms()、WaitForConfirmOrDie
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/posts/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/">
+  <meta property="og:site_name" content="CODE&#39;NOTE">
+  <meta property="og:title" content="CODE&#39;NOTE">
+  <meta property="og:description" content="学习rabbitMq中的消息确认和持久化机制
+生产端消息确认# tx机制# tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：txSelect()、txCommit()、txRollback()
+channel.txSelect()： 用于将当前channel设置成transaction模式 channel.txCommit() ：提交事务 channel.txRollback() ：回滚事务 使用 tx 机制，首先要通过txSelect 方法开启事务，然后发布消息给 broker 服务器，如果 txCommit 提交成功，则说明消息成功被 broker 接收；如果在txCommit 执行之前 broker 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 txRollback 回滚事务。
+/// &lt;summary&gt; /// 生产端消息确认(tx事务机制) /// &lt;/summary&gt; [TestMethod] public void PublisherTest_Transaction() { channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); string message = &#34;hello world&#34;; byte[] messageBody = Encoding.UTF8.GetBytes(message); try { // 开启tx事务机制 channel.TxSelect(); // 消息发送 channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: messageBody); // 事务提交 channel.TxCommit(); } catch (Exception ex) { // 事务回滚 channel.TxRollback(); Assert.Fail(ex.Message); } }Confirm模式# C#的RabbitMQ API中，有三个与Confirm相关的方法：ConfirmSelect()、WaitForConfirms()、WaitForConfirmOrDie">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+  <meta itemprop="name" content="CODE&#39;NOTE">
+  <meta itemprop="description" content="学习rabbitMq中的消息确认和持久化机制
+生产端消息确认# tx机制# tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：txSelect()、txCommit()、txRollback()
+channel.txSelect()： 用于将当前channel设置成transaction模式 channel.txCommit() ：提交事务 channel.txRollback() ：回滚事务 使用 tx 机制，首先要通过txSelect 方法开启事务，然后发布消息给 broker 服务器，如果 txCommit 提交成功，则说明消息成功被 broker 接收；如果在txCommit 执行之前 broker 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 txRollback 回滚事务。
+/// &lt;summary&gt; /// 生产端消息确认(tx事务机制) /// &lt;/summary&gt; [TestMethod] public void PublisherTest_Transaction() { channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null); string message = &#34;hello world&#34;; byte[] messageBody = Encoding.UTF8.GetBytes(message); try { // 开启tx事务机制 channel.TxSelect(); // 消息发送 channel.BasicPublish(exchange: &#34;&#34;, routingKey: queueName, basicProperties: null, body: messageBody); // 事务提交 channel.TxCommit(); } catch (Exception ex) { // 事务回滚 channel.TxRollback(); Assert.Fail(ex.Message); } }Confirm模式# C#的RabbitMQ API中，有三个与Confirm相关的方法：ConfirmSelect()、WaitForConfirms()、WaitForConfirmOrDie">
+  <meta itemprop="wordCount" content="481">
+
+<title>1.3消息确认及持久化 | CODE&#39;NOTE</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/posts/rabbitmq/1.3%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E5%8F%8A%E6%8C%81%E4%B9%85%E5%8C%96/">
+<link rel="stylesheet" href="/book.min.6970156cec683193d93c9c4edaf0d56574e4361df2e0c1be4f697ae81c3ba55f.css" integrity="sha256-aXAVbOxoMZPZPJxO2vDVZXTkNh3y4MG&#43;T2l66Bw7pV8=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.3ed9c79c605914c45e19db90edfda0ca8d87c63064c1d6252862250c4e917346.js" integrity="sha256-PtnHnGBZFMReGduQ7f2gyo2HxjBkwdYlKGIlDE6Rc0Y=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-posts">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CODE&#39;NOTE</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.3消息确认及持久化</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#tx机制">tx机制</a></li>
+    <li><a href="#confirm模式">Confirm模式</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#自动确认">自动确认</a></li>
+    <li><a href="#手动确认basicack">手动确认(BasicAck)</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#basicnack">BasicNack()</a></li>
+    <li><a href="#basicreject">BasicReject()</a></li>
+    <li><a href="#basicrecover">BasicRecover()</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown book-post">
+  <h1>
+    1.3消息确认及持久化
+  </h1>
+  
+
+
+  
+
+  
+
+
+  <div class="book-post-content markdown-inner"><p>学习rabbitMq中的消息确认和持久化机制</p>
+<!-- more -->
+<h1 id="生产端消息确认">生产端消息确认<a class="anchor" href="#%e7%94%9f%e4%ba%a7%e7%ab%af%e6%b6%88%e6%81%af%e7%a1%ae%e8%ae%a4">#</a></h1>
+<h2 id="tx机制">tx机制<a class="anchor" href="#tx%e6%9c%ba%e5%88%b6">#</a></h2>
+<blockquote class='book-hint '>
+<p>tx机制叫做事务机制，RabbitMQ中有三个与tx机制的方法：<code>txSelect()</code>、<code>txCommit()</code>、<code>txRollback()</code></p>
+</blockquote><ul>
+<li><code>channel.txSelect()</code>： 用于将当前<code>channel</code>设置成<code>transaction</code>模式</li>
+<li><code>channel.txCommit()</code> ：提交事务</li>
+<li><code>channel.txRollback()</code> ：回滚事务</li>
+</ul>
+<p>使用 <code>tx</code> 机制，首先要通过<code>txSelect</code> 方法开启事务，然后发布消息给 <code>broker</code> 服务器，如果 <code>txCommit</code> 提交成功，则说明消息成功被 <code>broker</code> 接收；如果在<code>txCommit</code> 执行之前 <code>broker</code> 异常崩溃或者由于其他原因抛出异常，这个时候可以捕获异常，通过 <code>txRollback</code> 回滚事务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// 生产端消息确认(tx事务机制)</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PublisherTest_Transaction() 
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">string</span> message = <span style="color:#e6db74">&#34;hello world&#34;</span>;
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">byte</span>[] messageBody = Encoding.UTF8.GetBytes(message);
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 开启tx事务机制</span>
+</span></span><span style="display:flex;"><span>         channel.TxSelect();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 消息发送</span>
+</span></span><span style="display:flex;"><span>         channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style="color:#66d9ef">null</span>, body: messageBody);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 事务提交</span>
+</span></span><span style="display:flex;"><span>         channel.TxCommit();
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 事务回滚</span>
+</span></span><span style="display:flex;"><span>         channel.TxRollback();
+</span></span><span style="display:flex;"><span>         Assert.Fail(ex.Message);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div><h2 id="confirm模式">Confirm模式<a class="anchor" href="#confirm%e6%a8%a1%e5%bc%8f">#</a></h2>
+<blockquote class='book-hint '>
+<p>C#的RabbitMQ API中，有三个与Confirm相关的方法：<code>ConfirmSelect()</code>、<code>WaitForConfirms()</code>、<code>WaitForConfirmOrDie</code></p>
+</blockquote><ul>
+<li><code>channel.ConfirmSelect()</code> ：表示开启Confirm模式</li>
+<li><code>channel.WaitForConfirms()</code> ：等待所有消息确认，如果所有的消息都被服务端成功接收返回true，只要有一条没有被成功接收就返回<code>false</code></li>
+<li><code>channel.WaitForConfirmsOrDie()</code>和<code>WaitForConfirms</code>作用类型，也是等待所有消息确认。区别在于该方法没有返回值(<code>Void</code>)，如果有任意一条消息没有被成功接收，该方法会立即抛出<code>OperationInterrupedException</code>类型异常</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 生产端消息确认(Confirm模式)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[TestMethod]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PublisherTest_Confirm()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>, arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message = <span style="color:#e6db74">&#34;hello world&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span>[] messageBody = Encoding.UTF8.GetBytes(message);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 开启Confirm模式</span>
+</span></span><span style="display:flex;"><span>    channel.ConfirmSelect();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 消息发送</span>
+</span></span><span style="display:flex;"><span>    channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>, routingKey: queueName, basicProperties: <span style="color:#66d9ef">null</span>, body: messageBody);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// WaitForConfirms确认消息(可以同时确认多条消息)是否发送成功</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (channel.WaitForConfirms())
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;Message发送成功&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Assert.Fail();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="消费端消息确认">消费端消息确认<a class="anchor" href="#%e6%b6%88%e8%b4%b9%e7%ab%af%e6%b6%88%e6%81%af%e7%a1%ae%e8%ae%a4">#</a></h1>
+<h2 id="自动确认">自动确认<a class="anchor" href="#%e8%87%aa%e5%8a%a8%e7%a1%ae%e8%ae%a4">#</a></h2>
+<blockquote class='book-hint '>
+<p>当RabbbitMQ将消息发送给消费者后，消费者接收到消息后，不等待消息处理结束，立即自动回送一个确认回执。自动确认的用法十分简单，设置消费方法的参数 autoAck 为 true 即可</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>EventingBasicConsumer consumer = <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>           Encoding.UTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>, autoAck: <span style="color:#66d9ef">true</span>, consumer: consumer);</span></span></code></pre></div><p>可能存在的问题：</p>
+<ol>
+<li>丢失数据：Broker会在接收到确认回执时删除消息，如果消费者接收到消息并返回了确认回执，然后这个消费者在处理消息时挂了，那么这条消息就再也找不回来了</li>
+<li>只要队列不空，RabbitMQ会源源不断的把消息推送给客户端，而不管客户端能否消费的完，如果其中一个消费端消费的较慢,会极大的浪费性能</li>
+</ol>
+<h2 id="手动确认basicack">手动确认(BasicAck)<a class="anchor" href="#%e6%89%8b%e5%8a%a8%e7%a1%ae%e8%ae%a4basicack">#</a></h2>
+<blockquote class='book-hint '>
+<p>消费从队列中获取消息后，服务器会将该消息处于不可用状态，等待消费者反馈。<code>Resume</code>方法的参数<code>autoAck</code>设置为<code>false</code>，然后在消费端使用代码 <code>channel.BasicAck()</code>/<code>BasicReject()</code>等方法来确认和拒绝消息即可实现手动确认</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>EventingBasicConsumer consumer = <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>           Encoding.wUTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>	 <span style="color:#75715e">// 手动ack</span>
+</span></span><span style="display:flex;"><span>    channel.BasicAck(
+</span></span><span style="display:flex;"><span>        deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>        multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>    autoAck: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    consumer: consumer);</span></span></code></pre></div><p>改为手动确认方式只需改两处</p>
+<ol>
+<li>开启监听时将 <code>autoAck</code> 参数改为 <code>false</code></li>
+<li>消息消费成功后返回确认</li>
+</ol>
+<p>这段代码中，先处理消息，成功后再做 <code>ack</code>响应，失败就不做 <code>ack</code>响应，这样消息会储存在<code>MQ</code>的<code>Unacked</code>消息里，不会丢失，看起来没啥问题，但是如果其中一条消息在处理时抛出了异常，将导致后续所有消息都会无法消费。</p>
+<h1 id="消息拒绝">消息拒绝<a class="anchor" href="#%e6%b6%88%e6%81%af%e6%8b%92%e7%bb%9d">#</a></h1>
+<h2 id="basicnack">BasicNack()<a class="anchor" href="#basicnack">#</a></h2>
+<blockquote class='book-hint '>
+<p>与<code>BasicReject()</code>不同的是同时支持多个消息，可以<code>nack</code> 该消费者先前接收未<code>ack</code> 的所有消息</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>EventingBasicConsumer consumer =
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>           Encoding.UTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 消费到某条消息时出错
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 导致Broker无法拿到正常回执信息引发后续消息都无法被正常消费
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 如果MQ没得到ack响应，这些消息会堆积在Unacked消息里,不会丢弃,直至客户端断开重连时，才变回ready
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 如果Consumer客户端不断开连接，这些Unacked消息，永远不会变回ready状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * Unacked消息多了,占用内存越来越大,就会异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        MessageConsumer(ea);
+</span></span><span style="display:flex;"><span>        channel.BasicAck(
+</span></span><span style="display:flex;"><span>                   deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>                   multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">catch</span> (Exception ex)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 出错了，发nack，并通知MQ把消息塞回的队列头部（不是尾部）</span>
+</span></span><span style="display:flex;"><span>        channel.BasicNack(
+</span></span><span style="display:flex;"><span>            deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>            multiple: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>            requeue: <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>    autoAck: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    consumer: consumer);</span></span></code></pre></div><p>这里将代码调整为消费正常就 <code>ack</code>，不正常就<code>nack</code>，并等下一次重新消费。看起来没问题，但是如果某条消息在消费时又抛出异常，该消息将会被<code>Nack</code>机制重新扔回 <strong>队列头部</strong>，下一步又消费这条会出异常的消息，又出错，塞回队列……进入死循环，所以要谨慎使用<code>Nack</code>机制。这里可以在<code>catch</code>中记录错误日志依旧使用<code>ack</code>确认消费。</p>
+<h2 id="basicreject">BasicReject()<a class="anchor" href="#basicreject">#</a></h2>
+<blockquote class='book-hint '>
+<p>消费端告诉服务器这个消息拒绝接收，不处理，可以设置是否放回到队列中还是丢掉(只能一次拒绝一个消息)</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span> MessagePublisher(<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">$&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span> MessagePublisher(<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">$&#34;2&#34;</span>);
+</span></span><span style="display:flex;"><span> MessagePublisher(<span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#e6db74">$&#34;3&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> channel.QueueDeclare(
+</span></span><span style="display:flex;"><span>     queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>     durable: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     exclusive: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     autoDelete: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     arguments: <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> EventingBasicConsumer consumer =
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">new</span> EventingBasicConsumer(channel);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> channel.BasicQos(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> consumer.Received += (model, ea) =&gt;
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">string</span> message =
+</span></span><span style="display:flex;"><span>            Encoding.UTF8.GetString(ea.Body.ToArray());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">if</span> (message == <span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(<span style="color:#e6db74">$&#34;Message：{message}&#34;</span>);
+</span></span><span style="display:flex;"><span>         channel.BasicAck(
+</span></span><span style="display:flex;"><span>             deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>             multiple: <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Console.WriteLine(<span style="color:#e6db74">$&#34;拒绝处理&#34;</span>);
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">/* BasicReject用于拒绝消息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            requeue参数指定了拒绝后是否重新放回queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            一次只能拒绝一条消息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            设置为true: 消息会被重新仍回queue中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            设置为false:消息将被丢弃
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>         channel.BasicReject(
+</span></span><span style="display:flex;"><span>             deliveryTag: ea.DeliveryTag,
+</span></span><span style="display:flex;"><span>             requeue: <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> channel.BasicConsume(queue: <span style="color:#e6db74">&#34;hello&#34;</span>,
+</span></span><span style="display:flex;"><span>     autoAck: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>     consumer: consumer);</span></span></code></pre></div><h2 id="basicrecover">BasicRecover()<a class="anchor" href="#basicrecover">#</a></h2>
+<blockquote class='book-hint '>
+<p>路由不成功的消息可以使用<code>recovery</code>重新发送到队列中,参数是是否requeue，true则重新入队列，并且尽可能的将之前recover的消息投递给其他消费者消费，而不是自己再次消费。false则消息会重新被投递给自己</p>
+</blockquote><h1 id="消息持久化-persistent">消息持久化 Persistent<a class="anchor" href="#%e6%b6%88%e6%81%af%e6%8c%81%e4%b9%85%e5%8c%96-persistent">#</a></h1>
+<table>
+  <thead>
+      <tr>
+          <th>参数</th>
+          <th>重启RabbitMQ</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>exchange.durable=fasle/queue.durable=false</td>
+          <td>exchange/queue将会被丢弃</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=fasle</td>
+          <td>exchange将会被丢弃</td>
+      </tr>
+      <tr>
+          <td>queue.durable=fasle</td>
+          <td>queue将会被丢弃</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=fasle/queue.durable=true</td>
+          <td>exchange将会被丢弃,queue虽然会存在,但队列内消息会全部丢失</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=true/queue.durable=true</td>
+          <td>exchange/queue会存在,但队列内消息会全部丢失</td>
+      </tr>
+      <tr>
+          <td>exchange.durable=true&amp;&amp;queue.durable=true/消息发布时(persistent=true)</td>
+          <td>消息真正的持久化</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">100</span>; i++)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span>[] messageBody = Encoding.UTF8.GetBytes(i.ToString());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 设置消息持久化</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> props = channel.CreateBasicProperties();
+</span></span><span style="display:flex;"><span>    props.Persistent = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 消息发送</span>
+</span></span><span style="display:flex;"><span>    channel.BasicPublish(
+</span></span><span style="display:flex;"><span>        exchange: <span style="color:#e6db74">&#34;TestExchange&#34;</span>,
+</span></span><span style="display:flex;"><span>        routingKey: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>        basicProperties: props,
+</span></span><span style="display:flex;"><span>        body: messageBody);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div><h1 id="消息优先级-priority">消息优先级 Priority<a class="anchor" href="#%e6%b6%88%e6%81%af%e4%bc%98%e5%85%88%e7%ba%a7-priority">#</a></h1>
+<blockquote class='book-hint '>
+<p>queue是先进先出的，即先发送的消息先被消费。但是在具体业务中可能会遇到要提前处理某些消息的需求，如一个常见的需求：普通客户的消息按先进先出的顺序处理，vip客户的消息要提前处理。消息实现优先级控制的实现方式是：首先在声明queue是设置队列的<code>x-max-priority</code>属性，然后在<code>publish</code>消息时，设置消息的优先级等级即可</p>
+</blockquote><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// 消息优先级</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e"> [TestMethod]</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> PublisherTest_Priority()
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     channel.QueueDeclare(queue: queueName, durable: <span style="color:#66d9ef">false</span>, exclusive: <span style="color:#66d9ef">false</span>, autoDelete: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>                        arguments: <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">object</span>&gt;() {
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 队列优先级最高为10，不加x-max-priority的话，消息发布时设置了消息的优先级也不会生效</span>
+</span></span><span style="display:flex;"><span>                        {<span style="color:#e6db74">&#34;x-max-priority&#34;</span>,<span style="color:#ae81ff">10</span> }
+</span></span><span style="display:flex;"><span>                        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 测试数据</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">string</span>[] msgs = { <span style="color:#e6db74">&#34;vip1&#34;</span>, <span style="color:#e6db74">&#34;hello1&#34;</span>, <span style="color:#e6db74">&#34;hello2&#34;</span>, <span style="color:#e6db74">&#34;hello3&#34;</span>, <span style="color:#e6db74">&#34;vip5&#34;</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 设置消息优先级</span>
+</span></span><span style="display:flex;"><span>     IBasicProperties props = channel.CreateBasicProperties();
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">string</span> msg <span style="color:#66d9ef">in</span> msgs)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// vip开头的消息，优先级设置为9,其他消息优先级为1</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">if</span> (msg.StartsWith(<span style="color:#e6db74">&#34;vip&#34;</span>))
+</span></span><span style="display:flex;"><span>             props.Priority = <span style="color:#ae81ff">9</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>             props.Priority = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         channel.BasicPublish(exchange: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>                                routingKey: queueName,
+</span></span><span style="display:flex;"><span>                                basicProperties: props,
+</span></span><span style="display:flex;"><span>                                body: Encoding.UTF8.GetBytes(msg));
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>     Assert.IsTrue(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span> }</span></span></code></pre></div></div>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+  <div>
+  
+    <a href="/posts/rabbitmq/1.2%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="flex align-center">
+      <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+      <span>1.2工作模式介绍</span>
+    </a>
+  
+  </div>
+  <div>
+  
+    <a href="/posts/rabbitmq/1.4%E4%B8%A4%E7%A7%8D%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F%E5%92%8Cqos%E7%9A%84%E5%AE%9E%E7%8E%B0/" class="flex align-center">
+      <span>1.4两种消费模式和 Qos的实现</span>
+      <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+    </a>
+  
+  </div>
+</div>
+ 
+        
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#tx机制">tx机制</a></li>
+    <li><a href="#confirm模式">Confirm模式</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#自动确认">自动确认</a></li>
+    <li><a href="#手动确认basicack">手动确认(BasicAck)</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#basicnack">BasicNack()</a></li>
+    <li><a href="#basicreject">BasicReject()</a></li>
+    <li><a href="#basicrecover">BasicRecover()</a></li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
