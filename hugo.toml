@@ -1,4 +1,4 @@
-baseURL = "https://github.com/wangpengliang815/wangpengliang815.github.io/"
+baseURL = "https://wangpengliang815.github.io/"
 languageCode = "zh-cn"
 title = "CODE'NOTE"
 theme = "hugo-book"
